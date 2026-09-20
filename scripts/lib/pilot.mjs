@@ -1,7 +1,8 @@
+import { activeIds, addLocalId } from './episode-selection.mjs';
 // 편(파일럿) 경로 규약 — 스크립트 공용.
 //   편 id = news/<id> 폴더명(snake_case — 2026-09-02 통합 전에는 input 저장소 work/<id>). 데이터 pilots/<id>/, 미디어 캐시 public/pilots/<id>/, 산출물 out/pilots/<id>/
 //   JSON 안의 미디어 경로(file)는 편 상대경로(ext/… video/… audio/…). 옛 입력의 "pilot/…" 접두는 relFile() 이 벗긴다.
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
 
@@ -93,13 +94,8 @@ export const inputRoot = (id) => {
   return basename(legacy) === id ? legacy : join(homedir(), "Projects", "shortform-news-input", "work", id);
 };
 
-export const readActive = () => JSON.parse(readFileSync(join(REPO, "pilots", "active.json"), "utf8"));
-export const addActive = (id) => {
-  const a = readActive();
-  if (a.includes(id)) return false;
-  writeFileSync(join(REPO, "pilots", "active.json"), JSON.stringify([...a, id]) + "\n");
-  return true;
-};
+export const readActive = () => activeIds(REPO);
+export const addActive = (id) => addLocalId(REPO, id);
 
 // 인자에서 편 id 결정: --pilot <id> | 첫 위치 인자가 pilots/<id> 면 그것 | env PILOT | active.json 이 1편이면 그 편
 export const resolvePilotId = (args) => {

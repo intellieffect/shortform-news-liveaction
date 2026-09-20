@@ -12,13 +12,13 @@
 import { existsSync, mkdirSync, copyFileSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 import { execFileSync } from "node:child_process";
-import { inputRoot } from "./lib/pilot.mjs";
+import { inputRoot, readActive } from "./lib/pilot.mjs";
 
 const REPO = resolve(new URL("..", import.meta.url).pathname);
 const FFMPEG = "/opt/homebrew/bin/ffmpeg";
 const dry = process.argv.includes("--dry");
 const ids = process.argv.slice(2).filter((a) => !a.startsWith("--"));
-const list = ids.length ? ids : JSON.parse(readFileSync(join(REPO, "pilots/active.json"), "utf8"));
+const list = ids.length ? ids : readActive();
 
 const isVideo = (p) => /\.(mp4|webm|mov|mkv)$/i.test(p);
 

@@ -1,3 +1,4 @@
+import { episodePrompt } from './prompt.mjs';
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
@@ -197,7 +198,8 @@ export const productionRenderErrors = (id, options = {}) => {
   if (!existsSync(w.runFile)) return [];
   const status = productionStatus(id, options);
   const environmentErrors = w.request ? executionIdentity(w.repo).errors.map((error) => "[production-stale] environment: " + error) : [];
-  return [...environmentErrors, ...["narration", "timeline", "sync"].filter((a) => status.actions[a].status !== "current").map((a) =>
+  const prompt = episodePrompt(w);
+  return [...(prompt.status === "invalid" ? ["[production-prompt] " + prompt.error] : []), ...environmentErrors, ...["narration", "timeline", "sync"].filter((a) => status.actions[a].status !== "current").map((a) =>
     "[production-stale] " + a + ": " + status.actions[a].status + " — npm run produce -- resume " + id)];
 };
 

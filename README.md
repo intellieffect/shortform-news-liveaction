@@ -4,7 +4,7 @@
 
 ## 처음 준비
 
-Node.js/npm, Python 3, FFmpeg, Git LFS를 준비한다. Git으로 받았다면 `git lfs pull`로 미디어 실물을 받는다. 프로젝트 루트에서 `npm ci`를 실행하고 `node scripts/produce.mjs doctor --installed`로 환경을 점검한다. 이미지·영상 생성은 Higgsfield, 음성은 지침이 정한 제공자를 연결한다. API 키는 환경 변수나 OS 보안 저장소에 두고 Git·채팅에 기록하지 않는다. 실제 세션에서 스킬·검수 역할·생성·청취 도구가 사용 가능한지 별도로 확인한다. 설치형 Windows 자동 구성은 이 후보에 포함하지 않는다.
+Node.js/npm, Python 3, FFmpeg, Git LFS를 준비한다. Git으로 받았다면 `git lfs pull`로 미디어 실물을 받는다. 프로젝트 루트에서 `npm ci`와 `npm run setup:hooks`를 실행하고 `node scripts/produce.mjs doctor --installed`로 환경을 점검한다. 이미지·영상 생성은 Higgsfield, 음성은 지침이 정한 제공자를 연결한다. API 키는 환경 변수나 OS 보안 저장소에 두고 Git·채팅에 기록하지 않는다. 실제 세션에서 스킬·검수 역할·생성·청취 도구가 사용 가능한지 별도로 확인한다. 설치형 Windows 자동 구성은 이 후보에 포함하지 않는다.
 
 ## 수록 예시 확인
 
@@ -12,8 +12,6 @@ Node.js/npm, Python 3, FFmpeg, Git LFS를 준비한다. Git으로 받았다면 `
 
 수정 요청은 “N44에서 가스가 모이는 장면을 수정해줘”처럼 전달한다. 새 세션은 해당 편을 지정해 이어서 진행한다. 새 기사는 예시 대본·장면을 복제하지 않고 기사에 맞게 설계한다.
 
-## 보관과 원격 전달
+## 로컬 제작과 공유
 
-새 편은 이 프로젝트의 news/pilots/src/editorial/episodes/out에 저장된다. 새 편의 자료는 기본적으로 Git에서 제외한다. 원격에 추가할 편은 운영자가 전달 목록에 명시하고 필요한 파일·출처·검수 상태를 검증한 뒤 포함한다. `git add -f`로 모든 산출물을 올리지 않는다. 이미 추적된 예시 수정은 Git 변경으로 표시될 수 있으므로 커밋 전 목록을 확인한다.
-
-백업에는 Git 외에 원본 미디어·음성·생성물·out을 포함한다. out/public 캐시의 추적 여부와 실제 파일 보존은 별개다. 예시 완성 영상은 Git LFS 대상이다.
+[동일 로컬·원격 운영 안내](docs/LOCAL-AND-SHARED.md)를 따른다. 기존 자료는 현재 위치에 보존한다. 코드·지침·설정을 별도 고객 버전으로 변환하지 않는다. 공유 선정은 config/shared-episodes.json, 로컬 활성은 pilots/local.json에서 구분한다. 원격에 올리기로 지정한 편만 파일 검사 후 일반 커밋으로 추가한다.

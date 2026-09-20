@@ -1,3 +1,4 @@
+import { prepareProductionPrompt } from './prompt.mjs';
 import { readProjectDefaults } from "./defaults.mjs";
 import { existsSync, mkdirSync, realpathSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -31,6 +32,7 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   visual.canvas = profile.canvas;
   visual.caption = { preset: profile.caption.preset };
   const defaults = readProjectDefaults(repo, profile);
+  const prompt = prepareProductionPrompt(repo, url);
   const root = join(repo, "news", id);
   mkdirSync(join(repo, "news"), { recursive: true });
   mkdirSync(root); // 기존 폴더를 덮어쓰지 않는다. 동시에 같은 id를 시작해도 한 번만 성공한다.
@@ -40,9 +42,11 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
     source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
-    raw_request_sha256: hash(request), creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },
+    raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },
     profile: { path: profilePath, id: profile.id, version: profile.version, sha256: hash(profileBytes) },
   });
+  put(prompt.record.template, prompt.template);
+  put(prompt.record.applied, prompt.applied);
   if (defaults) {
     put("00_brief/production-defaults.md", defaults.guide);
     put("00_brief/production-defaults.json", defaults.snapshot);

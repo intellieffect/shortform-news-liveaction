@@ -19,7 +19,7 @@
 
 그 다음 config/production-defaults.md와 체크아웃의 pipeline 스킬·production-entry를 읽어 Higgsfield·자막·로고·검수 설정 및 정상 start 절차를 적용한다. 긴 기본 프롬프트와 프로젝트 설정은 서로 대체하지 않는다.
 
-사용자 짧은 요청은 start의 request-file로 그대로 보존한다. start 이후 기획 전에 `00_brief/production-prompt-template.txt`에 읽은 V2 원본, `00_brief/production-prompt-applied.txt`에 URL 치환본을 별도로 저장한다. 적용 프롬프트를 사용자가 직접 보낸 원문으로 기록하지 않는다. 재개는 이번 편에 보존된 프롬프트와 설정을 먼저 읽으며 최신 전역 프롬프트로 덮어쓰지 않는다. 기존 편에 사본이 없으면 원래 제작 기록에서 적용 버전을 확인하고, 확인할 수 없는 버전은 추정해 기록하지 않는다.
+사용자 짧은 요청은 start의 request-file로 그대로 보존한다. start가 V2 원본과 URL 치환본을 `00_brief/production-prompt-template.txt`·`production-prompt-applied.txt`에 자동 저장하고 request.json에 버전·해시를 기록한다. 제작자는 반환된 context.production_prompt 전문을 읽고 적용하며 직접 사본을 덮어쓰지 않는다. resume은 해당 편의 저장본을 제공한다. invalid이면 누락·변경을 해결하기 전 제작을 진행하지 않는다. 구형 편의 legacy-unrecorded는 원래 기록으로 확인하며 현재 V2를 적용했다고 소급 기록하지 않는다.
 
 이 진입은 새 기사 영상 제작 요청에 적용한다. 기사 검토·구조 조사·썸네일만의 요청을 전체 영상 제작 지시로 확대하지 않는다. 프롬프트 파일이 없거나 읽을 수 없으면 다른 프롬프트로 조용히 대체하지 말고 누락을 알린다.
 
@@ -91,3 +91,7 @@ npm run still -- <id>          # single frame  ·  npm run slides -- <id> = beat
 npm run videos                 # out/videos.html — 완성 영상 검색·재생·다운로드 (gallery 명령도 같은 화면 생성)
 ```
 
+
+## 로컬 제작과 원격 공유
+
+코드·지침·설정은 로컬과 원격에서 동일하다. 기존 로컬 자료는 위치를 바꾸지 않는다. `config/shared-episodes.json`은 사용자가 공유하자고 지정한 편만 담는다. 로컬 테스트할 편은 `npm run episodes -- local add <id>`로 등록한다. 새 편의 sync는 로컬 목록만 갱신한다. 생성 인덱스·로컬 대장은 Git에 넣지 않는다. 공유는 [운영 안내](docs/LOCAL-AND-SHARED.md)의 파일 선정·누락 검사 절차를 따른다. 고객용 다른 코드/문서를 생성하지 않는다.

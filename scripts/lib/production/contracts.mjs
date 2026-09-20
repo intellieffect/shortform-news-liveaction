@@ -1,3 +1,4 @@
+import { sourceInputs } from '../source-inputs.mjs';
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
@@ -65,8 +66,12 @@ export const recipe = (w, action) => {
   const assetFile = join(w.root, "01_input/assets.json");
   const assets = existsSync(assetFile) ? json(assetFile).assets ?? [] : [];
   const collected = assets.filter((x) => x.path).map((x) => inEpisode(x.path));
-  const commonCode = ["src", "public/fonts"].flatMap((dir) => walk(join(w.repo, dir)));
-  const renderInputs = [...(w.request ? [join(w.root, "00_brief/request.json")] : []), ...commonCode, ...["package-lock.json", "remotion.config.ts", "pilots/index.ts", "pilots/active.json", "scripts/pilot-run.mjs"].map((file) => join(w.repo, file)), join(data, "pilot.json")];
+  const commonCode = [
+    ...sourceInputs(w.repo, ["src/index.ts", "src/editorial/episodes/" + w.id + ".tsx", "src/editorial/episodes/" + w.id + "/index.tsx"]),
+    ...(!existsSync(join(w.repo, "src/index.ts")) ? walk(join(w.repo, "src")) : []),
+    ...walk(join(w.repo, "public/fonts")),
+  ];
+  const renderInputs = [...(w.request ? [join(w.root, "00_brief/request.json")] : []), ...commonCode, ...["package-lock.json", "remotion.config.ts", "scripts/pilot-run.mjs"].map((file) => join(w.repo, file)), join(data, "pilot.json")];
   const spec = {
     narration: {
       deps: [],

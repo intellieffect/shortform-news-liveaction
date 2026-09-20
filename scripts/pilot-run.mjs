@@ -50,6 +50,8 @@ const rel = (p) => (p.startsWith(REPO + "/") ? relative(REPO, p) : p);
 const ensure = (p) => (mkdirSync(dirname(p), { recursive: true }), rel(p));
 const hasFrame = rest.some((a) => a.startsWith("--frame"));
 
+const prepare = spawnSync(process.execPath, [join(REPO, "scripts/pilots-index.mjs")], { cwd: REPO, stdio: "inherit" });
+if (prepare.status !== 0) process.exit(prepare.status ?? 1);
 const editorial = editorialPreflight(id);
 if (editorial.editorial) {
   if (editorial.errors.length) {

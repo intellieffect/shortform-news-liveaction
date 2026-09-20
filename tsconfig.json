@@ -24,5 +24,8 @@
     "public/pilots",
     "plugin"
   ],
-  "_comment": "tools/ 는 Motion Canvas 별개 프로젝트다 — 자기 tsconfig·의존성을 가진다(2026-09-02 저장소 통합으로 들어왔다). news/·out/·public/pilots/ 는 데이터·산출물이라 타입 대상이 아니다."
+  "_comment": "src/index.ts와 선택 편의 생성 인덱스에서 실제 import되는 코드를 검사한다. 로컬 연구 사본은 빌드 입력이 아니다.",
+  "include": [
+    "src/index.ts"
+  ]
 }

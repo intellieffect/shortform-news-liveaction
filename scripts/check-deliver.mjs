@@ -24,10 +24,10 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import { REPO, insideRepo } from "./lib/pilot.mjs";
+import { REPO, insideRepo, readActive } from "./lib/pilot.mjs";
 
 const ids = process.argv.slice(2).filter((a) => !a.startsWith("--"));
-const active = JSON.parse(readFileSync(join(REPO, "pilots", "active.json"), "utf8"));
+const active = readActive();
 const targets = ids.length ? ids : active;
 
 const md5 = (p) => createHash("md5").update(readFileSync(p)).digest("hex");

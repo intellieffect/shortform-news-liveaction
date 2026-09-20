@@ -118,4 +118,4 @@ npm run sticker:cut -- <생성 png…> --out news/<id>/02_production/external_as
 
 크레딧: 생성물이므로 **엔드카드 AI 고지에 센다**(`npm run credits`).
 
-> 근거 실측 = [docs/research/2026-09-04-sticker-slot/](../../../../docs/research/2026-09-04-sticker-slot/summary.md)
+> 근거 실측 = docs/research/2026-09-04-sticker-slot/ (과거 내부 기록·로컬 보관)

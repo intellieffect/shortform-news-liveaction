@@ -1,13 +1,14 @@
-#!/usr/bin/env node
+import { activeIds } from './lib/episode-selection.mjs';
 // pilots/active.json(활성 편 id 목록) → pilots/index.ts 생성. 엔진별 필수 데이터와 renderer를 같은 지점에서 확정한다.
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { EDITORIAL_ENGINE, SCRIPT_ENGINE, manifestEngine } from "./lib/engine.mjs";
 
 const here = resolve(new URL(".", import.meta.url).pathname, "..");
 const dir = join(here, "pilots");
-const active = JSON.parse(readFileSync(join(dir, "active.json"), "utf8"));
+const active = activeIds(here);
+mkdirSync(dir, { recursive: true });
 if (!Array.isArray(active) || active.some((id) => typeof id !== "string" || !/^[a-z0-9_]+$/.test(id))) {
   console.error("pilots/active.json 은 편 id(snake_case) 문자열 배열이어야 한다");
   process.exit(2);
@@ -60,4 +61,5 @@ for (const { id, index, engine } of records) {
 
 lines.push("", "export const PILOTS: PilotData[] = [", ...legacyEntries, "];", "", "export const EDITORIAL_PILOTS: EditorialPilotData[] = [", ...editorialEntries, "];", "");
 writeFileSync(join(dir, "index.ts"), lines.join("\n"));
+writeFileSync(join(dir, "active.json"), JSON.stringify(active) + "\n");
 console.log(`pilots/index.ts: legacy ${legacyEntries.length}편 · editorial ${editorialEntries.length}편 — ${active.join(", ")}`);

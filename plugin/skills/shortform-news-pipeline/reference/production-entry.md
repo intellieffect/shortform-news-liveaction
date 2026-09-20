@@ -40,6 +40,8 @@ node <플러그인 루트>/scripts/produce.mjs --project <제작 저장소> star
 
 직접 실행은 같은 인자를 `node scripts/produce.mjs`에 전달한다. id를 생략하면 URL에서 식별자를 만든다. 이미 있는 편은 새로 덮어쓰지 않고 resume한다.
 
+start는 config가 지정한 실제 V2 전문을 읽고 기사 URL 치환본과 원문을 편별 00_brief에 자동 보존한다. 버전·해시는 request.json에 기록하며, 반환되는 context.production_prompt를 전문으로 읽어 적용한다. 누락/치환 불가 프롬프트는 편 생성 전에 거절한다. resume은 전역 프롬프트가 아니라 저장본과 무결성 상태를 제공한다. invalid는 수정 전 진행하지 않고 legacy-unrecorded는 소급 적용을 주장하지 않는다.
+
 start가 만드는 것은 요청 원문, URL·분량·프로필 참조, 원본 보존 디렉터리, 기본 visual-system과 빈 실행 기록이다. 예시 질문·개념·원고·도해·TSX는 실제 편으로 복사하지 않는다. 기사를 읽거나 자료를 수집·생성한 것으로 기록하지도 않는다.
 
 `00_brief/user-request.txt`는 원문, `00_brief/request.json`은 접수 정보다. 설명과 선택 근거는 `02_production/`에서 작성한다. 실제 렌더는 요청한 분량 범위를 대조한다. 이전 `npm run new -- ... --mode editorial-concept`는 새 입구로 안내하고 종료한다. 제공 대본의 script-faithful 생성기는 유지한다.

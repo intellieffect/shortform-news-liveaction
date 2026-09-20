@@ -1,3 +1,4 @@
+import { episodePrompt } from './prompt.mjs';
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { hash, json } from "./contracts.mjs";
@@ -23,6 +24,7 @@ export const productionContext = (w, state, actions, completion) => {
   const referencesForStage = [...references[stage]];
   if (Object.values(reviewInputs).some((input) => input.status === "current")) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
   return {
+    production_prompt: episodePrompt(w),
     production_defaults: existsSync(join(w.root, "00_brief/production-defaults.json")) ? {
       snapshot: json(join(w.root, "00_brief/production-defaults.json")),
       guide: w.rel(join(w.root, "00_brief/production-defaults.md")),

@@ -132,7 +132,7 @@ input이 되돌린 판단 5: svs5258 배정(계획 수치 옆 현재 물체) · 
 | U1 | *"라이선스 문의 답을 기다리지 않고 명시된 것만 쓴다"* | 라이선스는 **자산마다** 읽는다(페이지 단위 아님 — RAS 8건 중 문구 1건). external 무라이선스 = `check-shots` **오류**(input SKILL 원칙 3 · sourcing §등록) |
 | U2 | *"비트 시트 외에도 각 비트에서 인셋, 도해, 온스크린 등이 모두 얹어진 버전을 사람이 검수할 수 있는 단계가 필요할 것 같아"* | **4-3R 검수판** — 4-3 뒤·4-4 전, 사람이 비트마다(stages 검토 질문 표) |
 | U3 | *"제작 중에는 스킬을 고치지 않는다 — 개선할 점을 발견하면 기록만 하고, 편이 끝난 뒤에 반영한다"* | 대조군 편의 운영 제약. 발견은 `docs/research/<날짜>-<편>-skill-gaps/` 에 G 번호로, 확정 후 개정 루프(maintenance) |
-| U4 | *"이 편은 현재 구조 그대로 만든다 — 단계를 서브에이전트로 쪼개지 않는다"* | 6편 대조 결과(M2 = 0)로 에이전트 분리는 **하지 않는다** — [판정](../../../../docs/research/2026-09-02-skill-revision-g1-g10/summary.md) |
+| U4 | *"이 편은 현재 구조 그대로 만든다 — 단계를 서브에이전트로 쪼개지 않는다"* | 6편 대조 결과(M2 = 0)로 에이전트 분리는 **하지 않는다** — 판정 (과거 내부 기록·로컬 보관) |
 
 ### 7편 «로먼우주망원경» (근거 `docs/research/2026-09-03-roman-eye/skill-gaps.md` G1~G14 · `…-pipeline-restructure/`)
 
@@ -155,4 +155,4 @@ input이 되돌린 판단 5: svs5258 배정(계획 수치 옆 현재 물체) · 
 | G12 | **감광(`scrim@1`)은 그래픽이 아니라 배경 층** — 사용자가 잡았고 어느 규칙에도 없었다([layers.md](layers.md)) |
 | G13 | 회귀는 md5 가 아니라 **픽셀 대조군**([commands.md](commands.md)) |
 | G14 | 단위는 설명 문자열이 아니라 **선두 토큰**으로 판정한다(rules §5 R5-06) |
-| 사고 | 워크트리는 `npm run worktree:remove` 로 지운다 — `git worktree remove` 는 gitignore 된 것을 「없는 것」으로 본다([사고 기록](../../../../docs/research/2026-09-03-pipeline-restructure/incident-worktree-remove.md)) |
+| 사고 | 워크트리는 `npm run worktree:remove` 로 지운다 — `git worktree remove` 는 gitignore 된 것을 「없는 것」으로 본다(사고 기록 (과거 내부 기록·로컬 보관)) |

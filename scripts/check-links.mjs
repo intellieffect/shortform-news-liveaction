@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import { execFileSync } from 'node:child_process';
 // 저장소 안 마크다운의 상대 링크 검사 — 플러그인만이 아니라 저장소 전체.
 //
 // 왜: 2026-09-02 에 플러그인을 두 번 옮겼고(.claude/skills/ → 안쪽 → plugin/) 두 번 다 링크가 깨졌다.
@@ -18,7 +18,10 @@ import { join, dirname, relative, resolve, normalize } from "node:path";
 
 const REPO = resolve(new URL("..", import.meta.url).pathname);
 const SKIP = new Set(["node_modules", ".git", "out", "public", ".claude"]);
-const roots = process.argv.slice(2).length ? process.argv.slice(2).map((p) => resolve(p)) : [REPO];
+const tracked = new Set(execFileSync('git', ['-C', REPO, 'ls-files', '-z'], {encoding:'utf8'}).split('\0').filter(Boolean));
+const local = process.argv.includes('--local');
+const args = process.argv.slice(2).filter(x=>x!=='--local');
+const roots = args.length ? args.map(p=>resolve(p)) : local ? [REPO] : [...tracked].filter(p=>p.endsWith('.md') && !p.startsWith('.claude/') && !p.startsWith('out/')).map(p=>join(REPO,p));
 
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => {
   const p = join(d, e.name);
@@ -46,7 +49,7 @@ for (const root of roots) {
       let t;
       try { t = normalize(join(dirname(rel), decodeURI(raw))); } catch { t = normalize(join(dirname(rel), raw)); }
       if (t.startsWith("..")) escaped.push([rel, raw]);
-      else if (!existsSync(join(REPO, t))) missing.push([rel, raw, t]);
+      else if (!existsSync(join(REPO, t)) || (!local && !tracked.has(t) && ![...tracked].some(p=>p.startsWith(t.replace(/\/$/, "")+"/")))) missing.push([rel, raw, t]);
     }
   }
 }

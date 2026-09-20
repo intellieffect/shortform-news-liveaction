@@ -1,3 +1,4 @@
+import { episodePrompt } from './prompt.mjs';
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -147,6 +148,8 @@ export const resolutionRecord = (w, state, issueKey, description, range) => {
 
 export const productionCompletion = (w, state, actions) => {
   const blockers = [], add = (code, detail, action) => blockers.push({ code, detail, ...(action ? { action } : {}) });
+  const prompt = episodePrompt(w);
+  if (prompt.status === "invalid") add("invalid-production-prompt", prompt.error);
   const history = reviews(state), reviewSummary = {}, evidenceCache = new Map();
   if (w.request) {
     for (const error of executionIdentity(w.repo).errors) add("incompatible-environment", error);

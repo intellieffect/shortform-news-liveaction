@@ -62,7 +62,7 @@ const delErr = (delRun.out.match(/^ERROR /gm) ?? []).length;
 console.log(delErr ? delRun.out.trim() : delRun.out.trim().split("\n")[0]);
 
 // ⓪-3 결함 장부 채점 — 장부 스키마·유령 guard(선언-실체 대조). 편이 아니라 저장소의 상태라 편 루프 밖 (2026-09-04 eval harness)
-const dfRun = run("eval-defects.mjs", []);
+const dfRun = argv.includes("--history") ? run("eval-defects.mjs", []) : { code: 0, out: "SKIP 과거 결함 장부: --history로 별도 검사" };
 const dfErr = dfRun.code ? 1 : 0;
 if (!wantJson) {
   console.log(dfRun.out.trim().split("\n").slice(0, 2).join(" — "));
@@ -71,7 +71,7 @@ if (!wantJson) {
 
 // ⓪-4 editorial-concept 후보 트랙 — 기준편 4개 + 의도적 결함 주입.
 // 문서만 승격되고 실제 앵커·조건쌍·모바일 예산 가드가 안 도는 상태를 막는다.
-const editorialRun = run("test-editorial-track.mjs", [], "tests");
+const editorialRun = argv.includes("--history") ? run("test-editorial-track.mjs", [], "tests") : run("test-unified-workflow.mjs", [], "tests");
 const editorialErr = editorialRun.code ? 1 : 0;
 if (!wantJson) {
   console.log(editorialRun.out.trim().split("\n").at(-1));
@@ -166,7 +166,7 @@ for (const id of pilots) {
   rows.push(row);
 }
 
-if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || dfErr || editorialErr || rows.some((r) => r.err) ? 1 : 0); }
+if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || symErr || delErr || dfErr || editorialErr || rows.some((r) => r.err) ? 1 : 0); }
 
 const w = Math.max(...rows.map((r) => r.id.length), 4);
 console.log(`${"편".padEnd(w)}  shots         layout43     mc     자막      sync    가드세대`);

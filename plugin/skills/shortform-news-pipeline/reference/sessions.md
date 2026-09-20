@@ -8,7 +8,7 @@
 
 ## 단일 세션 모드 (2026-08-31 채택)
 
-터미널을 둘 띄우지 않고, output 세션이 input 역할을 **서브에이전트로 호출**한다. 근거·실측 = [docs/research/2026-08-31-single-session-mode/](../../../../docs/research/2026-08-31-single-session-mode/summary.md).
+터미널을 둘 띄우지 않고, output 세션이 input 역할을 **서브에이전트로 호출**한다. 근거·실측 = docs/research/2026-08-31-single-session-mode/ (과거 내부 기록·로컬 보관).
 
 | 두 세션 | 단일 세션 |
 |---|---|

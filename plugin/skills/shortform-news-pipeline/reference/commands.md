@@ -151,9 +151,9 @@ open out/pilots/<id>/ShortformNews_4-N_preview.mp4
 
 > **렌더 전 자동 가드 (2026-09-02).** `npm run render` · `npx remotion render` · `node scripts/pilot-run.mjs render` 는 **PreToolUse 훅**이 먼저 `shots:check` 를 돌린다 — 플러그인 `hooks/hooks.json` → `${CLAUDE_PROJECT_DIR}/scripts/pre-render-guard.mjs` (**구현은 프로젝트에 있다** — 설치본에서는 상대경로로 저장소에 못 닿는다). **ERROR 가 1건이라도 있으면 렌더가 `exit 2` 로 막히고** 그 ERROR 목록이 그대로 표시된다. **경고(warn)로는 막지 않는다** — 통과시키고 메시지로만 보여준다. 편 id 를 못 찾거나 검사가 죽으면 **통과시킨다**(fail-open — 가드가 작업을 막으면 사람이 훅을 꺼버린다). 검증 대상은 렌더가 실제로 읽는 `pilots/<id>/shots.json` 이다.
 > `still`·`still:sheet`·`slides`·`studio` 는 대상이 아니다 — 「렌더 없이 확인하는 사다리」는 그대로 쓴다.
-> 왜 자동인가: `check-shots` 가 커버하는 규칙은 5편에서 **한 건도 안 어겼다.** 효과는 입증됐는데 호출이 수동이라 안 돌았을 뿐이다([근거](../../../../docs/research/2026-09-01-solar-swirl-v1-review/summary.md) 「규칙 위반의 기전」 — 어긴 3건의 원인은 규칙의 불명확함이 아니라 **작업 순간 문맥에 없었던 것**).
+> 왜 자동인가: `check-shots` 가 커버하는 규칙은 5편에서 **한 건도 안 어겼다.** 효과는 입증됐는데 호출이 수동이라 안 돌았을 뿐이다(근거 (과거 내부 기록·로컬 보관) 「규칙 위반의 기전」 — 어긴 3건의 원인은 규칙의 불명확함이 아니라 **작업 순간 문맥에 없었던 것**).
 
-> **렌더 범위 가드 (2026-09-04).** 같은 훅이 `shots:check` 를 통과한 뒤 **「직전 렌더 이후 무엇이 바뀌었나」를 비트 단위로 계산**한다([근거](../../../../docs/research/2026-09-04-render-scope-guard/summary.md)). 지문은 `out/pilots/<id>/.render-scope.json`(파생물, 지우면 리셋).
+> **렌더 범위 가드 (2026-09-04).** 같은 훅이 `shots:check` 를 통과한 뒤 **「직전 렌더 이후 무엇이 바뀌었나」를 비트 단위로 계산**한다(근거 (과거 내부 기록·로컬 보관)). 지문은 `out/pilots/<id>/.render-scope.json`(파생물, 지우면 리셋).
 > **막는 경우는 둘뿐이고 둘 다 「사람이 이미 본 결과를 다시 만드는」 경우다.**
 > ① 직전 풀 렌더 이후 입력이 **하나도** 안 바뀜 → 있는 mp4 를 보면 된다.
 > ② **비트 단위 수정만** 있고 그 구간이 전편의 일부 → 바뀐 비트의 프레임 구간(전환 8프레임 포함)을 계산해 **명령을 그대로 내민다**.

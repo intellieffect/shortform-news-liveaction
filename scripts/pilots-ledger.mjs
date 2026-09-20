@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import { sharedIds } from './lib/episode-selection.mjs';
 // 편 대장 — pilots/*/pilot.json 을 모아 pilots/index.json(기계용) 과 docs/PILOTS.md(사람용 표) 를 생성한다.
 //   상태·진행의 SoT 는 Linear, 여기는 편의 정체·납품본·미결 게이트만. 사용: npm run pilots
 //   --check : 쓰지 않고 지금 파일과 비교만 한다(낡았으면 exit 1). check:all 이 부른다 —
@@ -11,7 +11,7 @@ import { buildVideoLibrary } from "./lib/video-library.mjs";
 const dir = join(REPO, "pilots");
 const active = new Set(readActive());
 const pilots = readdirSync(dir, { withFileTypes: true })
-  .filter((d) => d.isDirectory() && existsSync(join(dir, d.name, "pilot.json")))
+  .filter((d) => d.isDirectory() && (process.argv.includes("--local") || sharedIds(REPO).includes(d.name)) && existsSync(join(dir, d.name, "pilot.json")))
   .map((d) => JSON.parse(readFileSync(join(dir, d.name, "pilot.json"), "utf8")))
   .sort((a, b) => (a.started ?? "").localeCompare(b.started ?? "") || a.id.localeCompare(b.id));
 

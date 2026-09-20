@@ -15,7 +15,7 @@
 - **R8-01 (U9) `source: external`(기관 CC BY/PD) = 크레딧 의무**(검증기 오류) — 비트 소자막 + 엔드카드 이중, 원문 그대로, 로고 금지. `stock` = 권장(경고). ✓
 - **R8-02 (U9) 엔드카드 크레딧은 실사용분에서 파생한다** — `npm run credits`(순서 = 등장순, 라이선스 태그는 assets.json 역참조, 음악은 audio.json). **자산이 화면에서 빠지면 크레딧도 빠진다.** 마감 게이트 = `--check` exit 0. ✓ 기사 줄은 `pilot.json.article{outlet,byline,date}` 에서 자동, 발표·논문 줄은 `--extra "…\n…"`(여러 줄) — **명령을 `02_production/credits.cmd.txt` 에 적어 두고 `--check` 도 같은 인자로**(인자가 다르면 줄이 어긋나 exit 1). CC BY-SA·IGO 는 원문대로 표기된다(2026-09-02 6편 정정)
 - **R8-03 (U9) AI 고지는 엔드카드 크레딧에만** — 생성 비트는 `credit: null`, 엔드카드에 1줄(범위 한정 「배경·예시 영상 AI 생성」). i2v 시작 프레임 자산은 `시작 이미지: <credit>`. 화면 라벨 「AI 시각화 · 개념도」는 **폐기**(2026-08-30). ✓ `[ai-notice-endcard]`
-  - **소급 실측에서 5편이 생성 5비트에 하단 크레딧을 달아 어겼다**(3·4편은 지킴). 납품본이라 `pilot.json.gates_open` 에 기록 — [경위](../../../../docs/research/2026-09-01-skill-rule-audit/retro.md)
+  - **소급 실측에서 5편이 생성 5비트에 하단 크레딧을 달아 어겼다**(3·4편은 지킴). 납품본이라 `pilot.json.gates_open` 에 기록 — 경위 (과거 내부 기록·로컬 보관)
 - 라이선스 판단: 프리렌더 VFX(법인 용역은 Enterprise 필요 → 제외, 대안 = 코드 부품·Tabler(MIT)·Lottie·Mixkit) · **Remotion** 무료 = 개인·비영리·직원 3명 이하(도구 쓰는 주체 기준, 4-6 전 재확인 → [stages 게이트 4](stages.md))
 
 

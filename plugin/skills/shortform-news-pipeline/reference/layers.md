@@ -73,7 +73,7 @@
 | (Tags) | Inset `in`(초)·영상(`.mp4/.webm` muted cover)·라벨 박스 ≥620px · LabelTag `inSec` | shots |
 
 규칙: props만 받는 순수 컴포넌트, 스타일 토큰은 `style`(overlays.json)로 주입, 텍스트 가공 금지(원고는 생성기 책임), `kind: motion` 부품은 frame·fps 필수, 슬라이드는 항상 완성 상태. props 스키마: `docs/specs/primitives.props.schema.v1.2.json`. 부품 분리 시 이전 렌더와 픽셀 diff 0 확인.
-- **부품 id 등기처는 넷** — 스크립트의 사본 둘은 없앴다(2026-09-02 감사, [summary](../../../../docs/research/2026-09-01-skill-rule-audit/summary.md)). 어긋남은 `npm run check:registry` 가 본다.
+- **부품 id 등기처는 넷** — 스크립트의 사본 둘은 없앴다(2026-09-02 감사, summary (과거 내부 기록·로컬 보관)). 어긋남은 `npm run check:registry` 가 본다.
 
   | | 등기처 | 무엇을 말하나 |
   |---|---|---|

@@ -115,7 +115,7 @@
   - **3a 은유로 갈아탄다** — 유기적 현상은 **일상의 유기적 현상**으로. 은유·예시는 생성 대상(§6). 다만 은유가 자막의 **주어**일 때 배경으로 쓴다 — 0.7초짜리 수식어면 인셋이거나 넣지 않는다.
   - **3b 기하로 환원한다** — 현상이 아니라 그 **구조**를(재연결을 소용돌이 대신 X-점·4분리선·유입/유출 제트로). 1단으로 되돌아온다.
   - **3c 자막에 맡긴다** — 배경은 분위기만. **최후 수단**, 판정을 `why` 에.
-  - **도해를 줄이는 규칙이 아니다** — 1~4편 42건 소급 실측에서 죽는 것 0건([근거](../../../../docs/research/2026-09-01-solar-swirl-v1-review/summary.md)). 유기적 현상을 코드로 흉내 낼수록 어설퍼지고 **3D 로 올려도 안 고쳐진다 — 도구가 아니라 대상이 문제다.**
+  - **도해를 줄이는 규칙이 아니다** — 1~4편 42건 소급 실측에서 죽는 것 0건(근거 (과거 내부 기록·로컬 보관)). 유기적 현상을 코드로 흉내 낼수록 어설퍼지고 **3D 로 올려도 안 고쳐진다 — 도구가 아니라 대상이 문제다.**
 - **R5c-02 실사가 없다고 단정하기 전에 다시 뒤진다.** 기관 미디어 키트의 **미사용분**·논문 도판·시뮬레이션 영상까지. *없어서 그린 게 아니라 찾아보지 않고 그렸다.* ✓ 게이트가 미사용 자산 목록을 들이민다
 - **R5c-03 (U11) 도해는 코드부터 시작하지 않는다 — 레퍼런스 → 시안 → 구현.** 근거를 `layer43_plan[b].ref` 에(tier 1·3b 필수). ✓ 게이트 E6
   1. **레퍼런스** — 그 논문·기관의 **자기 도판**, 교과서 표준 도상. **과학 도해에는 수십 년치 관습이 있고, 벗어나면 정확해도 어설퍼 보인다.**
@@ -198,7 +198,7 @@
 | 자산 소싱 순서·라이선스 우선·브리프 | input `docs/asset-sourcing-workflow.md` — **R7-01 소싱 제외 판별만 여기**: `visual.source == "provided"` 로 잡으면 안 된다(제공본이 저해상이면 기관 원본으로 대체돼 `external` 이 된다). 올바른 판별 = `cut_map[C].script_asset` 에 참고자료가 있고 그 비트가 **그 자료 또는 그 기관 원본**을 쓰는지 |
 | 사운드 — BGM 선정·offset·덕킹·레벨 기준·`duck_ranges`·파생물 위치 | [`docs/specs/audio.schema.md`](../../../../docs/specs/audio.schema.md) · [templates/audio.json](../templates/audio.json) |
 | 전환 — 씬 경계만 8f·나가는 텍스트 컷·`keep_text`·엔드카드 질문 중복 | [layers.md §4-4](layers.md) · [templates/render.config.json](../templates/render.config.json) |
-| 납품본 보관 — `deliver/` 6층·형용사 금지·불변·SoT·`stage` vs `hold` | 저장소 [CLAUDE.md](../../../../CLAUDE.md) §파일럿 구조 · [근거](../../../../docs/research/2026-08-31-deliver-structure/summary.md) |
+| 납품본 보관 — `deliver/` 6층·형용사 금지·불변·SoT·`stage` vs `hold` | 저장소 [CLAUDE.md](../../../../CLAUDE.md) §파일럿 구조 · 근거 (과거 내부 기록·로컬 보관) |
 | 규칙을 만들고 옮기고 집행하는 법 | [maintenance.md](maintenance.md) |
-| **소급 실측**(옛 §11b) — 한 편의 규칙이 전편 규칙이 되기 전 옛 편에 거꾸로 돌린다. 편별 준수는 `pilot.json.guards[]` 등기 | [maintenance §3](maintenance.md) · 대장 [1차](../../../../docs/research/2026-09-01-skill-rule-audit/retro.md)·[2차](../../../../docs/research/2026-09-02-skill-rule-audit-2/retro-a-guards.md) |
+| **소급 실측**(옛 §11b) — 한 편의 규칙이 전편 규칙이 되기 전 옛 편에 거꾸로 돌린다. 편별 준수는 `pilot.json.guards[]` 등기 | [maintenance §3](maintenance.md) · 대장 1차 (과거 내부 기록·로컬 보관)·2차 (과거 내부 기록·로컬 보관) |
 | 마감 규칙 — §8 크레딧·라이선스 · §10 최종 검토 · §12 커버 | [rules-finish.md](rules-finish.md) |

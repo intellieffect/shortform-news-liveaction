@@ -29,6 +29,7 @@ try {
   for (const dir of ["scripts", "config", "plugin", "presets"]) cpSync(join(project, dir), join(repo, dir), { recursive: true });
   cpSync(join(project, "package.json"), join(repo, "package.json"));
   put(join(repo, "docs/specs/editorial-concept.schema.md"), readFileSync(join(project, "docs/specs/editorial-concept.schema.md")));
+  put(join(repo, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"), readFileSync(join(project, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt")));
   cpSync(join(project, "plugin"), installed, { recursive: true });
   check("잘못된 시작 입력은 편을 만들기 전에 거절", () => {
     for (const change of [{ id: "../escape" }, { url: "file:///tmp/article" }, { url: "https://user:pass@example.invalid" }, { duration: [90, 60] }, { duration: [0, 90] }, { request: "" }]) assert.throws(() => startProduction({ ...params, id: "invalid", ...change }));

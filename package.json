@@ -32,7 +32,7 @@
     "studio": "remotion studio --no-open",
     "build": "remotion bundle",
     "typecheck": "tsc",
-    "lint": "eslint src && tsc",
+    "lint": "node scripts/check-runtime.mjs && tsc",
     "compositions": "remotion compositions",
     "still": "node scripts/pilot-run.mjs still",
     "render": "node scripts/pilot-run.mjs render",
@@ -85,7 +85,19 @@
     "production:captions:test": "node tests/test-single-line-captions.mjs",
     "videos": "node scripts/build-video-library.mjs",
     "videos:test": "node --test scripts/test-video-library.mjs",
-    "videos:serve": "node scripts/serve-video-library.mjs"
+    "videos:serve": "node scripts/serve-video-library.mjs",
+    "prepare": "node scripts/pilots-index.mjs",
+    "prestudio": "node scripts/pilots-index.mjs",
+    "predev": "node scripts/pilots-index.mjs",
+    "prebuild": "node scripts/pilots-index.mjs",
+    "precompositions": "node scripts/pilots-index.mjs",
+    "pretypecheck": "node scripts/pilots-index.mjs",
+    "prelint": "node scripts/pilots-index.mjs",
+    "episodes": "node scripts/episodes.mjs",
+    "share:check": "node scripts/check-sharing.mjs",
+    "unified:test": "node --test tests/test-unified-workflow.mjs",
+    "precheck:all": "node scripts/pilots-index.mjs && node scripts/pilots-ledger.mjs",
+    "setup:hooks": "node scripts/setup-hooks.mjs"
   },
   "sideEffects": [
     "*.css"

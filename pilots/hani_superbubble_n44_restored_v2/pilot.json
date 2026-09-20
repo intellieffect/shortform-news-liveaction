@@ -26,21 +26,20 @@
   "thumbnails": {
     "method": "image_generation",
     "target": "youtube_shorts",
-    "manifest": "design/thumbnails/hani_superbubble_n44_restored_v2/v1/manifest.json",
     "candidates": [
       {
         "id": "A",
-        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/A.png",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/deliver/v1/thumbnail-A.png",
         "status": "reviewed"
       },
       {
         "id": "B",
-        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/B.png",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/deliver/v1/thumbnail-B.png",
         "status": "reviewed"
       },
       {
         "id": "C",
-        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/C.png",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/deliver/v1/thumbnail-C.png",
         "status": "reviewed"
       }
     ]
