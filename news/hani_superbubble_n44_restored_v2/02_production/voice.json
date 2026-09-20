@@ -1,0 +1,11 @@
+{
+  "provider": "Higgsfield",
+  "model": "qwen_audio_tts",
+  "voice_id": "27c04473-84a9-4b60-a41f-c8e8458bd4f1",
+  "voice_name": "Mark",
+  "voice_type": "preset",
+  "language": "ko",
+  "instruction": "표준 한국어 과학 다큐멘터리 내레이션. 호기심 있고 차분하고 또렷한 중저음, 문장 사이에 짧게 쉬고 숫자를 명료하게. 자연스럽게 말하며 과장된 연기는 하지 않는다.",
+  "speech_rate": 1.0,
+  "selection": "Typecast 계정 제한으로 지정 대안 Higgsfield. 한국어 명시 지원 모델, 기존 클론 음성 대신 제공 preset."
+}

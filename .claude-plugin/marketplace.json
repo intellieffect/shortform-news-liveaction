@@ -1,0 +1,28 @@
+{
+  "$schema": "https://code.claude.com/schemas/marketplace.json",
+  "name": "shortform-news-workflow",
+  "description": "한겨레 기사 기반 9:16 숏폼 뉴스 영상 제작 도구",
+  "owner": {
+    "name": "Intellieffect",
+    "url": "https://github.com/intellieffect"
+  },
+  "plugins": [
+    {
+      "name": "shortform-news",
+      "displayName": "숏폼 뉴스 제작",
+      "source": "./plugin",
+      "description": "스킬 2종(pipeline·input) + 에이전트(source-verify·sourcing·editorial-judge·fact-check·shot-judge) + 렌더 전 가드 훅",
+      "author": {
+        "name": "Intellieffect"
+      },
+      "repository": "https://github.com/intellieffect/shortform-news-workflow",
+      "category": "media",
+      "tags": [
+        "remotion",
+        "video",
+        "news",
+        "shortform"
+      ]
+    }
+  ]
+}

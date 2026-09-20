@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "_comment": "소리층. bgm.file/sfx[].file 이 null 이면 그 트랙은 건너뛴다. dB 는 렌더에서 선형 변환. start_offset_sec = assets.json intro_silence_sec + 0.5 | BGM 레벨 기준: 발화 중 내레이션 −12~−15 dB 아래(1편 −24 base 폐기), 확정은 사용자 청취. duck_ranges = 대본·클라이언트 구간 지시(인용구 낮춤 등)",
+  "narration": {
+    "file": "pilot/audio/narration.wav",
+    "normalized": {
+      "target_lufs": -16,
+      "true_peak": -1.5
+    },
+    "gain_db": 0
+  },
+  "bgm": {
+    "asset": "<audio_assets id>",
+    "file": "pilot/audio/<bgm>.mp3",
+    "gain_db": -8,
+    "duck_db": -10,
+    "duck_attack_sec": 0.25,
+    "duck_release_sec": 0.6,
+    "duck_ranges": [
+      {
+        "from": 0.0,
+        "to": 0.0,
+        "gain_db": -18,
+        "attack_sec": 0.6,
+        "release_sec": 1.2,
+        "why": "<예: 대본 제작 메모 — 인용구 BGM 낮춤>"
+      }
+    ],
+    "fade_in_sec": 1.0,
+    "fade_out_sec": 3.0,
+    "start_offset_sec": 0,
+    "loop": false,
+    "credit": "Music: <title> by <artist> — <source>",
+    "source_lufs": null,
+    "intro_silence_sec": null
+  },
+  "sfx": [
+    {
+      "id": "whoosh",
+      "asset": "<id>",
+      "file": "pilot/audio/sfx_whoosh.wav",
+      "gain_db": -14,
+      "at": "scene_dissolve"
+    },
+    {
+      "id": "counter",
+      "asset": "<id>",
+      "file": "pilot/audio/sfx_counter.wav",
+      "gain_db": -8,
+      "at": "graphic:counter@1"
+    },
+    {
+      "id": "drone",
+      "asset": "<id>",
+      "file": "pilot/audio/sfx_drone.wav",
+      "gain_db": -12,
+      "at": "endcard"
+    }
+  ],
+  "master_gain_db": -0.5,
+  "measured": {
+    "integrated_lufs": null,
+    "true_peak_dbtp": null,
+    "measured_at": null,
+    "lra_lu": null,
+    "segments": {
+      "_comment": "발화/틈/duck 구간별 RMS·LUFS (silencedetect 창 기준)"
+    }
+  }
+}

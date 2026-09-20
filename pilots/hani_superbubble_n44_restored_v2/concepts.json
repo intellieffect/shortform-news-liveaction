@@ -1,0 +1,433 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_superbubble_n44_restored_v2",
+  "concepts": [
+    {
+      "id": "discovery",
+      "question": "가스 구름 중심을 누가 비웠는가?",
+      "takeaway": "N44의 중심에 빛도 약210년 걸려 건널 슈퍼버블이 있다.",
+      "narration_lines": [
+        "s01",
+        "s02",
+        "s03",
+        "s04"
+      ],
+      "facts": [
+        "F1",
+        "F2"
+      ],
+      "prerequisites": [],
+      "representation": {
+        "kind": "hybrid",
+        "role": "evidence",
+        "assets": [
+          "pan",
+          "n44"
+        ],
+        "why": "공식 팬 영상으로 실물을 먼저 경험하고, 정지한 동일 사진 위에 짧은 가로 치수를 직접 연결한다. 채택 공식pan t2–약10초, 이후 고해상 전체 사진에서 중심과 껍질 관계 유지.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "observation",
+          "span",
+          "bubble_name"
+        ],
+        "remove": []
+      },
+      "elements": [
+        {
+          "id": "observation",
+          "kind": "media",
+          "role": "evidence"
+        },
+        {
+          "id": "span",
+          "kind": "text",
+          "role": "necessary-label"
+        },
+        {
+          "id": "bubble_name",
+          "kind": "text",
+          "role": "necessary-label"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "observation",
+          "span",
+          "bubble_name"
+        ]
+      }
+    },
+    {
+      "id": "forces",
+      "question": "안쪽 별이 어떻게 가스를 밀어내는가?",
+      "takeaway": "항성풍과 초신성 충격파가 주변 가스를 밀어내는 형성 설명.",
+      "narration_lines": [
+        "s05",
+        "s06",
+        "s07"
+      ],
+      "facts": [
+        "F3"
+      ],
+      "prerequisites": [
+        "discovery"
+      ],
+      "representation": {
+        "kind": "diagram",
+        "role": "metaphor",
+        "assets": [],
+        "why": "고정된 중심별과 가스 구름을 유지. 별에서 바깥으로 흐르는 입자와 확장 충격면이 같은 가스 덩어리를 이동시킨다. 구멍은 진공처럼 지우지 않는다. 실물 사진을 짧게 중첩하며 중앙별과 둘레 가스의 공간적 관계를 이어받은 뒤 형성 모형으로 전환."
+      },
+      "state": {
+        "keep": [
+          "observation"
+        ],
+        "add": [
+          "gas_model",
+          "stars",
+          "wind",
+          "shock",
+          "force_labels"
+        ],
+        "remove": [
+          "span",
+          "bubble_name"
+        ]
+      },
+      "elements": [
+        {
+          "id": "gas_model",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "stars",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "wind",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "shock",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "force_labels",
+          "kind": "text",
+          "role": "necessary-label"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "gas_model",
+          "stars",
+          "wind",
+          "shock",
+          "force_labels"
+        ]
+      }
+    },
+    {
+      "id": "clearing",
+      "question": "가스가 밀려난 자리는 어떤 공간인가?",
+      "takeaway": "밀려난 가스의 행방으로 시선이 옮겨간다.",
+      "narration_lines": [
+        "s08",
+        "s09"
+      ],
+      "facts": [
+        "F3",
+        "F4"
+      ],
+      "prerequisites": [
+        "forces"
+      ],
+      "representation": {
+        "kind": "footage",
+        "role": "metaphor",
+        "full_bleed": true,
+        "assets": [
+          "gas-clump"
+        ],
+        "why": "생성2차는 응집보다 공동 확장이 읽혀 가스가 밀려나는 공간 재구성으로 역할 변경. 1차 고체막 미채택. 정확한 인과는 앞뒤 동일 가스 도해로 제어."
+      },
+      "state": {
+        "keep": [
+          "gas_model",
+          "stars"
+        ],
+        "add": [
+          "clearing_video",
+          "clearing_provenance"
+        ],
+        "remove": [
+          "observation",
+          "wind",
+          "shock",
+          "force_labels"
+        ]
+      },
+      "elements": [
+        {
+          "id": "clearing_video",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "clearing_provenance",
+          "kind": "text",
+          "role": "provenance"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 2,
+        "focal_priority": [
+          "clearing_video"
+        ]
+      }
+    },
+    {
+      "id": "shell",
+      "question": "밀려난 가스는 어디에 모이는가?",
+      "takeaway": "같은 가스가 외곽 껍질에 쌓이고 이곳이 새 별의 장소가 된다.",
+      "narration_lines": [
+        "s10",
+        "s11"
+      ],
+      "facts": [
+        "F4",
+        "F5"
+      ],
+      "prerequisites": [
+        "clearing"
+      ],
+      "representation": {
+        "kind": "diagram",
+        "role": "metaphor",
+        "assets": [],
+        "why": "앞 도해의 별·가스 위치를 유지하며 외곽에 모인 물질의 두께·밀도를 강화하고 가스 뭉침을 강조한다. 출처사진과 동일 형상인 척 하지 않는다. 껍질 내 밝아지는 조밀한 가스 매듭은 다음별의 재료이며 점화 완료로 표기하지 않음."
+      },
+      "state": {
+        "keep": [
+          "gas_model",
+          "stars"
+        ],
+        "add": [
+          "shell_label",
+          "new_stars"
+        ],
+        "remove": [
+          "clearing_video",
+          "clearing_provenance"
+        ]
+      },
+      "elements": [
+        {
+          "id": "shell_label",
+          "kind": "text",
+          "role": "necessary-label"
+        },
+        {
+          "id": "new_stars",
+          "kind": "shape",
+          "role": "metaphor"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "shell_label",
+          "new_stars"
+        ]
+      }
+    },
+    {
+      "id": "condense",
+      "question": "가스 껍질 안에서는 무슨 일이 생기는가?",
+      "takeaway": "별 점화 이전, 차가운 가스 응집의 첫 단계.",
+      "narration_lines": [
+        "s12"
+      ],
+      "facts": [
+        "F5",
+        "F8"
+      ],
+      "prerequisites": [
+        "shell"
+      ],
+      "representation": {
+        "kind": "diagram",
+        "role": "metaphor",
+        "assets": [],
+        "why": "별 탄생 첫 단계는 가스 매듭이 모이고 조밀해지는 정확한 코드 모형. 확장으로 생성된 영상은 clearing으로 역할 변경."
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "gas_clump",
+          "reconstruction"
+        ],
+        "remove": [
+          "gas_model",
+          "stars",
+          "shell_label",
+          "new_stars"
+        ]
+      },
+      "elements": [
+        {
+          "id": "gas_clump",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "reconstruction",
+          "kind": "text",
+          "role": "provenance"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "gas_clump",
+          "reconstruction"
+        ]
+      }
+    },
+    {
+      "id": "census",
+      "question": "그곳은 별 탄생 연구에 어떤 의미인가?",
+      "takeaway": "N44 일대에는 중심 수소 핵융합 전인 어린 별도 약3만개 있다.",
+      "narration_lines": [
+        "s13",
+        "s14",
+        "s15"
+      ],
+      "facts": [
+        "F6",
+        "F7"
+      ],
+      "prerequisites": [
+        "condense"
+      ],
+      "representation": {
+        "kind": "hybrid",
+        "role": "evidence",
+        "assets": [
+          "n44"
+        ],
+        "why": "허블 관측 원본의 풍부한 별에 접근. 약3만은 전체 조사 일대임을 연결하며 특정 테두리에 전부 배치하는 개수 모형은 쓰지 않는다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "census_image",
+          "young_count",
+          "hydrogen_condition"
+        ],
+        "remove": [
+          "gas_clump",
+          "reconstruction"
+        ]
+      },
+      "elements": [
+        {
+          "id": "census_image",
+          "kind": "media",
+          "role": "evidence"
+        },
+        {
+          "id": "young_count",
+          "kind": "text",
+          "role": "necessary-label"
+        },
+        {
+          "id": "hydrogen_condition",
+          "kind": "text",
+          "role": "condition"
+        }
+      ],
+      "semantic_pairs": [
+        {
+          "id": "young_stage",
+          "condition_element": "hydrogen_condition",
+          "value_element": "young_count"
+        }
+      ],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "census_image",
+          "young_count",
+          "hydrogen_condition"
+        ]
+      }
+    },
+    {
+      "id": "return",
+      "question": "처음 보았던 구멍은 이제 어떻게 보이는가?",
+      "takeaway": "비워진 중심과 다음 세대의 가장자리는 한 과정으로 연결된다.",
+      "narration_lines": [
+        "s16"
+      ],
+      "facts": [
+        "F3",
+        "F4",
+        "F5"
+      ],
+      "prerequisites": [
+        "census"
+      ],
+      "representation": {
+        "kind": "footage",
+        "role": "evidence",
+        "assets": [
+          "pan"
+        ],
+        "why": "공식 팬에서 외곽 성운 질감으로 돌아와 설명한 구조를 다시 발견한다. 별도의 결론카드·인트로·아웃트로 없음.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "closing_observation"
+        ],
+        "remove": [
+          "census_image",
+          "young_count",
+          "hydrogen_condition"
+        ]
+      },
+      "elements": [
+        {
+          "id": "closing_observation",
+          "kind": "media",
+          "role": "evidence"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "closing_observation"
+        ]
+      }
+    }
+  ]
+}

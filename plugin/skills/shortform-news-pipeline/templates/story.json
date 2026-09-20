@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "mode": "editorial-concept",
+  "pilot": "example_editorial",
+  "script_policy": "editorial-owned",
+  "creative_scope": {
+    "script": "delegated",
+    "assets": "delegated",
+    "diagrams": "delegated",
+    "audio": "delegated"
+  },
+  "question": "시청자가 끝까지 따라갈 하나의 질문",
+  "takeaway": "영상이 끝났을 때 이해할 하나의 결론",
+  "concept_order": [
+    "setup"
+  ],
+  "credits": []
+}

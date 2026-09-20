@@ -1,0 +1,22 @@
+[
+  {
+    "file": "legacy-opening.jpg",
+    "source_in_production_repository": "docs/research/2026-09-06-maven-session-gap/evidence/legacy-0070.jpg",
+    "sha256": "07c6e1116343ef6b4ec9f8ad77d66682267697a627dec3e05cba4a5d29a78c4d"
+  },
+  {
+    "file": "fresh-opening.jpg",
+    "source_in_production_repository": "docs/research/2026-09-06-maven-session-gap/evidence/fresh-0070.jpg",
+    "sha256": "983a165bc62cc3845d45db0d34a6f03c39de61feda453fbaf2b49369a443cd33"
+  },
+  {
+    "file": "water-rise.jpg",
+    "source_in_production_repository": "docs/research/2026-09-06-maven-new-result/evidence/compare-rise.jpg",
+    "sha256": "d889eb161fcec477aa18a2e53311b54b8e74f2d156693b835b3f4fbaf9bd2f72"
+  },
+  {
+    "file": "water-split.jpg",
+    "source_in_production_repository": "docs/research/2026-09-06-maven-new-result/evidence/compare-split.jpg",
+    "sha256": "708d4977927c5842b2786f8b14cfb90a16c50664661af9105a1623cdd473a3ce"
+  }
+]

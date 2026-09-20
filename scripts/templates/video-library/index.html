@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>제작 영상 · 한겨레</title>
+    <style>
+      /* LIBRARY_CSS */
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 바로가기</a>
+    <header class="masthead">
+      <a class="brand" href="#main">한겨레</a>
+      <nav class="tabs" aria-label="화면 선택">
+        <a
+          id="tab-videos"
+          class="nav-tab"
+          href="#main"
+          data-view="videos"
+          aria-current="page"
+          ><span data-icon="video"></span
+          ><span class="tab-text">제작 영상</span></a
+        ><a id="tab-prompt" class="nav-tab" href="#prompt" data-view="prompt"
+          ><span data-icon="note-pencil"></span
+          ><span class="tab-text">제작 프롬프트</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <div id="view-videos" class="view">
+        <div class="page-toolbar">
+          <h1>제작 영상 <span id="total" class="total"></span></h1>
+          <div class="filters">
+            <form id="search-form" class="search-box" role="search">
+              <span data-icon="magnifying-glass"></span
+              ><label class="sr-only" for="query"
+                >기사 제목·링크 또는 영상 검색</label
+              ><input
+                id="query"
+                type="search"
+                placeholder="기사 제목·링크 또는 영상 검색"
+                autocomplete="off"
+              />
+            </form>
+            <div class="date-control">
+              <button
+                id="date-toggle"
+                class="filter-button"
+                aria-expanded="false"
+                aria-controls="date-panel"
+              >
+                <span data-icon="calendar-blank"></span
+                ><span id="date-label">제작일</span
+                ><span data-icon="caret-down"></span>
+              </button>
+              <form
+                id="date-panel"
+                class="date-panel"
+                aria-label="제작 완료일 필터"
+                hidden
+              >
+                <div class="panel-heading">
+                  <h2>제작 완료일</h2>
+                  <button
+                    type="button"
+                    id="date-close"
+                    class="icon-button plain"
+                    aria-label="기간 필터 닫기"
+                    data-icon="x"
+                  ></button>
+                </div>
+                <div class="presets">
+                  <button type="button" data-period="all">전체 기간</button
+                  ><button type="button" data-period="7">최근 7일</button
+                  ><button type="button" data-period="30">최근 30일</button>
+                </div>
+                <div class="date-inputs">
+                  <label for="from"
+                    >시작일<input
+                      id="from"
+                      type="date"
+                      aria-describedby="date-error" /></label
+                  ><label for="to"
+                    >종료일<input
+                      id="to"
+                      type="date"
+                      aria-describedby="date-error"
+                  /></label>
+                </div>
+                <p id="date-error" class="field-error" role="alert" hidden>
+                  시작일이 종료일보다 늦습니다. 날짜를 확인해 주세요.
+                </p>
+                <div class="panel-actions">
+                  <button type="button" id="date-reset" class="text-button">
+                    초기화</button
+                  ><button type="submit" class="primary">적용</button>
+                </div>
+              </form>
+            </div>
+            <label class="sort-control"
+              ><span class="sr-only">정렬</span
+              ><select id="sort">
+                <option value="newest">최신순</option>
+                <option value="oldest">오래된순</option>
+                <option value="title">제목순</option></select
+              ><span data-icon="caret-down"></span
+            ></label>
+          </div>
+        </div>
+        <div class="list-meta">
+          <p id="results" role="status" aria-live="polite"></p>
+          <button id="active-period" class="filter-chip" hidden>
+            <span id="period-text"></span><span data-icon="x"></span
+            ><span class="sr-only">기간 필터 해제</span>
+          </button>
+          <p id="updated"></p>
+        </div>
+        <div id="list" class="video-list"></div>
+        <div id="empty" class="empty" hidden>
+          <span class="empty-icon" data-icon="magnifying-glass"></span>
+          <h2 id="empty-title">검색 결과가 없습니다</h2>
+          <p id="empty-copy">다른 검색어나 제작일로 찾아보세요.</p>
+          <button id="empty-reset" class="secondary">검색 조건 초기화</button>
+        </div>
+      </div>
+      <div id="view-prompt" class="view" hidden>
+        <div id="prompt" class="prompt-view">
+          <div class="page-toolbar">
+            <h1>제작 프롬프트</h1>
+            <p id="prompt-source" class="prompt-source"></p>
+          </div>
+          <p id="prompt-note" class="prompt-note"></p>
+          <div id="prompt-body" class="prompt-body">
+            <form id="prompt-form" class="prompt-fill">
+              <label for="prompt-url">기사 주소</label
+              ><span id="prompt-url-hint"
+                >아래 프롬프트의 <code>[URL]</code> 자리에 넣습니다.</span
+              ><input
+                id="prompt-url"
+                type="url"
+                inputmode="url"
+                placeholder="https://www.hani.co.kr/arti/…"
+                autocomplete="off"
+                aria-describedby="prompt-url-hint"
+              />
+            </form>
+            <div class="prompt-editor">
+              <div class="prompt-editor-head">
+                <label class="field-label" for="prompt-text"
+                  >제작 요청 프롬프트</label
+                >
+                <div class="prompt-actions">
+                  <button type="button" id="prompt-reset" class="text-button">
+                    원래대로
+                  </button>
+                  <button type="button" id="prompt-copy" class="primary">
+                    <span data-icon="copy"></span
+                    ><span id="prompt-copy-text">프롬프트 복사</span>
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="prompt-text"
+                spellcheck="false"
+                aria-describedby="prompt-status"
+              ></textarea>
+              <p
+                id="prompt-status"
+                class="file-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+          <div id="prompt-empty" class="empty" hidden>
+            <span class="empty-icon" data-icon="note-pencil"></span>
+            <h2>프롬프트를 불러오지 못했습니다</h2>
+            <p id="prompt-error"></p>
+          </div>
+        </div>
+      </div>
+      <noscript
+        >영상 목록과 프롬프트를 보려면 브라우저에서 JavaScript를 켜
+        주세요.</noscript
+      >
+    </main>
+    <dialog id="player-dialog" aria-labelledby="player-title">
+      <div class="dialog-header">
+        <span>영상 미리보기 <span id="player-position"></span></span>
+        <div class="dialog-tools">
+          <button
+            id="previous"
+            class="icon-button plain"
+            aria-label="이전 영상"
+            data-icon="caret-left"
+          ></button
+          ><button
+            id="next"
+            class="icon-button plain"
+            aria-label="다음 영상"
+            data-icon="caret-right"
+          ></button>
+          <details id="file-tools" class="file-tools">
+            <summary class="text-button">
+              더보기 <span data-icon="caret-down"></span>
+            </summary>
+            <div class="file-tools-panel">
+              <button type="button" id="open-folder">저장 폴더 열기</button
+              ><button type="button" id="copy-location">파일 위치 복사</button>
+              <p id="location-fallback" hidden>
+                <label for="file-path"
+                  >파일 위치 · 직접 복사할 수 있습니다</label
+                ><input id="file-path" readonly />
+              </p>
+            </div>
+          </details>
+          <span class="tool-divider"></span
+          ><button
+            id="close"
+            autofocus
+            class="icon-button plain"
+            aria-label="영상 닫기"
+            data-icon="x"
+          ></button>
+        </div>
+      </div>
+      <div class="dialog-content">
+        <div class="player-stage">
+          <video id="player" controls playsinline preload="metadata"></video>
+        </div>
+        <div class="player-info">
+          <span class="eyebrow">제작 영상</span>
+          <h2 id="player-title"></h2>
+          <dl class="video-facts">
+            <div>
+              <dt>제작 완료</dt>
+              <dd id="player-date"></dd>
+            </div>
+            <div>
+              <dt>재생시간</dt>
+              <dd id="player-duration"></dd>
+            </div>
+            <div>
+              <dt>파일</dt>
+              <dd id="player-size"></dd>
+            </div>
+          </dl>
+          <div class="article-detail">
+            <span class="field-label">원문 기사</span
+            ><a
+              id="player-article"
+              target="_blank"
+              rel="noopener noreferrer"
+            ></a>
+            <p id="player-author"></p>
+          </div>
+          <p id="play-error" role="alert" hidden>
+            영상을 불러오지 못했습니다. 파일이 이동되었거나 접근할 수 없는
+            상태입니다.
+          </p>
+          <div id="thumbnail-section" class="thumbnail-section"></div>
+          <button
+            id="player-download"
+            class="primary"
+            aria-expanded="false"
+            aria-controls="download-menu"
+          >
+            <span data-icon="download-simple"></span>다운로드
+            <span data-icon="caret-down"></span>
+          </button>
+          <p
+            id="file-status"
+            class="file-status"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </div>
+      </div>
+    </dialog>
+    <div
+      id="download-menu"
+      class="download-menu"
+      popover="auto"
+      aria-label="다운로드 옵션"
+    ></div>
+    <dialog id="thumbnail-dialog" aria-labelledby="thumbnail-title">
+      <div class="dialog-header">
+        <h2 id="thumbnail-title">썸네일</h2>
+        <button
+          id="thumbnail-close"
+          class="icon-button plain"
+          aria-label="썸네일 닫기"
+          data-icon="x"
+          autofocus
+        ></button>
+      </div>
+      <div class="thumbnail-preview"><img id="thumbnail-image" alt="" /></div>
+      <div class="thumbnail-footer">
+        <a id="thumbnail-save" class="primary" download
+          ><span data-icon="download-simple"></span>이 이미지 다운로드</a
+        >
+      </div>
+    </dialog>
+    <script id="library-data" type="application/json">
+      /* LIBRARY_DATA */
+    </script>
+    <script>
+      /* LIBRARY_JS */
+    </script>
+  </body>
+</html>

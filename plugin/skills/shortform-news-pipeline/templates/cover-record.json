@@ -1,0 +1,49 @@
+{
+  "schema_version": "cover-generation/v1",
+  "episode": "",
+  "method": "image_generation",
+  "target": "youtube_shorts",
+  "brief": "",
+  "branding": {
+    "logo_status": "placeholder",
+    "logo_file": null,
+    "placeholder_text": "로고 영역",
+    "area_normalized": {
+      "x": 0.3,
+      "y": 0.91,
+      "width": 0.4,
+      "height": 0.06
+    }
+  },
+  "presentation": {
+    "include_style_reference": false
+  },
+  "candidates": [
+    {
+      "id": "A",
+      "copy": [],
+      "hook": "",
+      "visual_intent": "",
+      "prompt_file": "",
+      "reference_inputs": [],
+      "generation": {
+        "tool": "",
+        "model": null,
+        "job_id": null,
+        "original_output": ""
+      },
+      "output": {
+        "file": "",
+        "width": null,
+        "height": null
+      },
+      "revision_of": null,
+      "review": {
+        "status": "draft",
+        "checked": [],
+        "issues": []
+      },
+      "credits": []
+    }
+  ]
+}

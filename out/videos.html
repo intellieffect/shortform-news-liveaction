@@ -1,0 +1,2290 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>제작 영상 · 한겨레</title>
+    <style>
+      :root {
+  color-scheme: light;
+  --bg: #fff;
+  --text: #181a20;
+  --secondary: #4c515c;
+  --muted: #69707c;
+  --line: #eceef2;
+  --border: #d9dde5;
+  --hover: #f6f7fa;
+  --accent: #3d50df;
+  --accent-hover: #2c3fc7;
+  --accent-soft: #f0f2ff;
+  --error: #b32b31;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+select {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.32;
+}
+a {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+[hidden] {
+  display: none !important;
+}
+h1,
+h2,
+h3,
+p,
+dl,
+dd {
+  margin: 0;
+}
+button {
+  color: inherit;
+}
+::selection {
+  background: #dfe4ff;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: block;
+  fill: currentColor;
+}
+[data-icon] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  translate: 0 -180%;
+  background: var(--text);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 6px;
+}
+.skip-link:focus {
+  translate: 0;
+}
+.masthead {
+  height: 72px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: stretch;
+  gap: 40px;
+  padding: 0 48px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -0.7px;
+  text-decoration: none;
+}
+.tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+.nav-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 3px 14px 0;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-tab:hover {
+  color: var(--text);
+}
+.nav-tab.is-current {
+  border-bottom-color: var(--accent);
+  color: var(--accent);
+}
+.nav-tab .icon {
+  width: 24px;
+  height: 24px;
+}
+main {
+  max-width: 1680px;
+  margin: auto;
+  padding: 28px 24px 48px;
+  scroll-margin-top: 16px;
+}
+.page-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 0 24px;
+}
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.7px;
+  white-space: nowrap;
+}
+.total {
+  font-size: 14px;
+  line-height: 30px;
+  min-width: 32px;
+  text-align: center;
+  background: #f4f5f7;
+  border-radius: 50%;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.search-box {
+  position: relative;
+  width: 350px;
+  min-width: 180px;
+}
+.search-box > [data-icon] {
+  position: absolute;
+  left: 14px;
+  top: 13px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.search-box input {
+  height: 46px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 10px 14px 10px 42px;
+  font-size: 14px;
+  color: var(--text);
+}
+input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.date-control {
+  position: relative;
+}
+.filter-button,
+.sort-control {
+  min-height: 46px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.filter-button {
+  padding: 10px 14px;
+  min-width: 130px;
+}
+.filter-button .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+}
+.filter-button:hover,
+.sort-control:hover {
+  background: var(--hover);
+}
+.filter-button.is-active {
+  border-color: #aab4ff;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.sort-control {
+  position: relative;
+  min-width: 124px;
+}
+.sort-control select {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  width: 100%;
+  padding: 10px 40px 10px 15px;
+  min-height: 44px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+  border-radius: 6px;
+}
+.sort-control > [data-icon] {
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+  color: var(--muted);
+}
+.sort-control .icon {
+  width: 17px;
+  height: 17px;
+}
+.list-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 14px 24px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.list-meta #updated {
+  margin-left: auto;
+  font-size: 13px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-soft);
+  border: 1px solid #dce1ff;
+  border-radius: 5px;
+  color: var(--accent);
+  padding: 4px 8px;
+  font-size: 13px;
+  min-height: 32px;
+}
+.filter-chip .icon {
+  width: 15px;
+  height: 15px;
+}
+.date-group {
+  border-top: 1px solid var(--line);
+  margin: 0 -24px;
+  padding: 0 24px;
+}
+.group-date {
+  padding: 14px 24px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.video-row {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr) 9rem 108px;
+  gap: 32px;
+  align-items: center;
+  min-height: 144px;
+  padding: 8px 24px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.video-row:hover,
+.video-row.is-selected {
+  background: var(--hover);
+  border-color: #f0f1f5;
+}
+.thumb {
+  width: 80px;
+  height: 128px;
+  aspect-ratio: 9/16;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+  background: #191b21;
+  box-shadow: 0 1px 3px #11182710;
+  color: white;
+}
+.thumb img,
+.thumb-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.thumb-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff9c;
+  background: #11141e80;
+  border-radius: 50%;
+  width: 29px;
+  height: 29px;
+}
+.thumb-play .icon {
+  width: 14px;
+  height: 14px;
+  margin-left: 2px;
+}
+.duration {
+  position: absolute;
+  bottom: 6px;
+  left: 5px;
+  background: #0b0c11dc;
+  border-radius: 3px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+.video-copy {
+  min-width: 0;
+  padding-left: 34px;
+}
+.video-title {
+  border: 0;
+  background: none;
+  padding: 0;
+  min-height: 36px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.video-title:hover {
+  color: var(--accent);
+}
+.article-line {
+  margin-top: 8px;
+}
+.article-link {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.article-link:hover {
+  color: var(--accent);
+}
+.article-link:hover > span:nth-child(2) {
+  text-decoration: underline;
+}
+.article-label {
+  color: var(--accent);
+  font-weight: 550;
+  white-space: nowrap;
+}
+.article-link > .icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  align-self: baseline;
+  translate: 0 2px;
+}
+.article-byline {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.completed {
+  font-size: 14px;
+  color: var(--secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.mobile-label {
+  display: none;
+}
+.actions {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+}
+.icon-button {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #aeb5c0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  padding: 0;
+  text-decoration: none;
+}
+.icon-button .icon {
+  width: 19px;
+  height: 19px;
+}
+.play-action {
+  color: var(--accent);
+  border-color: #8391ee;
+}
+.play-action .icon {
+  width: 17px;
+  height: 17px;
+  margin-left: 2px;
+}
+.icon-button:hover {
+  background: #eef0f6;
+  border-color: var(--secondary);
+}
+.play-action:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.icon-button.plain {
+  border-color: transparent;
+  border-radius: 6px;
+}
+.plain:hover {
+  background: var(--hover);
+}
+.primary,
+.secondary,
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+}
+.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.secondary {
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.secondary:hover {
+  background: var(--hover);
+}
+.text-button {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--secondary);
+}
+.text-button:hover {
+  background: var(--hover);
+}
+.date-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  z-index: 20;
+  width: 356px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px #1e25401f;
+  padding: 18px;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.panel-heading h2 {
+  font-size: 16px;
+  font-weight: 650;
+}
+.panel-heading .icon-button {
+  width: 32px;
+  height: 32px;
+}
+.presets {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.presets button {
+  background: #f6f7fa;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 8px 10px;
+  min-height: 38px;
+  font-size: 13px;
+  color: var(--secondary);
+}
+.presets button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+.date-inputs label {
+  font-size: 13px;
+  color: var(--muted);
+}
+.date-inputs input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-top: 7px;
+  padding: 9px 8px;
+  font-size: 14px;
+  color: var(--text);
+  height: 44px;
+  background: white;
+}
+.date-inputs input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+.field-error {
+  font-size: 13px;
+  color: var(--error);
+  margin-top: 10px;
+}
+.panel-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+}
+.panel-actions .primary {
+  min-width: 80px;
+}
+.empty {
+  text-align: center;
+  padding: 72px 24px;
+}
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--hover);
+  border-radius: 50%;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.empty-icon .icon {
+  width: 24px;
+  height: 24px;
+}
+.empty h2 {
+  font-size: 20px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.empty p {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+dialog {
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: min(960px, calc(100% - 40px));
+  max-height: calc(100dvh - 32px);
+  background: #fff;
+  color: var(--text);
+  box-shadow: 0 24px 90px #05071040;
+}
+dialog::backdrop {
+  background: #101523a6;
+  backdrop-filter: blur(4px);
+}
+.dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  min-height: 64px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: 550;
+}
+.dialog-header #player-position {
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: 12px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.dialog-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tool-divider {
+  height: 20px;
+  width: 1px;
+  background: var(--line);
+  margin: 0 8px;
+}
+.dialog-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+}
+.player-stage {
+  background: #101217;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#player {
+  display: block;
+  width: 100%;
+  max-height: 76dvh;
+  aspect-ratio: 9/16;
+  object-fit: contain;
+}
+.player-info {
+  padding: 32px;
+  align-self: center;
+}
+.eyebrow {
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 12px;
+}
+.player-info h2 {
+  font-size: 23px;
+  font-weight: 650;
+  letter-spacing: -0.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.video-facts {
+  display: grid;
+  gap: 9px;
+  margin: 24px 0;
+  font-size: 14px;
+}
+.video-facts > div {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+}
+.video-facts dt {
+  color: var(--muted);
+}
+.video-facts dd {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.article-detail {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin: 24px 0 28px;
+}
+.field-label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+#player-article {
+  font-size: 15px;
+  line-height: 1.8;
+  text-decoration: none;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+#player-article:hover {
+  text-decoration: underline;
+  color: var(--accent);
+}
+#player-article .icon {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  vertical-align: -2px;
+  margin-left: 5px;
+}
+#player-author {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+  line-height: 1.7;
+}
+#player-download {
+  width: 100%;
+}
+#play-error {
+  color: var(--error);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+@media (min-width: 1800px) {
+  .masthead {
+    padding-inline: max(48px, calc((100vw - 1584px) / 2));
+  }
+}
+@media (max-width: 1150px) {
+  .video-copy {
+    padding-left: 0;
+  }
+  .thumb {
+    height: auto;
+  }
+  .page-toolbar {
+    gap: 20px;
+  }
+  .filters {
+    gap: 12px;
+  }
+  .search-box {
+    width: 270px;
+  }
+  .video-row {
+    grid-template-columns: 72px minmax(0, 1fr) 7rem 102px;
+    gap: 24px;
+  }
+  .thumb {
+    width: 72px;
+  }
+  .video-title {
+    font-size: 18px;
+  }
+  .article-byline {
+    margin-top: 9px;
+  }
+  .actions {
+    gap: 10px;
+  }
+}
+@media (max-width: 900px) {
+  .masthead {
+    padding-inline: 24px;
+  }
+  .page-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0;
+  }
+  .filters {
+    width: 100%;
+  }
+  .search-box {
+    flex: 1;
+  }
+  .list-meta {
+    padding-inline: 0;
+    min-height: 64px;
+    flex-wrap: wrap;
+  }
+  .group-date {
+    padding-inline: 0;
+  }
+  .video-row {
+    padding: 14px 0;
+    grid-template-columns: 64px minmax(0, 1fr) 88px;
+    gap: 20px;
+  }
+  .thumb {
+    width: 64px;
+  }
+  .completed {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+    font-size: 13px;
+    margin-top: -14px;
+  }
+  .video-copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .actions {
+    grid-column: 3;
+    grid-row: 1/3;
+    gap: 8px;
+  }
+  .thumb {
+    grid-row: 1/3;
+    align-self: start;
+  }
+  .icon-button {
+    width: 40px;
+    height: 40px;
+  }
+  .mobile-label {
+    display: inline;
+    color: var(--muted);
+  }
+  .date-panel {
+    right: 0;
+  }
+}
+@media (max-width: 600px) {
+  .masthead {
+    height: 62px;
+    gap: 24px;
+    padding-inline: 20px;
+  }
+  .brand {
+    font-size: 20px;
+  }
+  .nav-tab {
+    padding-inline: 6px;
+    font-size: 14px;
+    gap: 7px;
+  }
+  .nav-tab .icon {
+    width: 21px;
+    height: 21px;
+  }
+  main {
+    padding: 24px 20px 32px;
+  }
+  .page-toolbar {
+    gap: 20px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  .filters {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .search-box {
+    flex-basis: 100%;
+    width: 100%;
+  }
+  .filter-button {
+    min-width: 130px;
+  }
+  .date-control {
+    position: static;
+  }
+  .filters {
+    position: relative;
+  }
+  .date-panel {
+    top: calc(100% + 10px);
+    left: 0;
+    right: auto;
+    width: min(356px, 100%);
+  }
+  .list-meta {
+    min-height: 60px;
+    gap: 8px;
+    padding-block: 12px;
+  }
+  .list-meta #updated {
+    font-size: 12px;
+  }
+  .filter-chip {
+    order: 3;
+    max-width: 100%;
+  }
+  .date-group {
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+  .group-date {
+    font-size: 13px;
+    padding-top: 16px;
+    padding-bottom: 12px;
+  }
+  .video-row {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 10px 16px;
+    padding: 8px 0 20px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+  }
+  .thumb {
+    width: 56px;
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: 9/16;
+  }
+  .video-copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .video-title {
+    font-size: 17px;
+    min-height: 30px;
+    line-height: 1.5;
+  }
+  .article-link {
+    font-size: 13px;
+    gap: 6px;
+    line-height: 1.7;
+  }
+  .article-line {
+    margin-top: 6px;
+  }
+  .article-byline {
+    font-size: 13px;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+  .article-link > .icon {
+    display: none;
+  }
+  .completed {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    font-size: 13px;
+  }
+  .actions {
+    grid-column: 2;
+    grid-row: 3;
+    justify-content: flex-start;
+    margin-top: 4px;
+    gap: 16px;
+  }
+  .actions .icon-button {
+    width: 44px;
+    height: 44px;
+  }
+  .duration {
+    font-size: 12px;
+    bottom: 4px;
+    left: 3px;
+  }
+  .thumb-play {
+    width: 25px;
+    height: 25px;
+  }
+  .thumb-play .icon {
+    width: 12px;
+    height: 12px;
+  }
+  .date-inputs {
+    gap: 10px;
+  }
+  .date-inputs input {
+    font-size: 13px;
+    padding: 8px 4px;
+  }
+  .presets {
+    gap: 4px;
+  }
+  .presets button {
+    padding: 8px;
+    flex: 1;
+  }
+  .dialog-content {
+    grid-template-columns: 1fr;
+  }
+  dialog {
+    width: calc(100% - 20px);
+    max-height: calc(100dvh - 20px);
+  }
+  .dialog-header {
+    min-height: 58px;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .dialog-header #player-position {
+    margin-left: 8px;
+  }
+  .dialog-tools {
+    gap: 0;
+  }
+  .tool-divider {
+    margin: 0 4px;
+  }
+  #player {
+    max-height: 50dvh;
+    width: auto;
+    max-width: 100%;
+  }
+  .player-info {
+    padding: 24px;
+  }
+  .player-info h2 {
+    font-size: 21px;
+  }
+  .article-detail {
+    margin: 20px 0;
+    padding-top: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+/* 다운로드와 파일 확인 */
+.download-menu {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: 280px;
+  max-width: calc(100vw - 24px);
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 12px 40px #1e254026;
+}
+.download-heading {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.download-menu a,
+.download-unavailable {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.download-menu a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.download-menu small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.download-unavailable {
+  color: var(--muted);
+  background: var(--hover);
+}
+.file-tools {
+  position: relative;
+}
+.file-tools summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+.file-tools summary::-webkit-details-marker {
+  display: none;
+}
+.file-tools summary .icon {
+  width: 14px;
+  height: 14px;
+}
+.file-tools-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px #1e254026;
+  z-index: 5;
+}
+.file-tools-panel button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.file-tools-panel button:hover {
+  background: var(--hover);
+}
+#location-fallback {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 8px;
+}
+#file-path {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+.file-status {
+  font-size: 13px;
+  color: var(--secondary);
+  margin-top: 10px;
+  min-height: 21px;
+}
+.thumbnail-section {
+  margin: 24px 0;
+}
+.thumbnail-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+.thumbnail-heading > span:last-child {
+  font-size: 12px;
+  color: var(--muted);
+}
+.thumbnail-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.thumbnail-grid button {
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  width: 72px;
+  text-align: center;
+}
+.thumbnail-grid button:hover {
+  border-color: var(--accent);
+}
+.thumbnail-grid img {
+  display: block;
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+}
+.thumbnail-grid span {
+  display: block;
+  padding: 4px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.thumbnail-missing {
+  font-size: 14px;
+  color: var(--secondary);
+}
+.thumbnail-missing span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+#thumbnail-dialog {
+  width: min(720px, calc(100% - 24px));
+}
+#thumbnail-title {
+  font-size: 15px;
+  font-weight: 550;
+}
+.thumbnail-preview {
+  background: #f1f2f5;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+.thumbnail-preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 66dvh;
+  object-fit: contain;
+}
+.thumbnail-footer {
+  padding: 16px;
+  text-align: right;
+}
+@media (max-width: 600px) {
+  .dialog-header {
+    gap: 4px;
+    padding-inline: 8px;
+  }
+  .dialog-header > span {
+    font-size: 12px;
+  }
+  .dialog-header #player-position {
+    margin-left: 4px;
+    font-size: 12px;
+  }
+  .dialog-tools .icon-button {
+    width: 34px;
+    height: 40px;
+  }
+  .dialog-tools .tool-divider {
+    margin-inline: 2px;
+  }
+  .file-tools summary {
+    font-size: 12px;
+    padding: 8px 4px;
+    gap: 3px;
+  }
+  .file-tools-panel {
+    right: -36px;
+    width: 220px;
+  }
+}
+
+.prompt-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  scroll-margin-top: 16px;
+}
+.prompt-view .page-toolbar {
+  padding: 0;
+  align-items: baseline;
+}
+.prompt-source {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.prompt-note {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--secondary);
+}
+.prompt-fill {
+  margin-top: 24px;
+}
+.prompt-fill label,
+#prompt-url-hint {
+  font-size: 13px;
+  color: var(--muted);
+}
+#prompt-url-hint {
+  margin-left: 8px;
+}
+.prompt-fill code {
+  font-size: 12px;
+  background: var(--hover);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.prompt-fill input {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font-size: 15px;
+}
+.prompt-fill input:hover {
+  border-color: var(--muted);
+}
+.prompt-editor {
+  margin-top: 28px;
+}
+.prompt-editor-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.prompt-editor-head .field-label {
+  margin-bottom: 0;
+}
+.prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#prompt-text {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  min-height: 460px;
+  resize: vertical;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fcfcfd;
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  tab-size: 2;
+}
+#prompt-text:hover {
+  border-color: var(--muted);
+}
+@media (max-width: 900px) {
+  .prompt-view {
+    padding: 0;
+  }
+  .prompt-editor-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .prompt-actions {
+    width: 100%;
+  }
+  .prompt-actions .primary {
+    flex: 1;
+  }
+  #prompt-text {
+    min-height: 380px;
+    padding: 16px;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">본문으로 바로가기</a>
+    <header class="masthead">
+      <a class="brand" href="#main">한겨레</a>
+      <nav class="tabs" aria-label="화면 선택">
+        <a
+          id="tab-videos"
+          class="nav-tab"
+          href="#main"
+          data-view="videos"
+          aria-current="page"
+          ><span data-icon="video"></span
+          ><span class="tab-text">제작 영상</span></a
+        ><a id="tab-prompt" class="nav-tab" href="#prompt" data-view="prompt"
+          ><span data-icon="note-pencil"></span
+          ><span class="tab-text">제작 프롬프트</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <div id="view-videos" class="view">
+        <div class="page-toolbar">
+          <h1>제작 영상 <span id="total" class="total"></span></h1>
+          <div class="filters">
+            <form id="search-form" class="search-box" role="search">
+              <span data-icon="magnifying-glass"></span
+              ><label class="sr-only" for="query"
+                >기사 제목·링크 또는 영상 검색</label
+              ><input
+                id="query"
+                type="search"
+                placeholder="기사 제목·링크 또는 영상 검색"
+                autocomplete="off"
+              />
+            </form>
+            <div class="date-control">
+              <button
+                id="date-toggle"
+                class="filter-button"
+                aria-expanded="false"
+                aria-controls="date-panel"
+              >
+                <span data-icon="calendar-blank"></span
+                ><span id="date-label">제작일</span
+                ><span data-icon="caret-down"></span>
+              </button>
+              <form
+                id="date-panel"
+                class="date-panel"
+                aria-label="제작 완료일 필터"
+                hidden
+              >
+                <div class="panel-heading">
+                  <h2>제작 완료일</h2>
+                  <button
+                    type="button"
+                    id="date-close"
+                    class="icon-button plain"
+                    aria-label="기간 필터 닫기"
+                    data-icon="x"
+                  ></button>
+                </div>
+                <div class="presets">
+                  <button type="button" data-period="all">전체 기간</button
+                  ><button type="button" data-period="7">최근 7일</button
+                  ><button type="button" data-period="30">최근 30일</button>
+                </div>
+                <div class="date-inputs">
+                  <label for="from"
+                    >시작일<input
+                      id="from"
+                      type="date"
+                      aria-describedby="date-error" /></label
+                  ><label for="to"
+                    >종료일<input
+                      id="to"
+                      type="date"
+                      aria-describedby="date-error"
+                  /></label>
+                </div>
+                <p id="date-error" class="field-error" role="alert" hidden>
+                  시작일이 종료일보다 늦습니다. 날짜를 확인해 주세요.
+                </p>
+                <div class="panel-actions">
+                  <button type="button" id="date-reset" class="text-button">
+                    초기화</button
+                  ><button type="submit" class="primary">적용</button>
+                </div>
+              </form>
+            </div>
+            <label class="sort-control"
+              ><span class="sr-only">정렬</span
+              ><select id="sort">
+                <option value="newest">최신순</option>
+                <option value="oldest">오래된순</option>
+                <option value="title">제목순</option></select
+              ><span data-icon="caret-down"></span
+            ></label>
+          </div>
+        </div>
+        <div class="list-meta">
+          <p id="results" role="status" aria-live="polite"></p>
+          <button id="active-period" class="filter-chip" hidden>
+            <span id="period-text"></span><span data-icon="x"></span
+            ><span class="sr-only">기간 필터 해제</span>
+          </button>
+          <p id="updated"></p>
+        </div>
+        <div id="list" class="video-list"></div>
+        <div id="empty" class="empty" hidden>
+          <span class="empty-icon" data-icon="magnifying-glass"></span>
+          <h2 id="empty-title">검색 결과가 없습니다</h2>
+          <p id="empty-copy">다른 검색어나 제작일로 찾아보세요.</p>
+          <button id="empty-reset" class="secondary">검색 조건 초기화</button>
+        </div>
+      </div>
+      <div id="view-prompt" class="view" hidden>
+        <div id="prompt" class="prompt-view">
+          <div class="page-toolbar">
+            <h1>제작 프롬프트</h1>
+            <p id="prompt-source" class="prompt-source"></p>
+          </div>
+          <p id="prompt-note" class="prompt-note"></p>
+          <div id="prompt-body" class="prompt-body">
+            <form id="prompt-form" class="prompt-fill">
+              <label for="prompt-url">기사 주소</label
+              ><span id="prompt-url-hint"
+                >아래 프롬프트의 <code>[URL]</code> 자리에 넣습니다.</span
+              ><input
+                id="prompt-url"
+                type="url"
+                inputmode="url"
+                placeholder="https://www.hani.co.kr/arti/…"
+                autocomplete="off"
+                aria-describedby="prompt-url-hint"
+              />
+            </form>
+            <div class="prompt-editor">
+              <div class="prompt-editor-head">
+                <label class="field-label" for="prompt-text"
+                  >제작 요청 프롬프트</label
+                >
+                <div class="prompt-actions">
+                  <button type="button" id="prompt-reset" class="text-button">
+                    원래대로
+                  </button>
+                  <button type="button" id="prompt-copy" class="primary">
+                    <span data-icon="copy"></span
+                    ><span id="prompt-copy-text">프롬프트 복사</span>
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="prompt-text"
+                spellcheck="false"
+                aria-describedby="prompt-status"
+              ></textarea>
+              <p
+                id="prompt-status"
+                class="file-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+          <div id="prompt-empty" class="empty" hidden>
+            <span class="empty-icon" data-icon="note-pencil"></span>
+            <h2>프롬프트를 불러오지 못했습니다</h2>
+            <p id="prompt-error"></p>
+          </div>
+        </div>
+      </div>
+      <noscript
+        >영상 목록과 프롬프트를 보려면 브라우저에서 JavaScript를 켜
+        주세요.</noscript
+      >
+    </main>
+    <dialog id="player-dialog" aria-labelledby="player-title">
+      <div class="dialog-header">
+        <span>영상 미리보기 <span id="player-position"></span></span>
+        <div class="dialog-tools">
+          <button
+            id="previous"
+            class="icon-button plain"
+            aria-label="이전 영상"
+            data-icon="caret-left"
+          ></button
+          ><button
+            id="next"
+            class="icon-button plain"
+            aria-label="다음 영상"
+            data-icon="caret-right"
+          ></button>
+          <details id="file-tools" class="file-tools">
+            <summary class="text-button">
+              더보기 <span data-icon="caret-down"></span>
+            </summary>
+            <div class="file-tools-panel">
+              <button type="button" id="open-folder">저장 폴더 열기</button
+              ><button type="button" id="copy-location">파일 위치 복사</button>
+              <p id="location-fallback" hidden>
+                <label for="file-path"
+                  >파일 위치 · 직접 복사할 수 있습니다</label
+                ><input id="file-path" readonly />
+              </p>
+            </div>
+          </details>
+          <span class="tool-divider"></span
+          ><button
+            id="close"
+            autofocus
+            class="icon-button plain"
+            aria-label="영상 닫기"
+            data-icon="x"
+          ></button>
+        </div>
+      </div>
+      <div class="dialog-content">
+        <div class="player-stage">
+          <video id="player" controls playsinline preload="metadata"></video>
+        </div>
+        <div class="player-info">
+          <span class="eyebrow">제작 영상</span>
+          <h2 id="player-title"></h2>
+          <dl class="video-facts">
+            <div>
+              <dt>제작 완료</dt>
+              <dd id="player-date"></dd>
+            </div>
+            <div>
+              <dt>재생시간</dt>
+              <dd id="player-duration"></dd>
+            </div>
+            <div>
+              <dt>파일</dt>
+              <dd id="player-size"></dd>
+            </div>
+          </dl>
+          <div class="article-detail">
+            <span class="field-label">원문 기사</span
+            ><a
+              id="player-article"
+              target="_blank"
+              rel="noopener noreferrer"
+            ></a>
+            <p id="player-author"></p>
+          </div>
+          <p id="play-error" role="alert" hidden>
+            영상을 불러오지 못했습니다. 파일이 이동되었거나 접근할 수 없는
+            상태입니다.
+          </p>
+          <div id="thumbnail-section" class="thumbnail-section"></div>
+          <button
+            id="player-download"
+            class="primary"
+            aria-expanded="false"
+            aria-controls="download-menu"
+          >
+            <span data-icon="download-simple"></span>다운로드
+            <span data-icon="caret-down"></span>
+          </button>
+          <p
+            id="file-status"
+            class="file-status"
+            role="status"
+            aria-live="polite"
+          ></p>
+        </div>
+      </div>
+    </dialog>
+    <div
+      id="download-menu"
+      class="download-menu"
+      popover="auto"
+      aria-label="다운로드 옵션"
+    ></div>
+    <dialog id="thumbnail-dialog" aria-labelledby="thumbnail-title">
+      <div class="dialog-header">
+        <h2 id="thumbnail-title">썸네일</h2>
+        <button
+          id="thumbnail-close"
+          class="icon-button plain"
+          aria-label="썸네일 닫기"
+          data-icon="x"
+          autofocus
+        ></button>
+      </div>
+      <div class="thumbnail-preview"><img id="thumbnail-image" alt="" /></div>
+      <div class="thumbnail-footer">
+        <a id="thumbnail-save" class="primary" download
+          ><span data-icon="download-simple"></span>이 이미지 다운로드</a
+        >
+      </div>
+    </dialog>
+    <script id="library-data" type="application/json">
+      {"videos":[],"prompt":{"source":"docs/PRODUCTION_PROMPT_V2_RESTORED.txt","text":"아래 기사를 60~90초 세로 숏폼 영상으로 제작해줘.\n\n시청자의 궁금증이 생기고, 설명을 따라 이해가 진전되며, 결말에서 의미가 남도록 이야기 전체를 설계해줘.\n\n적합한 영상 자료를 적극적으로 찾아 화면의 주요 재료로 활용하고, 이미지·도해·생성 표현을 함께 선택해줘. 특정 자료 확보에 실패하면 이야기에서 필요한 역할을 기준으로 탐색 범위와 표현을 다시 판단해줘. 영상과 이미지는 전체 화면 활용을 기본으로 해줘.\n\n각 구간에서 시청자가 무엇을 이해해야 하는지 먼저 정하고, 핵심 정보와 관계·변화가 눈으로 읽히도록 표현을 선택해줘. 강조만으로 충분한 내용과 원리·과정을 보여줘야 하는 내용을 구분하고, 움직임이 그 이해를 돕게 해줘. 기존 그래픽 패턴을 관성적으로 반복하지 말고, 이번 내용과 확보한 자료에 맞춰 표현을 설계해줘. 같은 설명이 이어질 때는 시각적 기준을 유지하고, 새로운 관계를 설명할 때는 그에 맞는 방식을 판단해줘.\n\n도해는 완성된 영상 그래픽 수준으로 설계해줘. 대상의 특징이 읽히는 형태, 주목 대상과 보조 요소의 크기·대비 위계, 여백과 정렬, 일관된 색과 선을 다듬고, 관계와 변화가 그림 자체에서 이해되게 해줘. 내레이션에 맞춰 필요한 요소를 단계적으로 드러내고, 설명이 완성된 상태는 이해할 시간을 줘. 깊이감·질감·조명·카메라 움직임은 설명과 분위기에 도움이 되는 만큼 선택해줘. 도해의 사용량과 구체적인 표현 방식은 영상 전체의 흐름을 보고 판단해줘.\n\nAI 영상 생성도 이번 내용의 이해와 몰입을 높이는 표현 수단으로 적극적으로 검토해줘. 자료만으로 전달하기 어려운 공간감·과정·비유·장면 연결은 생성과 합성을 활용하되, 실제 제품의 형태·문구·작동 특성과 사실·수치·인과관계는 보존해줘. 정확히 유지해야 할 요소는 원본이나 검증된 도해로 두고, 생성할 부분과 범위는 장면의 목적에 맞게 판단해줘. 생성 장면이 실제 관측이나 검증된 성능을 보여주는 것으로 오인되지 않게 구성해줘.\n\n상단 고정 제목·설명과 불필요한 제작 주석은 넣지 마. 필요한 라벨과 조건은 이해에 필요한 순간에 등장하고 퇴장하도록 해줘.\n\nBGM과 효과음까지 포함해 음향을 연출해줘. 내레이션을 해치지 않으면서 분위기와 중요한 변화가 느껴지도록 선택하고 믹스해줘. 등장·퇴장·속도·easing도 실제 발화와 이해할 시간을 고려해 설계해줘.\n\n설명 구조, 자료 선택과 교체, 도해, 모션, 음향, 사실 검수와 수정은 네 판단에 맡길게. 완성 MP4와 중요한 제작 선택, 확인하지 못한 사항을 보여줘. \n\n썸네일 이미지는 플러그인 최신 지침대로 만들어. 기사:[기사 URL]","note":"","error":""},"generatedAt":"2026-09-20T11:35:21.796Z","icons":{"arrow-square-out":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z\"/>\u003c/svg>","calendar-blank":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Z\"/>\u003c/svg>","caret-down":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z\"/>\u003c/svg>","caret-left":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z\"/>\u003c/svg>","caret-right":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z\"/>\u003c/svg>","check":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z\"/>\u003c/svg>","copy":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z\"/>\u003c/svg>","download-simple":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M224,144v64a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V144a8,8,0,0,1,16,0v56H208V144a8,8,0,0,1,16,0Zm-101.66,5.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,124.69V32a8,8,0,0,0-16,0v92.69L93.66,98.34a8,8,0,0,0-11.32,11.32Z\"/>\u003c/svg>","magnifying-glass":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z\"/>\u003c/svg>","note-pencil":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M229.66,58.34l-32-32a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,88,128v32a8,8,0,0,0,8,8h32a8,8,0,0,0,5.66-2.34l96-96A8,8,0,0,0,229.66,58.34ZM124.69,152H104V131.31l64-64L188.69,88ZM200,76.69,179.31,56,192,43.31,212.69,64ZM224,128v80a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32h80a8,8,0,0,1,0,16H48V208H208V128a8,8,0,0,1,16,0Z\"/>\u003c/svg>","play-fill":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z\"/>\u003c/svg>","video":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M164.44,105.34l-48-32A8,8,0,0,0,104,80v64a8,8,0,0,0,12.44,6.66l48-32a8,8,0,0,0,0-13.32ZM120,129.05V95l25.58,17ZM216,40H40A16,16,0,0,0,24,56V168a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,128H40V56H216V168Zm16,40a8,8,0,0,1-8,8H32a8,8,0,0,1,0-16H224A8,8,0,0,1,232,208Z\"/>\u003c/svg>","x":"\u003csvg class=\"icon\" aria-hidden=\"true\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\" fill=\"currentColor\">\u003cpath d=\"M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z\"/>\u003c/svg>"},"localTools":false}
+    </script>
+    <script>
+      (() => {
+  const { videos, prompt, generatedAt, icons, localTools } = JSON.parse(
+    document.getElementById("library-data").textContent,
+  );
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) =>
+    String(s ?? "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  const icon = (name) => icons[name] || "";
+  document.querySelectorAll("[data-icon]").forEach((el) => {
+    el.innerHTML = icon(el.dataset.icon);
+  });
+  const duration = (seconds) => {
+    if (seconds == null) return "미등록";
+    const n = Math.round(seconds);
+    return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
+  };
+  const day = (date) => (date ? date.replaceAll("-", ".") : "날짜 미등록");
+  const normalize = (s) =>
+    s.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, " ").trim();
+  const articleIdFromHaniUrl = (value) => {
+    try {
+      const url = new URL(value);
+      if (!["hani.co.kr", "www.hani.co.kr"].includes(url.hostname)) return "";
+      return url.pathname.match(/\/(\d+)(?:\.html)?\/?$/)?.[1] ?? "";
+    } catch {
+      return "";
+    }
+  };
+  const downloadUrl = (src) =>
+    /^https?:$/.test(location.protocol) ? src + "?download=1" : src;
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(generatedAt));
+  let period = { from: "", to: "" },
+    visible = [],
+    selectedId = null,
+    opener = null;
+  $("total").textContent = videos.length;
+  $("total").setAttribute("aria-label", `${videos.length}편`);
+  $("updated").textContent = `${day(today)} 업데이트`;
+  function render() {
+    closeDownloads();
+    const query = normalize($("query").value);
+    const articleIdQuery = articleIdFromHaniUrl($("query").value);
+    const searchQueries = [query, articleIdQuery].filter(Boolean);
+    visible = videos.filter((v) => {
+      const searchText = normalize(
+        v.searchText ??
+          `${v.title} ${v.articleTitle} ${v.author} ${v.articleUrl ?? ""}`,
+      );
+      return (
+        (searchQueries.length === 0 ||
+          searchQueries.some((value) => searchText.includes(value))) &&
+        (!period.from || (v.completed && v.completed >= period.from)) &&
+        (!period.to || (v.completed && v.completed <= period.to))
+      );
+    });
+    visible.sort((a, b) => {
+      if ($("sort").value === "title")
+        return a.title.localeCompare(b.title, "ko");
+      if (!a.completed || !b.completed)
+        return a.completed
+          ? -1
+          : b.completed
+            ? 1
+            : a.title.localeCompare(b.title, "ko");
+      return (
+        ($("sort").value === "oldest" ? 1 : -1) *
+          a.completed.localeCompare(b.completed) ||
+        a.title.localeCompare(b.title, "ko")
+      );
+    });
+    const filtered = Boolean(query || period.from || period.to);
+    $("results").textContent = filtered
+      ? `검색 결과 ${visible.length}편 · 전체 ${videos.length}편`
+      : `전체 ${videos.length}편`;
+    $("active-period").hidden = !(period.from || period.to);
+    $("period-text").textContent =
+      `${period.from ? day(period.from) : "시작일 전체"} — ${period.to ? day(period.to) : "종료일 전체"}`;
+    $("date-toggle").classList.toggle(
+      "is-active",
+      Boolean(period.from || period.to),
+    );
+    $("date-label").textContent =
+      period.from || period.to ? "기간 선택됨" : "제작일";
+    const groups = new Map();
+    for (const v of visible) {
+      const key = $("sort").value === "title" ? "제목순" : day(v.completed);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(v);
+    }
+    $("list").innerHTML = [...groups]
+      .map(
+        ([label, items], index) =>
+          `<section class="date-group" aria-labelledby="group-${index}"><h2 class="group-date" id="group-${index}">${esc(label)}</h2>${items
+            .map(
+              (
+                v,
+              ) => `<article class="video-row${v.id === selectedId ? " is-selected" : ""}" data-id="${esc(v.id)}">
+      <button class="thumb" data-play="${esc(v.id)}" aria-label="${esc(v.title)} 재생">${v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy">` : `<video class="thumb-preview" src="${esc(v.src)}#t=0.1" muted playsinline preload="metadata" aria-hidden="true"></video>`}<span class="thumb-play">${icon("play-fill")}</span>${v.seconds != null ? `<span class="duration">${duration(v.seconds)}</span>` : ""}</button>
+      <div class="video-copy"><h3><button class="video-title" data-play="${esc(v.id)}">${esc(v.title)}</button></h3><div class="article-line"><span class="article-link"><span class="article-label">편</span><span>${esc(v.episodeTitle ?? v.title)}</span></span>${v.articleUrl ? `<a class="article-link" href="${esc(v.articleUrl)}" target="_blank" rel="noopener noreferrer"><span class="article-label">원문</span><span>한겨레 기사 열기</span>${icon("arrow-square-out")}</a>` : ""}</div><p class="article-byline">${esc([v.author && `${v.author} 기자`, v.articleDate && `기사 발행 ${day(v.articleDate)}`].filter(Boolean).join(" · ") || "원문 정보 미등록")}</p></div>
+      <p class="completed"><span class="mobile-label">제작 완료 </span>${v.completed ? `<time datetime="${esc(v.completed)}">${day(v.completed)}</time>` : "날짜 미등록"}</p>
+      <div class="actions"><button class="icon-button play-action" data-play="${esc(v.id)}" aria-label="${esc(v.title)} 재생" title="영상 재생">${icon("play-fill")}</button><button class="icon-button download-action" data-download="${esc(v.id)}" aria-expanded="false" aria-controls="download-menu" aria-label="${esc(v.title)} 다운로드 옵션" title="다운로드">${icon("download-simple")}</button></div>
+    </article>`,
+            )
+            .join("")}</section>`,
+      )
+      .join("");
+    $("empty").hidden = Boolean(visible.length);
+    $("empty-title").textContent = videos.length
+      ? "검색 결과가 없습니다"
+      : "아직 완성된 영상이 없습니다";
+    $("empty-copy").textContent = videos.length
+      ? "검색어를 바꾸거나 제작일 범위를 넓혀보세요."
+      : "영상 제작이 완료되면 이곳에서 확인할 수 있습니다.";
+    $("empty-reset").hidden = !videos.length;
+    $("list")
+      .querySelectorAll("img")
+      .forEach((img) =>
+        img.addEventListener(
+          "error",
+          () => {
+            img.hidden = true;
+          },
+          { once: true },
+        ),
+      );
+  }
+  function dateError(show) {
+    $("date-error").hidden = !show;
+    ["from", "to"].forEach((id) =>
+      $(id).setAttribute("aria-invalid", String(show)),
+    );
+  }
+  function closeDates(restoreFocus = false) {
+    $("date-panel").hidden = true;
+    $("date-toggle").setAttribute("aria-expanded", "false");
+    if (restoreFocus) $("date-toggle").focus();
+  }
+  function applyDates() {
+    const from = $("from").value,
+      to = $("to").value;
+    if (from && to && from > to) {
+      dateError(true);
+      $("from").focus();
+      return;
+    }
+    period = { from, to };
+    dateError(false);
+    closeDates(true);
+    render();
+  }
+  $("date-toggle").addEventListener("click", () => {
+    if (!$("date-panel").hidden) {
+      closeDates();
+      return;
+    }
+    $("from").value = period.from;
+    $("to").value = period.to;
+    dateError(false);
+    $("date-panel").hidden = false;
+    $("date-toggle").setAttribute("aria-expanded", "true");
+    $("date-panel").querySelector('[data-period="all"]').focus();
+  });
+  $("date-close").addEventListener("click", () => closeDates(true));
+  document.addEventListener("pointerdown", (e) => {
+    if (!e.target.closest(".date-control")) closeDates();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("date-panel").hidden) {
+      e.preventDefault();
+      closeDates(true);
+    }
+  });
+  $("date-panel").addEventListener("submit", (e) => {
+    e.preventDefault();
+    applyDates();
+  });
+  $("date-panel").addEventListener("input", () => dateError(false));
+  $("date-panel")
+    .querySelectorAll("[data-period]")
+    .forEach((button) =>
+      button.addEventListener("click", () => {
+        const count = button.dataset.period;
+        if (count === "all") {
+          $("from").value = "";
+          $("to").value = "";
+        } else {
+          const start = new Date(today + "T12:00:00Z");
+          start.setUTCDate(start.getUTCDate() - Number(count) + 1);
+          $("from").value = start.toISOString().slice(0, 10);
+          $("to").value = today;
+        }
+        applyDates();
+      }),
+    );
+  const clearPeriod = () => {
+    period = { from: "", to: "" };
+    $("from").value = "";
+    $("to").value = "";
+    dateError(false);
+    render();
+  };
+  $("date-reset").addEventListener("click", () => {
+    clearPeriod();
+    closeDates(true);
+  });
+  $("active-period").addEventListener("click", () => {
+    clearPeriod();
+    $("date-toggle").focus();
+  });
+  $("empty-reset").addEventListener("click", () => {
+    clearPeriod();
+    $("query").value = "";
+    $("sort").value = "newest";
+    render();
+    $("query").focus();
+  });
+  $("search-form").addEventListener("submit", (e) => e.preventDefault());
+  $("query").addEventListener("input", render);
+  $("sort").addEventListener("change", render);
+  function openPlayer(id, trigger) {
+    const video = visible.find((v) => v.id === id);
+    if (!video) return;
+    if (trigger) opener = trigger;
+    selectedId = id;
+    $("list")
+      .querySelectorAll(".video-row")
+      .forEach((row) =>
+        row.classList.toggle("is-selected", row.dataset.id === id),
+      );
+    const position = visible.findIndex((v) => v.id === id);
+    $("player-position").textContent = `${position + 1} / ${visible.length}`;
+    $("previous").disabled = position === 0;
+    $("next").disabled = position === visible.length - 1;
+    $("player-title").textContent = video.title;
+    $("player-date").textContent = day(video.completed);
+    $("player-duration").textContent = duration(video.seconds);
+    $("player-size").textContent = `MP4 · ${video.sizeMB} MB`;
+    $("player-article").innerHTML =
+      esc(video.articleUrl ? "한겨레 원문 열기" : video.articleTitle) +
+      (video.articleUrl ? icon("arrow-square-out") : "");
+    if (video.articleUrl) $("player-article").href = video.articleUrl;
+    else $("player-article").removeAttribute("href");
+    $("player-author").textContent = [
+      (video.episodeTitle ?? video.title) &&
+        `편 · ${video.episodeTitle ?? video.title}`,
+      video.author && `${video.author} 기자`,
+      video.articleDate && `기사 발행 ${day(video.articleDate)}`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    closeDownloads();
+    $("player-download").dataset.download = video.id;
+    $("file-tools").open = false;
+    $("file-tools").hidden = !localTools;
+    $("file-status").textContent = "";
+    $("location-fallback").hidden = true;
+    $("thumbnail-section").innerHTML = video.thumbnails.length
+      ? `<div class="thumbnail-heading"><span class="field-label">썸네일 ${video.thumbnails.length}개</span><span>눌러서 크게 보기</span></div><div class="thumbnail-grid">${video.thumbnails.map((t, i) => `<button type="button" data-thumbnail="${i}" aria-label="썸네일 ${esc(t.filename)} 크게 보기"><img src="${esc(t.src)}" alt="" loading="lazy"><span>${esc(t.filename)}</span></button>`).join("")}</div>`
+      : '<p class="thumbnail-missing">썸네일 미등록 <span>현재는 영상만 다운로드할 수 있습니다.</span></p>';
+    $("play-error").hidden = true;
+    $("player").src = video.src;
+    if (video.poster) $("player").poster = video.poster;
+    else $("player").removeAttribute("poster");
+    if (!$("player-dialog").open) $("player-dialog").showModal();
+    $("player")
+      .play()
+      .catch(() => {});
+  }
+  $("list").addEventListener("click", (e) => {
+    const button = e.target.closest("[data-play]");
+    if (button) openPlayer(button.dataset.play, button);
+  });
+  ["previous", "next"].forEach((id) =>
+    $(id).addEventListener("click", () => {
+      const at =
+        visible.findIndex((v) => v.id === selectedId) +
+        (id === "next" ? 1 : -1);
+      if (visible[at]) openPlayer(visible[at].id);
+    }),
+  );
+  $("close").addEventListener("click", () => $("player-dialog").close());
+  $("player-dialog").addEventListener("close", () => {
+    $("player").pause();
+    $("player").removeAttribute("src");
+    $("player").load();
+    if (opener?.isConnected) opener.focus();
+  });
+  $("player-dialog").addEventListener("click", (e) => {
+    if (e.target !== $("player-dialog")) return;
+    const b = e.target.getBoundingClientRect();
+    if (
+      e.clientX < b.left ||
+      e.clientX > b.right ||
+      e.clientY < b.top ||
+      e.clientY > b.bottom
+    )
+      e.target.close();
+  });
+  $("player").addEventListener("error", () => {
+    if ($("player").hasAttribute("src")) $("play-error").hidden = false;
+  });
+  const menu = $("download-menu");
+  let downloadTrigger = null,
+    thumbnailTrigger = null;
+  const endpoint = (v, action) =>
+    `/api/videos/${encodeURIComponent(v.id)}/${action}`;
+  function closeDownloads() {
+    const panel = $("download-menu");
+    if (panel.matches(":popover-open")) panel.hidePopover();
+  }
+  function openDownloads(video, trigger) {
+    if (menu.matches(":popover-open") && downloadTrigger === trigger) {
+      closeDownloads();
+      return;
+    }
+    closeDownloads();
+    downloadTrigger = trigger;
+    const thumbs = video.thumbnails;
+    const link = (href, filename, title, note) =>
+      `<a href="${esc(href)}" download="${esc(filename)}"><span>${title}</span><small>${note}</small></a>`;
+    menu.innerHTML =
+      `<p class="download-heading">다운로드</p>` +
+      (thumbs.length && localTools
+        ? link(
+            endpoint(video, "bundle"),
+            "",
+            "영상 + 썸네일 받기",
+            `MP4 + 이미지 ${thumbs.length}개 · ZIP`,
+          )
+        : `<div class="download-unavailable">영상 + 썸네일 받기<small>${thumbs.length ? "묶음 다운로드는 로컬 서버에서 이용할 수 있습니다." : "썸네일 미등록"}</small></div>`) +
+      link(
+        downloadUrl(video.src),
+        video.filename,
+        "영상만 받기",
+        `MP4 · ${video.sizeMB} MB`,
+      ) +
+      (thumbs.length === 1
+        ? link(
+            downloadUrl(thumbs[0].src),
+            thumbs[0].filename,
+            "썸네일만 받기",
+            `${esc(thumbs[0].filename)} · ${thumbs[0].sizeMB} MB`,
+          )
+        : thumbs.length && localTools
+          ? link(
+              endpoint(video, "thumbnails"),
+              "",
+              "썸네일만 받기",
+              `이미지 ${thumbs.length}개 · ZIP`,
+            )
+          : thumbs.length
+            ? thumbs
+                .map((t) =>
+                  link(
+                    downloadUrl(t.src),
+                    t.filename,
+                    `썸네일 ${esc(t.filename)}`,
+                    `${t.sizeMB} MB`,
+                  ),
+                )
+                .join("")
+            : '<div class="download-unavailable">썸네일만 받기<small>등록된 이미지가 없습니다.</small></div>');
+    (trigger.closest("dialog") || document.body).append(menu);
+    menu.showPopover();
+    const r = trigger.getBoundingClientRect(),
+      width = menu.offsetWidth,
+      height = menu.offsetHeight;
+    menu.style.left = `${Math.max(12, Math.min(r.right - width, innerWidth - width - 12))}px`;
+    menu.style.top = `${Math.max(12, Math.min(r.bottom + 8, innerHeight - height - 12))}px`;
+    trigger.setAttribute("aria-expanded", "true");
+    menu.querySelector("a")?.focus();
+  }
+  menu.addEventListener("toggle", (e) => {
+    if (e.newState === "closed")
+      downloadTrigger?.setAttribute("aria-expanded", "false");
+  });
+  menu.addEventListener("click", (e) => {
+    if (e.target.closest("a")) {
+      closeDownloads();
+      downloadTrigger?.focus();
+    }
+  });
+  menu.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDownloads();
+      downloadTrigger?.focus();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest("[data-download]");
+    if (trigger) {
+      const v = videos.find((v) => v.id === trigger.dataset.download);
+      if (v) openDownloads(v, trigger);
+    }
+  });
+  window.addEventListener("resize", closeDownloads);
+  $("player-dialog").addEventListener("close", closeDownloads);
+  $("thumbnail-section").addEventListener("click", (e) => {
+    const button = e.target.closest("[data-thumbnail]");
+    if (!button) return;
+    const v = videos.find((v) => v.id === selectedId),
+      t = v?.thumbnails[Number(button.dataset.thumbnail)];
+    if (!t) return;
+    thumbnailTrigger = button;
+    $("player").pause();
+    $("thumbnail-title").textContent = `썸네일 · ${t.filename}`;
+    $("thumbnail-image").src = t.src;
+    $("thumbnail-image").alt = `${v.title} 썸네일 ${t.filename}`;
+    $("thumbnail-save").href = downloadUrl(t.src);
+    $("thumbnail-save").download = t.filename;
+    $("thumbnail-dialog").showModal();
+  });
+  $("thumbnail-close").addEventListener("click", () =>
+    $("thumbnail-dialog").close(),
+  );
+  $("thumbnail-dialog").addEventListener("close", () =>
+    thumbnailTrigger?.focus(),
+  );
+  async function fileAction(kind) {
+    const v = videos.find((v) => v.id === selectedId);
+    if (!v) return;
+    const button = $(kind === "location" ? "copy-location" : "open-folder");
+    button.disabled = true;
+    $("file-status").textContent =
+      kind === "location" ? "파일 위치 확인 중…" : "폴더를 여는 중…";
+    try {
+      const response = await fetch(endpoint(v, kind), {
+        method: kind === "open-folder" ? "POST" : "GET",
+        headers: { "X-Library-Action": "1" },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      if (kind === "location") {
+        try {
+          await navigator.clipboard.writeText(data.path);
+          $("file-status").textContent = "파일 위치를 복사했습니다.";
+        } catch {
+          $("location-fallback").hidden = false;
+          $("file-path").value = data.path;
+          $("file-path").focus();
+          $("file-path").select();
+          $("file-status").textContent = "선택된 파일 위치를 복사해 주세요.";
+          return;
+        }
+      } else $("file-status").textContent = "저장 폴더를 열었습니다.";
+      $("file-tools").open = false;
+    } catch (error) {
+      $("file-status").textContent =
+        error.message || "파일 작업을 완료하지 못했습니다.";
+    } finally {
+      button.disabled = false;
+    }
+  }
+  $("open-folder").addEventListener("click", () => fileAction("open-folder"));
+  $("copy-location").addEventListener("click", () => fileAction("location"));
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#file-tools")) $("file-tools").open = false;
+  });
+
+  // 제작 프롬프트 탭: docs/PRODUCTION_PROMPT.md 본문을 그대로 싣고, [URL] 자리만 채워 복사한다.
+  const promptText = prompt?.text ?? "";
+  const filled = (url) =>
+    url.trim() ? promptText.replaceAll("[URL]", url.trim()) : promptText;
+  let promptEdited = false;
+  $("prompt-source").textContent = `원본 · ${prompt?.source ?? "미등록"}`;
+  $("prompt-note").textContent = prompt?.note ?? "";
+  $("prompt-note").hidden = !prompt?.note;
+  $("prompt-body").hidden = !promptText;
+  $("prompt-empty").hidden = Boolean(promptText);
+  $("prompt-error").textContent =
+    prompt?.error || "프롬프트 본문이 비어 있습니다.";
+  function fillPrompt() {
+    if (promptEdited) return;
+    $("prompt-text").value = filled($("prompt-url").value);
+  }
+  let copyReset = null;
+  function promptStatus(message) {
+    $("prompt-status").textContent = message;
+  }
+  $("prompt-url").addEventListener("input", () => {
+    fillPrompt();
+    promptStatus(
+      promptEdited && $("prompt-url").value.trim()
+        ? "프롬프트를 직접 고쳐서 기사 주소가 자동으로 들어가지 않습니다. 「원래대로」를 누르면 다시 채웁니다."
+        : "",
+    );
+  });
+  $("prompt-form").addEventListener("submit", (e) => e.preventDefault());
+  $("prompt-text").addEventListener("input", () => {
+    promptEdited = $("prompt-text").value !== filled($("prompt-url").value);
+  });
+  $("prompt-reset").addEventListener("click", () => {
+    promptEdited = false;
+    fillPrompt();
+    promptStatus("원본 프롬프트로 되돌렸습니다.");
+    $("prompt-text").focus();
+    $("prompt-text").scrollTop = 0;
+  });
+  $("prompt-copy").addEventListener("click", async () => {
+    const text = $("prompt-text").value;
+    let copied = true;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // file:// 등 클립보드가 막힌 환경에서는 선택 상태로 돌려준다.
+      $("prompt-text").focus();
+      $("prompt-text").select();
+      copied = document.execCommand?.("copy") ?? false;
+    }
+    promptStatus(
+      copied
+        ? $("prompt-url").value.trim()
+          ? "기사 주소를 넣은 프롬프트를 복사했습니다."
+          : "프롬프트를 복사했습니다. 마지막 줄 [URL] 을 기사 주소로 바꿔 주세요."
+        : "복사하지 못했습니다. 선택된 프롬프트를 ⌘C 로 복사해 주세요.",
+    );
+    if (!copied) return;
+    $("prompt-copy-text").textContent = "복사됨";
+    $("prompt-copy").querySelector("[data-icon]").innerHTML = icon("check");
+    clearTimeout(copyReset);
+    copyReset = setTimeout(() => {
+      $("prompt-copy-text").textContent = "프롬프트 복사";
+      $("prompt-copy").querySelector("[data-icon]").innerHTML = icon("copy");
+    }, 2000);
+  });
+
+  function showView(name) {
+    const view = name === "prompt" ? "prompt" : "videos";
+    $("view-videos").hidden = view !== "videos";
+    $("view-prompt").hidden = view !== "prompt";
+    document.querySelectorAll(".nav-tab").forEach((tab) => {
+      const current = tab.dataset.view === view;
+      tab.classList.toggle("is-current", current);
+      if (current) tab.setAttribute("aria-current", "page");
+      else tab.removeAttribute("aria-current");
+    });
+    document.title =
+      view === "prompt" ? "제작 프롬프트 · 한겨레" : "제작 영상 · 한겨레";
+    if (view === "prompt") {
+      closeDownloads();
+      closeDates();
+      if ($("player-dialog").open) $("player-dialog").close();
+    }
+  }
+  const viewFromHash = () =>
+    location.hash === "#prompt" ? "prompt" : "videos";
+  window.addEventListener("hashchange", () => showView(viewFromHash()));
+  showView(viewFromHash());
+  fillPrompt();
+  render();
+})();
+
+    </script>
+  </body>
+</html>

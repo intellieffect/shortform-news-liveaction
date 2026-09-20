@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "pilot": "<pilot>",
+  "root": "<abs path to work/<pilot>>",
+  "generated_at": "<iso>",
+  "_comment": "한겨레 제공 자료 목록. path는 root 기준. 출처·캡션은 docx 이미지 안에 구워진 원문 그대로. sentence_fit은 초안 A(narration.json s01~s11) 기준으로 input이 제안한 매핑 — shots가 최종 결정. 사용권은 전건 미확인(RIGHTS.md) → 국장 통화 대기.",
+  "sources": {
+    "index": "01_input/05_참고자료/INDEX.md",
+    "rights": "01_input/05_참고자료/RIGHTS.md",
+    "facts": "02_production/facts.md",
+    "external_sources": "02_production/external_assets/SOURCES.md"
+  },
+  "assets": [
+    {
+      "id": "<...>",
+      "type": "<...>",
+      "path": "<...>",
+      "width": "<...>",
+      "height": "<...>",
+      "label": "<...>",
+      "what": "<...>",
+      "caption_original": "<...>",
+      "credit": "<...>",
+      "rights_status": "<...>",
+      "rights_note": "<...>",
+      "quality_note": "<...>",
+      "is_real_observation": true,
+      "sentence_fit": [
+        "s01",
+        "s02",
+        "s11"
+      ],
+      "hani_script_ref": "<...>"
+    }
+  ],
+  "sentences_without_asset": {},
+  "expression_rules": {
+    "path": "02_production/facts.md",
+    "note": ""
+  },
+  "brand_assets": null,
+  "external_assets": [
+    {
+      "id": "<...>",
+      "type": "<...>",
+      "source": "<...>",
+      "path": "<...>",
+      "width": 4000,
+      "height": 2661,
+      "label": "<...>",
+      "credit": "<...>",
+      "origin_url": "<...>",
+      "replaces": "<...>",
+      "is_real_observation": true,
+      "sentence_fit": [
+        "s01",
+        "s02",
+        "s11"
+      ],
+      "license": "<...>",
+      "license_url": "<...>",
+      "rights_status": "<...>"
+    }
+  ],
+  "overlay_assets": [],
+  "brief_assets": {
+    "brief": "02_production/asset_brief.json",
+    "free": [],
+    "paid_candidates": []
+  }
+}

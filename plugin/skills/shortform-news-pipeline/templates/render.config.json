@@ -1,0 +1,22 @@
+{
+  "_comment": "영상 조립 층 토글. 4-0 정지 조립부터 한 층씩 켠다. 켜는 순서: motion → text_anim → graphics → transitions → sound. debug.show_beat_id 는 최종 렌더 전 false",
+  "layers": {
+    "motion": false,
+    "text_anim": false,
+    "graphics": false,
+    "transitions": false,
+    "sound": false
+  },
+  "narration_gain_db": 0,
+  "debug": {
+    "show_beat_id": true
+  },
+  "transitions": {
+    "_comment": "씬(문장) 경계만 크로스디졸브. overrides 는 \"b20>b21\": 15 처럼 경계별 프레임. keep_text 경계는 나가는 텍스트도 같이 페이드(인용 카드 연장). 훅은 시작 페이드 없음 | keep_text 는 기본 [] — 인용 카드와 자막을 같이 연장하면 다음 비트 자막과 겹친다(3편 b20>b21)",
+    "crossfade_frames": 8,
+    "scene_only": true,
+    "overrides": {},
+    "keep_text": [],
+    "end_fade_frames": 12
+  }
+}

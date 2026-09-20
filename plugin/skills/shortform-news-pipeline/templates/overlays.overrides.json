@@ -1,0 +1,5 @@
+{
+  "_comment": "make-overlays 가 생성 후 비트별로 덮어쓰는 편집 결정. card / headline / credit 만. caption(원고) 덮어쓰기는 생성기가 거부한다. 근거(facts 번호)를 _why 에 남긴다.",
+  "b19": { "card": { "type": "quote", "text": "<기사 원문 문장 1>", "attribution": "<이름 직함(역할)>", "source": "<출처 사슬>" }, "_why": "facts #NN 원문 인용" },
+  "b22": { "card": { "type": "endcard", "text": "이미지·영상\n<크레딧 원문 1줄씩>", "attribution": null }, "_why": "CC BY 조건: 원문 그대로, 로고 금지" }
+}

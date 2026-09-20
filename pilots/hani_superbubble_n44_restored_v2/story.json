@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "mode": "editorial-concept",
+  "pilot": "hani_superbubble_n44_restored_v2",
+  "script_policy": "editorial-owned",
+  "creative_scope": {
+    "script": "delegated",
+    "assets": "delegated",
+    "diagrams": "delegated",
+    "audio": "delegated"
+  },
+  "question": "가스 구름 한가운데를 누가 비웠으며, 밀려난 가스는 어디로 갔을까?",
+  "takeaway": "별이 가스를 비워낸 과정은 바깥의 압축된 가스에서 다음 별이 태어나는 과정과 이어진다.",
+  "concept_order": [
+    "discovery",
+    "forces",
+    "clearing",
+    "shell",
+    "condense",
+    "census",
+    "return"
+  ],
+  "credits": []
+}

@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "lib": [
+      "es2015"
+    ],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "allowJs": true
+  },
+  "exclude": [
+    "remotion.config.ts",
+    "tools",
+    "news",
+    "out",
+    "public/pilots",
+    "plugin"
+  ],
+  "_comment": "tools/ 는 Motion Canvas 별개 프로젝트다 — 자기 tsconfig·의존성을 가진다(2026-09-02 저장소 통합으로 들어왔다). news/·out/·public/pilots/ 는 데이터·산출물이라 타입 대상이 아니다."
+}

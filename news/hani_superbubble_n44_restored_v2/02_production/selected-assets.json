@@ -1,0 +1,42 @@
+{
+  "episode": "hani_superbubble_n44_restored_v2",
+  "credits": "CREDITS.md",
+  "assets": [
+    {
+      "id": "hubble-pan",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/media/pan-silent.mp4",
+      "bytes": 112242729,
+      "sha256": "fa7b0e3971cebdc904cbb9656f377d2636b77ca45676fda7a50a697e7e530ac0"
+    },
+    {
+      "id": "hubble-photo",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/media/n44.jpg",
+      "bytes": 1400417,
+      "sha256": "4caf1e33f52852903fa791dad2139cc90a254906ba7f1a659b951cda40ed2973"
+    },
+    {
+      "id": "ai-clearing",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/generated/gas-clump-r2.mp4",
+      "bytes": 11822928,
+      "sha256": "b1b72766949740abfa9f6238673641a5fde0ffabd36bebeebbc709c20eb446b6"
+    },
+    {
+      "id": "narration",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/audio/narration.wav",
+      "bytes": 7348902,
+      "sha256": "1e85a7996ed0cfeb706932d1bfcdaf10f0e9203b1f38a8874a8c6ccff519fe6a"
+    },
+    {
+      "id": "bgm",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/external_assets/audio/bgm/floating-cities.mp3",
+      "bytes": 1853216,
+      "sha256": "6c917b3186d10307144b670788390fbc403342e0c83ab6f8e39be88427dccee8"
+    },
+    {
+      "id": "logo",
+      "path": "news/hani_superbubble_n44_restored_v2/02_production/brand/logo.png",
+      "bytes": 652048,
+      "sha256": "d11455e6bd4b9a5e54f45265ba69d062d6079676c6bf2608525ba9dd43183364"
+    }
+  ]
+}

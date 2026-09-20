@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "registered_at": "2026-09-05",
+  "candidate_engine": "editorial-concept@1",
+  "quality_claim": "사용자가 확인한 설명·시각 품질의 기준. 신규 제작 시간 단축의 근거로 사용하지 않는다.",
+  "references": [
+    {
+      "id": "hani_disc_flip",
+      "title": "은하 뒤집힘",
+      "status": "quality-confirmed-standard",
+      "artifact": {
+        "version": "v8",
+        "path": "out/experiments/shortform-editorial/disc/v8/hani_disc_flip_editorial_v8.mp4",
+        "sha256": "ebad5abf196015fdfef0b1ccaa7911e2656e9e464cc4608e8b3abbe519233699",
+        "seconds": 45.166667
+      },
+      "source_commit": "753fea36cf29ca2b2d0a2abe6850e339b8d40b11",
+      "standard_runtime": {
+        "engine": "editorial-concept@1",
+        "composition": "ShortformNews-hani_disc_flip",
+        "source": "news/hani_disc_flip/02_production",
+        "runner": "npm run render -- hani_disc_flip",
+        "smoke_frame": 500,
+        "reference_ssim": 0.9857
+      },
+      "fixture": "tests/fixtures/editorial/disc",
+      "evidence": "docs/VIDEO_IMPROVEMENTS.md"
+    },
+    {
+      "id": "hani_starfall",
+      "title": "우주택배",
+      "status": "quality-confirmed-standard",
+      "artifact": {
+        "version": "v7",
+        "path": "out/experiments/shortform-editorial/starfall/v7/hani_starfall_editorial_v7.mp4",
+        "sha256": "85e51227e37dbc80090694a675ea698e1ad094a81b222baa40afa873412c83c2",
+        "seconds": 36.5
+      },
+      "source_commit": "753fea36cf29ca2b2d0a2abe6850e339b8d40b11",
+      "standard_runtime": {
+        "engine": "editorial-concept@1",
+        "composition": "ShortformNews-hani_starfall",
+        "source": "news/hani_starfall/02_production",
+        "runner": "npm run render -- hani_starfall",
+        "smoke_frame": 500,
+        "reference_ssim": 0.984722
+      },
+      "fixture": "tests/fixtures/editorial/starfall",
+      "evidence": "docs/VIDEO_IMPROVEMENTS.md"
+    },
+    {
+      "id": "hani_roman_eye",
+      "title": "로먼 망원경",
+      "status": "quality-confirmed-standard",
+      "artifact": {
+        "version": "v7",
+        "path": "out/experiments/shortform-editorial/roman/v7/hani_roman_eye_editorial_v7.mp4",
+        "sha256": "5e96932ca997f8ba0ca4ae77996db0b48a9833c5d43f2488aa3fe4186e526be4",
+        "seconds": 39.766667
+      },
+      "source_commit": "753fea36cf29ca2b2d0a2abe6850e339b8d40b11",
+      "standard_runtime": {
+        "engine": "editorial-concept@1",
+        "composition": "ShortformNews-hani_roman_eye",
+        "source": "news/hani_roman_eye/02_production",
+        "runner": "npm run render -- hani_roman_eye",
+        "smoke_frame": 500,
+        "reference_ssim": 0.952457
+      },
+      "fixture": "tests/fixtures/editorial/roman",
+      "evidence": "docs/VIDEO_IMPROVEMENTS.md"
+    },
+    {
+      "id": "hani_betelgeuse_companion",
+      "title": "베텔게우스 동반별",
+      "status": "quality-confirmed-studio",
+      "artifact": {
+        "composition": "Motion-Betelgeuse",
+        "rendered_mp4": false,
+        "frames": 2835,
+        "seconds": 94.5
+      },
+      "source_commit": "ae5440a9d04c0036b411a4715f8c6f9ef4f251ea",
+      "record_commit": "4b7e0bedbe44e141b1d5ab8e383742f5773fd0be",
+      "fixture": "tests/fixtures/editorial/betelgeuse",
+      "evidence": "docs/VIDEO_IMPROVEMENTS.md"
+    }
+  ]
+}

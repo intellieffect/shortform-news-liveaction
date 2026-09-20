@@ -1,0 +1,92 @@
+{
+  "beat": "b06",
+  "scene": "s04",
+  "role": "body",
+  "visual": {
+    "type": "image",
+    "source": "external",
+    "asset": "<assets.json id>",
+    "file": "pilot/ext/<name>.jpg",
+    "src_size": [
+      4000,
+      2666
+    ],
+    "crop": {
+      "x": 0.31,
+      "y": 0.0,
+      "w": 0.375,
+      "h": 1.0
+    },
+    "split": null,
+    "motion": {
+      "scale_from": 1.0,
+      "scale_to": 1.05,
+      "dx": 0,
+      "dy": 0
+    },
+    "clip": null,
+    "origin_path": "02_production/external_assets/<src>/<file>",
+    "license": "CC BY 4.0",
+    "label": "<무엇이 보이는지 한 줄>",
+    "clip_option": null
+  },
+  "label_overlay": null,
+  "insets": [
+    {
+      "asset": "<assets.json id>",
+      "file": "pilot/ext/<inset>.jpg",
+      "src_size": [
+        4000,
+        2666
+      ],
+      "in": 0.6,
+      "opacity": 1,
+      "border": true,
+      "label": "<이게 무엇인지 — 실물 아님이면 표기>",
+      "credit": "<크레딧 원문>",
+      "layout": "side-R-S",
+      "_comment": "x/y/w 는 npm run layout:43 이 layout(존-크기)에서 파생. 배경이 키워드 실물을 이미 보여주면 인셋 없음"
+    }
+  ],
+  "graphics": [
+    {
+      "id": "counter@1",
+      "in": 0.15,
+      "props": {
+        "from": 0,
+        "to": 1760000,
+        "suffix": " 기",
+        "duration": 1.3,
+        "center": {
+          "x": 540,
+          "y": 720
+        },
+        "earth": {
+          "file": "pilot/overlay/earth_alpha.png",
+          "size": 400
+        },
+        "dots": 360,
+        "label": "<합계 라벨>"
+      },
+      "note": "facts #6 합계만",
+      "layout": "content",
+      "hierarchy": "H1"
+    }
+  ],
+  "gen": {
+    "_comment": "생성 비트만. kind/provider/model/job_id/variant(count 1)/status/output/start_image/alternatives[기각 변형+사유]/credits/prompt/prompt_avoid[]/note(파생 처리·수치 검증). 기각된 생성은 gen_rejected 로 보관. 실사는 visual.clip_option, credit 은 null(AI 고지는 엔드카드 「배경·예시 영상 AI 생성」)"
+  },
+  "ai_allowed": false,
+  "credit": "<크레딧 원문>",
+  "needs": [],
+  "notes": "<facts 규칙 인용>",
+  "label_overlay_in": 0,
+  "inset_option": null,
+  "layout": {
+    "inset": "side-R-S",
+    "card": null,
+    "graphic": "content",
+    "hierarchy": "H1",
+    "_comment": "layer43_plan.<beat>.layout 과 일치해야 함(layout:43 --check)"
+  }
+}

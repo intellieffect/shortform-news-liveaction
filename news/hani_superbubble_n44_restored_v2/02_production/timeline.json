@@ -1,0 +1,1918 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_superbubble_n44_restored_v2",
+  "fps": 30,
+  "total_frames": 2524,
+  "source": {
+    "narration_word_sha256": "d9fd20625c32ba2de4d4b22e99c9c78304851511cb591d2ceafdc83b8f5520fc",
+    "story_sha256": "c2e02c95c9f0df25aaeeefba45bfbf16a9e0d1f051fbb9bd747c2fca9d00f337",
+    "concepts_sha256": "e74ca02f8fc075b0b3080d097335580f0e323403750b2ea7cb15d258ee3d7eff",
+    "motion_sha256": "5ea998407ec49cb97306947bc503b2ceb202eaf0e97a9f6c5e9ecaba7f74e244",
+    "visual_system_sha256": "13fee1fc268ab82d0cf1a11bcc1b387e8bcfd1abd74e8ad85027cc336c7ece73",
+    "production_profile_sha256": "06f64fca74caf039b93cd1e764094d4a36a47de8ebf90543660cda5fe357b22b"
+  },
+  "concepts": [
+    {
+      "id": "discovery",
+      "from": 0,
+      "end": 660,
+      "duration": 660,
+      "narration_lines": [
+        "s01",
+        "s02",
+        "s03",
+        "s04"
+      ]
+    },
+    {
+      "id": "forces",
+      "from": 660,
+      "end": 1085,
+      "duration": 425,
+      "narration_lines": [
+        "s05",
+        "s06",
+        "s07"
+      ]
+    },
+    {
+      "id": "clearing",
+      "from": 1085,
+      "end": 1319,
+      "duration": 234,
+      "narration_lines": [
+        "s08",
+        "s09"
+      ]
+    },
+    {
+      "id": "shell",
+      "from": 1319,
+      "end": 1656,
+      "duration": 337,
+      "narration_lines": [
+        "s10",
+        "s11"
+      ]
+    },
+    {
+      "id": "condense",
+      "from": 1656,
+      "end": 1823,
+      "duration": 167,
+      "narration_lines": [
+        "s12"
+      ]
+    },
+    {
+      "id": "census",
+      "from": 1823,
+      "end": 2230,
+      "duration": 407,
+      "narration_lines": [
+        "s13",
+        "s14",
+        "s15"
+      ]
+    },
+    {
+      "id": "return",
+      "from": 2230,
+      "end": 2524,
+      "duration": 294,
+      "narration_lines": [
+        "s16"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "name_reveal",
+      "concept_id": "discovery",
+      "element_id": "observation",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 0,
+            "word": "대마젤란은하의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 0,
+            "word": "대마젤란은하의",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 8,
+            "word": "구름입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 8,
+            "word": "구름입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 158,
+      "settled": 168,
+      "to": 309,
+      "end": 319
+    },
+    {
+      "id": "size_reveal",
+      "concept_id": "discovery",
+      "element_id": "span",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 0,
+            "word": "중앙의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 0,
+            "word": "중앙의",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 13,
+            "word": "크기죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 13,
+            "word": "크기죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 326,
+      "settled": 336,
+      "to": 510,
+      "end": 520
+    },
+    {
+      "id": "bubble_reveal",
+      "concept_id": "discovery",
+      "element_id": "bubble_name",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 4,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 4,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 7,
+            "word": "슈퍼버블입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 7,
+            "word": "슈퍼버블입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 577,
+      "settled": 587,
+      "to": 649,
+      "end": 659
+    },
+    {
+      "id": "stars_label",
+      "concept_id": "forces",
+      "element_id": "stars",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 3,
+            "word": "그",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 3,
+            "word": "그",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 714,
+      "settled": 724,
+      "to": 782,
+      "end": 792
+    },
+    {
+      "id": "wind_label",
+      "concept_id": "forces",
+      "element_id": "force_labels",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 868,
+      "settled": 878,
+      "to": 948,
+      "end": 958
+    },
+    {
+      "id": "shock_label",
+      "concept_id": "forces",
+      "element_id": "force_labels",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 3,
+            "word": "초신성으로",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 3,
+            "word": "초신성으로",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 991,
+      "settled": 1001,
+      "to": 1074,
+      "end": 1084
+    },
+    {
+      "id": "wind_push",
+      "concept_id": "forces",
+      "element_id": "wind",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": -8
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "여기에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "여기에",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "별에서 시작한 입자 흐름과 같은 가스의 바깥 이동을 연결.",
+      "from": 868,
+      "settled": 944,
+      "to": 964,
+      "end": 974
+    },
+    {
+      "id": "shock_push",
+      "concept_id": "forces",
+      "element_id": "shock",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 4,
+            "word": "폭발할",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "폭발의 밝기 변화와 팽창 충격면 뒤로 가스 경계가 더 이동.",
+      "from": 1012,
+      "settled": 1074,
+      "to": 1078,
+      "end": 1084
+    },
+    {
+      "id": "clearing_reveal",
+      "concept_id": "clearing",
+      "element_id": "clearing_provenance",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "이",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "이",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 4,
+            "word": "갔을까요?",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 4,
+            "word": "갔을까요?",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1091,
+      "settled": 1101,
+      "to": 1309,
+      "end": 1319
+    },
+    {
+      "id": "pile_up",
+      "concept_id": "shell",
+      "element_id": "shell_label",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 9,
+            "word": "이룹니다.",
+            "edge": "end",
+            "offset_frames": -7
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "이미 이동한 가스 덩어리의 위치를 보존하고 두께와 밀도를 강화.",
+      "from": 1400,
+      "settled": 1508,
+      "to": 1650,
+      "end": 1656
+    },
+    {
+      "id": "shell_label_show",
+      "concept_id": "shell",
+      "element_id": "shell_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1400,
+      "settled": 1410,
+      "to": 1646,
+      "end": 1656
+    },
+    {
+      "id": "birth_glow",
+      "concept_id": "shell",
+      "element_id": "new_stars",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "껍질 안 조밀한 매듭을 다음별 재료로 예고.",
+      "from": 1588,
+      "settled": 1644,
+      "to": 1650,
+      "end": 1655
+    },
+    {
+      "id": "birth_label",
+      "concept_id": "shell",
+      "element_id": "new_stars",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1588,
+      "settled": 1598,
+      "to": 1646,
+      "end": 1656
+    },
+    {
+      "id": "clump_label",
+      "concept_id": "condense",
+      "element_id": "reconstruction",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 0,
+            "word": "차가운",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 0,
+            "word": "차가운",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1661,
+      "settled": 1671,
+      "to": 1812,
+      "end": 1822
+    },
+    {
+      "id": "clump_contract",
+      "concept_id": "condense",
+      "element_id": "gas_clump",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 1,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 3,
+            "word": "조밀해지는",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "여러 가스 가닥이 동일 중심으로 수축해 조밀한 매듭이 되는 변화.",
+      "from": 1668,
+      "settled": 1719,
+      "to": 1816,
+      "end": 1822
+    },
+    {
+      "id": "count_reveal",
+      "concept_id": "census",
+      "element_id": "young_count",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 7,
+            "word": "약",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 7,
+            "word": "약",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 6,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 6,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1913,
+      "settled": 1923,
+      "to": 2089,
+      "end": 2099
+    },
+    {
+      "id": "hydrogen_reveal",
+      "concept_id": "census",
+      "element_id": "hydrogen_condition",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 2,
+            "word": "수소",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 2,
+            "word": "수소",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "셈이죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "셈이죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다.",
+      "from": 1996,
+      "settled": 2006,
+      "to": 2218,
+      "end": 2228
+    }
+  ],
+  "audio_cues": [
+    {
+      "id": "wind_air",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "wind_push",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/air-balanced.wav",
+      "gain_db": -3,
+      "frame": 868
+    },
+    {
+      "id": "shock_pulse",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "shock_push",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/pulse-balanced.wav",
+      "gain_db": -6,
+      "frame": 1012
+    },
+    {
+      "id": "shell_glint",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "birth_glow",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/glint-balanced.wav",
+      "gain_db": -3,
+      "frame": 1644
+    }
+  ],
+  "proof_frames": [
+    {
+      "id": "p001",
+      "frame": 0,
+      "labels": [
+        "concept:discovery:from"
+      ]
+    },
+    {
+      "id": "p002",
+      "frame": 157,
+      "labels": [
+        "event:name_reveal:before"
+      ]
+    },
+    {
+      "id": "p003",
+      "frame": 158,
+      "labels": [
+        "event:name_reveal:from"
+      ]
+    },
+    {
+      "id": "p004",
+      "frame": 163,
+      "labels": [
+        "event:name_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p005",
+      "frame": 168,
+      "labels": [
+        "event:name_reveal:settled"
+      ]
+    },
+    {
+      "id": "p006",
+      "frame": 309,
+      "labels": [
+        "event:name_reveal:to"
+      ]
+    },
+    {
+      "id": "p007",
+      "frame": 314,
+      "labels": [
+        "event:name_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p008",
+      "frame": 319,
+      "labels": [
+        "event:name_reveal:end"
+      ]
+    },
+    {
+      "id": "p009",
+      "frame": 325,
+      "labels": [
+        "event:size_reveal:before"
+      ]
+    },
+    {
+      "id": "p010",
+      "frame": 326,
+      "labels": [
+        "event:size_reveal:from"
+      ]
+    },
+    {
+      "id": "p011",
+      "frame": 331,
+      "labels": [
+        "event:size_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p012",
+      "frame": 336,
+      "labels": [
+        "event:size_reveal:settled"
+      ]
+    },
+    {
+      "id": "p013",
+      "frame": 510,
+      "labels": [
+        "event:size_reveal:to"
+      ]
+    },
+    {
+      "id": "p014",
+      "frame": 515,
+      "labels": [
+        "event:size_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p015",
+      "frame": 520,
+      "labels": [
+        "event:size_reveal:end"
+      ]
+    },
+    {
+      "id": "p016",
+      "frame": 576,
+      "labels": [
+        "event:bubble_reveal:before"
+      ]
+    },
+    {
+      "id": "p017",
+      "frame": 577,
+      "labels": [
+        "event:bubble_reveal:from"
+      ]
+    },
+    {
+      "id": "p018",
+      "frame": 582,
+      "labels": [
+        "event:bubble_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p019",
+      "frame": 587,
+      "labels": [
+        "event:bubble_reveal:settled"
+      ]
+    },
+    {
+      "id": "p020",
+      "frame": 649,
+      "labels": [
+        "event:bubble_reveal:to"
+      ]
+    },
+    {
+      "id": "p021",
+      "frame": 654,
+      "labels": [
+        "event:bubble_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p022",
+      "frame": 659,
+      "labels": [
+        "concept:discovery:end",
+        "event:bubble_reveal:end"
+      ]
+    },
+    {
+      "id": "p023",
+      "frame": 660,
+      "labels": [
+        "concept:forces:from"
+      ]
+    },
+    {
+      "id": "p024",
+      "frame": 713,
+      "labels": [
+        "event:stars_label:before"
+      ]
+    },
+    {
+      "id": "p025",
+      "frame": 714,
+      "labels": [
+        "event:stars_label:from"
+      ]
+    },
+    {
+      "id": "p026",
+      "frame": 719,
+      "labels": [
+        "event:stars_label:enter-mid"
+      ]
+    },
+    {
+      "id": "p027",
+      "frame": 724,
+      "labels": [
+        "event:stars_label:settled"
+      ]
+    },
+    {
+      "id": "p028",
+      "frame": 782,
+      "labels": [
+        "event:stars_label:to"
+      ]
+    },
+    {
+      "id": "p029",
+      "frame": 787,
+      "labels": [
+        "event:stars_label:exit-mid"
+      ]
+    },
+    {
+      "id": "p030",
+      "frame": 792,
+      "labels": [
+        "event:stars_label:end"
+      ]
+    },
+    {
+      "id": "p031",
+      "frame": 867,
+      "labels": [
+        "event:wind_label:before",
+        "event:wind_push:before"
+      ]
+    },
+    {
+      "id": "p032",
+      "frame": 868,
+      "labels": [
+        "event:wind_label:from",
+        "event:wind_push:from"
+      ]
+    },
+    {
+      "id": "p033",
+      "frame": 873,
+      "labels": [
+        "event:wind_label:enter-mid"
+      ]
+    },
+    {
+      "id": "p034",
+      "frame": 878,
+      "labels": [
+        "event:wind_label:settled"
+      ]
+    },
+    {
+      "id": "p035",
+      "frame": 906,
+      "labels": [
+        "event:wind_push:enter-mid"
+      ]
+    },
+    {
+      "id": "p036",
+      "frame": 944,
+      "labels": [
+        "event:wind_push:settled"
+      ]
+    },
+    {
+      "id": "p037",
+      "frame": 948,
+      "labels": [
+        "event:wind_label:to"
+      ]
+    },
+    {
+      "id": "p038",
+      "frame": 953,
+      "labels": [
+        "event:wind_label:exit-mid"
+      ]
+    },
+    {
+      "id": "p039",
+      "frame": 958,
+      "labels": [
+        "event:wind_label:end"
+      ]
+    },
+    {
+      "id": "p040",
+      "frame": 964,
+      "labels": [
+        "event:wind_push:to"
+      ]
+    },
+    {
+      "id": "p041",
+      "frame": 969,
+      "labels": [
+        "event:wind_push:exit-mid"
+      ]
+    },
+    {
+      "id": "p042",
+      "frame": 974,
+      "labels": [
+        "event:wind_push:end"
+      ]
+    },
+    {
+      "id": "p043",
+      "frame": 990,
+      "labels": [
+        "event:shock_label:before"
+      ]
+    },
+    {
+      "id": "p044",
+      "frame": 991,
+      "labels": [
+        "event:shock_label:from"
+      ]
+    },
+    {
+      "id": "p045",
+      "frame": 996,
+      "labels": [
+        "event:shock_label:enter-mid"
+      ]
+    },
+    {
+      "id": "p046",
+      "frame": 1001,
+      "labels": [
+        "event:shock_label:settled"
+      ]
+    },
+    {
+      "id": "p047",
+      "frame": 1011,
+      "labels": [
+        "event:shock_push:before"
+      ]
+    },
+    {
+      "id": "p048",
+      "frame": 1012,
+      "labels": [
+        "event:shock_push:from"
+      ]
+    },
+    {
+      "id": "p049",
+      "frame": 1043,
+      "labels": [
+        "event:shock_push:enter-mid"
+      ]
+    },
+    {
+      "id": "p050",
+      "frame": 1074,
+      "labels": [
+        "event:shock_label:to",
+        "event:shock_push:settled"
+      ]
+    },
+    {
+      "id": "p051",
+      "frame": 1078,
+      "labels": [
+        "event:shock_push:to"
+      ]
+    },
+    {
+      "id": "p052",
+      "frame": 1079,
+      "labels": [
+        "event:shock_label:exit-mid"
+      ]
+    },
+    {
+      "id": "p053",
+      "frame": 1081,
+      "labels": [
+        "event:shock_push:exit-mid"
+      ]
+    },
+    {
+      "id": "p054",
+      "frame": 1084,
+      "labels": [
+        "concept:forces:end",
+        "event:shock_label:end",
+        "event:shock_push:end"
+      ]
+    },
+    {
+      "id": "p055",
+      "frame": 1085,
+      "labels": [
+        "concept:clearing:from"
+      ]
+    },
+    {
+      "id": "p056",
+      "frame": 1090,
+      "labels": [
+        "event:clearing_reveal:before"
+      ]
+    },
+    {
+      "id": "p057",
+      "frame": 1091,
+      "labels": [
+        "event:clearing_reveal:from"
+      ]
+    },
+    {
+      "id": "p058",
+      "frame": 1096,
+      "labels": [
+        "event:clearing_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p059",
+      "frame": 1101,
+      "labels": [
+        "event:clearing_reveal:settled"
+      ]
+    },
+    {
+      "id": "p060",
+      "frame": 1309,
+      "labels": [
+        "event:clearing_reveal:to"
+      ]
+    },
+    {
+      "id": "p061",
+      "frame": 1314,
+      "labels": [
+        "event:clearing_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p062",
+      "frame": 1318,
+      "labels": [
+        "concept:clearing:end"
+      ]
+    },
+    {
+      "id": "p063",
+      "frame": 1319,
+      "labels": [
+        "concept:shell:from",
+        "event:clearing_reveal:end"
+      ]
+    },
+    {
+      "id": "p064",
+      "frame": 1399,
+      "labels": [
+        "event:pile_up:before",
+        "event:shell_label_show:before"
+      ]
+    },
+    {
+      "id": "p065",
+      "frame": 1400,
+      "labels": [
+        "event:pile_up:from",
+        "event:shell_label_show:from"
+      ]
+    },
+    {
+      "id": "p066",
+      "frame": 1405,
+      "labels": [
+        "event:shell_label_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p067",
+      "frame": 1410,
+      "labels": [
+        "event:shell_label_show:settled"
+      ]
+    },
+    {
+      "id": "p068",
+      "frame": 1454,
+      "labels": [
+        "event:pile_up:enter-mid"
+      ]
+    },
+    {
+      "id": "p069",
+      "frame": 1508,
+      "labels": [
+        "event:pile_up:settled"
+      ]
+    },
+    {
+      "id": "p070",
+      "frame": 1587,
+      "labels": [
+        "event:birth_glow:before",
+        "event:birth_label:before"
+      ]
+    },
+    {
+      "id": "p071",
+      "frame": 1588,
+      "labels": [
+        "event:birth_glow:from",
+        "event:birth_label:from"
+      ]
+    },
+    {
+      "id": "p072",
+      "frame": 1593,
+      "labels": [
+        "event:birth_label:enter-mid"
+      ]
+    },
+    {
+      "id": "p073",
+      "frame": 1598,
+      "labels": [
+        "event:birth_label:settled"
+      ]
+    },
+    {
+      "id": "p074",
+      "frame": 1616,
+      "labels": [
+        "event:birth_glow:enter-mid"
+      ]
+    },
+    {
+      "id": "p075",
+      "frame": 1644,
+      "labels": [
+        "event:birth_glow:settled"
+      ]
+    },
+    {
+      "id": "p076",
+      "frame": 1646,
+      "labels": [
+        "event:shell_label_show:to",
+        "event:birth_label:to"
+      ]
+    },
+    {
+      "id": "p077",
+      "frame": 1650,
+      "labels": [
+        "event:pile_up:to",
+        "event:birth_glow:to"
+      ]
+    },
+    {
+      "id": "p078",
+      "frame": 1651,
+      "labels": [
+        "event:shell_label_show:exit-mid",
+        "event:birth_label:exit-mid"
+      ]
+    },
+    {
+      "id": "p079",
+      "frame": 1653,
+      "labels": [
+        "event:pile_up:exit-mid",
+        "event:birth_glow:exit-mid"
+      ]
+    },
+    {
+      "id": "p080",
+      "frame": 1655,
+      "labels": [
+        "concept:shell:end",
+        "event:birth_glow:end"
+      ]
+    },
+    {
+      "id": "p081",
+      "frame": 1656,
+      "labels": [
+        "concept:condense:from",
+        "event:pile_up:end",
+        "event:shell_label_show:end",
+        "event:birth_label:end"
+      ]
+    },
+    {
+      "id": "p082",
+      "frame": 1660,
+      "labels": [
+        "event:clump_label:before"
+      ]
+    },
+    {
+      "id": "p083",
+      "frame": 1661,
+      "labels": [
+        "event:clump_label:from"
+      ]
+    },
+    {
+      "id": "p084",
+      "frame": 1666,
+      "labels": [
+        "event:clump_label:enter-mid"
+      ]
+    },
+    {
+      "id": "p085",
+      "frame": 1667,
+      "labels": [
+        "event:clump_contract:before"
+      ]
+    },
+    {
+      "id": "p086",
+      "frame": 1668,
+      "labels": [
+        "event:clump_contract:from"
+      ]
+    },
+    {
+      "id": "p087",
+      "frame": 1671,
+      "labels": [
+        "event:clump_label:settled"
+      ]
+    },
+    {
+      "id": "p088",
+      "frame": 1694,
+      "labels": [
+        "event:clump_contract:enter-mid"
+      ]
+    },
+    {
+      "id": "p089",
+      "frame": 1719,
+      "labels": [
+        "event:clump_contract:settled"
+      ]
+    },
+    {
+      "id": "p090",
+      "frame": 1812,
+      "labels": [
+        "event:clump_label:to"
+      ]
+    },
+    {
+      "id": "p091",
+      "frame": 1816,
+      "labels": [
+        "event:clump_contract:to"
+      ]
+    },
+    {
+      "id": "p092",
+      "frame": 1817,
+      "labels": [
+        "event:clump_label:exit-mid"
+      ]
+    },
+    {
+      "id": "p093",
+      "frame": 1819,
+      "labels": [
+        "event:clump_contract:exit-mid"
+      ]
+    },
+    {
+      "id": "p094",
+      "frame": 1822,
+      "labels": [
+        "concept:condense:end",
+        "event:clump_label:end",
+        "event:clump_contract:end"
+      ]
+    },
+    {
+      "id": "p095",
+      "frame": 1823,
+      "labels": [
+        "concept:census:from"
+      ]
+    },
+    {
+      "id": "p096",
+      "frame": 1912,
+      "labels": [
+        "event:count_reveal:before"
+      ]
+    },
+    {
+      "id": "p097",
+      "frame": 1913,
+      "labels": [
+        "event:count_reveal:from"
+      ]
+    },
+    {
+      "id": "p098",
+      "frame": 1918,
+      "labels": [
+        "event:count_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p099",
+      "frame": 1923,
+      "labels": [
+        "event:count_reveal:settled"
+      ]
+    },
+    {
+      "id": "p100",
+      "frame": 1995,
+      "labels": [
+        "event:hydrogen_reveal:before"
+      ]
+    },
+    {
+      "id": "p101",
+      "frame": 1996,
+      "labels": [
+        "event:hydrogen_reveal:from"
+      ]
+    },
+    {
+      "id": "p102",
+      "frame": 2001,
+      "labels": [
+        "event:hydrogen_reveal:enter-mid"
+      ]
+    },
+    {
+      "id": "p103",
+      "frame": 2006,
+      "labels": [
+        "event:hydrogen_reveal:settled"
+      ]
+    },
+    {
+      "id": "p104",
+      "frame": 2089,
+      "labels": [
+        "event:count_reveal:to"
+      ]
+    },
+    {
+      "id": "p105",
+      "frame": 2094,
+      "labels": [
+        "event:count_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p106",
+      "frame": 2099,
+      "labels": [
+        "event:count_reveal:end"
+      ]
+    },
+    {
+      "id": "p107",
+      "frame": 2218,
+      "labels": [
+        "event:hydrogen_reveal:to"
+      ]
+    },
+    {
+      "id": "p108",
+      "frame": 2223,
+      "labels": [
+        "event:hydrogen_reveal:exit-mid"
+      ]
+    },
+    {
+      "id": "p109",
+      "frame": 2228,
+      "labels": [
+        "event:hydrogen_reveal:end"
+      ]
+    },
+    {
+      "id": "p110",
+      "frame": 2229,
+      "labels": [
+        "concept:census:end"
+      ]
+    },
+    {
+      "id": "p111",
+      "frame": 2230,
+      "labels": [
+        "concept:return:from"
+      ]
+    },
+    {
+      "id": "p112",
+      "frame": 2523,
+      "labels": [
+        "concept:return:end"
+      ]
+    }
+  ],
+  "production_profile": {
+    "schema_version": "1.0",
+    "id": "hani-shortform",
+    "version": "1.2.0",
+    "canvas": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30
+    },
+    "caption": {
+      "max_lines": 1,
+      "preset": "betelgeuse-v1",
+      "font_family": "GmarketSans",
+      "font_size": 70,
+      "weight": 500,
+      "emphasis_weight": 700,
+      "color": "#FFFFFF",
+      "accent": "#f2b879",
+      "line_height": 1.35,
+      "top": 1523,
+      "side_inset": 74,
+      "backdrop": "rgba(0,0,0,0.3)",
+      "padding_y": 0,
+      "padding_x": 12,
+      "radius": 4,
+      "lead_frames": 3,
+      "enter_frames": 6,
+      "rise_px": 16,
+      "box_height": 94
+    }
+  }
+}

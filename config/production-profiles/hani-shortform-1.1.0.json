@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "hani-shortform",
+  "version": "1.1.0",
+  "canvas": { "width": 1080, "height": 1920, "fps": 30 },
+  "caption": {
+    "max_lines": 1,
+    "preset": "betelgeuse-v1",
+    "font_family": "Pretendard",
+    "font_size": 60,
+    "weight": 600,
+    "emphasis_weight": 800,
+    "color": "#FFFFFF",
+    "accent": "#f2b879",
+    "line_height": 1.35,
+    "top": 1490,
+    "side_inset": 80,
+    "backdrop": "rgba(11,15,26,0.62)",
+    "padding_y": 8,
+    "padding_x": 24,
+    "radius": 16,
+    "lead_frames": 3,
+    "enter_frames": 6,
+    "rise_px": 16
+  }
+}

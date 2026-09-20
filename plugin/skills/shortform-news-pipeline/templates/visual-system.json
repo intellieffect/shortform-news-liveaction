@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "preset": "editorial-concept-v1",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "caption": {
+    "preset": "betelgeuse-v1"
+  },
+  "text": {
+    "persistent_top_text": false,
+    "explanatory_notes": false,
+    "allowed_roles": [
+      "necessary-label",
+      "condition",
+      "provenance"
+    ]
+  },
+  "media": {
+    "full_bleed_default": true,
+    "assets": []
+  },
+  "mobile": {
+    "max_simultaneous_labels": 3,
+    "review_scale": 0.3333333333
+  },
+  "motion": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in",
+    "quantitative_overshoot": false
+  },
+  "production_profile": {
+    "id": "hani-shortform",
+    "version": "1.1.0"
+  }
+}

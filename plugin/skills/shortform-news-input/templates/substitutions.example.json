@@ -1,0 +1,16 @@
+{
+  "_comment": "치환표 — 자막표기(text) 토큰 → 낭독표기(spoken_text) 토큰(1개 이상). 따옴표(' \" “ ” ‘ ’)는 표 없이 자동 제거. 단일 소스: 이 파일. captions_storyflow.md는 이 파일을 참조한다.",
+  "pairs": [
+    {"text": "스페이스X가", "spoken": "스페이스 엑스가"},
+    {"text": "스페이스X의", "spoken": "스페이스 엑스의"},
+    {"text": "2019년", "spoken": "이천십구 년"},
+    {"text": "1만", "spoken": "만"},
+    {"text": "6천", "spoken": "육천"},
+    {"text": "176만", "spoken": "백칠십육만"},
+    {"text": "100만", "spoken": "백만"},
+    {"text": "20만", "spoken": "이십만"},
+    {"text": "5만", "spoken": "오만"},
+    {"text": "4배", "spoken": "네 배"},
+    {"text": "10만", "spoken": "십만"}
+  ]
+}

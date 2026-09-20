@@ -1,0 +1,928 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_superbubble_n44_restored_v2",
+  "fps": 30,
+  "total_frames": 2524,
+  "narration_word_sha256": "d9fd20625c32ba2de4d4b22e99c9c78304851511cb591d2ceafdc83b8f5520fc",
+  "events": [
+    {
+      "id": "name_reveal",
+      "concept_id": "discovery",
+      "element_id": "observation",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 0,
+            "word": "대마젤란은하의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 0,
+            "word": "대마젤란은하의",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 8,
+            "word": "구름입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 8,
+            "word": "구름입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "size_reveal",
+      "concept_id": "discovery",
+      "element_id": "span",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 0,
+            "word": "중앙의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 0,
+            "word": "중앙의",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 13,
+            "word": "크기죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 13,
+            "word": "크기죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "bubble_reveal",
+      "concept_id": "discovery",
+      "element_id": "bubble_name",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 4,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 4,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 7,
+            "word": "슈퍼버블입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 7,
+            "word": "슈퍼버블입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "stars_label",
+      "concept_id": "forces",
+      "element_id": "stars",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 3,
+            "word": "그",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 3,
+            "word": "그",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "wind_label",
+      "concept_id": "forces",
+      "element_id": "force_labels",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "shock_label",
+      "concept_id": "forces",
+      "element_id": "force_labels",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 3,
+            "word": "초신성으로",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 3,
+            "word": "초신성으로",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "wind_push",
+      "concept_id": "forces",
+      "element_id": "wind",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 4,
+            "word": "빠른",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 8,
+            "word": "뿜어냅니다.",
+            "edge": "end",
+            "offset_frames": -8
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "여기에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "여기에",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "별에서 시작한 입자 흐름과 같은 가스의 바깥 이동을 연결."
+    },
+    {
+      "id": "shock_push",
+      "concept_id": "forces",
+      "element_id": "shock",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 4,
+            "word": "폭발할",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 7,
+            "word": "더해집니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "폭발의 밝기 변화와 팽창 충격면 뒤로 가스 경계가 더 이동."
+    },
+    {
+      "id": "clearing_reveal",
+      "concept_id": "clearing",
+      "element_id": "clearing_provenance",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "이",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "이",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 4,
+            "word": "갔을까요?",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 4,
+            "word": "갔을까요?",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "pile_up",
+      "concept_id": "shell",
+      "element_id": "shell_label",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 9,
+            "word": "이룹니다.",
+            "edge": "end",
+            "offset_frames": -7
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "이미 이동한 가스 덩어리의 위치를 보존하고 두께와 밀도를 강화."
+    },
+    {
+      "id": "shell_label_show",
+      "concept_id": "shell",
+      "element_id": "shell_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 3,
+            "word": "바깥에",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "birth_glow",
+      "concept_id": "shell",
+      "element_id": "new_stars",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "껍질 안 조밀한 매듭을 다음별 재료로 예고."
+    },
+    {
+      "id": "birth_label",
+      "concept_id": "shell",
+      "element_id": "new_stars",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 4,
+            "word": "다음",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 8,
+            "word": "됩니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "clump_label",
+      "concept_id": "condense",
+      "element_id": "reconstruction",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 0,
+            "word": "차가운",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 0,
+            "word": "차가운",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "clump_contract",
+      "concept_id": "condense",
+      "element_id": "gas_clump",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 1,
+            "word": "가스가",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 3,
+            "word": "조밀해지는",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 8,
+            "word": "단계죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "여러 가스 가닥이 동일 중심으로 수축해 조밀한 매듭이 되는 변화."
+    },
+    {
+      "id": "count_reveal",
+      "concept_id": "census",
+      "element_id": "young_count",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 7,
+            "word": "약",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 7,
+            "word": "약",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 6,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 6,
+            "word": "별들입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    },
+    {
+      "id": "hydrogen_reveal",
+      "concept_id": "census",
+      "element_id": "hydrogen_condition",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 2,
+            "word": "수소",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 2,
+            "word": "수소",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "셈이죠.",
+            "edge": "end",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "셈이죠.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "발화에 맞춰 등장하고 읽을 시간을 유지한다."
+    }
+  ],
+  "audio_cues": [
+    {
+      "id": "wind_air",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "wind_push",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/air-balanced.wav",
+      "gain_db": -3
+    },
+    {
+      "id": "shock_pulse",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "shock_push",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/pulse-balanced.wav",
+      "gain_db": -6
+    },
+    {
+      "id": "shell_glint",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "birth_glow",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/glint-balanced.wav",
+      "gain_db": -3
+    }
+  ]
+}

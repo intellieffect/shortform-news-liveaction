@@ -1,0 +1,6 @@
+{
+  "schema_version": "restored-production-defaults@1",
+  "baseline_commit": "59a2af79",
+  "guide": "config/production-defaults.md",
+  "logo_package": "presets/hani/brand-assets/v1/manifest.json"
+}

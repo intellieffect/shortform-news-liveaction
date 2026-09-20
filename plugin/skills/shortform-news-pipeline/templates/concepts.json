@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "pilot": "example_editorial",
+  "concepts": [
+    {
+      "id": "setup",
+      "question": "무엇이 이상한가?",
+      "takeaway": "시청자가 설명 전에 알아야 할 대상과 문제",
+      "narration_lines": ["s01", "s02"],
+      "facts": ["F1"],
+      "prerequisites": [],
+      "range": {
+        "from": {"anchor": {"line": "s01", "token_index": 0, "word": "첫", "edge": "start", "offset_frames": -8}},
+        "end": {"anchor": {"line": "s02", "token_index": 2, "word": "단어", "edge": "end", "offset_frames": 8}}
+      },
+      "representation": {
+        "kind": "footage",
+        "role": "evidence",
+        "full_bleed": true,
+        "assets": ["asset_main"],
+        "why": "주제의 실제 대상을 첫 화면에서 직접 보여준다"
+      },
+      "state": {
+        "keep": [],
+        "add": ["subject", "subject_name"],
+        "remove": []
+      },
+      "elements": [
+        {"id": "subject", "kind": "media", "role": "evidence"},
+        {"id": "subject_name", "kind": "text", "role": "necessary-label"}
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 2,
+        "focal_priority": ["subject", "subject_name"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1834 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "primitives.props.schema.v1.2",
+ "title": "Graphic primitives — props JSON Schema v1.2",
+ "description": "output 4-3 ③ 확정 props(2026-08-28)를 스키마로 굳힌 것. shots.graphics[] / overlays 의 primitive props 검증용. 좌표 단위: px = 1080×1920 캔버스 픽셀, ratio = 0~1. 공통 필드 in(초, 비트 시작 기준)은 graphics[] 엔트리에 있고 props 밖. | v1.2a: inset@1을 output shots.insets[] 실제 필드(asset·file·src_size·x·y·w·opacity·border·label·credit)로 맞춤 (2026-08-28).",
+ "$defs": {
+  "px": {
+   "type": "number",
+   "minimum": 0
+  },
+  "ratio": {
+   "type": "number",
+   "minimum": 0,
+   "maximum": 1
+  },
+  "point_px": {
+   "type": "object",
+   "required": [
+    "x",
+    "y"
+   ],
+   "properties": {
+    "x": {
+     "$ref": "#/$defs/px"
+    },
+    "y": {
+     "$ref": "#/$defs/px"
+    }
+   },
+   "additionalProperties": false
+  },
+  "rect_ratio": {
+   "type": "object",
+   "required": [
+    "x",
+    "y",
+    "w",
+    "h"
+   ],
+   "properties": {
+    "x": {
+     "$ref": "#/$defs/ratio"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "w": {
+     "$ref": "#/$defs/ratio"
+    },
+    "h": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false
+  },
+  "image_ref": {
+   "type": "object",
+   "required": [
+    "file"
+   ],
+   "properties": {
+    "file": {
+     "type": "string",
+     "description": "public/ 기준 경로. 알파 PNG"
+    },
+    "size": {
+     "$ref": "#/$defs/px",
+     "description": "긴 변 px"
+    }
+   },
+   "additionalProperties": false
+  },
+  "graphics_entry": {
+   "type": "object",
+   "required": [
+    "id",
+    "props"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z_]+@[0-9]+$",
+     "description": "레지스트리 id. 미등록·deprecated면 check-shots 에러"
+    },
+    "in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초. 생략 = 0"
+    },
+    "props": {
+     "type": "object"
+    },
+    "note": {
+     "type": "string",
+     "description": "facts.md 규칙 인용 권장 (예: 'facts #6')"
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "counter@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/counter_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "evidence_card@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/evidence_card_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "dot@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/dot_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "measure@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/measure_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "diagram@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/diagram_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "inset@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/inset_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "hook_title@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/hook_title_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "arrow_step@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/arrow_step_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "stat_block@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/stat_block_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "equation_block@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/equation_block_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "bullet_list@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/bullet_list_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "quote_slab@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/quote_slab_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "cta_bar@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/cta_bar_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "veil@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/veil_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "reveal@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/reveal_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "orbit_deploy@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/orbit_deploy_v1"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "id": {
+        "const": "radius_map@1"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "props": {
+        "$ref": "#/$defs/radius_map_v1"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "counter_v1": {
+   "type": "object",
+   "required": [
+    "from",
+    "to"
+   ],
+   "properties": {
+    "from": {
+     "type": "number"
+    },
+    "to": {
+     "type": "number"
+    },
+    "suffix": {
+     "type": "string",
+     "default": ""
+    },
+    "duration": {
+     "type": "number",
+     "exclusiveMinimum": 0,
+     "default": 1.4,
+     "description": "초"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "earth": {
+     "$ref": "#/$defs/image_ref"
+    },
+    "dots": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "장식용 점 개수 — 사실 수치와 무관"
+    },
+    "label": {
+     "type": "string"
+    },
+    "format": {
+     "enum": [
+      "ko",
+      "arabic"
+     ],
+     "default": "ko",
+     "description": "ko=만 단위(176만), arabic=1,766,623 (대본 자막 표기 따를 때)"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "중간값이 사실로 읽히지 않게: 내역 숫자 노출 금지 (facts #6). 화면 숫자는 to 하나만 사실",
+    "kind: static (등장 애니는 textAnim 토글 하위)"
+   ]
+  },
+  "evidence_card_v1": {
+   "type": "object",
+   "required": [
+    "file",
+    "src_size",
+    "crop",
+    "source"
+   ],
+   "properties": {
+    "file": {
+     "type": "string"
+    },
+    "src_size": {
+     "type": "array",
+     "items": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "crop": {
+     "$ref": "#/$defs/rect_ratio"
+    },
+    "highlight": {
+     "oneOf": [
+      {
+       "$ref": "#/$defs/rect_ratio"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "description": "crop 원본 좌표계(ratio). null = 없음"
+    },
+    "quote": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "원문 그대로(verbatim). 축약·의역 금지 (facts #27)"
+    },
+    "source": {
+     "type": "string",
+     "minLength": 1,
+     "description": "소출처 표기 문자열"
+    },
+    "x": {
+     "$ref": "#/$defs/px"
+    },
+    "y": {
+     "$ref": "#/$defs/px"
+    },
+    "w": {
+     "$ref": "#/$defs/px"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "file은 assets.json overlay_assets/brief_assets에 등록된 문서(license·credit 있음)만",
+    "SF-P13 SOURCE_DOCUMENT_EVIDENCE 대응"
+   ]
+  },
+  "dot_v1": {
+   "type": "object",
+   "required": [
+    "x",
+    "y"
+   ],
+   "properties": {
+    "x": {
+     "$ref": "#/$defs/px"
+    },
+    "y": {
+     "$ref": "#/$defs/px"
+    },
+    "r": {
+     "$ref": "#/$defs/px",
+     "default": 10
+    },
+    "pulse": {
+     "type": "boolean",
+     "default": false
+    },
+    "label": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "additionalProperties": false
+  },
+  "measure_v1": {
+   "type": "object",
+   "required": [
+    "unit",
+    "a",
+    "b"
+   ],
+   "properties": {
+    "x": {
+     "$ref": "#/$defs/px"
+    },
+    "y": {
+     "$ref": "#/$defs/px"
+    },
+    "unit": {
+     "type": "number",
+     "exclusiveMinimum": 0,
+     "description": "값 1당 px"
+    },
+    "a": {
+     "type": "object",
+     "required": [
+      "label",
+      "value"
+     ],
+     "properties": {
+      "label": {
+       "type": "string"
+      },
+      "value": {
+       "type": "number"
+      },
+      "image": {
+       "$ref": "#/$defs/image_ref"
+      }
+     },
+     "additionalProperties": false
+    },
+    "b": {
+     "type": "object",
+     "required": [
+      "label",
+      "value"
+     ],
+     "properties": {
+      "label": {
+       "type": "string"
+      },
+      "value": {
+       "type": "number"
+      },
+      "image": {
+       "$ref": "#/$defs/image_ref"
+      }
+     },
+     "additionalProperties": false
+    },
+    "note": {
+     "type": "string",
+     "description": "비교 조건 문구 — 조건부 사실이면 필수 (예: '반사광 안에서 볼 때', facts #11)"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "같은 단위·같은 질문의 두 값만 (SF-P05:v4)",
+    "a/b value는 facts.md 항목 번호로 근거 추적 가능해야 함"
+   ]
+  },
+  "diagram_v1": {
+   "type": "object",
+   "required": [
+    "nodes",
+    "arrows"
+   ],
+   "properties": {
+    "title": {
+     "type": "string"
+    },
+    "nodes": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 6,
+     "items": {
+      "type": "object",
+      "required": [
+       "icon",
+       "x",
+       "y",
+       "label"
+      ],
+      "properties": {
+       "icon": {
+        "type": "string",
+        "enum": [
+         "sun",
+         "satellite",
+         "planet",
+         "mirror",
+         "ground",
+         "telescope",
+         "star",
+         "eye",
+         "world",
+         "moon-stars",
+         "file-text"
+        ]
+       },
+       "x": {
+        "$ref": "#/$defs/px"
+       },
+       "y": {
+        "$ref": "#/$defs/px"
+       },
+       "label": {
+        "type": "string"
+       },
+       "size": {
+        "$ref": "#/$defs/px",
+        "default": 100
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "arrows": {
+     "type": "array",
+     "items": {
+      "type": "array",
+      "items": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "minItems": 2,
+      "maxItems": 2
+     }
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "화살표 = 물리적 경로(빛·궤도)만. 기사에 없는 인과 주장 금지 (facts #25)",
+    "실물 오인 방지: 실존 하드웨어 노드는 label에 '(추상)' 또는 '실물 아님' 표기 (facts #9)",
+    "icon은 Tabler MIT 세트 내"
+   ]
+  },
+  "inset_v1": {
+   "type": "object",
+   "required": [
+    "file",
+    "src_size",
+    "x",
+    "y",
+    "w"
+   ],
+   "properties": {
+    "asset": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "assets.json id (overlay_assets/brief_assets/external_assets). null = 레지스트리 밖 파일(허용하지 않음 — 경고)"
+    },
+    "file": {
+     "type": "string",
+     "description": "public/ 기준 경로"
+    },
+    "src_size": {
+     "type": "array",
+     "items": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "x": {
+     "$ref": "#/$defs/px"
+    },
+    "y": {
+     "$ref": "#/$defs/px"
+    },
+    "w": {
+     "$ref": "#/$defs/px"
+    },
+    "opacity": {
+     "$ref": "#/$defs/ratio",
+     "default": 1
+    },
+    "border": {
+     "type": "boolean",
+     "default": false
+    },
+    "label": {
+     "type": "string",
+     "description": "예측·시뮬레이션·지상시험 이미지엔 필수 (facts C)"
+    },
+    "credit": {
+     "type": "string",
+     "description": "source=external(CC BY)이면 필수"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "w ≤ src_size[0] (업스케일 금지 — check-shots 경고)",
+    "asset이 external(CC BY)이면 credit 필수, stock이면 권장",
+    "등장 애니 고정: 6f 지연 + 10f 상승 (props로 제어 안 함)",
+    "crop·in/out_frames·shrink_px는 v1에 없음 — 필요 시 inset@2"
+   ]
+  },
+  "hook_title_v1": {
+   "type": "object",
+   "required": [],
+   "properties": {
+    "kicker": {
+     "type": "string"
+    },
+    "kicker_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "title": {
+     "type": "string"
+    },
+    "title_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "arrow_step_v1": {
+   "type": "object",
+   "required": [],
+   "properties": {
+    "before": {
+     "type": "string"
+    },
+    "before_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "arrow": {
+     "type": "string"
+    },
+    "after": {
+     "type": "string"
+    },
+    "after_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "stat_block_v1": {
+   "type": "object",
+   "required": [],
+   "properties": {
+    "lead": {
+     "type": "string"
+    },
+    "lead_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "compare": {
+     "type": "string"
+    },
+    "value": {
+     "type": "string"
+    },
+    "tail": {
+     "type": "string"
+    },
+    "value_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "sub": {
+     "type": "string"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    },
+    "bar": {
+     "type": "object",
+     "required": [
+      "a",
+      "b"
+     ],
+     "properties": {
+      "a": {
+       "type": "object",
+       "required": [
+        "label",
+        "value"
+       ],
+       "properties": {
+        "label": {
+         "type": "string"
+        },
+        "value": {
+         "type": "number"
+        },
+        "image": {
+         "$ref": "#/$defs/image_ref"
+        }
+       },
+       "additionalProperties": false
+      },
+      "b": {
+       "type": "object",
+       "required": [
+        "label",
+        "value"
+       ],
+       "properties": {
+        "label": {
+         "type": "string"
+        },
+        "value": {
+         "type": "number"
+        }
+       },
+       "additionalProperties": false
+      },
+      "unit": {
+       "type": "number"
+      },
+      "in": {
+       "type": "number",
+       "minimum": 0
+      }
+     },
+     "additionalProperties": false,
+     "description": "같은 사실의 비교 막대 — measure@1 을 같은 비트에 따로 두지 않는다"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "equation_block_v1": {
+   "type": "object",
+   "required": [
+    "lhs",
+    "rhs"
+   ],
+   "properties": {
+    "lhs": {
+     "type": "string"
+    },
+    "lhs_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "rhs": {
+     "type": "string"
+    },
+    "rhs_in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "sign": {
+     "type": "string"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    },
+    "evidence": {
+     "type": "object",
+     "required": [
+      "file",
+      "src_size",
+      "crop"
+     ],
+     "properties": {
+      "file": {
+       "type": "string"
+      },
+      "src_size": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "crop": {
+       "$ref": "#/$defs/rect_ratio"
+      },
+      "quote": {
+       "type": "string"
+      },
+      "source": {
+       "type": "string"
+      },
+      "in": {
+       "type": "number",
+       "minimum": 0
+      }
+     },
+     "additionalProperties": false,
+     "description": "같은 사실의 근거 스트립 — evidence_card@1 을 다른 비트에 따로 두지 않는다"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "bullet_list_v1": {
+   "type": "object",
+   "required": [
+    "items"
+   ],
+   "properties": {
+    "items": {
+     "type": "array",
+     "minItems": 1,
+     "maxItems": 5,
+     "items": {
+      "type": "object",
+      "required": [
+       "text"
+      ],
+      "properties": {
+       "text": {
+        "type": "string"
+       },
+       "in": {
+        "type": "number",
+        "minimum": 0,
+        "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "quote_slab_v1": {
+   "type": "object",
+   "required": [
+    "lines"
+   ],
+   "properties": {
+    "lines": {
+     "type": "array",
+     "minItems": 1,
+     "maxItems": 4,
+     "items": {
+      "type": "object",
+      "required": [
+       "text"
+      ],
+      "properties": {
+       "text": {
+        "type": "string"
+       },
+       "in": {
+        "type": "number",
+        "minimum": 0,
+        "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "cta_bar_v1": {
+   "type": "object",
+   "required": [
+    "text"
+   ],
+   "properties": {
+    "text": {
+     "type": "string"
+    },
+    "in": {
+     "type": "number",
+     "minimum": 0,
+     "description": "비트 시작 기준 초 — 내레이션에서 그 말을 하는 시각"
+    },
+    "y": {
+     "$ref": "#/$defs/ratio"
+    },
+    "scrim": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "문구는 대본 「자막(온스크린 텍스트)」 열 그대로 — 조판만 우리 몫",
+    "*_in 은 내레이션 낱말 시각(초). 매핑은 shots.json onscreen_map 이 단일 소스"
+   ]
+  },
+  "veil_v1": {
+   "type": "object",
+   "properties": {
+    "dots": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "build_sec": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "veil_opacity": {
+     "$ref": "#/$defs/ratio"
+    },
+    "top_y": {
+     "$ref": "#/$defs/px"
+    },
+    "height": {
+     "$ref": "#/$defs/px"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "개념 도해 — 실제 관측 흉내 금지. shot.label_overlay 에 '개념 도해' 표기",
+    "점 개수는 장식이며 위성 수를 주장하지 않는다"
+   ]
+  },
+  "reveal_v1": {
+   "type": "object",
+   "properties": {
+    "duration": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "from": {
+     "$ref": "#/$defs/ratio"
+    },
+    "to": {
+     "type": "number"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "cover_opacity": {
+     "$ref": "#/$defs/ratio"
+    }
+   },
+   "additionalProperties": false
+  },
+  "orbit_deploy_v1": {
+   "type": "object",
+   "properties": {
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "earth_r": {
+     "type": "number"
+    },
+    "alt_px": {
+     "type": "number"
+    },
+    "alt_label": {
+     "type": "string"
+    },
+    "alt_in": {
+     "type": "number"
+    },
+    "alt_sec": {
+     "type": "number"
+    },
+    "mirror_label": {
+     "type": "string"
+    },
+    "mirror_in": {
+     "type": "number"
+    },
+    "unfold_sec": {
+     "type": "number"
+    },
+    "mirror_size": {
+     "type": "number"
+    },
+    "sat_angle": {
+     "type": "number"
+    }
+   },
+   "additionalProperties": false
+  },
+  "radius_map_v1": {
+   "type": "object",
+   "properties": {
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "radius_px": {
+     "type": "number"
+    },
+    "radius_km": {
+     "type": "number"
+    },
+    "radius_in": {
+     "type": "number"
+    },
+    "grow_sec": {
+     "type": "number"
+    },
+    "label": {
+     "type": "string"
+    },
+    "outline": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "enum": [
+      "seoul_4gates",
+      null
+     ]
+    },
+    "outline_in": {
+     "type": "number"
+    },
+    "outline_label": {
+     "type": "string"
+    },
+    "outline_done": {
+     "type": "boolean"
+    }
+   },
+   "additionalProperties": false
+  },
+  "disc_flip_v1": {
+   "type": "object",
+   "properties": {
+    "mode": {
+     "enum": [
+      "plane",
+      "disc"
+     ],
+     "default": "disc",
+     "description": "plane = 상상도 위 겹침(평면선+축만), disc = 전면 도해"
+    },
+    "tilt_from": {
+     "type": "number",
+     "default": 0,
+     "description": "시작 기울기(도)"
+    },
+    "tilt_to": {
+     "type": "number",
+     "default": 100,
+     "description": "끝 기울기(도) — 90 이상"
+    },
+    "tilt_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "tilt_sec": {
+     "type": "number",
+     "description": "초"
+    },
+    "arc": {
+     "type": "boolean",
+     "default": false
+    },
+    "arc_label": {
+     "type": "string"
+    },
+    "arc_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "disc_r": {
+     "$ref": "#/$defs/px"
+    },
+    "sun": {
+     "type": "boolean",
+     "default": false
+    },
+    "sun_in": {
+     "type": "number",
+     "description": "초"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "arc_label 은 「90도 이상」만 — 기사 제목의 「90도」를 쓰지 않는다(facts D1)",
+    "나선팔·막대 구조를 그리지 않는다 — 원반은 방향만 말한다",
+    "sun 점에 라벨을 붙이지 않는다"
+   ]
+  },
+  "mass_share_v1": {
+   "type": "object",
+   "required": [
+    "share"
+   ],
+   "properties": {
+    "share": {
+     "$ref": "#/$defs/ratio"
+    },
+    "share_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "fill_sec": {
+     "type": "number",
+     "description": "초"
+    },
+    "label": {
+     "type": "string"
+    },
+    "sub": {
+     "type": "string"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "r_px": {
+     "$ref": "#/$defs/px"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "면적 비로 채운다(반지름 = R√share) — 반지름 비로 그리면 비율이 과장된다",
+    "화면엔 비율 하나만(facts #14)"
+   ]
+  },
+  "orbit_stretch_v1": {
+   "type": "object",
+   "properties": {
+    "ecc_from": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 0.99
+    },
+    "ecc_to": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 0.99
+    },
+    "stretch_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "stretch_sec": {
+     "type": "number",
+     "description": "초"
+    },
+    "n_orbits": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 6
+    },
+    "label": {
+     "type": "string"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "장반경 고정 — 늘어나는 것은 이심률이다(궤도가 커지면 다른 말)",
+    "n_orbits 는 대표일 뿐 개수를 주장하지 않는다"
+   ]
+  },
+  "two_speed_ring_v1": {
+   "type": "object",
+   "required": [
+    "inner_kms",
+    "outer_kms"
+   ],
+   "properties": {
+    "inner_kms": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "outer_kms": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "inner_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "outer_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "spin_sec": {
+     "type": "number",
+     "exclusiveMinimum": 0,
+     "description": "안쪽 한 바퀴 초"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    },
+    "inner_r": {
+     "$ref": "#/$defs/px"
+    },
+    "outer_r": {
+     "$ref": "#/$defs/px"
+    },
+    "labels": {
+     "type": "boolean",
+     "default": false
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "선속도 비를 각속도로 환산한다(ω = v/r) — 그대로 쓰면 틀린다",
+    "자막·온스크린이 숫자를 말하면 labels=false(rules §9)"
+   ]
+  },
+  "disc_crossing_v1": {
+   "type": "object",
+   "properties": {
+    "passes": {
+     "type": "integer",
+     "minimum": 1,
+     "maximum": 4
+    },
+    "path_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "path_sec": {
+     "type": "number",
+     "description": "초"
+    },
+    "tail": {
+     "type": "boolean",
+     "default": false
+    },
+    "tail_in": {
+     "type": "number",
+     "description": "초"
+    },
+    "label": {
+     "type": "string"
+    },
+    "center": {
+     "$ref": "#/$defs/point_px"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "「개념 경로 · 축척 아님」 라벨 필수",
+    "꼬리는 통과 뒤에만(조석력의 순서, facts #22)"
+   ]
+  },
+  "mirror_match_v1": {
+   "type": "object",
+   "required": [
+    "d_m"
+   ],
+   "properties": {
+    "mode": {
+     "enum": [
+      "single",
+      "pair"
+     ],
+     "description": "single=원 하나+치수선 · pair=두 번째 원이 포개진다"
+    },
+    "d_m": {
+     "type": "number",
+     "description": "지름(m) — 화면에 쓰는 숫자는 이것 하나"
+    },
+    "who": {
+     "type": "string"
+    },
+    "cx": {
+     "$ref": "#/$defs/px"
+    },
+    "cy": {
+     "$ref": "#/$defs/px"
+    },
+    "r_px": {
+     "$ref": "#/$defs/px"
+    },
+    "in": {
+     "type": "number",
+     "description": "초"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "두 원의 반지름을 픽셀로 같게 그린다 — 크기 차이를 만들지 않는다",
+    "pair 는 포갠다. 나란히 두면 「다르다」로 읽힌다",
+    "지름 말고 다른 수치를 같은 프레임에 넣지 않는다"
+   ]
+  },
+  "fov_ratio_v1": {
+   "type": "object",
+   "required": [
+    "ratio"
+   ],
+   "properties": {
+    "ratio": {
+     "type": "integer",
+     "minimum": 4,
+     "description": "배수 — 격자 한 변은 √ratio"
+    },
+    "small_label": {
+     "type": "string"
+    },
+    "big_label": {
+     "type": "string"
+    },
+    "cx": {
+     "$ref": "#/$defs/px"
+    },
+    "cy": {
+     "$ref": "#/$defs/px"
+    },
+    "unit_px": {
+     "$ref": "#/$defs/px",
+     "description": "작은 사각형 한 변 = 격자 한 칸"
+    },
+    "in": {
+     "type": "number",
+     "description": "초"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "면적비로 그린다 — 한 변이 아니라 칸 수가 배수다",
+    "작은 사각형은 격자 한 칸과 같은 크기여야 한다",
+    "제곱도 같은 다른 표기를 같은 프레임에 넣지 않는다"
+   ]
+  },
+  "cosmic_share_v1": {
+   "type": "object",
+   "required": [
+    "parts"
+   ],
+   "properties": {
+    "parts": {
+     "type": "array",
+     "minItems": 2,
+     "items": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "description": "[[라벨, 퍼센트], …]"
+    },
+    "highlight": {
+     "type": "integer",
+     "minimum": 0,
+     "description": "밝게 남길 조각 index"
+    },
+    "cx": {
+     "$ref": "#/$defs/px"
+    },
+    "cy": {
+     "$ref": "#/$defs/px"
+    },
+    "r_px": {
+     "$ref": "#/$defs/px"
+    },
+    "in": {
+     "type": "number",
+     "description": "초"
+    }
+   },
+   "additionalProperties": false,
+   "x-rules": [
+    "면적이 비율을 말한다 — 반지름 비가 아니라 각도로 나눈다",
+    "강조 조각만 밝게. 세 라벨을 동시에 띄우지 않는다",
+    "합계 100%는 쓰지 않는다"
+   ]
+  },
+  "detector_cell_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "state"
+   ],
+   "properties": {
+    "state": {
+     "enum": [
+      "structure",
+      "filled",
+      "recoil"
+     ]
+    },
+    "fill": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "pmt": {
+     "type": "boolean"
+    },
+    "recoil": {
+     "type": "boolean"
+    },
+    "label_in": {
+     "type": "number"
+    },
+    "cx": {
+     "type": "number"
+    },
+    "cy": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "w_px": {
+     "type": "number"
+    },
+    "h_px": {
+     "type": "number"
+    }
+   }
+  },
+  "energy_window_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "usual_max",
+    "extended_max",
+    "event"
+   ],
+   "properties": {
+    "usual_max": {
+     "type": "number"
+    },
+    "extended_max": {
+     "type": "number"
+    },
+    "event": {
+     "type": "number"
+    },
+    "unit": {
+     "type": "string"
+    },
+    "usual_label": {
+     "type": "string"
+    },
+    "extended_label": {
+     "type": "string"
+    },
+    "window_in": {
+     "type": "number"
+    },
+    "event_in": {
+     "type": "number"
+    },
+    "cx": {
+     "type": "number"
+    },
+    "cy": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    }
+   }
+  },
+  "compare_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "a",
+    "b"
+   ],
+   "properties": {
+    "a": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "label",
+      "value"
+     ],
+     "properties": {
+      "label": {
+       "type": "string"
+      },
+      "value": {
+       "type": [
+        "string",
+        "number"
+       ]
+      }
+     }
+    },
+    "b": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "label",
+      "value"
+     ],
+     "properties": {
+      "label": {
+       "type": "string"
+      },
+      "value": {
+       "type": [
+        "string",
+        "number"
+       ]
+      }
+     }
+    },
+    "unit": {
+     "type": "string"
+    },
+    "a_in": {
+     "type": "number"
+    },
+    "b_in": {
+     "type": "number"
+    },
+    "gap_in": {
+     "type": "number"
+    },
+    "cx": {
+     "type": "number"
+    },
+    "cy": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "scrim": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    }
+   }
+  },
+  "event_grid_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "state",
+    "n"
+   ],
+   "properties": {
+    "state": {
+     "enum": [
+      "scan",
+      "hit",
+      "expand"
+     ]
+    },
+    "n": {
+     "type": "number"
+    },
+    "highlight": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "label": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "label_in": {
+     "type": "number"
+    },
+    "marks_in": {
+     "type": "number"
+    },
+    "grow_sec": {
+     "type": "number"
+    },
+    "start_label": {
+     "type": "string"
+    },
+    "end_label": {
+     "type": "string"
+    },
+    "seed": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    }
+   }
+  },
+  "wave_period_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "cycles": {
+     "type": "number"
+    },
+    "amp_px": {
+     "type": "number"
+    },
+    "w_px": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number"
+    },
+    "draw_sec": {
+     "type": "number"
+    },
+    "bracket": {
+     "type": "boolean"
+    }
+   }
+  },
+  "orbit_apsis_v1": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "cx": {
+     "type": "number"
+    },
+    "y": {
+     "type": "number"
+    },
+    "cy": {
+     "type": "number"
+    },
+    "a_px": {
+     "type": "number"
+    },
+    "b_px": {
+     "type": "number"
+    },
+    "travel_sec": {
+     "type": "number"
+    },
+    "star_r": {
+     "type": "number"
+    }
+   }
+  }
+ },
+ "type": "object",
+ "properties": {
+  "graphics": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/graphics_entry"
+   }
+  }
+ }
+}

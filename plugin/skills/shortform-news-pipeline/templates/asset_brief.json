@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "pilot": "<pilot>",
+  "_comment": "output → input 소싱 요청. 1순위 무료 저작권+외부 소스, 2순위 유료+외부(URL·라이선스·가격만 등록, 추후 AI 생성 참조). 결과는 assets.json brief_assets 에 beat_fit 으로. | 3편: current(현재 배정과 부족 사유)·duration 추가. 결과는 brief_assets{free[],unmet[]}로 — 불가 사유도 기록",
+  "priority": [
+    "free+external",
+    "paid+external → 추후 AI 생성 참조"
+  ],
+  "requests": [
+    {
+      "beat": "b10",
+      "text": "<비트 텍스트>",
+      "duration": 0.0,
+      "current": "<현재 배정 + 왜 부족한지>",
+      "keywords": [
+        "<문장의 명사>"
+      ],
+      "wanted": "<원하는 화면 한 줄, 실물/공식 자료 전제, 길이·규격>",
+      "avoid": [
+        "<facts 금지 항목>",
+        "로고·글자",
+        "특정 실물 오인"
+      ],
+      "fallback": "<없을 때 대안>"
+    }
+  ]
+}

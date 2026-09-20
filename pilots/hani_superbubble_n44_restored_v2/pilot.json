@@ -1,0 +1,48 @@
+{
+  "_comment": "편 매니페스트 — 대장(docs/PILOTS.md)·index.json 은 이 파일들에서 생성한다. id = news/<id> 폴더명. 순서는 started 로 파생, 폴더명에 번호 없음.",
+  "id": "hani_superbubble_n44_restored_v2",
+  "title": "210광년의 빈자리, 다음 별의 시작",
+  "client": "hani",
+  "article": {
+    "id": "1278434",
+    "url": "https://www.hani.co.kr/arti/science/science_general/1278434.html",
+    "author": null,
+    "date": null
+  },
+  "parent": null,
+  "status": "drafting",
+  "started": "2026-09-20",
+  "delivered": null,
+  "input": {
+    "path": "news/hani_superbubble_n44_restored_v2",
+    "commit": "7be33628"
+  },
+  "engine": "editorial-concept@1",
+  "engine_commit": "7be33628",
+  "versions": [],
+  "gates_open": [],
+  "docs": null,
+  "linear": null,
+  "thumbnails": {
+    "method": "image_generation",
+    "target": "youtube_shorts",
+    "manifest": "design/thumbnails/hani_superbubble_n44_restored_v2/v1/manifest.json",
+    "candidates": [
+      {
+        "id": "A",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/A.png",
+        "status": "reviewed"
+      },
+      {
+        "id": "B",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/B.png",
+        "status": "reviewed"
+      },
+      {
+        "id": "C",
+        "file": "out/pilots/hani_superbubble_n44_restored_v2/thumbnails/v1/C.png",
+        "status": "reviewed"
+      }
+    ]
+  }
+}
