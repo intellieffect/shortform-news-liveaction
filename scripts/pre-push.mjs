@@ -12,8 +12,11 @@ try {
   // 공유 root를 조상으로 가진 merge라도 옛 이력이 추가되면 거절한다.
   const unrelated = execFileSync('git',['-C',repo,'rev-list',sha,'--not',historyRoot],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
   for(const commit of unrelated) if(spawnSync('git',['-C',repo,'merge-base','--is-ancestor',historyRoot,commit]).status!==0)throw new Error('공유 커밋에 과거 비공개 이력이 병합됐다.');
-  const tree = stagedTree(repo,sha); const errors=sharingErrors(tree.entries,tree.read);
-  if(errors.length)throw new Error(errors.join('\n'));
+  // 최종 트리에서 지웠어도 중간 커밋의 자료는 원격에 전달되므로 모두 검사한다.
+  for (const commit of unrelated) {
+   const tree = stagedTree(repo,commit); const errors=sharingErrors(tree.entries,tree.read);
+   if(errors.length)throw new Error(commit.slice(0,12)+': '+errors.join('\n'));
+  }
  }
  const result=spawnSync('git',['lfs','pre-push',...process.argv.slice(2)],{cwd:repo,input,encoding:'utf8',stdio:['pipe','inherit','inherit']});
  process.exitCode=result.status??1;
