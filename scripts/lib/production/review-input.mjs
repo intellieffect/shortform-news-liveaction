@@ -1,3 +1,4 @@
+import {sceneReviewCandidate, priorSceneRevisions} from './scene-review.mjs';
 import {visualWork} from './visual-work.mjs';
 import {referenceContext} from '../visual-references.mjs';
 import { existsSync, readdirSync, statSync } from "node:fs";
@@ -30,10 +31,16 @@ export const episodeMaterials = (w) => {
 
 export const availableReviewInputs = (w, state, actions) => Object.fromEntries([["scene", "scene_proof"], ["preview", "proof"], ["render", "render"]].map(([source, action]) => {
   const receipt = state.receipts[action];
+  let candidate = null, unavailable = null;
+  if (source === 'scene') {
+    try { candidate = sceneReviewCandidate(w, state); } catch (error) { unavailable = error.message; }
+  }
   return [source, {
     action, status: actions[action].status, reasons: actions[action].reasons,
-    receipt_id: receipt?.id ?? null, source_commit: receipt?.source_commit ?? null,
-    outputs: Object.entries(receipt?.outputs ?? {}).map(([path, expected]) => inputReference(w, path, expected)),
+    reviewable: source === 'scene' ? Boolean(candidate) : actions[action].status === 'current',
+    ...(unavailable ? {unavailable} : {}),
+    receipt_id: candidate?.attempt.id ?? receipt?.id ?? null, source_commit: candidate?.attempt.source_commit ?? receipt?.source_commit ?? null,
+    outputs: Object.entries(candidate?.outputs ?? receipt?.outputs ?? {}).map(([path, expected]) => inputReference(w, path, expected)),
     command: { executable: "node", args: [join(w.repo, "scripts/produce.mjs"), "review-input", w.id, "--source", source, "--phase", "experience"] },
   }];
 }));
@@ -76,13 +83,20 @@ export const buildReviewInput = (w, state, actions, { source, phase }) => {
   if (!["scene", "preview", "render"].includes(source)) throw new Error("--source scene|preview|render를 지정한다");
   if (!["experience", "intent"].includes(phase)) throw new Error("--phase experience|intent를 지정한다");
   if (source === 'scene') {
-    const work = visualWork(w, state);
-    const proofs = work.scene_proofs?.filter(p => p.status === 'current') ?? [];
-    if (!proofs.length) throw new Error('현재 입력에 연결된 초기 장면 시안이 없다');
-    const result = {contract: 'scene-review-input@1', pilot: w.id, source, phase, receipt_id: state.receipts.scene_proof?.id,
-      files: proofs.map(p => ({...inputReference(w, p.artifact), scope: p.scope, phase: p.phase, media: previewMedia(w, p.artifact)})),
-      observation_status: 'not_performed', purpose: 'early_scene_review_not_final'};
-    if (phase === 'intent') result.context = {visual: work, reference_library: referenceContext(w)};
+    const {attempt, report, outputs} = sceneReviewCandidate(w, state);
+    const result = {contract: 'scene-review-input@2', pilot: w.id, source, phase, receipt_id: attempt.id,
+      attempt_status: attempt.status,
+      files: [{...inputReference(w, report.artifact, outputs[report.artifact]), scope: report.scope, phase: report.phase, media: previewMedia(w, report.artifact)}],
+      observation_status: 'not_performed', purpose: 'early_scene_review_not_final',
+      instructions: phase === 'experience'
+        ? '시안만 먼저 보고 실제로 읽힌 대상·관계·변화·결과와 문자 의존, 확인 도구·범위를 원문으로 반환한다. 제작 의도를 추측해 보충하지 않는다.'
+        : '초견 원문을 보존한 뒤 발화·사실·계획과 대조한다. 설명의 의미, 재료·수단의 적합성, 자막 분절, 공통 레퍼런스의 완성도와 이전 revise를 실제로 재확인한다. docs/SCENE-PROOF.md의 review 형식으로 반환한다.'};
+    if (phase === 'intent') result.context = {
+      visual: visualWork(w, state), reference_library: referenceContext(w),
+      documents: refs(w, ['facts.md', 'concepts.json', 'narration.txt', 'scene-proof.json', 'visual-system.json', 'direction.md', 'decisions.md']),
+      previous_revisions: priorSceneRevisions(state, report),
+      note: '정지 시안의 동작 의미는 unverified로 남긴다. 미시청은 통과가 아니다. 초기 시안은 최종 독립 검수를 대신하지 않는다.',
+    };
     return result;
   }
   const action = source === "render" ? "render" : "proof", receipt = state.receipts[action];

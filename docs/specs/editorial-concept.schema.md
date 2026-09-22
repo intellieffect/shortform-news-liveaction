@@ -102,7 +102,7 @@ npm run production:test
 
 최종 visual pass에는 `text_review: {verdict, observation, evidence}`로 추가 문구와 고정 자막의 실제 읽기 부담을 화면 표본에 연결한다. 초기에 동결된 접수 해시는 run.json에도 보존하므로 request와 visual-system의 계약을 함께 삭제해 legacy로 바꿀 수 없다. 한 프레임 MP4는 motion 시안으로 인정하지 않는다. 프레임 수가 복수라는 조건도 실제 움직임·시청의 증명은 아니다.
 
-## 첫 핵심 장면 착수 — first-core-scene@1
+## 첫 핵심 장면 착수 — first-core-scene@2
 
 새 start의 request/run에만 scene_gate를 보존한다. legacy 편은 소급하지 않는다. 제작자는 `02_production/scene-proof.json`에서 concept_id를 고르며 실제 자산·장면 컴포넌트·임시 자막 시간은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. 선택한 explain concept의 moments.subject_ids는 해당 concept의 비문자 elements id 배열이다. subject/action/result는 구체적인 대상/작용 또는 비교/눈에 보일 결과이며, action에 질문을 그대로 복사하지 않는다. 의미 적합성은 실제 시안으로 검수한다.
 

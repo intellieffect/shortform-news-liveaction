@@ -27,7 +27,7 @@ export const productionContext = (w, state, actions, completion) => {
   const visual = visualWork(w, state);
   const reviewInputs = availableReviewInputs(w, state, actions);
   const referencesForStage = [...references[stage]];
-  if (Object.values(reviewInputs).some((input) => input.status === "current")) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
+  if (Object.values(reviewInputs).some((input) => input.reviewable)) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
   return {
     production_prompt: episodePrompt(w),
     reference_library: referenceContext(w),

@@ -1,0 +1,88 @@
+import {readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {fileSnapshot, hash, json, recipe} from './contracts.mjs';
+
+export const FIRST_SCENE_GATE = 'first-core-scene@2';
+export const LEGACY_FIRST_SCENE_GATE = 'first-core-scene@1';
+export const requiresSceneReview = (w, state = {}) => (state.scene_gate ?? w.request?.scene_gate) === FIRST_SCENE_GATE;
+const text = value => typeof value === 'string' && value.trim().length > 0;
+
+// A rendered, still-open attempt is reviewable before a verdict is recorded.
+// This does not finish the attempt or claim that its media has been watched.
+export function sceneReviewCandidate(w, state) {
+  const attempt = state.attempts.findLast(a => a.action === 'scene_proof' && ['running', 'succeeded'].includes(a.status));
+  if (!attempt) throw new Error('검토할 초기 장면 시안이 없다');
+  const spec = recipe(w, 'scene_proof');
+  const current = fileSnapshot(w, spec.inputs);
+  if (JSON.stringify(current) !== JSON.stringify(attempt.inputs.files) || (spec.semantic ?? null) !== (attempt.inputs.semantic ?? null) || (state.impacts?.scene_proof?.id ?? null) !== attempt.inputs.impact) throw new Error('초기 장면 입력이 바뀌었다. 현재 시안부터 만든다');
+  const paths = attempt.outputs.filter(p => p.endsWith('.json'));
+  if (paths.length !== 1) throw new Error('초기 장면 관찰 JSON이 필요하다');
+  const report = json(w.path(paths[0]));
+  if (report.schema !== 'scene-proof@1' || !attempt.outputs.includes(report.artifact)) throw new Error('초기 장면 artifact 연결이 잘못됐다');
+  const outputs = fileSnapshot(w, attempt.outputs);
+  if (Object.values(outputs).some(v => !v)) throw new Error('시안 렌더가 아직 끝나지 않았다');
+  if (attempt.status === 'succeeded' && Object.entries(attempt.outputs_sha256).some(([p, h]) => fileSnapshot(w, [p])[p] !== h)) throw new Error('기록된 시안·검수 근거가 바뀌었다');
+  return {attempt, report, outputs};
+}
+
+// Re-rendering does not resolve an observation. Only a later recorded usable
+// review with an explicit recheck closes it; already closed issues stay closed.
+export function priorSceneRevisions(state, report) {
+  const open = new Map();
+  for (const attempt of state.attempts) {
+    const previous = attempt.validation?.report;
+    if (attempt.status !== 'succeeded' || attempt.validation?.kind !== 'scene-proof' || previous.concept_id !== report.concept_id || previous.phase !== report.phase || previous.scope !== report.scope) continue;
+    if (previous.verdict === 'revise') open.set(attempt.id, {receipt_id: attempt.id, artifact: previous.artifact, observation: previous.observation, review: previous.review ?? null});
+    if (previous.verdict === 'usable') for (const check of previous.review?.rechecks ?? []) {
+      if (check.verdict === 'fixed' && text(check.observation)) open.delete(check.receipt_id);
+    }
+  }
+  return [...open.values()];
+}
+
+// Validates bindings, not aesthetic quality or the truth of claimed viewing.
+export function sceneReviewErrors(w, state, report, artifactHash) {
+  if (!requiresSceneReview(w, state) || report.scope !== 'composite' || report.verdict !== 'usable') return [];
+  const errors = [], add = message => errors.push(message), r = report.review;
+  if (!r || r.schema !== 'scene-review@1') return ['실물 관찰→의도 대조 검수 review(scene-review@1)가 필요하다'];
+  if (!text(r.reviewer?.id) || r.reviewer?.independent !== true) add('제작과 분리된 실제 검수자 id/independent를 기록한다');
+  for (const phase of ['experience', 'intent']) {
+    const part = r[phase];
+    if (part?.artifact_sha256 !== artifactHash) add(`${phase}: 현재 합성 시안 해시와 검수 대상이 다르다`);
+    if (!text(part?.observation) || !text(part?.tool)) add(`${phase}: 실제 관찰과 확인 도구가 필요하다`);
+    const raw = part?.raw_report;
+    try {
+      if (!text(raw?.path) || !text(raw?.sha256) || hash(readFileSync(w.path(raw.path))) !== raw.sha256) add(`${phase}: 검수 원문 파일·해시가 필요하다`);
+    } catch { add(`${phase}: 검수 원문 파일이 없거나 안전하지 않은 경로다`); }
+  }
+  if (r.experience?.raw_report?.path === r.intent?.raw_report?.path) add('초견 관찰 원문을 의도 대조 응답으로 덮어쓰지 않는다');
+  const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);
+  const targets = concept?.visual?.moments ?? [], rows = r.intent?.explanations;
+  if (!Array.isArray(rows)) add('intent.explanations에 실제로 읽힌 대상·작용·결과를 기록한다');
+  else {
+    if (new Set(rows.map(x => x.moment_id)).size !== rows.length || rows.some(x => !targets.some(t => t.id === x.moment_id))) add('없는 설명 구간 또는 중복 설명 검수다');
+    for (const target of targets) {
+      const row = rows.find(x => x.moment_id === target.id);
+      if (!row || ['observed_subject', 'observed_action', 'observed_result', 'text_dependency'].some(k => !text(row[k]))) { add(`${target.id}: 실제 대상·작용·결과·문자 의존 관찰이 필요하다`); continue; }
+      const deferredMotion = report.phase === 'still' && target.motion_required;
+      if (row.verdict !== 'pass' && !(deferredMotion && row.verdict === 'unverified')) add(`${target.id}: 미해결 설명 결함·미확인은 usable로 기록할 수 없다`);
+      if (row.verdict === 'pass' && row.basis !== 'observed') add(`${target.id}: 코드 추론으로 설명을 통과시키지 않는다`);
+      if (!['observed', 'code_inference', 'unverified'].includes(row.basis)) add(`${target.id}: 관찰 근거 basis가 필요하다`);
+      if (deferredMotion && row.verdict === 'pass') add(`${target.id}: 정지 시안으로 동작 설명을 통과시키지 않는다`);
+    }
+  }
+  if (!text(r.intent?.reference_observation) || !text(r.intent?.text_observation)) add('레퍼런스의 설명·미술 기준 대조와 실제 자막·추가 문구 관찰이 필요하다');
+  if (r.intent?.verdict !== 'pass') add('의도 대조 검수의 미해결 결함을 남긴 채 usable로 기록할 수 없다');
+  for (const previous of priorSceneRevisions(state, report)) {
+    const check = r.rechecks?.find(x => x.receipt_id === previous.receipt_id);
+    if (!check || check.verdict !== 'fixed' || !text(check.observation)) add(`이전 revise ${previous.receipt_id}의 실제 재확인이 필요하다`);
+  }
+  return errors;
+}
+
+export function sceneReviewEvidence(report) {
+  return ['experience', 'intent'].flatMap(phase => {
+    const raw = report.review?.[phase]?.raw_report;
+    return raw?.path && raw?.sha256 ? [raw] : [];
+  });
+}

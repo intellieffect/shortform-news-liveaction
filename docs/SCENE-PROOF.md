@@ -90,3 +90,64 @@ npm run produce -- finish <id> <token>
 ```bash
 node --test scripts/tests/scene-proof.test.mjs
 ```
+
+## 새 제작의 초기 독립 검수 — first-core-scene@2
+
+`@2`로 시작한 편은 `usable`을 기록하기 전에 지정 `shot-judge`의 초견 관찰과 의도 대조를 연결한다. 기존 `@1` 편은 계약을 소급 변경하지 않는다. 렌더가 끝나 관찰 JSON과 실물이 있으면 **열린 토큰 상태에서도** 다음 입력을 받을 수 있다. 검수를 받으려고 먼저 usable/finish를 기록하지 않는다.
+
+```bash
+node scripts/produce.mjs review-input <id> --source scene --phase experience
+# 지정 shot-judge에게 이 입력과 실제 확인 도구만 전달 → 초견 원문 보존
+node scripts/produce.mjs review-input <id> --source scene --phase intent
+# 같은 검수자에게 초견 원문 + intent 입력 전달 → 대조 원문 보존
+# 실제 응답을 아래 review로 관찰 JSON에 연결한 뒤 finish
+npm run produce -- finish <id> <token>
+```
+
+`experience`에는 시안 경로·해시·기술 정보만 제공한다. `intent`는 원고·사실·개념·자막 시점·자료 선택 기록과 공통 레퍼런스, 같은 장면·단계의 이전 revise를 제공한다. 같은 artifact 해시를 확인한다. 첫 응답은 다음 대조 응답으로 덮어쓰지 않는다. 이미 제작 의도를 본 검수자라면 노출 사실을 원문에 밝힌다.
+
+기존 `scene-proof@1` 관찰 JSON에 `review`를 더한다. 아래 문자열은 작성 예시이며 실제 관찰로 바꿔야 한다. 경로는 저장소 상대 경로, 해시는 실제 파일의 SHA256이다.
+
+```json
+{
+  "review": {
+    "schema": "scene-review@1",
+    "reviewer": {"id": "실제 shot-judge 세션 식별자", "independent": true},
+    "experience": {
+      "artifact_sha256": "시안 해시",
+      "raw_report": {"path": "news/<id>/02_production/reviews/scene-a-experience.md", "sha256": "원문 해시"},
+      "observation": "실물에서 먼저 읽힌 대상·관계·변화와 확인하지 못한 범위",
+      "tool": "실제로 사용한 관찰 도구"
+    },
+    "intent": {
+      "artifact_sha256": "같은 시안 해시",
+      "raw_report": {"path": "news/<id>/02_production/reviews/scene-a-intent.md", "sha256": "원문 해시"},
+      "observation": "초견과 발화·사실·계획의 일치 또는 차이",
+      "tool": "실제로 사용한 관찰 도구",
+      "verdict": "pass",
+      "reference_observation": "이번 장면에 적용한 설명·합성·미술 기준과 실제 차이",
+      "text_observation": "고정 자막의 분절 및 추가 문구 의존·읽기 부담",
+      "explanations": [{
+        "moment_id": "해당 moment id",
+        "observed_subject": "실제로 식별된 대상",
+        "observed_action": "화면에서 읽힌 작용 또는 비교 관계",
+        "observed_result": "실제로 보인 결과",
+        "text_dependency": "설명을 글자로 대신 읽어야 했는지",
+        "basis": "observed",
+        "verdict": "pass"
+      }]
+    },
+    "rechecks": []
+  }
+}
+```
+
+- `intent.verdict`: pass / changes_requested / unverified. 핵심 설명이나 미술·읽힘에 미해결 결함이 있으면 pass로 하지 않는다.
+- `explanations`: 선택한 개념의 모든 moments를 대조한다. 각 verdict는 pass / changes_requested / unverified, basis는 observed / code_inference / unverified다. 코드 추론으로 pass를 쓰지 않는다.
+- **정지 시안에서 motion_required인 moment는 unverified**다. 구도·재료·읽힘을 충분히 확인하면 still 자체는 usable일 수 있지만 동작 의미는 후속 motion에서 확인한다. 정적 비교에는 불필요한 동작 검수를 요구하지 않는다.
+- 동작 전체를 실제 확인하지 못했으면 report.verdict는 unverified를 유지한다. 관측 수단 부재를 문서 작성으로 해결하지 않는다.
+- 결함이 있으면 report.verdict를 revise로 기록하고 finish한다. 관찰에 문제를 구체적으로 남기고 가능한 검수 원문도 연결한다. 미검수·수정 필요 보고서는 usable용 review가 없어도 보존할 수 있다.
+- 수정은 원고·재료·표현 수단·구도·동작 중 원인을 바꾸고, 새 파일명으로 다시 렌더한다. 같은 단계의 미해결 revise는 오래된 시안이어도 intent에 남는다. 이미 실제 재확인으로 닫힌 지적을 매번 다시 작성하지 않는다. 새 검수의 `rechecks`에 `{ "receipt_id": "이전 revise 토큰", "verdict": "fixed", "observation": "현재 실물에서 무엇이 달라져 문제가 해소됐는지" }`로 연결해야 usable로 기록할 수 있다. 과거 문제를 목록에서 지우거나 새 렌더 존재만으로 해결하지 않는다.
+- 원문 파일은 finish 때 결과 해시에 함께 보존한다. 수정·유실되면 해당 검수는 stale이다. 첫 장면 검수는 최종 전체 영상·음향 검수와 별개다.
+
+이 검사는 관찰과 실제 결과의 연결·미해결 상태를 확인한다. 독립성·시청 사실·미술 품질을 JSON으로 자동 증명하지 않는다.

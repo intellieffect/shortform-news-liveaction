@@ -1,3 +1,4 @@
+import {sceneReviewCandidate} from './scene-review.mjs';
 import {firstSceneReadiness} from './first-scene.mjs';
 import {validateSceneProof} from './visual-work.mjs';
 import { episodePrompt } from './prompt.mjs';
@@ -146,7 +147,7 @@ export const finishProductionAction = (id, token, { repo } = {}) => {
       if (script && prior.inputs.files[script] !== current.files[script] && prior.outputs[audio] === outputs[audio]) throw new Error("낭독 원고가 바뀌었는데 음성 파일이 이전과 같다");
     }
     let validation;
-    if (attempt.action === "scene_proof") validation = validateSceneProof(w, attempt, outputs);
+    if (attempt.action === "scene_proof") validation = validateSceneProof(w, attempt, outputs, state);
     else if (attempt.action === "render") validation = validateRender(w, outputs);
     else if (attempt.action.startsWith("review_")) ({ validation, outputs } = validateReview(w, state, attempt, outputs));
     else validation = validateOutput(w, attempt.action);
@@ -218,6 +219,11 @@ export const productionReviewInput = (id, { repo, source, phase } = {}) => {
   const w = workspace(id, repo), state = read(w), actions = inspect(w, state);
   const result = buildReviewInput(w, state, actions, { source, phase });
   const latest = read(w), action = source === "render" ? "render" : source === "scene" ? "scene_proof" : "proof";
+  if (source === 'scene') {
+    const candidate = sceneReviewCandidate(w, latest);
+    if (candidate.attempt.id !== result.receipt_id || candidate.outputs[result.files[0].path] !== result.files[0].sha256) throw new Error('입력 구성 중 초기 시안이 바뀌었다');
+    return result;
+  }
   if (latest.receipts[action]?.id !== result.receipt_id || inspect(w, latest)[action].status !== "current") throw new Error("입력 구성 중 시안의 입력·기록이 바뀌었다");
   return result;
 };
