@@ -3,7 +3,6 @@ import { episodePrompt } from './prompt.mjs';
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { hash, json } from "./contracts.mjs";
-import { executionIdentity } from "./environment.mjs";
 import { availableReviewInputs, episodeMaterials, episodeObservations } from "./review-input.mjs";
 
 export const productionContext = (w, state, actions, completion) => {
@@ -11,7 +10,9 @@ export const productionContext = (w, state, actions, completion) => {
   const story = existsSync(p("story.json")) ? json(p("story.json")) : {};
   const paths = ["facts.md", "story.json", "concepts.json", "narration.txt", "narration.json", "motion.json", "visual-system.json", "audio.json", "direction.md", "decisions.md", "review-actions.md"]
     .filter((f) => existsSync(p(f))).map((f) => w.rel(p(f)));
-  const pluginRoot = executionIdentity(w.repo).plugin?.path ?? join(w.repo, "plugin");
+  // The checkout is the instruction source of truth, including when an older
+  // compatible installed bridge invokes this engine. Invocation identity is reported separately.
+  const pluginRoot = join(w.repo, "plugin");
   const stage = !existsSync(p("facts.md")) ? "research" : !story.question || !existsSync(p("concepts.json")) || !existsSync(p("narration.txt")) ? "design" : actions.render.status !== "current" ? "production" : "review";
   const references = {
     research: ["shortform-news-input/reference/intake.md", "shortform-news-input/reference/facts.md", "shortform-news-input/reference/sourcing.md"],
