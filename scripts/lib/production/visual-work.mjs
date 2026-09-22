@@ -16,7 +16,7 @@ const changed = (w, files) => Object.entries(files).some(([p, h]) => {
   return (existsSync(f) ? hash(readFileSync(f)) : null) !== h;
 });
 
-export function validateSceneProof(w, attempt, outputs, state = {}) {
+export function validateSceneProof(w, attempt, outputs, state) {
   const reports = Object.keys(outputs).filter(p => p.endsWith('.json'));
   requireValue(reports.length === 1, 'scene_proof에는 관찰 JSON 한 개와 실제 시안 파일이 필요하다');
   const report = JSON.parse(readFileSync(w.path(reports[0]), 'utf8'));
@@ -37,7 +37,7 @@ export function validateSceneProof(w, attempt, outputs, state = {}) {
   }
   const reviewErrors = sceneReviewErrors(w, state, report, outputs[report.artifact]);
   requireValue(!reviewErrors.length, reviewErrors.join('\n'));
-  for (const evidence of sceneReviewEvidence(report)) {
+  for (const evidence of sceneReviewEvidence(w, state, report)) {
     requireValue(!outputs[evidence.path], '검수 원문과 시안·관찰 JSON 경로를 분리한다');
     requireValue(hash(readFileSync(w.path(evidence.path))) === evidence.sha256, '검수 원문 해시가 다르다');
     outputs[evidence.path] = evidence.sha256;

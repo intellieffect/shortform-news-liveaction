@@ -108,4 +108,6 @@ npm run production:test
 
 realization.asset_ids에 생성 자산이 있으면 그 generation_job도 job_ids에 연결한다. code method에 실제 미디어/생성이 있으면 source/generated/hybrid로 역할을 정확히 고친다. 계획·진행·채택 생성 작업에는 사용 개념이 있어야 한다. 필요 없어지면 기각/실패와 관찰을 기록한다.
 
+새 @2 편의 usable은 기존 scene-proof 관찰 JSON의 review에 독립 초견·의도 대조 원문과 현재 시안 해시, 설명 관찰, 미해결 revise의 재확인을 연결한다. 열린 렌더 완료 시도도 review-input --source scene으로 확인할 수 있다. 정확한 형식은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. @1 편에는 새 검수 계약을 소급하지 않는다.
+
 첫 핵심 composite still usable과 필요한 motion usable(실제 전체 연속 확인)가 최신이어야 narration begin/adopt가 가능하다. 그 뒤 모든 다른 개념 시안을 음성에 의존시키지 않는다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.

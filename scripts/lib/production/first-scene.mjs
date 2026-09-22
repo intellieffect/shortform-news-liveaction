@@ -6,7 +6,6 @@ import {sceneProofs} from './visual-work.mjs';
 import {validateVisualPlan} from '../visual-plan.mjs';
 
 import {FIRST_SCENE_GATE, LEGACY_FIRST_SCENE_GATE, sceneReviewErrors} from './scene-review.mjs';
-export {FIRST_SCENE_GATE};
 const read = (w, name) => { try { return existsSync(join(w.production, name)) ? json(join(w.production, name)) : {}; } catch (e) { return {_parse_error: e.message}; } };
 
 // Admission to costly narration, not a narration dependency: later visual edits

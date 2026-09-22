@@ -39,8 +39,8 @@ export const availableReviewInputs = (w, state, actions) => Object.fromEntries([
     action, status: actions[action].status, reasons: actions[action].reasons,
     reviewable: source === 'scene' ? Boolean(candidate) : actions[action].status === 'current',
     ...(unavailable ? {unavailable} : {}),
-    receipt_id: candidate?.attempt.id ?? receipt?.id ?? null, source_commit: candidate?.attempt.source_commit ?? receipt?.source_commit ?? null,
-    outputs: Object.entries(candidate?.outputs ?? receipt?.outputs ?? {}).map(([path, expected]) => inputReference(w, path, expected)),
+    receipt_id: source === 'scene' ? candidate?.attempt.id ?? null : receipt?.id ?? null, source_commit: source === 'scene' ? candidate?.attempt.source_commit ?? null : receipt?.source_commit ?? null,
+    outputs: Object.entries(source === 'scene' ? candidate?.outputs ?? {} : receipt?.outputs ?? {}).map(([path, expected]) => inputReference(w, path, expected)),
     command: { executable: "node", args: [join(w.repo, "scripts/produce.mjs"), "review-input", w.id, "--source", source, "--phase", "experience"] },
   }];
 }));

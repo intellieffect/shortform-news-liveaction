@@ -104,9 +104,9 @@ node scripts/produce.mjs review-input <id> --source scene --phase intent
 npm run produce -- finish <id> <token>
 ```
 
-`experience`에는 시안 경로·해시·기술 정보만 제공한다. `intent`는 원고·사실·개념·자막 시점·자료 선택 기록과 공통 레퍼런스, 같은 장면·단계의 이전 revise를 제공한다. 같은 artifact 해시를 확인한다. 첫 응답은 다음 대조 응답으로 덮어쓰지 않는다. 이미 제작 의도를 본 검수자라면 노출 사실을 원문에 밝힌다.
+`experience`에는 시안 경로·해시·기술 정보만 제공한다. `intent`는 원고·사실·개념·자막 시점·자료 선택 기록과 공통 레퍼런스, 같은 장면·단계의 이전 revise를 제공한다. 같은 artifact 해시를 확인한다. 첫 응답은 다음 대조 응답으로 덮어쓰지 않는다. 같은 응답을 다른 파일명으로 복사해 두 단계 검수로 기록하지 않는다. 이미 제작 의도를 본 검수자라면 노출 사실을 원문에 밝힌다.
 
-기존 `scene-proof@1` 관찰 JSON에 `review`를 더한다. 아래 문자열은 작성 예시이며 실제 관찰로 바꿔야 한다. 경로는 저장소 상대 경로, 해시는 실제 파일의 SHA256이다.
+기존 `scene-proof@1` 관찰 JSON에 `review`를 더한다. 아래 문자열은 작성 예시이며 실제 관찰로 바꿔야 한다. 원문은 해당 편의 `02_production/reviews/` 아래 별도 파일에 보존한다. 경로는 저장소 상대 경로, 해시는 실제 파일의 SHA256이다.
 
 ```json
 {
@@ -146,7 +146,7 @@ npm run produce -- finish <id> <token>
 - `explanations`: 선택한 개념의 모든 moments를 대조한다. 각 verdict는 pass / changes_requested / unverified, basis는 observed / code_inference / unverified다. 코드 추론으로 pass를 쓰지 않는다.
 - **정지 시안에서 motion_required인 moment는 unverified**다. 구도·재료·읽힘을 충분히 확인하면 still 자체는 usable일 수 있지만 동작 의미는 후속 motion에서 확인한다. 정적 비교에는 불필요한 동작 검수를 요구하지 않는다.
 - 동작 전체를 실제 확인하지 못했으면 report.verdict는 unverified를 유지한다. 관측 수단 부재를 문서 작성으로 해결하지 않는다.
-- 결함이 있으면 report.verdict를 revise로 기록하고 finish한다. 관찰에 문제를 구체적으로 남기고 가능한 검수 원문도 연결한다. 미검수·수정 필요 보고서는 usable용 review가 없어도 보존할 수 있다.
+- 결함이 있으면 report.verdict를 revise로 기록하고 finish한다. 관찰에 문제를 구체적으로 남기고 가능한 검수 원문도 연결한다. 미검수·수정 필요 보고서는 usable용 review가 없어도 보존할 수 있다. 이때 아직 없는 원문 경로나 잘못된 해시는 근거로 결합하지 않으며, 그 자리 표시 때문에 결함 관찰 자체의 기록을 막지 않는다. usable로 바꿀 때는 원문을 실제로 확보해야 한다.
 - 수정은 원고·재료·표현 수단·구도·동작 중 원인을 바꾸고, 새 파일명으로 다시 렌더한다. 같은 단계의 미해결 revise는 오래된 시안이어도 intent에 남는다. 이미 실제 재확인으로 닫힌 지적을 매번 다시 작성하지 않는다. 새 검수의 `rechecks`에 `{ "receipt_id": "이전 revise 토큰", "verdict": "fixed", "observation": "현재 실물에서 무엇이 달라져 문제가 해소됐는지" }`로 연결해야 usable로 기록할 수 있다. 과거 문제를 목록에서 지우거나 새 렌더 존재만으로 해결하지 않는다.
 - 원문 파일은 finish 때 결과 해시에 함께 보존한다. 수정·유실되면 해당 검수는 stale이다. 첫 장면 검수는 최종 전체 영상·음향 검수와 별개다.
 

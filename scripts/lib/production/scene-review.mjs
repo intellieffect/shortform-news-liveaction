@@ -1,5 +1,5 @@
 import {readFileSync} from 'node:fs';
-import {join} from 'node:path';
+import {join, sep} from 'node:path';
 import {fileSnapshot, hash, json, recipe} from './contracts.mjs';
 
 export const FIRST_SCENE_GATE = 'first-core-scene@2';
@@ -29,7 +29,7 @@ export function sceneReviewCandidate(w, state) {
 // review with an explicit recheck closes it; already closed issues stay closed.
 export function priorSceneRevisions(state, report) {
   const open = new Map();
-  for (const attempt of state.attempts) {
+  for (const attempt of state.attempts ?? []) {
     const previous = attempt.validation?.report;
     if (attempt.status !== 'succeeded' || attempt.validation?.kind !== 'scene-proof' || previous.concept_id !== report.concept_id || previous.phase !== report.phase || previous.scope !== report.scope) continue;
     if (previous.verdict === 'revise') open.set(attempt.id, {receipt_id: attempt.id, artifact: previous.artifact, observation: previous.observation, review: previous.review ?? null});
@@ -39,6 +39,12 @@ export function priorSceneRevisions(state, report) {
   }
   return [...open.values()];
 }
+
+const validRawEvidence = (w, raw) => {
+  try {
+    return text(raw?.path) && w.path(raw.path).startsWith(join(w.production, 'reviews') + sep) && text(raw.sha256) && hash(readFileSync(w.path(raw.path))) === raw.sha256;
+  } catch { return false; }
+};
 
 // Validates bindings, not aesthetic quality or the truth of claimed viewing.
 export function sceneReviewErrors(w, state, report, artifactHash) {
@@ -51,11 +57,9 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
     if (part?.artifact_sha256 !== artifactHash) add(`${phase}: 현재 합성 시안 해시와 검수 대상이 다르다`);
     if (!text(part?.observation) || !text(part?.tool)) add(`${phase}: 실제 관찰과 확인 도구가 필요하다`);
     const raw = part?.raw_report;
-    try {
-      if (!text(raw?.path) || !text(raw?.sha256) || hash(readFileSync(w.path(raw.path))) !== raw.sha256) add(`${phase}: 검수 원문 파일·해시가 필요하다`);
-    } catch { add(`${phase}: 검수 원문 파일이 없거나 안전하지 않은 경로다`); }
+    if (!validRawEvidence(w, raw)) add(`${phase}: 해당 편 reviews/ 아래 검수 원문 파일·해시가 필요하다`);
   }
-  if (r.experience?.raw_report?.path === r.intent?.raw_report?.path) add('초견 관찰 원문을 의도 대조 응답으로 덮어쓰지 않는다');
+  if (r.experience?.raw_report?.path === r.intent?.raw_report?.path || r.experience?.raw_report?.sha256 === r.intent?.raw_report?.sha256) add('초견 관찰 원문을 의도 대조 응답으로 덮어쓰지 않는다');
   const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);
   const targets = concept?.visual?.moments ?? [], rows = r.intent?.explanations;
   if (!Array.isArray(rows)) add('intent.explanations에 실제로 읽힌 대상·작용·결과를 기록한다');
@@ -80,9 +84,10 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
   return errors;
 }
 
-export function sceneReviewEvidence(report) {
+export function sceneReviewEvidence(w, state, report) {
+  if (!requiresSceneReview(w, state)) return [];
   return ['experience', 'intent'].flatMap(phase => {
     const raw = report.review?.[phase]?.raw_report;
-    return raw?.path && raw?.sha256 ? [raw] : [];
+    return validRawEvidence(w, raw) ? [raw] : [];
   });
 }

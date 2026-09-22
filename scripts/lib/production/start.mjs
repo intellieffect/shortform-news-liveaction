@@ -1,4 +1,4 @@
-import {FIRST_SCENE_GATE} from './first-scene.mjs';
+import {FIRST_SCENE_GATE} from './scene-review.mjs';
 import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';

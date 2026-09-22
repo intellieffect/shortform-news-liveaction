@@ -183,7 +183,7 @@ function gatedProof(f,name,phase='still',verdict='usable') {
 function attachReview(f,p) {
  const artifact_sha256=hash(readFileSync(join(f.repo,p.art)));
  const part = phase => {
-  const path=p.report.replace('.json',`-${phase}.md`), body=`test-only ${phase} observation ${p.art}`;
+  const path=f.prefix+'reviews/'+p.report.split('/').at(-1).replace('.json',`-${phase}.md`), body=`test-only ${phase} observation ${p.art}`;
   put(f.repo,path,body);
   return {artifact_sha256,raw_report:{path,sha256:hash(body)},observation:body,tool:'synthetic fixture, not real viewing'};
  };
@@ -321,4 +321,27 @@ test('still cannot certify motion meaning; unsupported motion viewing remains un
  p.data.verdict='unverified';delete p.data.review;put(f.repo,p.report,p.data);
  assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
  assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+});
+test('an already rechecked revise does not require repeated closure on every new proof',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'old-problem','still','revise');gatedProof(f,'first-fix');
+ const p=proof(f,'later-review');attachReview(f,p);p.data.review.rechecks=[];put(f.repo,p.report,p.data);
+ assert.deepEqual(productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'}).context.previous_revisions,[]);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+});
+test('review cannot bind production sources or duplicate one response into two phases',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'bad-evidence');attachReview(f,p);
+ p.data.review.experience.raw_report={path:'package.json',sha256:hash(readFileSync(join(f.repo,'package.json')))};put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/reviews/);
+ attachReview(f,p);const exp=p.data.review.experience.raw_report,intent=p.data.review.intent.raw_report;
+ put(f.repo,intent.path,readFileSync(join(f.repo,exp.path),'utf8'));intent.sha256=exp.sha256;put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/덮어쓰지/);
+});
+test('incomplete raw evidence does not prevent recording revise; legacy review is not retroactively bound',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'incomplete-review');p.data.verdict='revise';
+ p.data.review={experience:{raw_report:{path:f.prefix+'reviews/not-written.md',sha256:'pending'}}};put(f.repo,p.report,p.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ const old=fixture(t),q=proof(old,'legacy-optional');q.data.review=p.data.review;put(old.repo,q.report,q.data);
+ const receipt=finishProductionAction('fresh',q.attempt.id,{repo:old.repo});
+ assert.deepEqual(Object.keys(receipt.outputs).sort(),[q.art,q.report].sort());
 });
