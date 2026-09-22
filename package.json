@@ -100,7 +100,8 @@
     "setup:hooks": "node scripts/setup-hooks.mjs",
     "references:prepare": "node scripts/prepare-references.mjs",
     "references:render": "node scripts/render-reference.mjs",
-    "references:test": "node --test tests/test-visual-references.mjs"
+    "references:test": "node --test tests/test-visual-references.mjs",
+    "visual-production:test": "node --test tests/test-visual-production.mjs"
   },
   "sideEffects": [
     "*.css"

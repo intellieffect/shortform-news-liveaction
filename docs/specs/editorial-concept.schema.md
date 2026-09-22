@@ -82,3 +82,22 @@ npm run production:test
 ## 복원본의 새 편 로고 연결
 
 `visual-system.project_logo`는 start가 수령 패키지에서 복사한 `{file,sha256,version,x,y,width,height}`다. 새 편 기본 로고는 `media.assets`에도 선언하여 기존 sync·미디어 누락 검사에 포함한다. 원본은 `02_production/brand/logo.png`, 렌더 파일은 `editorial/brand-logo.png`다. 공통 EditorialFrame이 합성하므로 편별 장면에 중복 로고를 넣지 않는다. 필드가 없는 과거 편은 로고를 추가하지 않는다. 새 시작의 해시·PNG·배치 검증은 production/defaults.mjs가 수행하며 임의로 손편집한 로고의 적합성을 기존 데이터 스키마가 전부 보증하지는 않는다.
+
+## 신규 화면 제작 계약 `visual-explanation@1`
+
+새 start는 `request.visual_contract`와 `visual-system.visual_contract`를 함께 기록한다. 새 편이 visual-system의 선언만 삭제해 검사에서 빠질 수 없다. 이전 편은 opt-in하지 않는 한 기존 계약을 유지한다. 창작 판단은 [발화→화면 제작](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md)이 정본이다.
+
+`concepts[].visual`:
+
+- `purpose`: `explain | observe | quote | atmosphere`, `focus`: 먼저 보일 대상/관계.
+- `moments`: 핵심 설명 구간 배열. explain이면 한 개 이상; 다른 목적은 빈 배열 가능. 각 항목은 고유 `id`, 해당 개념의 `narration_lines`, `subject`, `action`(비교·구조의 관계도 가능), `result`, `motion_required` boolean. 모든 발화에 별도 항목을 강제하지 않는다.
+- `realization`: `method: source | generated | code | hybrid`, `asset_ids`, `job_ids`. media.assets와 generation_jobs의 실제 id를 참조한다. 생성 작업이 있으면 `generated_role`, code/hybrid이면 `code_role`로 담당 부분을 적는다. hybrid는 실사+코드도 가능하고 생성 사용을 강제하지 않는다.
+- text 요소는 기존 elements 안에 표시 원문 `text`를 가진다. 신규 추가 문구는 `EditorialScreenText`로 elementId/eventId를 연결한다. 배치와 미술은 자유롭게 지정한다. 사건은 전역 시각이며 globalFrame을 반드시 명시하며 Sequence 바깥에서 얻은 전역 프레임을 전달한다.
+
+`visual-system.generation_jobs[]`: `id`, `kind: image | video | overlay-video`, `purpose`, `status: planned | running | failed | rejected | accepted`. planned 이후 실제 `provider`, `model`, 편 상대 `prompt_path`; 출력이 있는 accepted/rejected는 편 상대 `output`; failed/rejected/accepted는 `observation`. 제공되는 job_id·비용 등 실제 생성 정보도 보존한다. 채택한 렌더 자산은 `media.assets[].generation_job`으로 accepted 작업을 참조한다. 원본과 파생본의 경로는 달라도 된다.
+
+`scene_proof`는 final narration에 의존하지 않는 초기 시안 기록이다. `begin` 전 현재 원고/개념/자료/장면 코드를 준비하고 새로운 시안과 `scene-proof@1` 관찰 JSON을 `--output`으로 지정한다. `finish`는 실제 미디어와 입력 해시를 검사한다. 계획·코드·자산 변경은 시안을 stale로 만든다. 결과 형식과 실제 확인 범위는 visual-production.md를 따른다. 초기 시안이 최종 rendering/review 상태를 current로 만들지 않는다.
+
+`context.work.visual`과 intent 입력에는 작업 목록, 생성 상태, 시안 관찰, 설명 검수 대상, 선언 문구와 동시 자막, JSX 문구 진단이 제공된다. experience에는 제작 의도를 넣지 않는다. 최종 `review_visual.explanations[]`는 moment를 관찰 원문·증거·basis·verdict에 연결한다. 핵심 설명을 누락하거나 코드 추론만으로 pass할 수 없다. 동작이 필요한 설명은 해당 개념의 연속 확인 범위를 요구한다. 기계 검사는 기록의 연결만 확인하며 진짜 이해·미술·관찰의 진실을 증명하지 않는다.
+
+최종 visual pass에는 `text_review: {verdict, observation, evidence}`로 추가 문구와 고정 자막의 실제 읽기 부담을 화면 표본에 연결한다. 초기에 동결된 접수 해시는 run.json에도 보존하므로 request와 visual-system의 계약을 함께 삭제해 legacy로 바꿀 수 없다. 한 프레임 MP4는 motion 시안으로 인정하지 않는다. 프레임 수가 복수라는 조건도 실제 움직임·시청의 증명은 아니다.

@@ -1,3 +1,4 @@
+import {visualWork} from './visual-work.mjs';
 import {referenceContext} from '../visual-references.mjs';
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -27,7 +28,7 @@ export const episodeMaterials = (w) => {
   };
 };
 
-export const availableReviewInputs = (w, state, actions) => Object.fromEntries([["preview", "proof"], ["render", "render"]].map(([source, action]) => {
+export const availableReviewInputs = (w, state, actions) => Object.fromEntries([["scene", "scene_proof"], ["preview", "proof"], ["render", "render"]].map(([source, action]) => {
   const receipt = state.receipts[action];
   return [source, {
     action, status: actions[action].status, reasons: actions[action].reasons,
@@ -72,8 +73,18 @@ const previewMedia = (w, path) => {
 };
 
 export const buildReviewInput = (w, state, actions, { source, phase }) => {
-  if (!["preview", "render"].includes(source)) throw new Error("--source preview|render를 지정한다");
+  if (!["scene", "preview", "render"].includes(source)) throw new Error("--source scene|preview|render를 지정한다");
   if (!["experience", "intent"].includes(phase)) throw new Error("--phase experience|intent를 지정한다");
+  if (source === 'scene') {
+    const work = visualWork(w, state);
+    const proofs = work.scene_proofs?.filter(p => p.status === 'current') ?? [];
+    if (!proofs.length) throw new Error('현재 입력에 연결된 초기 장면 시안이 없다');
+    const result = {contract: 'scene-review-input@1', pilot: w.id, source, phase, receipt_id: state.receipts.scene_proof?.id,
+      files: proofs.map(p => ({...inputReference(w, p.artifact), scope: p.scope, phase: p.phase, media: previewMedia(w, p.artifact)})),
+      observation_status: 'not_performed', purpose: 'early_scene_review_not_final'};
+    if (phase === 'intent') result.context = {visual: work, reference_library: referenceContext(w)};
+    return result;
+  }
   const action = source === "render" ? "render" : "proof", receipt = state.receipts[action];
   if (actions[action].status !== "current") throw new Error("현재 " + action + " 기록이 필요하다: " + actions[action].status + " — resume으로 입력과 결과를 확인한다");
   const artifact = source === "render" ? productionReviewTemplate(w, state, "review_visual").artifact : null;
@@ -96,6 +107,7 @@ export const buildReviewInput = (w, state, actions, { source, phase }) => {
     note: "입력 파일과 기술 정보를 구성했다. 실제 사용 도구·관찰·시청·청취 범위는 검수자가 별도로 반환한다. 이 출력은 review-template 보고서가 아니다.",
   };
   if (phase === "intent") result.context = {
+    visual: visualWork(w, state),
     reference_library: referenceContext(w),
     documents: refs(w, ["facts.md", "story.json", "concepts.json", "narration.txt", "narration.json", "timeline.json", "motion.json", "visual-system.json", "audio.json", "direction.md", "decisions.md", "review-actions.md"]),
     materials: episodeMaterials(w), observations: episodeObservations(w, state, actions),

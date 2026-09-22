@@ -9,7 +9,7 @@ import { normalizeNarration, validateEditorialBundle } from "../editorial.mjs";
 
 export const hash = (value) => createHash("sha256").update(value).digest("hex");
 export const json = (file) => JSON.parse(readFileSync(file, "utf8"));
-export const ACTIONS = ["narration", "timeline", "sync", "proof", "render", "review_visual", "review_audio", "review_facts"];
+export const ACTIONS = ["scene_proof", "narration", "timeline", "sync", "proof", "render", "review_visual", "review_audio", "review_facts"];
 
 export const repositoryPath = (repo, rel) => {
   if (typeof rel !== "string" || !rel || rel.startsWith("/") || rel.split(/[\\/]/).includes("..") || rel.includes("\\")) throw new Error("저장소 상대 경로가 필요하다: " + rel);
@@ -72,7 +72,9 @@ export const recipe = (w, action) => {
     ...walk(join(w.repo, "public/fonts")),
   ];
   const renderInputs = [...(w.request ? [join(w.root, "00_brief/request.json")] : []), ...commonCode, ...["package-lock.json", "remotion.config.ts", "scripts/pilot-run.mjs"].map((file) => join(w.repo, file)), join(data, "pilot.json")];
+  const generationFiles = (Array.isArray(v.generation_jobs) ? v.generation_jobs : []).flatMap(j => [j.prompt_path, j.output].filter(Boolean).flatMap(path => {try { return [inEpisode(path)]; } catch { return []; }})); // Invalid paths are exposed by visual-plan; do not make resume unusable.
   const spec = {
+    scene_proof: { deps: [], inputs: [...["facts.md", "concepts.json", "narration.txt", "visual-system.json"].map(p), ...commonCode, ...generationFiles, ...media.map(x => inEpisode(x.source))], required: [p("concepts.json"), p("narration.txt"), p("visual-system.json")], outputs: [] },
     narration: {
       deps: [],
       inputs: [narrationText, ...(n.source?.script ? [inEpisode(n.source.script)] : walk(p("narration_drafts"))),
@@ -84,7 +86,7 @@ export const recipe = (w, action) => {
     timeline: {
       deps: ["narration"],
       inputs: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p).concat(
-        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles"))),
+        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/visual-plan.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles"))),
       required: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p),
       outputs: [p("timeline.json")],
     },
