@@ -13,8 +13,9 @@ try {
   const unrelated = execFileSync('git',['-C',repo,'rev-list',sha,'--not',historyRoot],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
   for(const commit of unrelated) if(spawnSync('git',['-C',repo,'merge-base','--is-ancestor',historyRoot,commit]).status!==0)throw new Error('공유 커밋에 과거 비공개 이력이 병합됐다.');
   // 최종 트리에서 지웠어도 중간 커밋의 자료는 원격에 전달되므로 모두 검사한다.
+  // 로컬 전용 의존 검사는 고객이 받는 끝 트리에만 건다 — 이미 원격에 있는 옛 커밋은 고칠 수 없다.
   for (const commit of unrelated) {
-   const tree = stagedTree(repo,commit); const errors=sharingErrors(tree.entries,tree.read);
+   const tree = stagedTree(repo,commit); const errors=sharingErrors(tree.entries,tree.read,{localOnly:commit===sha});
    if(errors.length)throw new Error(commit.slice(0,12)+': '+errors.join('\n'));
   }
  }

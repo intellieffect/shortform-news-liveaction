@@ -42,7 +42,13 @@ export const stagedTree = (repo, ref = null) => {
   });
   return { entries, read: p => git('show', (ref ?? '') + ':' + p) };
 };
-export const sharingErrors = (entries, read) => {
+/**
+ * `localOnly` 는 push 되는 «끝 트리»에서만 켠다.
+ * 이 검사는 고객이 checkout 할 내용의 성질을 보는 것이고, 이미 원격에 있는 옛 커밋은
+ * 고쳐 쓸 수 없다 — 중간 커밋까지 보면 지난 이력 때문에 앞으로의 push 가 영영 막힌다.
+ * 미선정 자료 혼입은 반대다. 중간 커밋도 원격에 전달되므로 모든 커밋에서 본다.
+ */
+export const sharingErrors = (entries, read, { localOnly = true } = {}) => {
   const errors = referenceSharingErrors(entries,read); const add = text => errors.push(text);
   const files = new Set(entries.map(x => x.path));
   let selection;
@@ -67,7 +73,7 @@ export const sharingErrors = (entries, read) => {
     if (/\.(?:json|md|txt|ya?ml|env|py|mjs|cjs|jsx?|tsx?|sh)$/.test(p)) {
       let content; try { content = read(p); } catch { add('staged 파일 읽기 실패: ' + p); continue; }
       if (/(?:sk-(?:proj-|ant-)[A-Za-z0-9_-]{32,}|gh[pousr]_[A-Za-z0-9]{30,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)/.test(content)) add('비밀값 패턴 확인 필요: ' + p);
-      for (const e of localOnlyErrors(p, content)) add(e);
+      if (localOnly) for (const e of localOnlyErrors(p, content)) add(e);
     }
     if (entry.mode === '160000') add('외부 저장소 의존 금지: ' + p);
     if (id && entry.mode === '120000') add('공유 편 symlink 금지: ' + p);

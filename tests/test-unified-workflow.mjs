@@ -63,6 +63,27 @@ test('공유 검사는 실제 staged 트리를 검사하며 미선정 편·로�
  assert.ok(sharingErrors([...entries,{path:'pilots/local.json',mode:'100644'}],read).some(x=>x.includes('로컬 전용')));
  const media='news/hani_superbubble_n44_restored_v2/02_production/media/pan-silent.mp4';
  assert.ok(sharingErrors(entries.filter(x=>x.path!==media),read).some(x=>x.includes(media)));
+
+ // 개발자 한 사람의 컴퓨터에서만 되는 것이 다시 들어오면 끝 트리에서 걸린다.
+ // 찾는 문자열을 이어붙여 쓰는 이유: 이 파일도 같은 검사를 받으므로, 통째로 적으면
+ // 이 테스트 자체가 걸려 push 가 막힌다. 붙인 값은 실제와 같으니 검사는 그대로 돈다.
+ const localOnly=[
+  ['plugin/agents/sourcing.md','PK=$(security find-'+'generic-password -a "$USER" -s pexels-api-key -w)','키체인'],
+  ['docs/asset-sourcing-workflow.md','정본은 ~'+'/Projects/shortform-news-input/docs/x.md 다','절대경로'],
+  ['docs/asset-sourcing-workflow.md','브라우저는 aside'+' repl 을 쓴다','브라우저'],
+  ['plugin/skills/shortform-news-input/scripts/stock_search.py','UA="shortform-workflow/1.0 (mj@intellieffect'+'.com)"','연락처'],
+ ];
+ for(const [path,line,what] of localOnly){
+  const hit=sharingErrors(entries,p=>p===path?line:read(p));
+  assert.ok(hit.some(x=>x.startsWith('로컬 전용 의존: '+path)),what+' 를 거절해야 한다');
+ }
+ // 자기 규칙 정의와 darwin 폴백은 걸리지 않는다.
+ assert.deepEqual(sharingErrors(entries,p=>p==='scripts/lib/sharing.mjs'?readFileSync(join(REPO,'scripts/lib/sharing.mjs'),'utf8'):read(p)),[]);
+ assert.deepEqual(sharingErrors(entries,p=>p.endsWith('stock_search.py')?readFileSync(join(REPO,'plugin/skills/shortform-news-input/scripts/stock_search.py'),'utf8'):read(p)),[]);
+ // 옛 커밋에는 걸지 않는다 — 이미 원격에 있는 이력은 고쳐 쓸 수 없다.
+ const past=p=>p==='plugin/agents/sourcing.md'?'security find-'+'generic-password -s x -w':read(p);
+ assert.ok(sharingErrors(entries,past,{localOnly:true}).some(x=>x.includes('로컬 전용 의존')));
+ assert.deepEqual(sharingErrors(entries,past,{localOnly:false}),[]);
 });
 
 test('push 검사에서 옛 개발 이력을 LFS 업로드 전에 거절',()=>{
