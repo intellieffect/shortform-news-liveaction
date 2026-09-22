@@ -422,7 +422,8 @@ const main = async (argv) => {
   console.log(`관찰 JSON  → ${reportRel}`);
   console.log(`열린 토큰  → ${attempt.id}`);
   console.log(`초기 검수 → node scripts/produce.mjs review-input ${id} --source scene --phase experience (초견 응답 후 intent). docs/SCENE-PROOF.md 참조`);
-  console.log("실물을 직접 보고 review와 verdict/observation/tool을 고친 뒤(동작이면 continuous_viewing·viewed_seconds 실제 확인 범위만) " +
+  if (phase === 'motion') console.log('연속 시청이 불가능하면 현재 MP4의 시작·중간·끝 PNG를 실제 확인하고 sampling + provisional을 기록한다. docs/SCENE-PROOF.md 참조');
+  console.log("실물을 직접 보고 review와 verdict/observation/tool을 고친 뒤(연속 동작을 실제로 봤을 때만 continuous_viewing·viewed_seconds) " +
     `npm run produce -- finish ${id} ${attempt.id}`);
 };
 

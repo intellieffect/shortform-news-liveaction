@@ -33,7 +33,7 @@ function proof(f, name, phase='still') {
  const art=`out/pilots/fresh/qa/${name}.${phase==='still'?'png':'mp4'}`, report=`out/pilots/fresh/qa/${name}.json`;
  const attempt=beginProductionAction('fresh','scene_proof',{repo:f.repo,outputs:[art,report]});
  mkdirSync(dirname(join(f.repo,art)),{recursive:true});
- execFileSync('ffmpeg',['-v','error','-f','lavfi','-i','color=c=blue:s=108x192:r=30',...(phase==='still'?['-frames:v','1']:['-t','1','-c:v','libx264','-pix_fmt','yuv420p']),join(f.repo,art)]);
+ execFileSync('ffmpeg',['-v','error','-f','lavfi','-i',phase==='still'?'color=c=blue:s=108x192:r=30':'testsrc2=s=108x192:r=30',...(phase==='still'?['-frames:v','1']:['-t','1','-c:v','libx264','-pix_fmt','yuv420p']),join(f.repo,art)]);
  const data={schema:'scene-proof@1',concept_id:'pull',phase,scope:'composite',artifact:art,verdict:'usable',observation:'test fixture observation; not actual video quality',tool:'test',...(phase==='motion'?{continuous_viewing:true,viewed_seconds:[0,1]}:{})};
  put(f.repo,report,data);return {attempt,art,report,data};
 }
@@ -177,8 +177,18 @@ function gatedFixture(t, motion = true) {
 function gatedProof(f,name,phase='still',verdict='usable') {
  const p=proof(f,name,phase);p.data.verdict=verdict;
  p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
- if(verdict==='usable') attachReview(f,p);
+ if(verdict==='provisional') {delete p.data.continuous_viewing;delete p.data.viewed_seconds;sampleMotion(f,p);}
+ if(['usable','provisional'].includes(verdict)) attachReview(f,p);
  put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});return p;
+}
+function sampleMotion(f,p) {
+ const frames=[0,0.5,0.9].map((second,index)=>{
+  const path=`${f.prefix}reviews/${p.report.split('/').at(-1).replace('.json','')}-sample-${index}.png`;
+  mkdirSync(dirname(join(f.repo,path)),{recursive:true});
+  execFileSync('ffmpeg',['-v','error','-y','-ss',String(second),'-i',join(f.repo,p.art),'-frames:v','1',join(f.repo,path)]);
+  return {second,path,sha256:hash(readFileSync(join(f.repo,path)))};
+ });
+ p.data.sampling={kind:'frames',frames,unobserved:'프레임 사이의 연속 움직임은 확인하지 못함'};
 }
 function attachReview(f,p) {
  const artifact_sha256=hash(readFileSync(join(f.repo,p.art)));
@@ -189,7 +199,7 @@ function attachReview(f,p) {
  };
  const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json'))).concepts[0];
  const state=JSON.parse(readFileSync(f.w.runFile));
- p.data.review={schema:'scene-review@1',reviewer:{id:'fixture-judge',independent:true},experience:part('experience'),intent:{...part('intent'),verdict:'pass',reference_observation:'fixture comparison',text_observation:'fixture captions',explanations:c.visual.moments.map(m=>({moment_id:m.id,observed_subject:'fixture subject',observed_action:'fixture action',observed_result:'fixture result',text_dependency:'fixture text',basis:'observed',verdict:p.data.phase==='still'&&m.motion_required?'unverified':'pass'}))},rechecks:state.attempts.filter(a=>a.validation?.report.verdict==='revise'&&a.validation.report.phase===p.data.phase).map(a=>({receipt_id:a.id,verdict:'fixed',observation:'fixture rechecked'}))};
+ p.data.review={schema:'scene-review@1',reviewer:{id:'fixture-judge',independent:true},experience:part('experience'),intent:{...part('intent'),verdict:p.data.verdict==='provisional'?'unverified':'pass',reference_observation:'fixture comparison',text_observation:'fixture captions',explanations:c.visual.moments.map(m=>({moment_id:m.id,observed_subject:'fixture subject',observed_action:'fixture action',observed_result:'fixture result',text_dependency:'fixture text',basis:'observed',verdict:(p.data.phase==='still'||p.data.verdict==='provisional')&&m.motion_required?'unverified':'pass'}))},rechecks:state.attempts.filter(a=>a.validation?.report.verdict==='revise'&&a.validation.report.phase===p.data.phase).map(a=>({receipt_id:a.id,verdict:'fixed',observation:'fixture rechecked'}))};
 }
 test('first scene blocks narration and adoption on missing, revise, unverified and absent motion',t=>{
  const f=gatedFixture(t);
@@ -354,4 +364,74 @@ test('review evidence cannot alias a production source or reuse another artifact
  const q=proof(f,'different-artifact');writeFileSync(join(f.repo,q.art),Buffer.concat([readFileSync(join(f.repo,q.art)),Buffer.from('synthetic changed bytes')]));attachReview(f,q);
  q.data.review.experience.raw_report=p.data.review.experience.raw_report;put(f.repo,q.report,q.data);
  assert.throws(()=>finishProductionAction('fresh',q.attempt.id,{repo:f.repo}),/다른 시안/);
+});
+
+test('frame-reviewed provisional motion opens narration while continuity remains incomplete',t=>{
+ const f=gatedFixture(t);gatedProof(f,'still');
+ const before=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(before.actions.narration.runnable,false);
+ gatedProof(f,'sampled','motion','provisional');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.actions.narration.runnable,true);
+ assert.equal(s.context.work.first_scene.motion_continuity,'incomplete');
+ assert.deepEqual(s.context.work.first_scene.provisional_phases,['motion']);
+ assert.ok(s.context.work.visual.tasks.some(x=>x.kind==='scene-proof'&&x.phase==='motion'&&x.verdict==='provisional'));
+ assert.notEqual(s.context.work.visual.status,'recorded');
+ const a=beginProductionAction('fresh','narration',{repo:f.repo});
+ assert.equal(a.first_scene.motion_continuity,'incomplete');
+});
+test('provisional motion needs independent sampled evidence and cannot claim continuous viewing',t=>{
+ const f=gatedFixture(t),p=proof(f,'provisional-source','motion');p.data.verdict='provisional';delete p.data.continuous_viewing;delete p.data.viewed_seconds;
+ p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/시작·중간·끝/);
+ sampleMotion(f,p);put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/scene-review/);
+ attachReview(f,p);p.data.continuous_viewing=true;put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/연속 시청/);
+ delete p.data.continuous_viewing;p.data.sampling.frames.pop();put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/시작·중간·끝/);
+ sampleMotion(f,p);p.data.review.intent.explanations[0].verdict='pass';put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/연속 동작/);
+});
+test('provisional is motion-only for current gate; raw unverified and revise stay blocked',t=>{
+ const f=gatedFixture(t);gatedProof(f,'static');
+ gatedProof(f,'raw','motion','unverified');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ gatedProof(f,'bad-motion','motion','revise');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ const old=fixture(t,'first-core-scene@1'),p=proof(old,'old-provisional','motion');p.data.verdict='provisional';put(old.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:old.repo}),/verdict/);
+ const q=proof(f,'bad-still');q.data.verdict='provisional';put(f.repo,q.report,q.data);
+ assert.throws(()=>finishProductionAction('fresh',q.attempt.id,{repo:f.repo}),/verdict/);
+});
+test('provisional sample changes stale admission and full viewing replaces provisional',t=>{
+ const f=gatedFixture(t);gatedProof(f,'still');const p=gatedProof(f,'sampled','motion','provisional');
+ const sample=p.data.sampling.frames[0].path;
+ writeFileSync(join(f.repo,sample),'changed');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ gatedProof(f,'fully-reviewed','motion','usable');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.actions.narration.runnable,true);
+ assert.equal(s.context.work.first_scene.motion_continuity,'reviewed');
+ assert.deepEqual(s.context.work.first_scene.provisional_phases,[]);
+});
+test('provisional samples must be actual frames of the current motion artifact',t=>{
+ const f=gatedFixture(t),p=proof(f,'sample-origin','motion');p.data.verdict='provisional';
+ delete p.data.continuous_viewing;delete p.data.viewed_seconds;
+ sampleMotion(f,p);attachReview(f,p);
+ const sample=p.data.sampling.frames[1];
+ execFileSync('ffmpeg',['-v','error','-y','-f','lavfi','-i','color=c=red:s=108x192','-frames:v','1',join(f.repo,sample.path)]);
+ sample.sha256=hash(readFileSync(join(f.repo,sample.path)));
+ put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/현재 동작 시안/);
+});
+test('one frame cannot be repeated as three temporal samples',t=>{
+ const f=gatedFixture(t),p=proof(f,'repeated-sample','motion');p.data.verdict='provisional';
+ delete p.data.continuous_viewing;delete p.data.viewed_seconds;
+ sampleMotion(f,p);attachReview(f,p);
+ p.data.sampling.frames[1].path=p.data.sampling.frames[0].path;
+ p.data.sampling.frames[1].sha256=p.data.sampling.frames[0].sha256;
+ put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/서로 다른 표본/);
 });

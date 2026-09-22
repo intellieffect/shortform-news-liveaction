@@ -77,7 +77,7 @@ export default Scene;
 }
 ```
 
-제작자가 실물을 본 뒤 `verdict`/`observation`/`tool`을 고치고, 동작을 실제로 이어 봤을 때만 `continuous_viewing`과 실제 `viewed_seconds`를 더한다. 그다음 기존 절차로 닫는다.
+제작자가 실물을 본 뒤 `verdict`/`observation`/`tool`을 고치고, 동작을 실제로 이어 봤을 때만 `continuous_viewing`과 실제 `viewed_seconds`를 더한다. 프레임 표본만 확인한 새 제작은 아래 provisional 계약을 사용한다. 그다음 기존 절차로 닫는다.
 
 ```bash
 npm run produce -- finish <id> <token>
@@ -145,9 +145,39 @@ npm run produce -- finish <id> <token>
 - `intent.verdict`: pass / changes_requested / unverified. 핵심 설명이나 미술·읽힘에 미해결 결함이 있으면 pass로 하지 않는다.
 - `explanations`: 선택한 개념의 모든 moments를 대조한다. 각 verdict는 pass / changes_requested / unverified, basis는 observed / code_inference / unverified다. 코드 추론으로 pass를 쓰지 않는다.
 - **정지 시안에서 motion_required인 moment는 unverified**다. 구도·재료·읽힘을 충분히 확인하면 still 자체는 usable일 수 있지만 동작 의미는 후속 motion에서 확인한다. 정적 비교에는 불필요한 동작 검수를 요구하지 않는다.
-- 동작 전체를 실제 확인하지 못했으면 report.verdict는 unverified를 유지한다. 관측 수단 부재를 문서 작성으로 해결하지 않는다.
+- 동작 전체를 실제 확인하지 못했으면 usable로 쓰지 않는다. 표본도 보지 못했다면 unverified를 유지한다. 실제 표본과 독립 검수가 있으면 아래 provisional을 쓸 수 있다. 관측 수단 부재를 문서 작성으로 해결하지 않는다.
 - 결함이 있으면 report.verdict를 revise로 기록하고 finish한다. 관찰에 문제를 구체적으로 남기고 가능한 검수 원문도 연결한다. 미검수·수정 필요 보고서는 usable용 review가 없어도 보존할 수 있다. 이때 아직 없는 원문 경로나 잘못된 해시는 근거로 결합하지 않으며, 그 자리 표시 때문에 결함 관찰 자체의 기록을 막지 않는다. usable로 바꿀 때는 원문을 실제로 확보해야 한다.
 - 수정은 원고·재료·표현 수단·구도·동작 중 원인을 바꾸고, 새 파일명으로 다시 렌더한다. 같은 단계의 미해결 revise는 오래된 시안이어도 intent에 남는다. 이미 실제 재확인으로 닫힌 지적을 매번 다시 작성하지 않는다. 새 검수의 `rechecks`에 `{ "receipt_id": "이전 revise 토큰", "verdict": "fixed", "observation": "현재 실물에서 무엇이 달라져 문제가 해소됐는지" }`로 연결해야 usable로 기록할 수 있다. 과거 문제를 목록에서 지우거나 새 렌더 존재만으로 해결하지 않는다.
 - 원문 파일은 finish 때 결과 해시에 함께 보존한다. 수정·유실되면 해당 검수는 stale이다. 첫 장면 검수는 최종 전체 영상·음향 검수와 별개다.
 
 이 검사는 관찰과 실제 결과의 연결·미해결 상태를 확인한다. 독립성·시청 사실·미술 품질을 JSON으로 자동 증명하지 않는다.
+
+## 연속 시청이 불가능한 동작 시안 — provisional
+
+새 `first-core-scene@2` 편의 composite motion에만 적용한다. 생성된 MP4를 실제로 만들고, 그 MP4에서 시작·중간·끝 프레임을 PNG로 추출해 **실제로 확인**한다. 이미지만 자동 추출한 사실은 관찰이 아니다. 각 이미지는 해당 편 `news/<id>/02_production/reviews/` 아래에 보존하고 시각·저장소 상대 경로·SHA256을 `sampling.frames`에 기록한다. 크기·색을 가공하지 않은 PNG의 바이트를 현재 MP4의 해당 시각에서 다시 추출해 대조한다. 첫 표본은 시작에서 0.5초 이내, 마지막은 끝에서 0.5초 이내이며 중간 표본도 있어야 한다. 실제로 확인하지 못한 프레임 사이 연속성은 `sampling.unobserved`에 쓴다.
+
+추출할 때는 `-ss`를 입력 MP4 앞에 두고 크기·색 변환 없이 PNG로 저장한다. 예를 들어 중간 표본은 다음과 같이 만든다. 시작·끝도 시각과 파일명을 바꿔 같은 방식으로 만든 뒤 `shasum -a 256`으로 각각의 해시를 기록한다.
+
+```bash
+mkdir -p news/<id>/02_production/reviews
+ffmpeg -v error -y -ss 3.5 -i out/pilots/<id>/qa/core-motion.mp4 -frames:v 1 news/<id>/02_production/reviews/motion-3_5.png
+```
+
+```json
+{
+  "phase": "motion", "scope": "composite", "verdict": "provisional",
+  "sampling": {
+    "kind": "frames",
+    "unobserved": "프레임 사이의 실제 연속 움직임과 매끄러움은 확인하지 못함",
+    "frames": [
+      {"second": 0, "path": "news/<id>/02_production/reviews/motion-0.png", "sha256": "실제 해시"},
+      {"second": 3.5, "path": "news/<id>/02_production/reviews/motion-3_5.png", "sha256": "실제 해시"},
+      {"second": 6.8, "path": "news/<id>/02_production/reviews/motion-6_8.png", "sha256": "실제 해시"}
+    ]
+  }
+}
+```
+
+이 값은 기존 scene-proof 관찰 JSON에 포함한다. `review`의 experience·intent 원문과 해시도 usable과 같은 규칙으로 연결한다. 동작이 필요한 각 explanation은 `verdict: "unverified"`로 두고, `intent.verdict`도 `unverified`다. 보이는 표본에서 원인·변화·결과가 어긋나거나 이전 revise가 해결되지 않았다면 provisional로 넘기지 말고 revise로 기록하고 수정한다. `continuous_viewing: true`나 `viewed_seconds`를 함께 적지 않는다.
+
+이 기록이 현재 상태면 `first_scene.ready`가 음성 착수에 대해 true가 되고 `motion_continuity: "incomplete"`와 `provisional_phases: ["motion"]`이 함께 남는다. `context.work.visual`에도 동작 확인 작업이 계속 표시된다. **최종 영상의 동작 검수 pass나 전체 영상 완료를 의미하지 않는다.** 실제 연속 시청 수단을 확보한 뒤 동일한 영상의 현재 판본을 확인하고 검수한다. 사용자에게 별도 확인을 요청하는 단계는 아니다.
