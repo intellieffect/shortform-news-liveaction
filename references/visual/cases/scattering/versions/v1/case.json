@@ -1,0 +1,129 @@
+{
+  "id": "scattering",
+  "title": "보이지 않는 작용을 결과까지 연결하기",
+  "seconds": 12.033333333333333,
+  "goal": "반사빛의 대기 산란과 희미한 별의 대비 저하를 연결한다.",
+  "transfer": [
+    "같은 대상의 작용과 결과를 끊김 없이 설명한다.",
+    "생성 재료와 실제 배경을 하나의 화면으로 합성한다.",
+    "발화에 맞춰 변화를 전개하고 변화 전후의 기준을 유지한다."
+  ],
+  "specific": [
+    "금빛 리본·청색 대기·위성 형태는 이 장면의 개별 미술 선택이다.",
+    "생성 도해이며 정량 광학 시뮬레이션이 아니다. 후반은 같은 하늘 프레임에 배경 밝기를 더한 예시다."
+  ],
+  "beats": [
+    {
+      "time": 0.9,
+      "note": "입사광을 오른쪽에서 위성 쪽으로 드러낸다."
+    },
+    {
+      "time": 2.5,
+      "note": "연결된 반사 경로가 대기로 이어진다."
+    },
+    {
+      "time": 4.6,
+      "note": "대기의 여러 지점에서 빛이 퍼지는 상태를 보여준다."
+    },
+    {
+      "time": 6.5,
+      "note": "같은 하늘에서 배경이 밝아지며 별의 대비가 낮아진다."
+    }
+  ],
+  "composition": "ReferenceScatteringMotionGraphic",
+  "gain": -2.04,
+  "version": "v1",
+  "original_file": "03-scattering-motion-graphic-v1.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "3f8a2c6e5bf22f8e43794afc020c8b784b5f7ef7ce0ba800f5fcf52aadb0292e",
+  "files": {
+    "src": "references/visual/cases/scattering/versions/v1/final.mp4",
+    "poster": "references/visual/cases/scattering/versions/v1/poster.jpg",
+    "walkthrough": "references/visual/cases/scattering/versions/v1/walkthrough.md",
+    "credits": "references/visual/cases/scattering/versions/v1/credits.md",
+    "sourceGuide": "references/visual/cases/scattering/versions/v1/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/approved-overlay.png",
+      "sha256": "d3c4ef840871896ecb02d05111a19c7c85130683353ef7eec429143c1a1771a9"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/end.png",
+      "sha256": "4ef9dcaef994e33a2fe7b9c4eb3eb2b1c776200594b54a3d7fe0673ff9df1f1c"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/narration.wav",
+      "sha256": "3a79f6f896f6585bc1fc8fbd7e43901b98bb994994db2f8b41e3cede510f8377"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/original.mp4",
+      "sha256": "1b8a1fc35c1c09f9542d411423a904d7206e00acd9d0b74de809cc8931ab76d8"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/sky-source.png",
+      "sha256": "248d3f9b0bb71a85e17830f379ccdad2d4c8a428f172f6d54d40b0ac24c71360"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/start.png",
+      "sha256": "59d98293c3d2ed2f3d60b1792ebc05c5e477ac5262fc21d160551c514347d8b5"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/assets/vlt.mp4",
+      "sha256": "42f694ef83dd69383fa02cca16fd261646deaf42be9c44dbcccf1ca547002126"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/credits.md",
+      "sha256": "d972434469b675cb49bdfa067d8ebf0ddac61e36bc676ae76ad0d42a1213eb46"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/final.mp4",
+      "sha256": "3f8a2c6e5bf22f8e43794afc020c8b784b5f7ef7ce0ba800f5fcf52aadb0292e"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/poster.jpg",
+      "sha256": "3f9326869c4b354ce51fccb8df4d49ee9a3b5ddaaea1ffc85990af4e32ebdcfb"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/reviews/p5-motion.txt",
+      "sha256": "a646f2810eceaa480a8e05166e3da1a34b5b8118f02e6e84d5f40bf04527aa0e"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/reviews/p7-fact.txt",
+      "sha256": "5f13541dbd68b03310543fa4d83ffce930d621d4da523fd4928d4d93c3c0bb8b"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/reviews/p7-shot.txt",
+      "sha256": "b8abe1173c5d625a7d6196c9d4c4107d22112966e311bef953dc588e20559a41"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/source/README.md",
+      "sha256": "f5c8af6208da596447c0e5eb4fb774a9f81964965ed680fd00f9b40ff97fecc9"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/source/entry.tsx",
+      "sha256": "8a832f0877030a8358c2623dddd460f1868d519e630e0ef62a6d59bbb8413305"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/source/generation-prompt.txt",
+      "sha256": "603c893a80da2ace0d401da4cf57aefae4f22dd2522b85dd04ca7c641d9a8eff"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/source/key-overlay.py",
+      "sha256": "813ec9fbd10ce47dfd9fb69c69f10c7c685e1994ba5b9113856d77340f8cf15e"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/source/timing.json",
+      "sha256": "765f89569e6bad18e44ea12faca385670d3d8fccfb0b54a831a2f7d3544cb06b"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/validation.md",
+      "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+    },
+    {
+      "path": "references/visual/cases/scattering/versions/v1/walkthrough.md",
+      "sha256": "dd67aa7b56759b7b4b45960c270c7f1446f41467bedf28cc7c06e2f986f39e1d"
+    }
+  ],
+  "article_url": "https://www.hani.co.kr/arti/science/science_general/1273728.html"
+}

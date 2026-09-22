@@ -1,3 +1,4 @@
+import {referenceContext} from '../visual-references.mjs';
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -95,6 +96,7 @@ export const buildReviewInput = (w, state, actions, { source, phase }) => {
     note: "입력 파일과 기술 정보를 구성했다. 실제 사용 도구·관찰·시청·청취 범위는 검수자가 별도로 반환한다. 이 출력은 review-template 보고서가 아니다.",
   };
   if (phase === "intent") result.context = {
+    reference_library: referenceContext(w),
     documents: refs(w, ["facts.md", "story.json", "concepts.json", "narration.txt", "narration.json", "timeline.json", "motion.json", "visual-system.json", "audio.json", "direction.md", "decisions.md", "review-actions.md"]),
     materials: episodeMaterials(w), observations: episodeObservations(w, state, actions),
     note: "먼저 받은 실물 관찰과 이번 편의 의도·사실·원래 문제를 대조한다. 이미 의도를 본 검수라면 노출 사실을 남긴다.",

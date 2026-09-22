@@ -1,0 +1,93 @@
+{
+  "id": "observation",
+  "title": "작은 대상을 전체 맥락 속에서 보여주기",
+  "seconds": 11.5,
+  "goal": "관측 사진에서 동반별 후보의 위치와 모습을 찾게 한다.",
+  "transfer": [
+    "시선을 유도하면서 원래 위치와 전체 맥락을 유지한다.",
+    "실제 자료의 해상도·표식을 보존하며 보여줄 영역을 설계한다.",
+    "등장·확대·관찰·퇴장을 하나의 장면 흐름으로 만든다."
+  ],
+  "specific": [
+    "연속 확대와 전체 위치창은 이 사진에 맞춘 선택이며 모든 사진의 고정 양식이 아니다.",
+    "베텔게우스 동반별 후보다. 광점 선명화나 생성 보강을 하지 않는다."
+  ],
+  "beats": [
+    {
+      "time": 0.2,
+      "note": "관측 사진이 실제 천문대 배경 위에 등장한다."
+    },
+    {
+      "time": 1.7,
+      "note": "왼쪽 아래로 확대하면서 전체 위치창을 함께 제공한다."
+    },
+    {
+      "time": 4.6,
+      "note": "십자선과 작은 광점을 읽을 시간을 유지한다."
+    },
+    {
+      "time": 9.4,
+      "note": "사진과 위치창이 함께 퇴장하고 배경으로 돌아간다."
+    }
+  ],
+  "composition": "ReferenceObservation",
+  "gain": -2.75,
+  "version": "v1",
+  "original_file": "02-observation-v2.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "0e05538d54e58834be46df8907373d8a06d2b6ed5338a82f035bfaca53bdbf4f",
+  "files": {
+    "src": "references/visual/cases/observation/versions/v1/final.mp4",
+    "poster": "references/visual/cases/observation/versions/v1/poster.jpg",
+    "walkthrough": "references/visual/cases/observation/versions/v1/walkthrough.md",
+    "credits": "references/visual/cases/observation/versions/v1/credits.md",
+    "sourceGuide": "references/visual/cases/observation/versions/v1/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/observation/versions/v1/assets/narration.wav",
+      "sha256": "b02d1dae23b165b99750a1d521af8a3ca17912225d46fbf772853bcd95f7d022"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/assets/observation.jpg",
+      "sha256": "9ec3b57559ee7512a4ec597b80c27be7b7d06bc681acf875de827a0c6ae9230b"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/assets/vlt.mp4",
+      "sha256": "42f694ef83dd69383fa02cca16fd261646deaf42be9c44dbcccf1ca547002126"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/credits.md",
+      "sha256": "f7d84cab153be9a7528f94966f2c76c29356d2a38e1fd472a7638122b5dc5da2"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/final.mp4",
+      "sha256": "0e05538d54e58834be46df8907373d8a06d2b6ed5338a82f035bfaca53bdbf4f"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/poster.jpg",
+      "sha256": "58d2660f2fb03740108db23a857ed0ed798e7b2182827e31edf597c4e3a9571d"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/source/README.md",
+      "sha256": "8be24b49b02fe3f093d89fdaa511a2e5d580f7f39157785e4808594c23dd0633"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/source/entry.tsx",
+      "sha256": "a567c92fbe0caa6571ba570deb98d126e9f20fd165a9742106cd579d5194276c"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/source/timing.json",
+      "sha256": "9c149ee05e1b7708751b5cc8397022a0c78f75650f8ecc4eb50947f3695d156f"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/validation.md",
+      "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+    },
+    {
+      "path": "references/visual/cases/observation/versions/v1/walkthrough.md",
+      "sha256": "3bd38746f1707d8e5fc2f486085ba83dc556e77b1598797e8567e95b8bb0e246"
+    }
+  ],
+  "article_url": "https://www.hani.co.kr/arti/science/science_general/1271265.html"
+}

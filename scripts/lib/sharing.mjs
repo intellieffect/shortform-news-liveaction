@@ -1,3 +1,4 @@
+import {referenceSharingErrors} from './visual-reference-sharing.mjs';
 import { execFileSync } from 'node:child_process';
 import { posix } from 'node:path';
 
@@ -6,7 +7,7 @@ export const episodeForPath = (path) => {
   return m?.[1] ?? null;
 };
 export const safeRelative = (p) => typeof p === 'string' && p && !p.startsWith('/') && !p.includes('\\') && !p.split('/').some(v => v === '..' || v === '.' || v === '') && !p.includes('\0');
-export const forbiddenPath = p => /^(?:\.env(?:\.|$)|node_modules(?:\/|$)|internal\/|out\/(?!pilots\/)|experiments\/|src\/experiments\/|docs\/research\/|reference-library\/|\.claude\/worktrees\/|\.claude\/settings.local.json$|\.codex\/config.toml$|\.mcp.json$|pilots\/(?:local.json|active.json|index.ts|index.json)$|docs\/PILOTS.md$|CUSTOMER-MANIFEST.json$|distribution\/customer\/templates\/)/.test(p);
+export const forbiddenPath = p => /^(?:\.env(?:\.|$)|node_modules(?:\/|$)|internal\/|public\/references\/|out\/(?!pilots\/)|experiments\/|src\/experiments\/|docs\/research\/|reference-library\/|\.claude\/worktrees\/|\.claude\/settings.local.json$|\.codex\/config.toml$|\.mcp.json$|pilots\/(?:local.json|active.json|index.ts|index.json)$|docs\/PILOTS.md$|CUSTOMER-MANIFEST.json$|distribution\/customer\/templates\/)/.test(p);
 export const stagedTree = (repo, ref = null) => {
   const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
   const entries = (ref ? git('ls-tree', '-r', '-z', ref) : git('ls-files', '--stage', '-z')).split('\0').filter(Boolean).map(line => {
@@ -16,7 +17,7 @@ export const stagedTree = (repo, ref = null) => {
   return { entries, read: p => git('show', (ref ?? '') + ':' + p) };
 };
 export const sharingErrors = (entries, read) => {
-  const errors = []; const add = text => errors.push(text);
+  const errors = referenceSharingErrors(entries,read); const add = text => errors.push(text);
   const files = new Set(entries.map(x => x.path));
   let selection;
   try { selection = JSON.parse(read('config/shared-episodes.json')); } catch { return ['staged 공유 선정 목록을 읽을 수 없다']; }
@@ -45,7 +46,7 @@ export const sharingErrors = (entries, read) => {
     if (id && entry.mode === '120000') add('공유 편 symlink 금지: ' + p);
   }
   // 실제 source의 상대 import가 미선정 로컬 파일에 의존하지 않도록 index에서 검증한다.
-  for (const p of files) if (p.startsWith('src/') && /\.(?:tsx?|mjs|js)$/.test(p)) {
+  for (const p of files) if ((p.startsWith('src/') || p.startsWith('references/')) && /\.(?:tsx?|mjs|js)$/.test(p)) {
     let text; try { text=read(p); } catch { add('소스 읽기 실패: '+p); continue; }
     for(const match of text.matchAll(/(?:\bfrom\s*|\bimport\s*(?:\(\s*)?)['"](\.[^'"]+)['"]/g)) {
       const base=posix.normalize(posix.join(posix.dirname(p),match[1]));
@@ -62,6 +63,7 @@ export const sharingErrors = (entries, read) => {
     requirePath('src/editorial/episodes/' + id + '.tsx');
     for (const name of ['story','concepts','motion','timeline','visual-system','narration','audio']) { requirePath(n+'02_production/'+name+'.json'); requirePath(p+name+'.json'); }
     const request = load(n+'00_brief/request.json'); requirePath(n+(request.raw_request || '00_brief/user-request.txt'));
+    if (request.visual_references) requirePath(n+request.visual_references.path);
     if (request.production_prompt) for (const k of ['template','applied']) requirePath(n+request.production_prompt[k]);
     const v = load(p+'visual-system.json'), a = load(p+'audio.json'), t = load(p+'motion.json'), narration = load(p+'narration.json');
     for (const x of v.media?.assets ?? []) { requirePath(n+x.source); requirePath(pub+x.file); }

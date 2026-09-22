@@ -1,7 +1,6 @@
 (() => {
-  const { videos, prompt, generatedAt, icons, localTools } = JSON.parse(
-    document.getElementById("library-data").textContent,
-  );
+  const { videos, prompt, generatedAt, icons, localTools, referenceLibrary } =
+    JSON.parse(document.getElementById("library-data").textContent);
   const $ = (id) => document.getElementById(id);
   const esc = (s) =>
     String(s ?? "").replace(
@@ -273,6 +272,7 @@
       ? `<div class="thumbnail-heading"><span class="field-label">썸네일 ${video.thumbnails.length}개</span><span>눌러서 크게 보기</span></div><div class="thumbnail-grid">${video.thumbnails.map((t, i) => `<button type="button" data-thumbnail="${i}" aria-label="썸네일 ${esc(t.filename)} 크게 보기"><img src="${esc(t.src)}" alt="" loading="lazy"><span>${esc(t.filename)}</span></button>`).join("")}</div>`
       : '<p class="thumbnail-missing">썸네일 미등록 <span>현재는 영상만 다운로드할 수 있습니다.</span></p>';
     $("play-error").hidden = true;
+    pauseReferences();
     $("player").src = video.src;
     if (video.poster) $("player").poster = video.poster;
     else $("player").removeAttribute("poster");
@@ -476,8 +476,17 @@
 
   // 제작 프롬프트 탭: docs/PRODUCTION_PROMPT.md 본문을 그대로 싣고, [URL] 자리만 채워 복사한다.
   const promptText = prompt?.text ?? "";
-  const filled = (url) =>
-    url.trim() ? promptText.replaceAll("[URL]", url.trim()) : promptText;
+  let referenceRequest = "";
+  const filled = (url) => {
+    const base = url.trim()
+      ? promptText
+          .replaceAll("[URL]", url.trim())
+          .replaceAll("[기사 URL]", url.trim())
+      : promptText;
+    return referenceRequest
+      ? `${base.trimEnd()}\n\n${referenceRequest}\n`
+      : base;
+  };
   let promptEdited = false;
   $("prompt-source").textContent = `원본 · ${prompt?.source ?? "미등록"}`;
   $("prompt-note").textContent = prompt?.note ?? "";
@@ -508,6 +517,7 @@
   });
   $("prompt-reset").addEventListener("click", () => {
     promptEdited = false;
+    referenceRequest = "";
     fillPrompt();
     promptStatus("원본 프롬프트로 되돌렸습니다.");
     $("prompt-text").focus();
@@ -541,27 +551,230 @@
     }, 2000);
   });
 
+  // 표현 레퍼런스 탭: 승인된 세 편을 새 영상 제작의 공통 기준으로 보여준다.
+  // 카테고리를 고르는 화면이 아니라, 모든 새 편이 함께 읽는 기준이다.
+  const library = referenceLibrary ?? null;
+  const cases = Array.isArray(library?.cases) ? library.cases : [];
+  const requestText =
+    typeof library?.requestText === "string" ? library.requestText.trim() : "";
+  const stamp = (seconds) => {
+    const n = Math.max(0, Math.floor(Number(seconds) || 0));
+    return `${Math.floor(n / 60)}:${String(n % 60).padStart(2, "0")}`;
+  };
+  const bullets = (items) =>
+    (Array.isArray(items) ? items : [])
+      .filter((s) => typeof s === "string" && s.trim())
+      .map((s) => `<li>${esc(s)}</li>`)
+      .join("");
+  // Backend returns registered, project-relative URLs only.
+  const resource = (value, label, download = false) => {
+    if (typeof value !== "string" || !/^(?:\.\.\/)?references\//.test(value))
+      return "";
+    return `<a class="reference-link" href="${esc(value)}${download && localTools ? "?download=1" : ""}" ${download ? "download" : 'target="_blank" rel="noopener noreferrer"'}>${esc(label)}${icon(download ? "download-simple" : "arrow-square-out")}</a>`;
+  };
+  const referenceVideos = () =>
+    $("reference-cases").querySelectorAll("video[data-reference-video]");
+  const pauseReferences = () =>
+    referenceVideos().forEach((video) => video.pause());
+  function renderCases() {
+    $("reference-cases").innerHTML = cases
+      .map((item, index) => {
+        const id = String(item.id ?? `case-${index + 1}`);
+        const beats = (Array.isArray(item.beats) ? item.beats : []).filter(
+          (beat) => beat && Number.isFinite(Number(beat.time)),
+        );
+        const transfer = bullets(item.transfer);
+        const specific = bullets(item.specific);
+        const links = [
+          resource(item.src, "MP4 다운로드", true),
+          resource(item.walkthrough, "장면 관찰 안내"),
+          resource(item.sourceGuide, "수정·재렌더 안내"),
+          resource(item.credits, "크레딧"),
+        ]
+          .filter(Boolean)
+          .join("");
+        const meta =
+          [
+            item.version && `버전 ${esc(item.version)}`,
+            item.seconds != null && duration(item.seconds),
+          ]
+            .filter(Boolean)
+            .join(" · ") || "정보 미등록";
+        return `<article class="reference-card" data-case="${esc(id)}">
+      <header class="reference-card-head"><h2>${esc(item.title ?? "제목 미등록")}</h2><p class="reference-meta">${meta}</p></header>
+      <div class="reference-media">${
+        item.src
+          ? `<video data-reference-video="${esc(id)}" src="${esc(item.src)}"${item.poster ? ` poster="${esc(item.poster)}"` : ""} controls playsinline preload="metadata" aria-label="${esc(item.title ?? "표현 레퍼런스")} 영상"></video>`
+          : `<p class="reference-missing">영상 파일을 찾지 못했습니다.</p>`
+      }</div>
+      ${item.goal ? `<p class="reference-goal">${esc(item.goal)}</p>` : ""}
+      ${
+        beats.length
+          ? `<details class="reference-beats"><summary><span>관찰 포인트 ${beats.length}개</span>${icon("caret-down")}</summary><ul>${beats
+              .map(
+                (beat) =>
+                  `<li><button type="button" class="beat-seek" data-case="${esc(id)}" data-time="${esc(Number(beat.time))}"${item.src ? "" : " disabled"}><span class="beat-time">${stamp(beat.time)}</span><span>${esc(beat.note ?? "")}</span></button></li>`,
+              )
+              .join("")}</ul></details>`
+          : ""
+      }
+      ${transfer ? `<div class="reference-block"><span class="field-label">다른 기사에도 적용할 판단</span><ul class="reference-list is-transfer">${transfer}</ul></div>` : ""}
+      ${specific ? `<div class="reference-block"><span class="field-label">이 장면의 선택과 범위</span><ul class="reference-list is-specific">${specific}</ul></div>` : ""}
+      ${links ? `<div class="reference-links">${links}</div>` : ""}
+    </article>`;
+      })
+      .join("");
+  }
+  // 재생은 한 번에 하나만. play 이벤트는 버블링하지 않으므로 캡처 단계에서 받는다.
+  $("reference-cases").addEventListener(
+    "play",
+    (e) => {
+      referenceVideos().forEach((video) => {
+        if (video !== e.target) video.pause();
+      });
+      if ($("player-dialog").open) $("player-dialog").close();
+    },
+    true,
+  );
+  $("reference-cases").addEventListener("click", (e) => {
+    const button = e.target.closest(".beat-seek");
+    if (!button) return;
+    const video = $("reference-cases").querySelector(
+      `video[data-reference-video="${CSS.escape(button.dataset.case)}"]`,
+    );
+    if (!video) return;
+    const time = Number(button.dataset.time);
+    const seek = () => {
+      if (Number.isFinite(time))
+        video.currentTime = video.duration
+          ? Math.min(time, Math.max(0, video.duration - 0.05))
+          : time;
+    };
+    if (video.readyState >= 1) seek();
+    else video.addEventListener("loadedmetadata", seek, { once: true });
+    video.play().catch(() => {});
+  });
+  const referenceStatus = (message) => {
+    $("reference-status").textContent = message;
+  };
+  let referenceCopyReset = null;
+  $("reference-copy").addEventListener("click", async () => {
+    let copied = true;
+    try {
+      await navigator.clipboard.writeText($("reference-request-text").value);
+    } catch {
+      // file:// 등 클립보드가 막힌 환경에서는 선택 상태로 돌려준다.
+      $("reference-request-text").focus();
+      $("reference-request-text").select();
+      copied = document.execCommand?.("copy") ?? false;
+    }
+    referenceStatus(
+      copied
+        ? "공통 요청을 복사했습니다."
+        : "복사하지 못했습니다. 선택된 요청문을 ⌘C 로 복사해 주세요.",
+    );
+    if (!copied) return;
+    $("reference-copy-text").textContent = "복사됨";
+    $("reference-copy").querySelector("[data-icon]").innerHTML = icon("check");
+    clearTimeout(referenceCopyReset);
+    referenceCopyReset = setTimeout(() => {
+      $("reference-copy-text").textContent = "공통 요청 복사";
+      $("reference-copy").querySelector("[data-icon]").innerHTML = icon("copy");
+    }, 2000);
+  });
+  // 프롬프트 탭에서 고친 내용을 지우지 않고 뒤에만 덧붙인다.
+  $("reference-append").addEventListener("click", () => {
+    if (!promptText) {
+      referenceStatus("제작 프롬프트를 불러오지 못해 붙일 수 없습니다.");
+      return;
+    }
+    const current = $("prompt-text").value;
+    if (current.includes(requestText)) {
+      referenceStatus("이미 제작 프롬프트에 들어 있습니다.");
+    } else {
+      if (!promptEdited) {
+        referenceRequest = requestText;
+        fillPrompt();
+      } else {
+        $("prompt-text").value =
+          `${current.replace(/\s+$/, "")}\n\n${requestText}\n`;
+      }
+      promptStatus(
+        "표현 레퍼런스 공통 요청을 프롬프트 끝에 붙였습니다. 「원래대로」를 누르면 원본으로 돌아갑니다.",
+      );
+      referenceStatus("제작 프롬프트에 붙였습니다.");
+    }
+    location.hash = "#prompt";
+    showView("prompt");
+    $("prompt-text").focus();
+    $("prompt-text").scrollTop = $("prompt-text").scrollHeight;
+  });
+  function initReferences() {
+    $("tab-references").hidden = !library;
+    if (!library) return;
+    if (library.title) $("reference-title").textContent = library.title;
+    $("reference-version").textContent = library.version
+      ? `기준 ${library.version}`
+      : "";
+    const warnings = bullets(library.warnings);
+    const ready = library.status === "ready" && cases.length > 0;
+    $("reference-body").hidden = !ready;
+    $("reference-empty").hidden = ready;
+    if (!ready) {
+      const invalid = library.status === "invalid";
+      $("reference-empty-title").textContent = invalid
+        ? "표현 레퍼런스 구성이 올바르지 않습니다"
+        : "표현 레퍼런스가 아직 없습니다";
+      $("reference-empty-copy").textContent = invalid
+        ? "아래 항목을 해결한 뒤 목록을 다시 만들어 주세요."
+        : "승인된 레퍼런스가 등록되면 이곳에서 볼 수 있습니다.";
+      $("reference-empty-warnings").innerHTML = warnings;
+      $("reference-empty-warnings").hidden = !warnings;
+      return;
+    }
+    $("reference-purpose").textContent = library.purpose ?? "";
+    $("reference-purpose").hidden = !library.purpose;
+    const criteria = bullets(library.criteria);
+    $("reference-criteria").innerHTML = criteria;
+    $("reference-criteria-block").hidden = !criteria;
+    $("reference-request").hidden = !requestText;
+    $("reference-request-text").value = requestText;
+    $("reference-append").disabled = !promptText;
+    $("reference-append").title = promptText
+      ? ""
+      : "제작 프롬프트를 불러오지 못했습니다.";
+    $("reference-warnings").innerHTML = warnings;
+    $("reference-warnings-block").hidden = !warnings;
+    renderCases();
+  }
+
   function showView(name) {
-    const view = name === "prompt" ? "prompt" : "videos";
+    const view = ["prompt", "references"].includes(name) ? name : "videos";
     $("view-videos").hidden = view !== "videos";
     $("view-prompt").hidden = view !== "prompt";
+    $("view-references").hidden = view !== "references";
     document.querySelectorAll(".nav-tab").forEach((tab) => {
       const current = tab.dataset.view === view;
       tab.classList.toggle("is-current", current);
       if (current) tab.setAttribute("aria-current", "page");
       else tab.removeAttribute("aria-current");
     });
-    document.title =
-      view === "prompt" ? "제작 프롬프트 · 한겨레" : "제작 영상 · 한겨레";
-    if (view === "prompt") {
+    document.title = `${{ prompt: "제작 프롬프트", references: "표현 레퍼런스" }[view] ?? "제작 영상"} · 한겨레`;
+    if (view !== "references") pauseReferences();
+    if (view !== "videos") {
       closeDownloads();
       closeDates();
       if ($("player-dialog").open) $("player-dialog").close();
     }
   }
   const viewFromHash = () =>
-    location.hash === "#prompt" ? "prompt" : "videos";
+    location.hash === "#prompt"
+      ? "prompt"
+      : location.hash === "#references" && library
+        ? "references"
+        : "videos";
   window.addEventListener("hashchange", () => showView(viewFromHash()));
+  initReferences();
   showView(viewFromHash());
   fillPrompt();
   render();

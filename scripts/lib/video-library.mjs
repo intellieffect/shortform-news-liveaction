@@ -1,3 +1,4 @@
+import {collectReferences} from './visual-references.mjs';
 // 제작 영상 목록: 완성 상태와 실제 파일을 함께 확인한다. 실험 원장은 읽지 않는다.
 import {
   existsSync,
@@ -303,6 +304,8 @@ export function buildVideoLibrary({
   localTools = false,
 } = {}) {
   const { videos, warnings } = collectVideos({ root, outDir, roots });
+  const referenceLibrary = collectReferences(root, outDir);
+  if(referenceLibrary.status === "invalid") warnings.push(...referenceLibrary.warnings);
   const prompt = readProductionPrompt(root, roots);
   if (prompt.error) warnings.push(`제작 프롬프트: ${prompt.error}`);
   const generatedAt = new Date().toISOString();
@@ -320,6 +323,7 @@ export function buildVideoLibrary({
   );
   const data = JSON.stringify({
     videos,
+    referenceLibrary,
     prompt,
     generatedAt,
     icons,
@@ -339,5 +343,5 @@ export function buildVideoLibrary({
     join(outDir, "gallery.html"),
     '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=videos.html"><title>제작 영상</title><a href="videos.html">제작 영상 목록 열기</a></html>\n',
   );
-  return { videos, warnings, file: join(outDir, "videos.html") };
+  return { videos, referenceLibrary, warnings, file: join(outDir, "videos.html") };
 }

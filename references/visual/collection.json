@@ -1,0 +1,32 @@
+{
+  "schema": "visual-reference-collection@1",
+  "version": "2026-09-22.1",
+  "title": "표현 레퍼런스",
+  "purpose": "모든 영상의 기획에서 실제 기준 영상을 확인하고, 기사에 맞는 각 컷과 전체 영상의 표현·완성도를 판단합니다. 사례 형식이 다르더라도 세 영상 모두를 참고합니다.",
+  "guide": "references/visual/README.md",
+  "criteria": [
+    "배경과 오버레이가 함께 내용을 설명하고 주대상과 자막이 읽히는가.",
+    "크기·위치·이미지·변화로 관계를 직관적으로 이해시키는가.",
+    "기사 내용과 실제 자료에 맞는 구도·재료·표현을 선택하는가.",
+    "발화와 등장·전개·관찰·퇴장이 맞물리는가.",
+    "전체 영상의 이야기·호흡·장면 연결이 살아 있고 의미 없는 반복이 없는가."
+  ],
+  "cases": [
+    {
+      "id": "scale",
+      "version": "v1",
+      "manifest": "references/visual/cases/scale/versions/v1/case.json"
+    },
+    {
+      "id": "observation",
+      "version": "v1",
+      "manifest": "references/visual/cases/observation/versions/v1/case.json"
+    },
+    {
+      "id": "scattering",
+      "version": "v1",
+      "manifest": "references/visual/cases/scattering/versions/v1/case.json"
+    }
+  ],
+  "requestText": "표현 레퍼런스 공통 세트 2026-09-22.1 (scale@v1, observation@v1, scattering@v1)의 실제 영상을 모두 확인하고 제작해 주세요. 설명력·미술·모션 완성도를 기준으로 각 컷과 전체 흐름을 기사에 맞게 설계해 주세요. 사례의 색·구도·기법을 고정 템플릿으로 반복하지 말고 필요한 새로운 표현도 선택해 주세요. 기존 자막 규칙은 유지해 주세요."
+}

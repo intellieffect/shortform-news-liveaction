@@ -1,3 +1,4 @@
+import {referenceContext} from '../visual-references.mjs';
 import { episodePrompt } from './prompt.mjs';
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -25,6 +26,7 @@ export const productionContext = (w, state, actions, completion) => {
   if (Object.values(reviewInputs).some((input) => input.status === "current")) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
   return {
     production_prompt: episodePrompt(w),
+    reference_library: referenceContext(w),
     production_defaults: existsSync(join(w.root, "00_brief/production-defaults.json")) ? {
       snapshot: json(join(w.root, "00_brief/production-defaults.json")),
       guide: w.rel(join(w.root, "00_brief/production-defaults.md")),
@@ -34,7 +36,7 @@ export const productionContext = (w, state, actions, completion) => {
     repository: { root: w.repo, editorial_schema: join(w.repo, "docs/specs/editorial-concept.schema.md"), profile: join(w.repo, "config/production-profile.json"), entry: join(w.repo, "scripts/produce.mjs") },
     request_preserved: w.request ? hash(rawRequest) === w.request.raw_request_sha256 : null,
     profile: existsSync(join(w.repo, "config/production-profile.json")) ? { path: "config/production-profile.json", current: json(join(w.repo, "config/production-profile.json")), changed_since_start: w.request ? hash(readFileSync(join(w.repo, "config/production-profile.json"))) !== w.request.profile.sha256 : null } : null,
-    instructions: ["shortform-news-pipeline/reference/creative-authority.md", "shortform-news-pipeline/reference/generation-provider.md", "shortform-news-pipeline/reference/quality-review.md", ...new Set(referencesForStage)].map((file) => join(pluginRoot, "skills", file)),
+    instructions: ["shortform-news-pipeline/reference/creative-authority.md", "shortform-news-pipeline/reference/generation-provider.md", "shortform-news-pipeline/reference/quality-review.md", "shortform-news-pipeline/reference/visual-references.md", ...new Set(referencesForStage)].map((file) => join(pluginRoot, "skills", file)),
     creative_files: ["story.json", "concepts.json", "narration.txt", "motion.json", "audio.json"].map((file) => ({ path: w.rel(p(file)), status: existsSync(p(file)) ? "present" : "unwritten" })),
     source_directory: w.rel(join(w.root, "01_input")),
     scene_source: "src/editorial/episodes/" + w.id + ".tsx",

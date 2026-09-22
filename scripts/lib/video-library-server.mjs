@@ -87,6 +87,11 @@ export function createVideoLibraryServer({
         );
       }
     }
+    for (const item of library.referenceLibrary.cases) {
+      for(const src of [item.src,item.poster,item.walkthrough,item.credits,item.sourceGuide]) {
+        assets.set(new URL(src,"http://localhost/videos.html").pathname, filePath(src));
+      }
+    }
     return library;
   }
   refresh();
@@ -216,6 +221,7 @@ export function createVideoLibraryServer({
         "Content-Type":
           {
             ".mp4": "video/mp4",
+            ".md": "text/plain; charset=utf-8",
             ".png": "image/png",
             ".jpg": "image/jpeg",
             ".jpeg": "image/jpeg",

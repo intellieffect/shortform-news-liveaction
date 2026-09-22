@@ -97,7 +97,10 @@
     "share:check": "node scripts/check-sharing.mjs",
     "unified:test": "node --test tests/test-unified-workflow.mjs",
     "precheck:all": "node scripts/pilots-index.mjs && node scripts/pilots-ledger.mjs",
-    "setup:hooks": "node scripts/setup-hooks.mjs"
+    "setup:hooks": "node scripts/setup-hooks.mjs",
+    "references:prepare": "node scripts/prepare-references.mjs",
+    "references:render": "node scripts/render-reference.mjs",
+    "references:test": "node --test tests/test-visual-references.mjs"
   },
   "sideEffects": [
     "*.css"
