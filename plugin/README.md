@@ -21,10 +21,14 @@
 
 ## 설치
 
+이 플러그인은 저장소 안에 들어 있다 — 따로 내려받지 않는다. 저장소 루트에서:
+
 ```console
-claude plugin marketplace add yubeeeen/shortform-news-workflow
-/plugin install shortform-news@shortform-news-workflow
+claude plugin marketplace add .
+claude plugin install shortform-news@shortform-news-workflow
 ```
+
+`marketplace add .` 는 루트의 `.claude-plugin/marketplace.json` 을 읽고, 그 항목이 `./plugin` 을 가리킨다. 설치 뒤 `@agent-shortform-news:<이름>` 검수 에이전트와 렌더 전 가드가 활성화된다 — 이것들 없이는 제작 절차가 돌지 않는다.
 
 ## 고칠 때
 
