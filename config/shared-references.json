@@ -1,0 +1,72 @@
+{
+  "schema": "shared-references@1",
+  "common": [
+    "references/visual/README.md",
+    "references/visual/collection.json"
+  ],
+  "cases": [
+    {
+      "id": "scale",
+      "version": "v1",
+      "files": [
+        "references/visual/cases/scale/versions/v1/assets/earth-original.webm",
+        "references/visual/cases/scale/versions/v1/assets/narration.wav",
+        "references/visual/cases/scale/versions/v1/assets/settle.wav",
+        "references/visual/cases/scale/versions/v1/case.json",
+        "references/visual/cases/scale/versions/v1/credits.md",
+        "references/visual/cases/scale/versions/v1/final.mp4",
+        "references/visual/cases/scale/versions/v1/poster.jpg",
+        "references/visual/cases/scale/versions/v1/source/README.md",
+        "references/visual/cases/scale/versions/v1/source/entry.tsx",
+        "references/visual/cases/scale/versions/v1/source/timing.json",
+        "references/visual/cases/scale/versions/v1/validation.md",
+        "references/visual/cases/scale/versions/v1/walkthrough.md"
+      ]
+    },
+    {
+      "id": "observation",
+      "version": "v1",
+      "files": [
+        "references/visual/cases/observation/versions/v1/assets/narration.wav",
+        "references/visual/cases/observation/versions/v1/assets/observation.jpg",
+        "references/visual/cases/observation/versions/v1/assets/vlt.mp4",
+        "references/visual/cases/observation/versions/v1/case.json",
+        "references/visual/cases/observation/versions/v1/credits.md",
+        "references/visual/cases/observation/versions/v1/final.mp4",
+        "references/visual/cases/observation/versions/v1/poster.jpg",
+        "references/visual/cases/observation/versions/v1/source/README.md",
+        "references/visual/cases/observation/versions/v1/source/entry.tsx",
+        "references/visual/cases/observation/versions/v1/source/timing.json",
+        "references/visual/cases/observation/versions/v1/validation.md",
+        "references/visual/cases/observation/versions/v1/walkthrough.md"
+      ]
+    },
+    {
+      "id": "scattering",
+      "version": "v1",
+      "files": [
+        "references/visual/cases/scattering/versions/v1/assets/approved-overlay.png",
+        "references/visual/cases/scattering/versions/v1/assets/end.png",
+        "references/visual/cases/scattering/versions/v1/assets/narration.wav",
+        "references/visual/cases/scattering/versions/v1/assets/original.mp4",
+        "references/visual/cases/scattering/versions/v1/assets/sky-source.png",
+        "references/visual/cases/scattering/versions/v1/assets/start.png",
+        "references/visual/cases/scattering/versions/v1/assets/vlt.mp4",
+        "references/visual/cases/scattering/versions/v1/case.json",
+        "references/visual/cases/scattering/versions/v1/credits.md",
+        "references/visual/cases/scattering/versions/v1/final.mp4",
+        "references/visual/cases/scattering/versions/v1/poster.jpg",
+        "references/visual/cases/scattering/versions/v1/reviews/p5-motion.txt",
+        "references/visual/cases/scattering/versions/v1/reviews/p7-fact.txt",
+        "references/visual/cases/scattering/versions/v1/reviews/p7-shot.txt",
+        "references/visual/cases/scattering/versions/v1/source/README.md",
+        "references/visual/cases/scattering/versions/v1/source/entry.tsx",
+        "references/visual/cases/scattering/versions/v1/source/generation-prompt.txt",
+        "references/visual/cases/scattering/versions/v1/source/key-overlay.py",
+        "references/visual/cases/scattering/versions/v1/source/timing.json",
+        "references/visual/cases/scattering/versions/v1/validation.md",
+        "references/visual/cases/scattering/versions/v1/walkthrough.md"
+      ]
+    }
+  ]
+}

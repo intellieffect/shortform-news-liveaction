@@ -88,3 +88,7 @@ output: npm run overlays  → overlays.json          (텍스트층, overrides �
 ## 지금 파일럿 상태를 볼 때
 
 `docs/INDEX.md` 최신 행 + `<root>/README.md` 상태판 + `out/ShortformNews_4-N.mp4`(최신 N이 현재 층).
+
+## 공통 표현 레퍼런스
+
+제공 대본·컷을 구현하는 경우에도 [공통 표현 레퍼런스](visual-references.md)를 먼저 확인한다. start/resume 문맥이 없는 경로는 제작 저장소의 `references/visual/collection.json`과 안내·실제 영상을 직접 확인하고 세트 버전과 실제 확인 범위를 기존 제작 노트에 남긴다. 사용자 고정 대본·컷은 보존하면서 위계·합성·발화와 모션·관찰 시간의 완성도를 참고한다. 사례 기법으로 대본이나 컷을 강제 변경하지 않는다.

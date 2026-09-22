@@ -57,7 +57,7 @@ test('공유 검사는 실제 staged 트리를 검사하며 미선정 편·로�
  // 실제 N44 fixture는 index와 작업트리의 기존 파일을 사용한다. 신규 config만 주입한다.
  const blocked=new Set(['CUSTOMER-MANIFEST.json','pilots/active.json','pilots/index.ts','pilots/index.json','docs/PILOTS.md']);
  const entries=tree.entries.filter(x=>!blocked.has(x.path));if(!entries.some(x=>x.path==='config/shared-episodes.json'))entries.push({path:'config/shared-episodes.json',mode:'100644',stage:'0'});
- const read=p=>p==='config/shared-episodes.json'?JSON.stringify(selection):readFileSync(join(REPO,p),'utf8');
+ const read=p=>p==='config/shared-episodes.json'?JSON.stringify(selection):p.startsWith('references/')?tree.read(p):readFileSync(join(REPO,p),'utf8');
  assert.deepEqual(sharingErrors(entries,read),[]);
  assert.ok(sharingErrors([...entries,{path:'news/private_episode/02_production/story.json',mode:'100644'}],read).some(x=>x.includes('미선정')));
  assert.ok(sharingErrors([...entries,{path:'pilots/local.json',mode:'100644'}],read).some(x=>x.includes('로컬 전용')));

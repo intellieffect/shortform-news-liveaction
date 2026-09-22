@@ -1,0 +1,93 @@
+{
+  "id": "scale",
+  "title": "수량 차이를 같은 기준으로 읽히기",
+  "seconds": 16.5,
+  "goal": "주요 위성 신청·계획의 수량 차이를 한눈에 비교한다.",
+  "transfer": [
+    "정보를 같은 기준에 놓아 차이를 형태로 읽히게 한다.",
+    "발화에 맞춰 정보를 공개하고 비교할 시간을 남긴다.",
+    "배경의 맥락과 그래픽의 읽힘을 함께 설계한다."
+  ],
+  "specific": [
+    "막대그래프와 공통 영점은 이 사례의 선택이다. 비교표·면적·대상 이미지로도 재설계할 수 있다.",
+    "신청·계획 수치이며 현재 운용 수량이나 시간 추이가 아니다. 네 항목은 전체의 일부다."
+  ],
+  "beats": [
+    {
+      "time": 0,
+      "note": "실제 지구 영상 위에 비교 기준을 세운다."
+    },
+    {
+      "time": 3.6,
+      "note": "첫 막대가 공통 영점에서 펼쳐진다. 수치는 카운터로 흔들지 않는다."
+    },
+    {
+      "time": 12.1,
+      "note": "마지막 작은 값도 같은 척도로 표현한다."
+    },
+    {
+      "time": 14.6,
+      "note": "전체 항목을 비교할 시간을 유지한다."
+    }
+  ],
+  "composition": "ReferenceScale",
+  "gain": -3.18,
+  "version": "v1",
+  "original_file": "01-satellite-plans-v1.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "8a672616b0b22ce009299589b438c6f5b0677006729b0aded77faba0c6a86119",
+  "files": {
+    "src": "references/visual/cases/scale/versions/v1/final.mp4",
+    "poster": "references/visual/cases/scale/versions/v1/poster.jpg",
+    "walkthrough": "references/visual/cases/scale/versions/v1/walkthrough.md",
+    "credits": "references/visual/cases/scale/versions/v1/credits.md",
+    "sourceGuide": "references/visual/cases/scale/versions/v1/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/scale/versions/v1/assets/earth-original.webm",
+      "sha256": "9bc7e4ea492013255d79a5db9c5d7c6ed3412eacf2937f52c11e3bda02b24e15"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/assets/narration.wav",
+      "sha256": "c96bbf1a4a054d2c1fad2badc65d3125d5403de1397a32952148f570e5b554e5"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/assets/settle.wav",
+      "sha256": "b5699d7f6abd0855e70cbcc0f4e1dc3db6bd78780b0cf0480ac44f91c4ceb70b"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/credits.md",
+      "sha256": "539f13925d68360288cec72141e72ebdb2f2bad359e92ce889e154277e39b10c"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/final.mp4",
+      "sha256": "8a672616b0b22ce009299589b438c6f5b0677006729b0aded77faba0c6a86119"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/poster.jpg",
+      "sha256": "fa3cb8d775cbf497fee3cf0c535c6ba4db36697c418c50a6c59e1f4707b2adc8"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/source/README.md",
+      "sha256": "8639acba75ac1861050180748464ab65a63e47a43b9caf426274eb6a195a3f7c"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/source/entry.tsx",
+      "sha256": "b9bd0705e1e73f2d548bd4e141973c358f8501f5e16a8dca6c60436a39cf7e1e"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/source/timing.json",
+      "sha256": "9f7547ad7e6156bca37cf5359c5bfc9dbf7880690dc3399c2c93f65d8522271f"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/validation.md",
+      "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+    },
+    {
+      "path": "references/visual/cases/scale/versions/v1/walkthrough.md",
+      "sha256": "a831f40f5fcf61641608ca965a7f69bc99c4ed1101e9728c457c72299f67d4d6"
+    }
+  ],
+  "article_url": "https://www.hani.co.kr/arti/science/science_general/1273728.html"
+}

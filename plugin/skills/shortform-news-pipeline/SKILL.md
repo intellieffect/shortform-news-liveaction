@@ -17,7 +17,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 
 한 제작 에이전트가 한 편의 이야기와 시청 경험 전체를 책임진다. 초기 원고·자료·개념 구성은 작업 가설이며, 실제 자료와 시안에서 드러난 문제에 따라 다시 선택한다. 기존 부품의 사용·변형·새 장면 작성이 모두 가능하다. 사용자 고정 조건과 사실·출처 근거를 지키며 이미 위임된 세부 선택은 내부에서 처리한다.
 
-제작 중에는 `produce resume <id> --json`의 `context.work`에서 이번 편의 자료·시안·관찰·갱신 대상을 확인한다. 필요한 실물을 보고 다음 작업을 선택하고, 수정 후 같은 문제를 다시 확인한다. 프로젝트에 명시된 기준 영상은 미술·설명 품질 참고로 확인하되, 과거 원고·구성·평가를 이번 편의 정답으로 복제하지 않는다.
+제작 중에는 `produce resume <id> --json`의 `context.work`에서 이번 편의 자료·시안·관찰·갱신 대상을 확인한다. 필요한 실물을 보고 다음 작업을 선택하고, 수정 후 같은 문제를 다시 확인한다. 모든 새 영상의 연출 설계 전에 `context.reference_library`의 공통 세트 실물을 확인하고 [표현 레퍼런스 활용](reference/visual-references.md)을 따른다. 사례와 기사 주제·표현 종류가 달라도 열람을 생략하지 않는다. 기준 영상의 설명·미술·모션을 참고하고 이번 기사에 맞는 새로운 표현도 설계한다.
 
 `shots`·비트별 등록 부품·`gate 4-3`·층별 승인·수집판과 생성판의 의무 분리는 script-faithful 경로의 절차다. editorial-concept에는 해당 경로의 정본·컴파일·렌더 검사와 독립 검수를 적용한다.
 
@@ -38,6 +38,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 | 기사 URL·분량으로 시작·환경·설치본 연결 | [production-entry.md](reference/production-entry.md) |
 | 현재 상태·변경 영향·중단 후 재개 | [production-state.md](reference/production-state.md) |
 | 개념 중심 제작·정본·표준 실행 | [editorial-concept-track.md](reference/editorial-concept-track.md) |
+| 이미지·일러스트·오버레이·정보그래픽의 연출과 합성 | [visual-expression.md](reference/visual-expression.md) |
 | 화면 위계·모바일·자료와 도해 선택 | [visual-direction.md](reference/visual-direction.md) |
 | 공통 사건 시간·등장·정착·퇴장·곡선 | [motion-timing.md](reference/motion-timing.md) |
 | 검수·수정·완성 시안 제출 | [review-loop.md](reference/review-loop.md) |

@@ -120,7 +120,7 @@ try {
     const s = JSON.parse(cli(["resume", id, "--json"], { bridge: true }).stdout);
     assert.equal(s.context.stage, "production");
     assert.match(s.context.decisions[0].text, /한 공간/);
-    assert.ok(s.context.instructions.every((path) => path.startsWith(installed)));
+    assert.ok(s.context.instructions.every((path) => path.startsWith(join(repo, "plugin"))));
     assert.equal(s.execution.plugin.path, installed);
     assert.equal(s.execution.invocation, "plugin-entry");
     assert.equal(s.context.repository.root, repo);

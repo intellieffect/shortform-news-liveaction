@@ -1,3 +1,4 @@
+import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
 import { readProjectDefaults } from "./defaults.mjs";
 import { existsSync, mkdirSync, realpathSync, readFileSync, writeFileSync } from "node:fs";
@@ -33,6 +34,8 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   visual.caption = { preset: profile.caption.preset };
   const defaults = readProjectDefaults(repo, profile);
   const prompt = prepareProductionPrompt(repo, url);
+  const referenceSet = captureReferences(repo);
+  const referenceText = referenceSet ? JSON.stringify(referenceSet, null, 2) + "\n" : null;
   const root = join(repo, "news", id);
   mkdirSync(join(repo, "news"), { recursive: true });
   mkdirSync(root); // 기존 폴더를 덮어쓰지 않는다. 동시에 같은 id를 시작해도 한 번만 성공한다.
@@ -42,9 +45,11 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
     source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
+    ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },
     profile: { path: profilePath, id: profile.id, version: profile.version, sha256: hash(profileBytes) },
   });
+  if (referenceText) put(REFERENCE_SNAPSHOT, referenceText);
   put(prompt.record.template, prompt.template);
   put(prompt.record.applied, prompt.applied);
   if (defaults) {

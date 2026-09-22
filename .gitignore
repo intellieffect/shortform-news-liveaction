@@ -34,3 +34,5 @@ docs/research/
 /production-request-*.txt
 /RESTORED.md
 /dist/
+
+/public/references/

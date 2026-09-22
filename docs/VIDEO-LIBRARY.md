@@ -88,3 +88,9 @@ ZIP과 파일 위치 기능은 `npm run videos:serve`로 연 로컬 화면에서
 `npm run videos:test`는 완성 상태 선별, 대표본 선택과 유실, 날짜 출처, 워크트리 경로, 원문 보존, HTML 데이터 삽입 안전성, 제작 프롬프트 적재와 누락 경고를 검증한다.
 
 화면의 색상·글자·간격·버튼·반응형 규칙은 디자인 규칙 (과거 내부 기록·로컬 보관)에 정리했다.
+
+## 표현 레퍼런스 탭
+
+`videos.html#references`에서 공통 기준과 세 확정 영상을 확인한다. 모든 영상의 연출 설계 전에 읽는 공통 입력이며 기사 주제나 기법별로 열람을 제한하지 않는다. 각 카드에는 다른 기사로 가져갈 판단, 해당 장면의 개별 선택, 타임코드별 관찰과 출처·제작 자료가 있다. ‘이 기준으로 제작 요청’은 공통 세트를 기존 프롬프트에 연결한다. 사용자가 사례를 지정하지 않아도 start/resume은 공통 세트를 제공한다.
+
+정본은 `references/visual/collection.json`과 사례별 버전 폴더다. 공유 파일은 `config/shared-references.json`으로 선정하고 미디어는 Git LFS로 전달한다. `npm run references:prepare -- scattering`은 재현 캐시를 복원한다. 사례의 source/README.md에 수정·재렌더 방법이 있다. 확정 MP4는 유지하며 새 결과는 별도 out/references 경로에 저장한다. 프레임 캐시와 로컬 실험 폴더는 공유하지 않는다.

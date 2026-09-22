@@ -24,6 +24,13 @@
         ><a id="tab-prompt" class="nav-tab" href="#prompt" data-view="prompt"
           ><span data-icon="note-pencil"></span
           ><span class="tab-text">제작 프롬프트</span></a
+        ><a
+          id="tab-references"
+          class="nav-tab"
+          href="#references"
+          data-view="references"
+          ><span data-icon="play-fill"></span
+          ><span class="tab-text">표현 레퍼런스</span></a
         >
       </nav>
     </header>
@@ -135,7 +142,7 @@
             <form id="prompt-form" class="prompt-fill">
               <label for="prompt-url">기사 주소</label
               ><span id="prompt-url-hint"
-                >아래 프롬프트의 <code>[URL]</code> 자리에 넣습니다.</span
+                >아래 프롬프트의 <code>[기사 URL]</code> 자리에 넣습니다.</span
               ><input
                 id="prompt-url"
                 type="url"
@@ -180,8 +187,80 @@
           </div>
         </div>
       </div>
+      <div id="view-references" class="view" hidden>
+        <div id="references" class="reference-view">
+          <div class="page-toolbar">
+            <h1 id="reference-title">표현 레퍼런스</h1>
+            <p id="reference-version" class="prompt-source"></p>
+          </div>
+          <div id="reference-body" class="reference-body" hidden>
+            <section class="reference-intro">
+              <p id="reference-purpose" class="reference-purpose"></p>
+              <div
+                id="reference-criteria-block"
+                class="reference-criteria"
+                hidden
+              >
+                <span class="field-label">세 편이 함께 지키는 기준</span>
+                <ul id="reference-criteria" class="reference-list"></ul>
+              </div>
+            </section>
+            <section id="reference-request" class="reference-request">
+              <div class="prompt-editor-head">
+                <label class="field-label" for="reference-request-text"
+                  >새 영상에 공통으로 넣는 제작 요청</label
+                >
+                <div class="prompt-actions">
+                  <button
+                    type="button"
+                    id="reference-append"
+                    class="text-button"
+                  >
+                    제작 프롬프트에 붙이기
+                  </button>
+                  <button type="button" id="reference-copy" class="primary">
+                    <span data-icon="copy"></span
+                    ><span id="reference-copy-text">공통 요청 복사</span>
+                  </button>
+                </div>
+              </div>
+              <textarea
+                id="reference-request-text"
+                readonly
+                spellcheck="false"
+                aria-describedby="reference-status"
+              ></textarea>
+              <p
+                id="reference-status"
+                class="file-status"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </section>
+            <div id="reference-cases" class="reference-grid"></div>
+            <section
+              id="reference-warnings-block"
+              class="reference-warnings"
+              hidden
+            >
+              <span class="field-label">확인이 필요한 항목</span>
+              <ul id="reference-warnings" class="reference-warning-list"></ul>
+            </section>
+          </div>
+          <div id="reference-empty" class="empty" hidden>
+            <span class="empty-icon" data-icon="play-fill"></span>
+            <h2 id="reference-empty-title">표현 레퍼런스가 아직 없습니다</h2>
+            <p id="reference-empty-copy"></p>
+            <ul
+              id="reference-empty-warnings"
+              class="reference-warning-list"
+              hidden
+            ></ul>
+          </div>
+        </div>
+      </div>
       <noscript
-        >영상 목록과 프롬프트를 보려면 브라우저에서 JavaScript를 켜
+        >영상 목록·프롬프트·표현 레퍼런스를 보려면 브라우저에서 JavaScript를 켜
         주세요.</noscript
       >
     </main>
