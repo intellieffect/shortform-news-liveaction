@@ -10,10 +10,8 @@ import { REPO, assertPilotId } from "./lib/pilot.mjs";
 import { repositoryPath } from "./lib/production/contracts.mjs";
 import { productionProfileErrors } from "./lib/production-profile.mjs";
 
-export const SCENE_PROOF_CONFIG_SCHEMA = "scene-proof-config@1";
-export const SCENE_PROOF_REPORT_SCHEMA = "scene-proof@1";
-export const SCENE_PROOF_RENDERING_KIND = "shared-scene-proof@1";
-export const SCENE_COMPONENT_ROOT = "src/editorial/scenes/";
+import {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_REPORT_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath} from './lib/scene-proof-contract.mjs';
+export {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_REPORT_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath};
 export const MAX_DURATION_SECONDS = 30;
 export const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp"];
 export const VIDEO_EXTENSIONS = [".mp4", ".mov", ".webm"];
@@ -28,7 +26,6 @@ const isFiniteNumber = (value) => typeof value === "number" && Number.isFinite(v
 /** 공백만 다른 인용을 같은 문장으로 본다. 그 밖의 글자는 원문 그대로여야 한다. */
 export const normalizeExcerpt = (value) => String(value ?? "").replace(/\s+/g, " ").trim();
 
-export const sceneProofConfigPath = (id) => `news/${id}/02_production/scene-proof.json`;
 
 /** 저장소 안의 안전한 상대 경로인지 확인한다. 밖을 가리키면 null. */
 export const safeRepoPath = (repo, rel) => {
@@ -40,8 +37,7 @@ export const safeRepoPath = (repo, rel) => {
 };
 
 /**
- * 발화 줄 목록. 실제 narration.json이 있으면 그 id를 쓰고, 없으면(음성 이전) narration.txt의
- * 순서에서 s01… 을 만든다. 가짜 narration.json을 쓰지 않는다.
+ * 현재 narration.txt의 순서에서 s01… 발화 줄을 읽는다. 가짜 narration.json을 쓰지 않는다.
  */
 export const narrationLines = (production) => {
   const textFile = join(production, "narration.txt");
@@ -53,7 +49,7 @@ export const narrationLines = (production) => {
     .map((text, index) => ({ id: `s${String(index + 1).padStart(2, "0")}`, variants: [text], source: "narration.txt" }));
 };
 
-/** 실제로 쓸 프로필 파일(편이 고정한 버전이 있으면 그 보관본)과 바이트 해시. */
+/** 현행 공통 제작 프로필과 바이트 해시. */
 export const resolveProfile = (repo) => {
   const current = "config/production-profile.json";
   const rel = current;
@@ -126,7 +122,7 @@ export const validateSceneProofPlan = ({ repo = REPO, id, config, phase = "still
     add("duration", `duration_seconds는 0 초과 ${MAX_DURATION_SECONDS} 이하의 수여야 한다`);
   }
 
-  const { path: profilePath, profile, sha256: profileSha256 } = resolveProfile(repo, visualSystem.production_profile);
+  const { path: profilePath, profile, sha256: profileSha256 } = resolveProfile(repo);
   for (const message of productionProfileErrors(profile)) add("profile", message);
   const fonts = [
     ...fontFaces(repo, profile.caption?.font_family ?? ""),

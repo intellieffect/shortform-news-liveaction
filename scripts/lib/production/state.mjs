@@ -39,7 +39,8 @@ const fingerprint = (w, action, state, cache) => {
   const files = fileSnapshot(w, spec.inputs, cache);
   const dependencies = Object.fromEntries(spec.deps.map((dep) => [dep, state.receipts[dep]?.id ?? null]));
   const impact = state.impacts[action]?.id ?? null;
-  return { files, dependencies, impact, sha256: hash(JSON.stringify({ files, dependencies, impact })) };
+  const input = {files, dependencies, impact, ...(spec.semantic ? {semantic: spec.semantic} : {})};
+  return {...input, sha256: hash(JSON.stringify(input))};
 };
 const inspect = (w, state) => {
   const result = {};
@@ -53,6 +54,7 @@ const inspect = (w, state) => {
     for (const dep of spec.deps) if (result[dep].status !== "current") reasons.push({ kind: "dependency", action: dep, status: result[dep].status });
     for (const path of spec.required) if (current.files[path] === null) reasons.push({ kind: "missing-input", path });
     if (receipt) {
+      if ((receipt.inputs.semantic ?? null) !== (current.semantic ?? null)) reasons.push({kind: "changed-scene-semantics"});
       for (const path of changedFiles(receipt.inputs.files, current.files)) reasons.push({ kind: "changed-input", path });
       const outputs = fileSnapshot(w, Object.keys(receipt.outputs), cache);
       for (const path of changedFiles(receipt.outputs, outputs)) reasons.push({ kind: outputs[path] === null ? "missing-output" : "changed-output", path });
@@ -129,10 +131,6 @@ export const finishProductionAction = (id, token, { repo } = {}) => {
   return transaction(w, (state) => {
     const attempt = state.attempts.find((a) => a.id === token && a.status === "running");
     if (!attempt) throw new Error("열린 작업 토큰이 없다: " + token);
-    if (attempt.action === 'narration') {
-      const gate = firstSceneReadiness(w, state);
-      if (!gate.ready || (gate.required && JSON.stringify(gate.proof_ids) !== JSON.stringify(attempt.first_scene?.proof_ids))) throw new Error('음성 작업 중 첫 핵심 장면 확인이 바뀌었다');
-    }
     const current = fingerprint(w, attempt.action, state);
     if (current.sha256 !== attempt.inputs.sha256) throw new Error("작업 도중 입력·상위 결과·의미 영향이 바뀌었다. 기존 결과를 최신으로 기록하지 않는다");
     const expectedOutputs = recipe(w, attempt.action).outputs;

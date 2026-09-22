@@ -1,3 +1,4 @@
+import {sceneProofPhases} from '../scene-proof-contract.mjs';
 import {recipe} from './contracts.mjs';
 import {auditScreenText} from '../screen-text-audit.mjs';
 import {existsSync, readFileSync} from 'node:fs';
@@ -37,10 +38,11 @@ export function validateSceneProof(w, attempt, outputs) {
 }
 
 export function sceneProofs(w, state) {
-  const currentInputs = recipe(w, 'scene_proof').inputs;
+  const spec = recipe(w, 'scene_proof');
+  const currentInputs = spec.inputs;
   const proofs = (state.attempts ?? []).filter(a => a.status === 'succeeded' && a.validation?.kind === 'scene-proof').map(a => ({
     receipt_id: a.id, ...a.validation.report, report_path: a.validation.report_path,
-    status: JSON.stringify(Object.keys(a.inputs.files).sort()) !== JSON.stringify(currentInputs) || changed(w, a.inputs.files) || changed(w, a.outputs_sha256) || a.inputs.impact !== (state.impacts?.scene_proof?.id ?? null) ? 'stale' : 'current',
+    status: (a.inputs.semantic ?? null) !== (spec.semantic ?? null) || JSON.stringify(Object.keys(a.inputs.files).sort()) !== JSON.stringify(currentInputs) || changed(w, a.inputs.files) || changed(w, a.outputs_sha256) || a.inputs.impact !== (state.impacts?.scene_proof?.id ?? null) ? 'stale' : 'current',
   }));
   return proofs;
 }
@@ -54,7 +56,7 @@ export function visualWork(w, state = {attempts: []}) {
   const proofs = sceneProofs(w, state);
   for (const c of concepts.concepts ?? []) {
     if (c.visual?.purpose !== 'explain') continue;
-    for (const phase of ['still', ...((c.visual.moments ?? []).some(m => m.motion_required) ? ['motion'] : [])]) {
+    for (const phase of sceneProofPhases(c)) {
       const proof = proofs.findLast(p => p.concept_id === c.id && p.phase === phase && p.scope === 'composite');
       if (!proof || proof.status !== 'current' || proof.verdict !== 'usable') tasks.push({kind: 'scene-proof', concept_id: c.id, phase, status: proof?.status ?? 'unrecorded', verdict: proof?.verdict ?? 'unverified'});
     }

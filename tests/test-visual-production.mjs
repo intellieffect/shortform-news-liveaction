@@ -220,3 +220,40 @@ test('standalone substitute image without shared composition provenance cannot p
  const f=gatedFixture(t,false),p=proof(f,'standalone');finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
  assert.ok(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.blockers.some(b=>b.code==='first-scene-composite'));
 });
+
+test('other scene edits and linked planned jobs do not stale the chosen scene',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'selected');
+ const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json'))),v=JSON.parse(readFileSync(join(f.repo,f.prefix+'visual-system.json')));
+ c.concepts.push({...c.concepts[0],id:'later',narration_lines:['s02'],visual:{...c.concepts[0].visual,realization:{method:'generated',asset_ids:[],job_ids:['later_job'],generated_role:'later action'}}});
+ v.generation_jobs=[{id:'later_job',kind:'video',status:'planned',purpose:'later motion'}];
+ put(f.repo,f.prefix+'concepts.json',c);put(f.repo,f.prefix+'visual-system.json',v);
+ put(f.repo,f.prefix+'narration.txt','양끝을 다르게 당기면 돌아갑니다.\n다른 장면의 설명입니다.');
+ const state=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(state.context.work.first_scene.ready,true);assert.equal(state.actions.narration.runnable,true);
+ c.concepts[0].visual.moments[0].result='다른 결과';put(f.repo,f.prefix+'concepts.json',c);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+});
+test('invalid handwritten proof config leaves resume usable and blocks narration',t=>{
+ const f=gatedFixture(t,false);put(f.repo,f.prefix+'scene-proof.json','{not-json');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});assert.equal(s.actions.narration.runnable,false);
+ assert.ok(s.context.work.first_scene.blockers.some(b=>b.code==='first-scene-config'));
+});
+test('generation-as-code and missing reverse job ownership are detected explicitly',()=>{
+ const c=plan(),v={visual_contract:VISUAL_CONTRACT,generation_jobs:[{id:'flow',kind:'video',status:'planned',purpose:'flow'}],media:{assets:[{id:'flow_asset',generation_job:'flow'}]}};
+ c.concepts[0].visual.realization.asset_ids=['flow_asset'];
+ const codes=validateVisualPlan({concepts:c,visualSystem:v}).errors.map(e=>e.code);
+ assert.ok(codes.includes('visual-method'));assert.ok(codes.includes('visual-job-link'));
+});
+test('visual edits after admission do not discard generated narration; audio input checks remain',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'admitted');
+ const a=beginProductionAction('fresh','narration',{repo:f.repo});
+ const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json')));c.concepts[0].visual.focus='Changed later artwork';put(f.repo,f.prefix+'concepts.json',c);
+ const wav=f.prefix+'audio/narration.wav';mkdirSync(dirname(join(f.repo,wav)),{recursive:true});
+ execFileSync('ffmpeg',['-v','error','-f','lavfi','-i','anullsrc=r=24000:cl=mono','-t','1',join(f.repo,wav)]);
+ const line=readFileSync(join(f.repo,f.prefix+'narration.txt'),'utf8');
+ put(f.repo,f.prefix+'narration.json',{schema_version:'1.1',pilot:'fresh',source:{narration_txt:'02_production/narration.txt',narration_sha256:hash(line)},audio:{path:'02_production/audio/narration.wav',duration:1},sentences:[{id:'s01',text:line,start:0,end:1,words:[{text:line,start:0,end:1}]}]});
+ finishProductionAction('fresh',a.id,{repo:f.repo});
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'current');
+ put(f.repo,f.prefix+'narration.txt','Changed spoken input');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'stale');
+});
