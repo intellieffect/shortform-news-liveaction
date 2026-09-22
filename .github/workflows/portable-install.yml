@@ -25,13 +25,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: FFmpeg 설치
-        uses: FedericoCarboni/setup-ffmpeg@v3
+      # setup-ffmpeg 액션은 macOS arm64 를 지원하지 않는다 — OS 별 패키지 관리자를 쓴다.
+      - name: FFmpeg 설치 (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: FFmpeg 설치 (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+      - name: FFmpeg 설치 (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg -y --no-progress
+      - name: ffmpeg·ffprobe 가 PATH 에 있다
+        run: |
+          ffmpeg -version
+          ffprobe -version
       - run: npm ci
       - name: 스크립트 문법 확인
         run: python -m compileall -q plugin/skills/shortform-news-input/scripts
       - run: npm run lint
       - run: npm run zip:test
       - run: npm run videos:test
+      - run: npm run references:test
       - name: 환경 점검이 키 누락을 이름으로 알린다
         run: node scripts/produce.mjs doctor

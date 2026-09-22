@@ -3,27 +3,48 @@
 import json, base64, hashlib, subprocess, os, sys, datetime, re
 import urllib.request
 
+def _dotenv(path, name):
+    """`.env` 한 줄에서 값을 꺼낸다. 값이 비면 «안 적은 것»으로 본다."""
+    try:
+        text = open(path, encoding="utf-8-sig").read()   # Windows 편집기가 붙이는 BOM 제거
+    except OSError:
+        return None
+    except UnicodeDecodeError:
+        sys.exit(f"{path} 를 UTF-8로 읽을 수 없다 — .env 는 UTF-8로 저장한다"
+                 " (PowerShell 은 `Out-File -Encoding utf8`).")
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line: continue
+        key, value = line.split("=", 1)
+        if key.strip() != name: continue
+        value = value.strip()
+        if len(value) > 1 and value[0] in "'\"" and value[-1] == value[0]:
+            return value[1:-1] or None
+        for i in range(1, len(value)):          # 값 뒤에 붙인 주석을 자른다
+            if value[i] == "#" and value[i - 1] in " \t":
+                value = value[:i]; break
+        return value.strip() or None
+    return None
 def _env(name, keychain=None, default=None):
-    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고."""
-    v = os.environ.get(name)
-    if v: return v.strip()
+    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고.
+    빈 값은 없는 것으로 본다 — `.env.example` 을 복사해 일부만 채우는 것이 보통이라서다."""
+    value = (os.environ.get(name) or "").strip()
+    if value: return value
     seen = set()
     for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
         d = os.path.abspath(start)
         while d not in seen:
             seen.add(d)
-            p = os.path.join(d, ".env")
-            if os.path.isfile(p):
-                for line in open(p, encoding="utf-8"):
-                    line = line.strip()
-                    if line and not line.startswith("#") and line.split("=", 1)[0].strip() == name:
-                        return line.split("=", 1)[1].strip().strip("'\"")
+            value = _dotenv(os.path.join(d, ".env"), name)
+            if value: return value
             nd = os.path.dirname(d)
             if nd == d: break
             d = nd
     if keychain and sys.platform == "darwin":
         # 항목이 없을 때 security 가 제 에러를 찍어 우리 안내를 덮으므로 삼킨다.
-        try: return subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"], stderr=subprocess.DEVNULL).decode().strip()
+        try:
+            value = subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"], stderr=subprocess.DEVNULL).decode().strip()
+            if value: return value
         except Exception: pass
     if default is not None: return default
     sys.exit(f"{name} 가 없다 — 저장소 루트 `.env` 에 {name}=... 를 넣는다 (`.env.example` 참고).")
@@ -38,8 +59,9 @@ def _default(path, *keys, fallback=None):
         while d not in seen:
             seen.add(d); f=os.path.join(d, path)
             if os.path.isfile(f):
-                try: cur=json.load(open(f,encoding="utf-8"))
-                except Exception: break
+                # 설정이 깨졌으면 조용히 기본값으로 넘어가지 않고 알린다.
+                try: cur=json.load(open(f,encoding="utf-8-sig"))
+                except Exception as error: sys.exit(f"{f} 를 읽을 수 없다: {error}")
                 for k in keys:
                     if not isinstance(cur,dict) or k not in cur: return fallback
                     cur=cur[k]
@@ -72,7 +94,10 @@ OUT_JSON = os.path.join(ROOT, "narration.json")
 # 음성은 계정마다 다르다 — 환경변수 → config/production-defaults.json 의 narration → 이 저장소 수록 편의 값 순.
 _VOICE_DEFAULT = {"provider": "typecast", "voice_id": "tc_69fc0cff784968297fb45daa", "voice_name": "Sanghyun",
                   "model": "ssfm-v30", "language": "kor", "audio_tempo": 1.0, "audio_pitch": 0, "emotion_preset": "normal", "seed": None}
-VOICE = dict(_VOICE_DEFAULT, **(_default("config/production-defaults.json", "narration", "voice", fallback=None) or {}))
+_voice_config = _default("config/production-defaults.json", "narration", "voice", fallback=None)
+if _voice_config is not None and not isinstance(_voice_config, dict):
+    sys.exit("config/production-defaults.json 의 narration.voice 는 객체여야 한다.")
+VOICE = dict(_VOICE_DEFAULT, **(_voice_config or {}))
 VOICE["voice_id"] = _env("TYPECAST_VOICE_ID", default=VOICE["voice_id"])
 if os.environ.get("TYPECAST_VOICE_NAME"): VOICE["voice_name"] = os.environ["TYPECAST_VOICE_NAME"]
 

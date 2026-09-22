@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { activeIds, addLocalId } from './episode-selection.mjs';
 // 편(파일럿) 경로 규약 — 스크립트 공용.
 //   편 id = news/<id> 폴더명(snake_case — 2026-09-02 통합 전에는 input 저장소 work/<id>). 데이터 pilots/<id>/, 미디어 캐시 public/pilots/<id>/, 산출물 out/pilots/<id>/
@@ -6,7 +7,8 @@ import { existsSync, readFileSync } from "node:fs";
 import { basename, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
 
-export const REPO = resolve(new URL(".", import.meta.url).pathname, "..", "..");
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+export const REPO = resolve(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
 export const ID_RE = /^[a-z0-9_]+$/;
 
 export const pilotIdFromRoot = (root) => {

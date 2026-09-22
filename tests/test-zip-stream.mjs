@@ -3,7 +3,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { createWriteStream, readFileSync, writeFileSync, statSync } from "node:fs";
+import {
+  createWriteStream,
+  readFileSync,
+  writeFileSync,
+  statSync,
+  openSync,
+  ftruncateSync,
+  closeSync,
+} from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -98,6 +106,29 @@ test("없는 파일은 쓰기 전에 알리고, 받는 쪽이 끊기면 매달�
   ]);
   sink.destroy();
   await assert.rejects(() => writing, /끊겼다|premature/i);
+});
+
+test("묶음 전체가 4GB를 넘으면 한 바이트도 쓰기 전에 거절한다", async (t) => {
+  const { dir, cleanup } = await workspace();
+  t.after(cleanup);
+  // 실제로 4GB를 만들지 않고 stat 만 크게 보이는 희소 파일을 쓴다.
+  const path = join(dir, "sparse.bin");
+  const fd = openSync(path, "w");
+  ftruncateSync(fd, Math.floor(2.3 * 1024 * 1024 * 1024));
+  closeSync(fd);
+  assert.ok(statSync(path).size < 0xffffffff, "한 파일로는 한도를 넘지 않아야 한다");
+
+  const sink = new PassThrough();
+  let wrote = 0;
+  sink.on("data", (chunk) => (wrote += chunk.length));
+  await assert.rejects(
+    () => writeZip(sink, [
+      { path, name: "a.bin" },
+      { path, name: "b.bin" },
+    ]),
+    /묶음이 4GB를 넘는다/,
+  );
+  assert.equal(wrote, 0, "거절은 헤더를 보내기 전이어야 한다");
 });
 
 test("디렉터리는 담지 않는다", async (t) => {

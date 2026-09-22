@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, symlinkSync} from 'node:fs';
@@ -11,7 +12,8 @@ import {hash} from '../scripts/lib/production/contracts.mjs';
 import {workspace} from '../scripts/lib/production/contracts.mjs';
 import {validateExplanationReview, visualWork} from '../scripts/lib/production/visual-work.mjs';
 import {auditScreenText} from '../scripts/lib/screen-text-audit.mjs';
-const project = new URL('../', import.meta.url).pathname;
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const project = fileURLToPath(new URL('../', import.meta.url));
 const put = (root, p, v) => {mkdirSync(dirname(join(root, p)), {recursive:true});writeFileSync(join(root, p), typeof v === 'string' ? v : JSON.stringify(v));};
 const plan = () => ({schema_version:'1.0', pilot:'fresh', concepts:[{id:'pull', narration_lines:['s01'], elements:[{id:'name', kind:'text', role:'necessary-label', text:'대상'}], visual:{purpose:'explain', focus:'같은 대상의 변화', moments:[{id:'turn', narration_lines:['s01'], subject:'길쭉한 물질', action:'양끝을 다르게 당김', result:'같은 물질이 돌아감', motion_required:true}], realization:{method:'code', asset_ids:[], job_ids:[], code_role:'관계와 방향 제어'}}}]});
 function fixture(t, gate = 'first-core-scene@1') {

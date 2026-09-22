@@ -11,6 +11,7 @@
  *
  * 사용: node scripts/warp-narration.mjs <root> [--orig <ORIGINAL.json>] [--dry]
  */
+import { FFMPEG, FFPROBE } from "./lib/tools.mjs";
 import { readFileSync, existsSync, renameSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -19,7 +20,7 @@ const root = process.argv[2] && resolve(process.argv[2]);
 if (!root) { console.error("usage: warp-narration.mjs <root> [--orig <json>] [--dry]"); process.exit(2); }
 const argv = process.argv.slice(3);
 const DRY = argv.includes("--dry");
-const FFMPEG = "/opt/homebrew/bin/ffmpeg";
+
 const P = (x) => join(root, "02_production", x);
 
 const origPath = argv.indexOf("--orig") >= 0 ? resolve(argv[argv.indexOf("--orig") + 1]) : P("audio/narration.timestamps.ORIGINAL.json");
@@ -65,7 +66,7 @@ const r = spawnSync(FFMPEG, ["-v", "error", "-y", "-i", src,
   "-map", "[out]", "-t", String(O.audio_duration), "-ar", "44100", "-ac", "1", dst], { encoding: "utf8" });
 if (r.status !== 0) { console.error(r.stderr?.slice(0, 600)); process.exit(1); }
 
-const probe = spawnSync("/opt/homebrew/bin/ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", dst], { encoding: "utf8" }).stdout.trim();
+const probe = spawnSync(FFPROBE, ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", dst], { encoding: "utf8" }).stdout.trim();
 console.log(`warp → ${dst.replace(root + "/", "")}  ${Number(probe).toFixed(3)}s (목표 ${O.audio_duration}s)`);
 renameSync(src, P("audio/narration.regen.wav"));
 renameSync(dst, src);

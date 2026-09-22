@@ -19,6 +19,7 @@
  *      워크트리를 지우는 순간 사라진다(2026-09-03 사고). 9편·8편 모두 실제로 그 상태였다.
  *      확정 직후 옮기는 것을 사람이 기억하게 두지 않는다.
  */
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -46,7 +47,8 @@ if (!fs.existsSync(PILOT)) {
   process.exit(1);
 }
 const pilot = JSON.parse(fs.readFileSync(PILOT, 'utf8'));
-const md5 = (p) => execFileSync('md5', ['-q', p]).toString().trim();
+// md5(1) 은 BSD 전용이다 — 다른 곳에서 이미 쓰는 node 해시로 같은 값을 낸다.
+const md5 = (p) => createHash('md5').update(fs.readFileSync(p)).digest('hex');
 const rel = (p) => path.relative(ROOT, p);
 const mb = (b) => (b / 1024 / 1024).toFixed(1) + 'MB';
 

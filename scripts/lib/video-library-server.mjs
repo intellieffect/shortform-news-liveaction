@@ -13,27 +13,31 @@ const run = promisify(execFile);
 function zipEntries(files, id) {
   let thumbnail = 0;
   const entries = [];
-  const used = new Set(
-    files
-      .map((file) => basename(file))
-      .filter((name) => /^[\x20-\x7e]+$/.test(name)),
-  );
+  const used = new Set();
+  // 같은 이름이 두 번 들어가면 푸는 쪽이 조용히 하나를 덮어쓴다 — 서로 다른 폴더의
+  // 확정 썸네일이 둘 다 cover.png 인 경우가 실제로 있다. 이름을 붙일 때마다 중복을 본다.
+  const unique = (stem, ext) => {
+    let name = stem + ext;
+    for (let suffix = 1; used.has(name); suffix++) name = `${stem}_${suffix}${ext}`;
+    used.add(name);
+    return name;
+  };
   for (const file of files) {
     const isVideo = extname(file).toLowerCase() === ".mp4";
+    const ext = extname(file).toLowerCase();
     if (!isVideo) thumbnail++;
     if (/^[\x20-\x7e]+$/.test(basename(file))) {
-      entries.push({ path: file, name: basename(file) });
+      const plain = basename(file);
+      entries.push({
+        path: file,
+        name: unique(plain.slice(0, plain.length - extname(plain).length), extname(plain)),
+      });
       continue;
     }
     const stem = isVideo
       ? id
       : `${id}_thumbnail_${String(thumbnail).padStart(2, "0")}`;
-    let name = stem + extname(file).toLowerCase(),
-      suffix = 1;
-    while (used.has(name))
-      name = `${stem}_${suffix++}${extname(file).toLowerCase()}`;
-    used.add(name);
-    entries.push({ path: file, name });
+    entries.push({ path: file, name: unique(stem, ext) });
   }
   return entries;
 }

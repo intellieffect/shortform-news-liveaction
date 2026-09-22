@@ -80,10 +80,22 @@ test('공유 검사는 실제 staged 트리를 검사하며 미선정 편·로�
  // 자기 규칙 정의와 darwin 폴백은 걸리지 않는다.
  assert.deepEqual(sharingErrors(entries,p=>p==='scripts/lib/sharing.mjs'?readFileSync(join(REPO,'scripts/lib/sharing.mjs'),'utf8'):read(p)),[]);
  assert.deepEqual(sharingErrors(entries,p=>p.endsWith('stock_search.py')?readFileSync(join(REPO,'plugin/skills/shortform-news-input/scripts/stock_search.py'),'utf8'):read(p)),[]);
- // 옛 커밋에는 걸지 않는다 — 이미 원격에 있는 이력은 고쳐 쓸 수 없다.
+ // 이미 원격에 있는 커밋에는 걸지 않는다 — 지금 와서 고쳐 쓸 수 없다.
  const past=p=>p==='plugin/agents/sourcing.md'?'security find-'+'generic-password -s x -w':read(p);
- assert.ok(sharingErrors(entries,past,{localOnly:true}).some(x=>x.includes('로컬 전용 의존')));
- assert.deepEqual(sharingErrors(entries,past,{localOnly:false}),[]);
+ assert.ok(sharingErrors(entries,past,{scope:'all'}).some(x=>x.includes('로컬 전용 의존')));
+ assert.deepEqual(sharingErrors(entries,past,{scope:'new'}),[]);
+ assert.deepEqual(sharingErrors(entries,past,{scope:'pushed'}),[]);
+
+ // 연락처는 한 번 나가면 지울 수 없으므로 새 중간 커밋에서도 본다.
+ const contact=p=>p==='plugin/skills/shortform-news-input/scripts/stock_search.py'
+   ?'UA="shortform-workflow/1.0 (mj@intellieffect'+'.com)"':read(p);
+ for(const scope of ['all','new'])
+  assert.ok(sharingErrors(entries,contact,{scope}).some(x=>x.includes('내부 연락처')),scope+' 에서 연락처를 잡아야 한다');
+ assert.deepEqual(sharingErrors(entries,contact,{scope:'pushed'}),[]);
+
+ // `.env.example` 은 확장자 규칙 밖이라 이름으로 더해 두었다 — 비밀값이 들어가면 걸려야 한다.
+ assert.ok(sharingErrors([...entries,{path:'.env.example',mode:'100644',stage:'0'}],
+   p=>p==='.env.example'?'PEXELS_API_KEY=sk-ant-'+'a'.repeat(40):read(p)).some(x=>x.includes('비밀값')));
 });
 
 test('push 검사에서 옛 개발 이력을 LFS 업로드 전에 거절',()=>{

@@ -11,7 +11,7 @@ const CENTRAL = 0x02014b50;
 const END = 0x06054b50;
 // 이름은 UTF-8(0x800), 크기·CRC는 데이터 뒤의 서술자에 쓴다(0x08) — 한 번만 읽고 흘려보내기 위해서다.
 const FLAGS = 0x0800 | 0x08;
-const MAX = 0xffffffff; // ZIP64 없이 담을 수 있는 한 파일의 크기
+const MAX = 0xffffffff; // ZIP64 없이 담을 수 있는 크기 — 한 파일도, 묶음 전체도 이 안이어야 한다
 
 const dosTime = (date) => {
   const year = Math.max(1980, date.getFullYear());
@@ -101,12 +101,22 @@ const put = (out, chunk) => {
  * 스트림은 닫지 않는다 — 호출한 쪽이 끝을 정한다.
  */
 export async function writeZip(out, entries) {
-  const central = [];
-  let offset = 0;
+  // 크기는 먼저 전부 확인한다. 중간에 걸리면 헤더를 보낸 뒤라 받는 쪽엔 «끊김»으로만 보인다.
+  const sized = [];
+  let planned = 0;
   for (const { path, name } of entries) {
     const info = await stat(path);
     if (!info.isFile()) throw new Error("파일이 아니다: " + path);
     if (info.size > MAX) throw new Error("4GB 이상은 담을 수 없다: " + path);
+    planned += info.size + 30 + Buffer.byteLength(name, "utf8") + 16;
+    sized.push({ path, name, info });
+  }
+  if (planned > MAX)
+    throw new Error(`묶음이 4GB를 넘는다(${planned}바이트) — 파일을 나눠 받는다`);
+
+  const central = [];
+  let offset = 0;
+  for (const { path, name, info } of sized) {
     const when = dosTime(info.mtime);
     const head = localHeader(name, when);
     await put(out, head);

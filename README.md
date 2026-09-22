@@ -16,7 +16,9 @@ Windows·macOS·Linux에서 같은 절차로 동작한다. 자동 설치 프로�
 | Python 3 | 자료 검색·내레이션·컷아웃 스크립트 | `winget install Python.Python.3.12` |
 | Claude Code CLI | 제작 진행과 플러그인 | 설치 안내는 Anthropic 문서 |
 
-Python 쪽은 `python3 -m pip install pillow numpy` 를 한 번 실행한다(스티커 컷아웃·분위기 검색이 쓴다). 사람 목소리 WAV를 강제정렬할 때만 `whisperx` 가 더 필요하다 — Typecast 내레이션만 쓰면 없어도 된다.
+Python 쪽은 `pip install pillow numpy` 를 한 번 실행한다(스티커 컷아웃과 표현 레퍼런스 준비가 쓴다). Windows에서 명령 이름은 `python3` 이 아니라 `py` 또는 `python` 이다 — 스크립트가 알아서 찾으므로 그대로 두면 되고, 여러 벌이 깔려 있으면 `PYTHON_PATH` 로 고른다. 마찬가지로 FFmpeg가 여러 벌이면 `FFMPEG_PATH`·`FFPROBE_PATH` 로 고른다.
+
+사람 목소리 WAV를 강제정렬할 때만 `whisperx` 가 더 필요하다 — Typecast 내레이션만 쓰면 없어도 된다. 믹스 측정(`npm run audio:measure`)은 셸 스크립트라 Windows에서는 Git Bash 같은 POSIX 셸에서 실행한다.
 
 ### 2. 저장소 준비
 

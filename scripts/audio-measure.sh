@@ -2,10 +2,10 @@
 # 4-5 믹스 측정 — 통합 LUFS·LRA·TP + 구간 RMS. 사용: npm run audio:measure -- <mp4> [--narr <narration.wav>] [--beats <beats.json>] [--win 이름:시작:길이]...
 # 구간: 첫 0.4s(BGM 단독)·첫 1초·마지막 1초 + 내레이션 무음 창(silencedetect −35dB 0.25s, 앞 3·뒤 2) + 엔드카드(beats role=endcard) + --win 추가분.
 # 0.4s 미만 창은 ebur128 대신 volumedetect(4편 함정). 기준값은 docs/specs/audio.schema.md 4c.
-set -u; FF=/opt/homebrew/bin/ffmpeg
+set -u; FF="${FFMPEG_PATH:-ffmpeg}"; FP="${FFPROBE_PATH:-ffprobe}"
 F="$1"; shift; NARR=""; BEATS=""; WINS=()
 while [ $# -gt 0 ]; do case "$1" in --narr) NARR="$2"; shift 2;; --beats) BEATS="$2"; shift 2;; --win) WINS+=("$2"); shift 2;; *) shift;; esac; done
-DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$F")
+DUR=$($FP -v error -show_entries format=duration -of csv=p=0 "$F")
 echo "== 통합 ($F, ${DUR}s)"; $FF -hide_banner -i "$F" -af ebur128=peak=true -f null - 2>&1 | grep -E '^\s+(I|LRA|Peak):'
 seg(){ local name="$1" ss="$2" t="$3"; local v=$($FF -hide_banner -ss "$ss" -t "$t" -i "$F" -af volumedetect -f null - 2>&1 | grep -oE 'mean_volume: [-0-9.]+' | grep -oE '[-0-9.]+'); printf "%-30s %6s dB   (%ss +%ss)\n" "$name" "${v:-?}" "$ss" "$t"; }
 echo "== 구간 RMS (volumedetect mean)"

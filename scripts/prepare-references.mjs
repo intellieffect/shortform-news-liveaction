@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { PYTHON } from "./lib/tools.mjs";
 import { cpSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -22,7 +23,7 @@ for (const c of cases) {
   mkdirSync(cache, { recursive: true });
   cpSync(join(dir, "assets"), cache, { recursive: true });
   if (c.id === "scattering") {
-    execFileSync("python3", ["-c", "import numpy; from PIL import Image"], {
+    execFileSync(PYTHON, ["-c", "import numpy; from PIL import Image"], {
       stdio: "inherit",
     });
     mkdirSync(join(cache, "decoded"), { recursive: true });
@@ -41,7 +42,7 @@ for (const c of cases) {
       ],
       { stdio: "inherit" },
     );
-    execFileSync("python3", [join(dir, "source/key-overlay.py"), cache], {
+    execFileSync(PYTHON, [join(dir, "source/key-overlay.py"), cache], {
       stdio: "inherit",
     });
   }

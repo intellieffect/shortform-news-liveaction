@@ -18,6 +18,7 @@
  * 사용: node scripts/check-mc-spec.mjs <root> [--shots <path>] [--no-alpha]
  * 좌표계: 씬 중심 원점(Motion Canvas). px = [540 + x, 960 + y]
  */
+import { FFMPEG } from "./lib/tools.mjs";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -84,7 +85,7 @@ for (const s of specs) {
                  Math.max(...boxes.map((b) => b[2])), Math.max(...boxes.map((b) => b[3]))];
     try {
       const at = s.measure_at_sec ?? 3;
-      const raw = execFileSync("/opt/homebrew/bin/ffmpeg",
+      const raw = execFileSync(FFMPEG,
         ["-nostdin", "-loglevel", "error", "-c:v", "libvpx-vp9", "-ss", String(at), "-i", clip,
          "-frames:v", "1", "-vf", "alphaextract,format=gray", "-f", "rawvideo", "-"],
         { maxBuffer: 1 << 28 });

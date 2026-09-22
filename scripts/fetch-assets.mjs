@@ -15,6 +15,7 @@
  *
  * 사용: node scripts/fetch-assets.mjs <root> [--jobs 4] [--dry] [--force]
  */
+import { FFMPEG } from "./lib/tools.mjs";
 import { readFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { resolve, join, dirname, basename } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -26,7 +27,7 @@ const JOBS = Math.max(1, Number(argv[argv.indexOf("--jobs") + 1]) || 4);
 const DRY = argv.includes("--dry");
 const FORCE = argv.includes("--force");
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36";
-const FFMPEG = "/opt/homebrew/bin/ffmpeg";
+
 
 const A = JSON.parse(readFileSync(join(root, "01_input/assets.json"), "utf8"));
 const searchDir = join(root, "02_production/external_assets/_search");

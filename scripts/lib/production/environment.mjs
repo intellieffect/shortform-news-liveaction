@@ -49,15 +49,38 @@ const CREDENTIALS = [
   { name: "PIXABAY_API_KEY", purpose: "스톡 사진·영상 검색" },
   { name: "UNSPLASH_ACCESS_KEY", purpose: "스톡 사진 검색" },
   { name: "TYPECAST_API_KEY", purpose: "내레이션 TTS" },
+  { name: "TYPECAST_VOICE_ID", purpose: "내레이션 보이스 — 계정마다 다르다" },
 ];
+// 파이썬 쪽 `_env` 와 같은 규칙으로 읽는다 — 어긋나면 doctor 가 «있다» 한 키를 스크립트가 못 읽는다.
+const dotenvValue = (line, name) => {
+  const at = line.indexOf("=");
+  if (at < 0 || line.slice(0, at).trim() !== name) return null;
+  let value = line.slice(at + 1).trim();
+  if (value.length > 1 && (value[0] === "'" || value[0] === '"') && value.at(-1) === value[0])
+    return value.slice(1, -1) || null;
+  for (let i = 1; i < value.length; i++)
+    if (value[i] === "#" && (value[i - 1] === " " || value[i - 1] === "\t")) {
+      value = value.slice(0, i);
+      break;
+    }
+  return value.trim() || null;
+};
 const dotenvNames = (repo) => {
   const file = join(repo, ".env");
   if (!existsSync(file)) return new Set();
-  return new Set(readFileSync(file, "utf8").split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#") && line.includes("="))
-    .filter((line) => line.split("=", 2)[1].trim().replace(/^['"]|['"]$/g, "") !== "")
-    .map((line) => line.split("=", 1)[0].trim()));
+  let text;
+  try { text = readFileSync(file, "utf8"); } catch { return new Set(); }
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1); // Windows 편집기의 BOM
+  const names = new Set();
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const at = line.indexOf("=");
+    if (at < 0) continue;
+    const name = line.slice(0, at).trim();
+    if (dotenvValue(line, name)) names.add(name);
+  }
+  return names;
 };
 const credentialStatus = (repo) => {
   const inFile = dotenvNames(repo);
