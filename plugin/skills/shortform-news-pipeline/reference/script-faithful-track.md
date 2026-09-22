@@ -2,7 +2,7 @@
 
 **적용 범위:** 제공 완성 대본·컷 준수 또는 기존 비트 경로의 재현에 사용한다. 기사 기반 위임 제작은 [editorial-concept-track.md](editorial-concept-track.md)를 따른다.
 
-한겨레 «위성공해» 파일럿 1편(2026-08-27~28)과 2편 대본 준수판(2026-08-29~30)에서 확정한 절차를 그대로 재사용한다. 2편에서 덧붙인 것의 근거는 `docs/research/2026-08-30-skill-gaps/`, 3편(대본 자작판 «우주거울») 근거는 `docs/research/2026-08-30-space-mirror-pilot/skill-gaps.md`, 4편(«우주택배» — Motion Canvas 도입·도해 품질 라운드) 근거는 `docs/research/2026-08-30-starfall-pilot/skill-gaps.md`. **이 스킬은 라우터** — 세부는 `reference/`를 읽는다.
+한겨레 «위성공해» 파일럿 1편(2026-08-27~28)과 2편 대본 준수판(2026-08-29~30)에서 확정한 절차를 그대로 재사용한다. 2편에서 덧붙인 것의 근거는 (과거 내부 기록·로컬 보관) `docs/research/2026-08-30-skill-gaps/`, 3편(대본 자작판 «우주거울») 근거는 `docs/research/2026-08-30-space-mirror-pilot/skill-gaps.md`, 4편(«우주택배» — Motion Canvas 도입·도해 품질 라운드) 근거는 `docs/research/2026-08-30-starfall-pilot/skill-gaps.md`. **이 스킬은 라우터** — 세부는 `reference/`를 읽는다.
 
 ## 먼저 모드를 고른다
 

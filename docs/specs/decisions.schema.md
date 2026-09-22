@@ -20,4 +20,4 @@
 
 `reject` · `free_find` · `premise_fail` 행은 `gate:log to-defects <id> [--write] [--prefix pN]` 이
 결함 장부 행(found_by:human, guard:null = 승격 대기, `decision_ref` 로 역참조)으로 변환한다.
-변환 후 `npm run eval:defects` 로 재채점. 근거 설계: `docs/research/2026-09-04-eval-harness/gates-spec.md`.
+변환 후 `npm run eval:defects` 로 재채점. 근거 설계: `docs/research/2026-09-04-eval-harness/gates-spec.md` (과거 내부 기록·로컬 보관).

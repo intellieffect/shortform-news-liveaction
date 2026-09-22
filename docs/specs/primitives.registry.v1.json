@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "status": "proposal",
   "updatedAt": "2026-09-03",
-  "authority": "input 세션 초안 → output 구현·승격 관리. 패턴 레지스트리(~/dev/reel-news/docs/patterns/screen-pattern-registry.v1.json)의 아래층.",
+  "authority": "input 세션 초안 → output 구현·승격 관리. 패턴 레지스트리(이관 전 reel-news 저장소의 docs/patterns/screen-pattern-registry.v1.json — 이 저장소에는 없다)의 아래층.",
   "tiers": {
     "primitive": "부품. props만 받는 순수 Remotion 컴포넌트. 데이터(텍스트·숫자·좌표)는 overlays/shots에서, 스타일은 style 토큰에서 주입",
     "pattern": "의미 조합. 기존 SF-P 레지스트리. primitives[] 필드로 어떤 부품을 어떤 슬롯에 쓰는지 참조",

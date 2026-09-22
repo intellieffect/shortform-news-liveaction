@@ -1,6 +1,6 @@
 # 기사 기반 위임 제작의 표현 선택 권한
 
-`editorial-concept`에서 제작 에이전트가 설명과 표현 전체를 책임진다. 사용자 지시와 `story.creative_scope`를 먼저 읽는다. 근거는 제작 저장소의 `docs/research/2026-09-06-production-structure/raw.md`에 보존했다.
+`editorial-concept`에서 제작 에이전트가 설명과 표현 전체를 책임진다. 사용자 지시와 `story.creative_scope`를 먼저 읽는다. 근거는 제작 저장소의 `docs/research/2026-09-06-production-structure/raw.md` (과거 내부 기록·로컬 보관)에 보존했다.
 
 ## 제작자가 결정할 것
 
