@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { buildReviewInput } from "../scripts/lib/production/review-input.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -22,7 +23,8 @@ import {
 import { referenceSharingErrors } from "../scripts/lib/visual-reference-sharing.mjs";
 import { startProduction } from "../scripts/lib/production/start.mjs";
 import { createVideoLibraryServer } from "../scripts/lib/video-library-server.mjs";
-const project = new URL("../", import.meta.url).pathname;
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const project = fileURLToPath(new URL("../", import.meta.url));
 const hash = (x) => createHash("sha256").update(x).digest("hex");
 const put = (root, p, v) => {
   mkdirSync(dirname(join(root, p)), { recursive: true });

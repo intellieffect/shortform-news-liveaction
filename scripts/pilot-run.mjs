@@ -6,6 +6,7 @@
 //   예) npm run still -- hani_space_mirror           → out/pilots/hani_space_mirror/qa/still.png (frame 30)
 //       npm run render -- hani_space_mirror out/pilots/hani_space_mirror/ShortformNews_4-1.mp4
 //       npm run still:beat -- --props='{"beatId":"b07","guides":true}'
+import { fileURLToPath } from "node:url";
 import { mkdirSync, rmSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -22,7 +23,7 @@ if (task === "sheets") {
   // 회귀: 활성 편 전부의 비트시트를 out/pilots/<id>/qa/beatsheet.png 로. 엔진(부품) 변경 뒤 옛 편이 깨졌는지 여기서 본다
   const { readActive } = await import("./lib/pilot.mjs");
   for (const pid of readActive()) {
-    const r = spawnSync(process.execPath, [new URL(import.meta.url).pathname, "sheet", pid, ...argv], { stdio: "inherit", cwd: REPO });
+    const r = spawnSync(process.execPath, [fileURLToPath(import.meta.url), "sheet", pid, ...argv], { stdio: "inherit", cwd: REPO });
     if (r.status !== 0) process.exit(r.status ?? 1);
   }
   process.exit(0);

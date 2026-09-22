@@ -1,0 +1,50 @@
+# 고객이 받는 그대로가 Windows에서도 서는지 본다.
+# 개발자 컴퓨터에서만 되는 것이 다시 들어오면 여기서 걸린다.
+name: portable-install
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # setup-ffmpeg 액션은 macOS arm64 를 지원하지 않는다 — OS 별 패키지 관리자를 쓴다.
+      - name: FFmpeg 설치 (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: FFmpeg 설치 (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+      - name: FFmpeg 설치 (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg -y --no-progress
+      - name: ffmpeg·ffprobe 가 PATH 에 있다
+        run: |
+          ffmpeg -version
+          ffprobe -version
+      - run: npm ci
+      - name: 스크립트 문법 확인
+        run: python -m compileall -q plugin/skills/shortform-news-input/scripts
+      - run: npm run lint
+      - run: npm run zip:test
+      - run: npm run videos:test
+      - run: npm run references:test
+      - name: 환경 점검이 키 누락을 이름으로 알린다
+        run: node scripts/produce.mjs doctor

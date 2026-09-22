@@ -1,11 +1,13 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { bundle } from "@remotion/bundler";
 import { renderStill, selectComposition } from "@remotion/renderer";
 
-const repo = new URL("..", import.meta.url).pathname;
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const repo = fileURLToPath(new URL("..", import.meta.url));
 const temporaryRoot = join(repo, "out", "tmp");
 mkdirSync(temporaryRoot, { recursive: true });
 const output = mkdtempSync(join(temporaryRoot, "caption-layout-"));

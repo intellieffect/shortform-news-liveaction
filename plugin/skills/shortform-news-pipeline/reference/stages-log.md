@@ -74,7 +74,7 @@
 ### 운영 — 워크트리·미디어·git
 
 - **Studio·렌더는 반드시 워크트리에서.** 메인 체크아웃엔 편 미디어가 없다(`public/` git 제외) → "이미지가 안 뜬다". 커밋 뒤 셸 cwd 가 리셋되므로 매번 `cd` 를 명시한다.
-- **미디어 복구는 둘로 나뉜다** — `restore:media` = `ext`·`video`(shots 의 `origin_path` 파생) / `sync` = 클라이언트 사진·데이터. **`sync` 는 정본 경로**(`~/Projects/shortform-news-input/work/<id>`)를 줘야 한다. 워크트리 경로를 주면 조용히 `(none)`.
+- **미디어 복구는 둘로 나뉜다** — `restore:media` = `ext`·`video`(shots 의 `origin_path` 파생) / `sync` = 클라이언트 사진·데이터. **`sync` 는 편의 정본 경로**(저장소 상대 `news/<id>`)를 줘야 한다. 워크트리 경로를 주면 조용히 `(none)`. (2026-09-02 통합 전에는 별도 저장소의 `work/<id>` 였다.)
 - **워크트리에서 과거 커밋과 대조할 때 `git checkout HEAD -- <path>` 로 되돌리지 않는다.** HEAD 가 그 변경 이전이면 복원이 아니라 **삭제**다(5편에서 3D 가 이렇게 사라진 채 커밋됐다). 임시 커밋이나 `git stash push -m <태그>` 를 쓴다.
 - **머지해도 `out/` 은 따라오지 않는다 — 워크트리를 지우기 전에 정본으로 옮긴다.** `out/` 은 gitignore 라 **체크아웃마다 따로**이고 `git merge` 는 추적 파일만 옮긴다. 5편은 머지 직후 납품본이 **워크트리에만** 있었다(882MB) — 그 상태에서 `git worktree remove` 했으면 `deliver/v4/` 가 사라졌다.
   ```bash

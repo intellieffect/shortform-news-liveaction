@@ -22,6 +22,8 @@
  *             유실본 복구 후보 — 판정 전까지 지우지 않는다
  *   ORPHAN    대장이 모르는 나머지 렌더
  */
+import { createHash } from 'node:crypto';
+import { FFMPEG } from "./lib/tools.mjs";
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -104,7 +106,8 @@ const walk = (dir, acc = []) => {
 const all = walk(OUT);
 const videos = all.filter((p) => /\.(mp4|mov)$/i.test(p) && fs.statSync(p).size > 1024 * 1024);
 
-const md5 = (p) => execFileSync('md5', ['-q', p]).toString().trim();
+// md5(1) 은 BSD 전용이다 — 다른 곳에서 이미 쓰는 node 해시로 같은 값을 낸다.
+const md5 = (p) => createHash('md5').update(fs.readFileSync(p)).digest('hex');
 /** 중간 프레임 한 장의 md5 — 재인코딩은 그림을 보존하므로 같은 판이면 일치한다 */
 const _fh = new Map();
 const frameHash = (abs, at) => {
@@ -112,7 +115,7 @@ const frameHash = (abs, at) => {
   if (_fh.has(key)) return _fh.get(key);
   let v = null;
   try {
-    v = execFileSync('/opt/homebrew/bin/ffmpeg',
+    v = execFileSync(FFMPEG,
       ['-nostdin', '-loglevel', 'error', '-ss', String(at), '-i', abs,
        '-frames:v', '1', '-vf', 'scale=64:114', '-f', 'md5', '-'],
       { maxBuffer: 1 << 20 }).toString().trim();

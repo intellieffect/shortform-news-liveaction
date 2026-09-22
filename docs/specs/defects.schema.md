@@ -32,4 +32,4 @@
 - 편5 「v1 검토 13건」(summary.md) vs 실물 17건(raw.md) 처럼 원문서끼리 셈이 다른 곳은 **실물 목록 기준**으로 실었다.
 - 초기 편(1·2)에는 에이전트 체계가 없어 `agent:*` 0 이 정상이다.
 
-근거·조립 경위: `docs/research/2026-09-04-eval-harness/` (채굴 원자료 defects-mined-raw.json + 감사 반영 내역).
+근거·조립 경위: `docs/research/2026-09-04-eval-harness/` (과거 내부 기록·로컬 보관) (채굴 원자료 defects-mined-raw.json + 감사 반영 내역).

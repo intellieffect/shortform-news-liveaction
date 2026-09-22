@@ -23,18 +23,19 @@ editorial-concept에서는 자료의 목적에 맞춰 수집 경로를 선택한
 ## 스톡은 웹페이지가 아니라 API 로 받는다 (8편 2026-09-03)
 
 **Pexels·Pixabay 웹페이지는 curl 을 Cloudflare 로 막고, 너에겐 브라우저가 없다.** 페이지를 긁으려다 8편에서
-영상 소싱 두 판(약 180K 토큰)이 확정 0건으로 끝났다. **키는 이미 키체인에 있다** — 없다고 결론짓기 전에 이걸 먼저 써라.
+영상 소싱 두 판(약 180K 토큰)이 확정 0건으로 끝났다. **키는 저장소 `.env` 또는 환경변수에 있다**(`.env.example` 참고) — 없다고 결론짓기 전에 이걸 먼저 써라.
+아래는 셸에서 바로 쓰는 예다. `.env` 를 읽어 오려면 `set -a; . .env; set +a` 를 먼저 실행한다.
 
 ```bash
-PK=$(security find-generic-password -a "$USER" -s pexels-api-key -w)
+PK="$PEXELS_API_KEY"
 curl -s -H "Authorization: $PK" "https://api.pexels.com/videos/search?query=<질의>&per_page=15&orientation=portrait"   # videos[].video_files[] → height 최대의 link
 curl -s -H "Authorization: $PK" "https://api.pexels.com/v1/search?query=<질의>&per_page=15&orientation=portrait"      # photos[].src.original
 
-PX=$(security find-generic-password -a "$USER" -s pixabay-api-key -w)
+PX="$PIXABAY_API_KEY"
 curl -s "https://pixabay.com/api/videos/?key=$PX&q=<질의>&per_page=20"                                                 # hits[].videos.large.url
 curl -s "https://pixabay.com/api/?key=$PX&q=<질의>&per_page=20&image_type=photo&orientation=vertical"                  # hits[].largeImageURL
 
-UK=$(security find-generic-password -a "$USER" -s unsplash-access-key -w)
+UK="$UNSPLASH_ACCESS_KEY"
 curl -s -H "Authorization: Client-ID $UK" "https://api.unsplash.com/search/photos?query=<질의>&per_page=15&orientation=portrait"
 ```
 

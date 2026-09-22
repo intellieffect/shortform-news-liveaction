@@ -4,7 +4,69 @@
 
 ## 처음 준비
 
-Node.js/npm, Python 3, FFmpeg, Git LFS를 준비한다. Git으로 받았다면 `git lfs pull`로 미디어 실물을 받는다. 프로젝트 루트에서 `npm ci`와 `npm run setup:hooks`를 실행하고 `node scripts/produce.mjs doctor --installed`로 환경을 점검한다. 이미지·영상 생성은 Higgsfield, 음성은 지침이 정한 제공자를 연결한다. API 키는 환경 변수나 OS 보안 저장소에 두고 Git·채팅에 기록하지 않는다. 실제 세션에서 스킬·검수 역할·생성·청취 도구가 사용 가능한지 별도로 확인한다. 설치형 Windows 자동 구성은 이 후보에 포함하지 않는다.
+Windows·macOS·Linux가 같은 절차를 쓴다. 자동 설치 프로그램은 제공하지 않으며 아래를 차례로 실행한다.
+
+> 실측 상태: 이 절차는 macOS에서 끝까지 확인했다. Windows는 코드에서 운영체제 의존을 걷어냈고 검사를 `.github/workflows/portable-install.yml` 에 넣었지만, **아직 Windows에서 실제로 돌려보지 못했다.** 막히는 곳이 있으면 어느 단계에서 어떤 메시지가 났는지 알려주면 된다.
+
+### 1. 필요한 프로그램
+
+| 프로그램 | 쓰는 곳 | Windows 설치 예 |
+|---|---|---|
+| Node.js 20 이상 + npm | 렌더·검사 전체 | `winget install OpenJS.NodeJS.LTS` |
+| Git + Git LFS | 저장소·미디어 실물 | `winget install Git.Git Git.GitLFS` |
+| FFmpeg (ffmpeg·ffprobe 둘 다) | 오디오 측정·길이 확인 | `winget install Gyan.FFmpeg` |
+| Python 3 | 자료 검색·내레이션·컷아웃 스크립트 | `winget install Python.Python.3.12` |
+| Claude Code CLI | 제작 진행과 플러그인 | 설치 안내는 Anthropic 문서 |
+
+Python 쪽은 `pip install pillow numpy` 를 한 번 실행한다(스티커 컷아웃과 표현 레퍼런스 준비가 쓴다). Windows에서 명령 이름은 `python3` 이 아니라 `py` 또는 `python` 이다 — 스크립트가 알아서 찾으므로 그대로 두면 되고, 여러 벌이 깔려 있으면 `PYTHON_PATH` 로 고른다. 마찬가지로 FFmpeg가 여러 벌이면 `FFMPEG_PATH`·`FFPROBE_PATH` 로 고른다.
+
+사람 목소리 WAV를 강제정렬할 때만 `whisperx` 가 더 필요하다 — Typecast 내레이션만 쓰면 없어도 된다. 믹스 측정(`npm run audio:measure`)은 셸 스크립트라 Windows에서는 Git Bash 같은 POSIX 셸에서 실행한다.
+
+### 2. 저장소 준비
+
+```console
+git lfs pull
+npm ci
+npm run setup:hooks
+```
+
+`setup:hooks` 는 이 저장소의 공유 검사와 LFS 업로드를 push 앞에 건다.
+
+### 3. 플러그인 설치
+
+플러그인은 저장소 `plugin/` 에 들어 있다. 따로 내려받지 않고 루트에서 설치한다.
+
+```console
+claude plugin marketplace add .
+claude plugin install shortform-news@shortform-news-workflow
+```
+
+검수 에이전트(`@agent-shortform-news:…`)와 렌더 전 가드가 이걸로 활성화된다. 설치하지 않으면 제작 절차가 중간에 선다.
+
+### 4. API 키
+
+`.env.example` 을 `.env` 로 복사하고 값을 채운다. `.env` 는 Git에 올라가지 않는다.
+
+| 키 | 발급처 |
+|---|---|
+| `PEXELS_API_KEY` | pexels.com/api |
+| `PIXABAY_API_KEY` | pixabay.com/api/docs |
+| `UNSPLASH_ACCESS_KEY` | unsplash.com/developers |
+| `TYPECAST_API_KEY` · `TYPECAST_VOICE_ID` | typecast.ai — 음성은 계정마다 다르므로 쓸 voice_id를 함께 적는다 |
+
+키를 채팅에 붙여넣지 않는다. 스크립트는 환경 변수를 먼저 보고, 없으면 `.env` 를 읽는다.
+
+### 5. 생성 서비스 연결
+
+이미지·영상 생성은 Higgsfield를 쓴다. API 키가 아니라 claude.ai의 커넥터로 **본인 계정**을 연결하며, 생성 크레딧도 그 계정에서 나간다. 연결하면 세션에 생성 도구가 붙고 지침이 그 도구를 호출한다. 연결하지 않았으면 제작을 시작하기 전에 알린다 — 다른 제공자로 조용히 바꾸지 않는다.
+
+### 6. 점검
+
+```console
+node scripts/produce.mjs doctor --installed
+```
+
+프로그램 탐지, 채워진 키 이름(값은 읽지 않는다), 플러그인 설치 상태를 보여준다. 탐지는 실제 기사 수집·생성·렌더·시청 검증을 대신하지 않으므로, 실제 세션에서 스킬·검수 역할·생성·청취 도구가 쓸 수 있는지 따로 확인한다.
 
 ## 수록 예시 확인
 

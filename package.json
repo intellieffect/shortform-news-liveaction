@@ -1,6 +1,9 @@
 {
   "name": "shortform-news-workflow",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "description": "쇼츠/릴스형 뉴스 영상 제작 워크플로 (Remotion)",
   "repository": {},
   "license": "UNLICENSED",
@@ -85,6 +88,7 @@
     "production:captions:test": "node tests/test-single-line-captions.mjs",
     "videos": "node scripts/build-video-library.mjs",
     "videos:test": "node --test scripts/test-video-library.mjs",
+    "zip:test": "node --test tests/test-zip-stream.mjs",
     "videos:serve": "node scripts/serve-video-library.mjs",
     "prepare": "node scripts/pilots-index.mjs",
     "prestudio": "node scripts/pilots-index.mjs",

@@ -3,6 +3,74 @@
 import json, base64, hashlib, subprocess, os, sys, datetime, re
 import urllib.request
 
+def _dotenv(path, name):
+    """`.env` 한 줄에서 값을 꺼낸다. 값이 비면 «안 적은 것»으로 본다."""
+    try:
+        text = open(path, encoding="utf-8-sig").read()   # Windows 편집기가 붙이는 BOM 제거
+    except OSError:
+        return None
+    except UnicodeDecodeError:
+        sys.exit(f"{path} 를 UTF-8로 읽을 수 없다 — .env 는 UTF-8로 저장한다"
+                 " (PowerShell 은 `Out-File -Encoding utf8`).")
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line: continue
+        key, value = line.split("=", 1)
+        if key.strip() != name: continue
+        value = value.strip()
+        if len(value) > 1 and value[0] in "'\"" and value[-1] == value[0]:
+            return value[1:-1] or None
+        for i in range(1, len(value)):          # 값 뒤에 붙인 주석을 자른다
+            if value[i] == "#" and value[i - 1] in " \t":
+                value = value[:i]; break
+        return value.strip() or None
+    return None
+def _env(name, keychain=None, default=None):
+    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고.
+    빈 값은 없는 것으로 본다 — `.env.example` 을 복사해 일부만 채우는 것이 보통이라서다."""
+    value = (os.environ.get(name) or "").strip()
+    if value: return value
+    seen = set()
+    for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        d = os.path.abspath(start)
+        while d not in seen:
+            seen.add(d)
+            value = _dotenv(os.path.join(d, ".env"), name)
+            if value: return value
+            nd = os.path.dirname(d)
+            if nd == d: break
+            d = nd
+    if keychain and sys.platform == "darwin":
+        # 항목이 없을 때 security 가 제 에러를 찍어 우리 안내를 덮으므로 삼킨다.
+        try:
+            value = subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"], stderr=subprocess.DEVNULL).decode().strip()
+            if value: return value
+        except Exception: pass
+    if default is not None: return default
+    sys.exit(f"{name} 가 없다 — 저장소 루트 `.env` 에 {name}=... 를 넣는다 (`.env.example` 참고).")
+_contact = _env("SHORTFORM_CONTACT", default="")
+UA = f"shortform-workflow/1.0 ({_contact})" if _contact else "shortform-workflow/1.0"
+
+def _default(path, *keys, fallback=None):
+    """config/production-defaults.json 같은 설정을 상위 경로에서 찾아 읽는다. 없으면 fallback."""
+    seen=set()
+    for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        d=os.path.abspath(start)
+        while d not in seen:
+            seen.add(d); f=os.path.join(d, path)
+            if os.path.isfile(f):
+                # 설정이 깨졌으면 조용히 기본값으로 넘어가지 않고 알린다.
+                try: cur=json.load(open(f,encoding="utf-8-sig"))
+                except Exception as error: sys.exit(f"{f} 를 읽을 수 없다: {error}")
+                for k in keys:
+                    if not isinstance(cur,dict) or k not in cur: return fallback
+                    cur=cur[k]
+                return cur
+            nd=os.path.dirname(d)
+            if nd==d: break
+            d=nd
+    return fallback
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 02_production
 PILOT_ID = os.path.basename(os.path.dirname(ROOT))                  # 편 id = news/<id> 폴더명 (편 이름을 코드가 알지 않는다)
 NARR = os.path.join(ROOT, "narration.txt")
@@ -23,14 +91,21 @@ SCRIPT_MD = _pick_draft()
 OUT_WAV = os.path.join(ROOT, "audio", "narration.wav")
 OUT_RAW = os.path.join(ROOT, "audio", "narration.typecast.timestamps.json")
 OUT_JSON = os.path.join(ROOT, "narration.json")
-VOICE = {"provider": "typecast", "voice_id": "tc_69fc0cff784968297fb45daa", "voice_name": "Sanghyun",
-         "model": "ssfm-v30", "language": "kor", "audio_tempo": 1.0, "audio_pitch": 0, "emotion_preset": "normal", "seed": None}
+# 음성은 계정마다 다르다 — 환경변수 → config/production-defaults.json 의 narration → 이 저장소 수록 편의 값 순.
+_VOICE_DEFAULT = {"provider": "typecast", "voice_id": "tc_69fc0cff784968297fb45daa", "voice_name": "Sanghyun",
+                  "model": "ssfm-v30", "language": "kor", "audio_tempo": 1.0, "audio_pitch": 0, "emotion_preset": "normal", "seed": None}
+_voice_config = _default("config/production-defaults.json", "narration", "voice", fallback=None)
+if _voice_config is not None and not isinstance(_voice_config, dict):
+    sys.exit("config/production-defaults.json 의 narration.voice 는 객체여야 한다.")
+VOICE = dict(_VOICE_DEFAULT, **(_voice_config or {}))
+VOICE["voice_id"] = _env("TYPECAST_VOICE_ID", default=VOICE["voice_id"])
+if os.environ.get("TYPECAST_VOICE_NAME"): VOICE["voice_name"] = os.environ["TYPECAST_VOICE_NAME"]
 
 spoken_lines = [l.rstrip("\n") for l in open(NARR, encoding="utf-8") if l.strip()]
 text_lines = [l.rstrip("\n") for l in open(SCRIPT_MD, encoding="utf-8").read().split("\n")[2:] if l.strip()]
 assert len(spoken_lines) == len(text_lines), f"줄 수 불일치 spoken={len(spoken_lines)} text={len(text_lines)}"
 
-key = subprocess.check_output(["security", "find-generic-password", "-a", os.environ["USER"], "-s", "typecast-api-key", "-w"]).decode().strip()
+key = _env("TYPECAST_API_KEY", "typecast-api-key")
 payload = {"text": "\n".join(spoken_lines), "model": VOICE["model"], "voice_id": VOICE["voice_id"], "language": "kor",
            "prompt": {"emotion_type": "preset", "emotion_preset": "normal", "emotion_intensity": 1.0},
            "output": {"audio_format": "wav", "audio_tempo": VOICE["audio_tempo"], "audio_pitch": 0, "volume": 100}}
@@ -82,8 +157,12 @@ for idx, (sp, tx) in enumerate(zip(spoken_lines, text_lines)):
 if i != len(words):
     sys.exit(f"단어 미소진: used {i} / {len(words)}")
 
-dur = float(subprocess.check_output(["afinfo", OUT_WAV]).decode().split("estimated duration:")[1].split("sec")[0])
-sr = int(re.search(r"(\d+) Hz", subprocess.check_output(["afinfo", OUT_WAV]).decode()).group(1))
+# afinfo 는 macOS 전용이라 ffprobe 로 읽는다 (설치 요구사항에 이미 있다).
+_probe = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "a:0",
+    "-show_entries", "stream=sample_rate,channels:format=duration", "-of", "json", OUT_WAV]).decode())
+dur = float(_probe["format"]["duration"])
+sr = int(_probe["streams"][0]["sample_rate"])
+ch = int(_probe["streams"][0].get("channels") or 1)
 PILOT = os.path.dirname(ROOT)
 ROOT_REL = "news/" + os.path.basename(PILOT)   # JSON 에 적는 root 는 저장소 상대(news/<id>) — 절대경로는 클론·워크트리에서 거짓이 된다 (2026-09-02)
 rel = lambda p: os.path.relpath(p, PILOT)
@@ -97,7 +176,7 @@ doc = {"schema_version": "1.1", "pilot": PILOT_ID, "root": ROOT_REL,
        "generated_at": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
        "source": {"script": rel(SCRIPT_MD), "narration_txt": rel(NARR),
                   "narration_sha256": hashlib.sha256(open(NARR, "rb").read()).hexdigest(), "facts": rel(os.path.join(ROOT, "facts.md"))},
-       "audio": {"path": rel(OUT_WAV), "duration": round(dur, 3), "sample_rate": sr, "channels": 1, "format": "wav", "loudness_lufs": lufs, "origin": "tts", "tts": VOICE},
+       "audio": {"path": rel(OUT_WAV), "duration": round(dur, 3), "sample_rate": sr, "channels": ch, "format": "wav", "loudness_lufs": lufs, "origin": "tts", "tts": VOICE},
        "alignment": {"method": "typecast-with-timestamps", "unit": "word"},
        "sentences": sentences}
 json.dump(doc, open(OUT_JSON, "w", encoding="utf-8"), ensure_ascii=False, indent=1)

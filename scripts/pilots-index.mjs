@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { activeIds } from './lib/episode-selection.mjs';
 // pilots/active.json(활성 편 id 목록) → pilots/index.ts 생성. 엔진별 필수 데이터와 renderer를 같은 지점에서 확정한다.
 
@@ -5,7 +6,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { EDITORIAL_ENGINE, SCRIPT_ENGINE, manifestEngine } from "./lib/engine.mjs";
 
-const here = resolve(new URL(".", import.meta.url).pathname, "..");
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const here = resolve(fileURLToPath(new URL(".", import.meta.url)), "..");
 const dir = join(here, "pilots");
 const active = activeIds(here);
 mkdirSync(dir, { recursive: true });

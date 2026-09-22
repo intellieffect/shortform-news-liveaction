@@ -11,6 +11,8 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Script } from "node:vm";
+import { execFileSync } from "node:child_process";
+import { PYTHON } from "./lib/tools.mjs";
 import {
   collectVideos,
   buildVideoLibrary,
@@ -290,7 +292,6 @@ test("미확정 기록은 기존 커버를 유지하고 확정 파일은 다른 
 });
 
 test("썸네일 확정 후 목록 새로고침·이미지 다운로드·영상 ZIP이 함께 갱신", async (t) => {
-  const { execFileSync } = await import("node:child_process");
   const { createVideoLibraryServer } =
     await import("./lib/video-library-server.mjs");
   const f = fixture(t);
@@ -328,19 +329,24 @@ test("썸네일 확정 후 목록 새로고침·이미지 다운로드·영상 Z
   const zip = join(f.root, "approved-bundle.zip");
   writeFileSync(zip, Buffer.from(await response.arrayBuffer()));
   assert.deepEqual(
-    execFileSync("unzip", ["-Z1", zip], { encoding: "utf8" })
-      .trim()
-      .split("\n"),
+    zipNames(zip),
     ["done.mp4", "A.png"],
   );
   assert.equal(
-    execFileSync("unzip", ["-p", zip, "A.png"], { encoding: "utf8" }),
+    zipRead(zip, "A.png"),
     "approved-cover",
   );
 });
 
+// `unzip` 은 Windows 러너에 없다. python 은 이미 설치 요구사항이라 zipfile 로 읽는다.
+const zipNames = (zip) =>
+  execFileSync(PYTHON, ["-c", "import sys,zipfile;print('\\n'.join(zipfile.ZipFile(sys.argv[1]).namelist()))", zip], { encoding: "utf8" })
+    .trim()
+    .split("\n");
+const zipRead = (zip, name) =>
+  execFileSync(PYTHON, ["-c", "import sys,zipfile;sys.stdout.write(zipfile.ZipFile(sys.argv[1]).read(sys.argv[2]).decode())", zip, name], { encoding: "utf8" });
+
 test("부속 파일: ZIP 내용·개별 이미지·미등록 처리·파일 위치·폴더 열기와 외부 호출 차단", async (t) => {
-  const { execFileSync } = await import("node:child_process");
   const { createVideoLibraryServer } =
     await import("./lib/video-library-server.mjs");
   const f = fixture(t);
@@ -371,9 +377,7 @@ test("부속 파일: ZIP 내용·개별 이미지·미등록 처리·파일 위�
     assert.equal(response.headers.get("content-type"), "application/zip");
     const zip = join(f.root, kind + ".zip");
     writeFileSync(zip, Buffer.from(await response.arrayBuffer()));
-    const names = execFileSync("unzip", ["-Z1", zip], { encoding: "utf8" })
-      .trim()
-      .split("\n");
+    const names = zipNames(zip);
     assert.deepEqual(
       names,
       kind === "bundle"
@@ -381,18 +385,16 @@ test("부속 파일: ZIP 내용·개별 이미지·미등록 처리·파일 위�
         : ["A.png", "B.png", "done_thumbnail_03.png"],
     );
     assert.equal(
-      execFileSync("unzip", ["-p", zip, "B.png"], { encoding: "utf8" }),
+      zipRead(zip, "B.png"),
       "image-b",
     );
     assert.equal(
-      execFileSync("unzip", ["-p", zip, "done_thumbnail_03.png"], {
-        encoding: "utf8",
-      }),
+      zipRead(zip, "done_thumbnail_03.png"),
       "image-c",
     );
     if (kind === "bundle")
       assert.equal(
-        execFileSync("unzip", ["-p", zip, "done.mp4"], { encoding: "utf8" }),
+        zipRead(zip, "done.mp4"),
         "video-original",
       );
   }
@@ -482,4 +484,39 @@ test("제작 프롬프트: 실제 V2 텍스트 정본을 그대로 싣고 없으
   assert.match(html, /id="tab-prompt"/);
   assert.match(html, /id="view-prompt"/);
   assert.match(html, /id="prompt-copy"/);
+});
+
+test("다른 폴더의 같은 이름 썸네일을 ZIP에서 덮어쓰지 않는다", async (t) => {
+  const { createVideoLibraryServer } =
+    await import("./lib/video-library-server.mjs");
+  const f = fixture(t);
+  // 판을 나눠 확정한 썸네일이 둘 다 cover.png 인 경우가 실제로 있다.
+  f.pilot("dup", {
+    thumbnails: {
+      candidates: [
+        { id: "A", file: "out/pilots/dup/thumbnails/v1/cover.png", status: "approved" },
+        { id: "B", file: "out/pilots/dup/thumbnails/v2/cover.png", status: "approved" },
+      ],
+    },
+  });
+  f.put("out/pilots/dup/deliver/v1/dup.mp4", "video");
+  f.put("out/pilots/dup/thumbnails/v1/cover.png", "first-cover");
+  f.put("out/pilots/dup/thumbnails/v2/cover.png", "second-cover");
+  const server = createVideoLibraryServer({ root: f.root, roots: [f.root] });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => {
+    server.closeAllConnections();
+    server.close();
+  });
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const response = await fetch(base + "/api/videos/dup/thumbnails");
+  assert.equal(response.status, 200);
+  const zip = join(f.root, "dup.zip");
+  writeFileSync(zip, Buffer.from(await response.arrayBuffer()));
+  const names = zipNames(zip);
+  assert.equal(new Set(names).size, names.length, "이름이 겹치면 안 된다: " + names);
+  const contents = names.map((name) =>
+    zipRead(zip, name),
+  );
+  assert.equal(new Set(contents).size, names.length, "내용이 유실됐다: " + contents);
 });

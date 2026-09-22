@@ -13,7 +13,7 @@
 | 필드 | 뜻 |
 |---|---|
 | `visual.type` | `image` \| `video` \| `graphic` \| `text` |
-| `visual.source` | `provided`(한겨레 제공) \| `external`(기관 실사 — ESO CC BY 4.0·NASA PD·커먼즈, **크레딧 의무**) \| `stock`(Pexels·Unsplash·Pixabay, **크레딧 권장**) — 대장 `external_assets/SOURCES.md`, 확보 절차 `~/Projects/shortform-news-input/docs/asset-sourcing-workflow.md` \| `generated`(AI 스틸/클립) \| `remotion`(코드로 그림) \| `none`(배경색만) |
+| `visual.source` | `provided`(한겨레 제공) \| `external`(기관 실사 — ESO CC BY 4.0·NASA PD·커먼즈, **크레딧 의무**) \| `stock`(Pexels·Unsplash·Pixabay, **크레딧 권장**) — 대장 `external_assets/SOURCES.md`, 확보 절차 `docs/asset-sourcing-workflow.md` \| `generated`(AI 스틸/클립) \| `remotion`(코드로 그림) \| `none`(배경색만) |
 | `visual.origin_path` / `license` / `video_file` | 외부 소스 원본 경로(root 기준)·라이선스·영상 원본. `file`은 `public/pilots/<id>/ext/`의 2400px 파생물(영상은 포스터 프레임) |
 | `visual.asset` / `file` | `assets.json` id / `public/` 기준 파일 경로(`pilot/photo1.png`). `sync-pilot.mjs`가 복사 |
 | `visual.src_size` | 원본 [w, h] px. 크롭 계산용 |

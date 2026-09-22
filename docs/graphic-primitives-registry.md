@@ -8,7 +8,7 @@
 
 화살표·카운터·태그·와이프 같은 **부품**이 지금 세 곳에 흩어져 편마다 다시 태어난다:
 - 직전 파일럿 `claude-remotion/src/Overlays.tsx` — badge·card·measure·arrow·path·ellipse·dot·link·compare·text (10종, 코드)
-- `~/dev/reel-news/docs/patterns/` — SF-P01~P16 의미 패턴 23키 (부품이 아니라 조합)
+- `reel-news/docs/patterns/` — SF-P01~P16 의미 패턴 23키 (부품이 아니라 조합). **이관 전 다른 저장소의 원본이며 이 저장소에는 없다.**
 - 이번 파일럿 `overlays.json`·`shots.json` — caption·emphasis·headline·card·credit·label_overlay·split·wipe (인라인)
 
 ## 3층

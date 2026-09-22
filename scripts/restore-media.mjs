@@ -9,13 +9,16 @@
  * 사용: node scripts/restore-media.mjs [<편 id> ...]   (인자 없으면 active 전부)
  *      --dry  실행 없이 계획만
  */
+import { FFMPEG } from "./lib/tools.mjs";
+import { fileURLToPath } from "node:url";
 import { existsSync, mkdirSync, copyFileSync, readFileSync, readdirSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 import { execFileSync } from "node:child_process";
 import { inputRoot, readActive } from "./lib/pilot.mjs";
 
-const REPO = resolve(new URL("..", import.meta.url).pathname);
-const FFMPEG = "/opt/homebrew/bin/ffmpeg";
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const REPO = resolve(fileURLToPath(new URL("..", import.meta.url)));
+
 const dry = process.argv.includes("--dry");
 const ids = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const list = ids.length ? ids : readActive();

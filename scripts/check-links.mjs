@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { execFileSync } from 'node:child_process';
 // 저장소 안 마크다운의 상대 링크 검사 — 플러그인만이 아니라 저장소 전체.
 //
@@ -16,7 +17,8 @@ import { execFileSync } from 'node:child_process';
 import { readdirSync, readFileSync, existsSync, lstatSync } from "node:fs";
 import { join, dirname, relative, resolve, normalize } from "node:path";
 
-const REPO = resolve(new URL("..", import.meta.url).pathname);
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const REPO = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const SKIP = new Set(["node_modules", ".git", "out", "public", ".claude"]);
 const tracked = new Set(execFileSync('git', ['-C', REPO, 'ls-files', '-z'], {encoding:'utf8'}).split('\0').filter(Boolean));
 const local = process.argv.includes('--local');

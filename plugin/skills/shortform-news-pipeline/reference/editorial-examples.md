@@ -42,6 +42,6 @@ fresh의 물 손실 구간은 작은 분자 여러 개·상승 화살표·큰 �
 
 ## 근거의 위치와 한계
 
-제작 저장소의 `docs/research/2026-09-06-maven-session-gap/`, `2026-09-06-maven-new-result/`, `2026-09-06-production-approach-gap/`에 사용자 원문·전달문·공개 작업 기록·원본 영상 해시가 있다. 위 표본은 [복사 출처와 해시](../assets/editorial-examples/sources.json)로 연결한다. 설치 패키지에는 이 설명과 표본이 함께 들어가므로 별도 워크트리가 없어도 사례를 읽을 수 있다.
+제작 저장소의 `docs/research/2026-09-06-maven-session-gap/`, `2026-09-06-maven-new-result/`, `2026-09-06-production-approach-gap/` (과거 내부 기록·로컬 보관)에 사용자 원문·전달문·공개 작업 기록·원본 영상 해시가 있다. 위 표본은 [복사 출처와 해시](../assets/editorial-examples/sources.json)로 연결한다. 설치 패키지에는 이 설명과 표본이 함께 들어가므로 별도 워크트리가 없어도 사례를 읽을 수 있다.
 
 영상 전체 연속 시청·청취가 입증되지 않은 범위를 이 문서가 완료 처리하지 않는다. 실제 다음 편에서는 [실물 검수](review-loop.md)로 해당 결과를 확인한다. 좋은 도해 한 장면과 좋은 한 편 전체를 구분해 검증한다.

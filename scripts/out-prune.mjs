@@ -8,6 +8,8 @@
  * 지우기 전에 무엇이 있었는지(경로·크기·md5·길이·분류)를 묘비 명세로 남기고,
  * 지운 뒤 납품본(DELIVER) md5 를 전부 다시 대조해 무사한지 확인한다.
  */
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from "node:url";
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -22,7 +24,8 @@ const ROOT = path.resolve(opt('--root') ?? process.cwd());
 const GO = flag('--yes');
 const keeps = argv.reduce((a, v, i) => (v === '--keep' ? [...a, argv[i + 1]] : a), []);
 
-const HERE = path.dirname(new URL(import.meta.url).pathname);
+// URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
+const HERE = path.dirname(fileURLToPath(import.meta.url));
 const audit = JSON.parse(
   execFileSync('node', [path.join(HERE, 'out-audit.mjs'), '--root', ROOT, '--json'], {
     maxBuffer: 64 * 1024 * 1024,
@@ -139,7 +142,7 @@ for (const id of fs.readdirSync(path.join(ROOT, 'pilots')).sort()) {
       console.log(`  있음   ${v.file}  [${id}/${v.label}] (md5 기록 없음)`);
       continue;
     }
-    const m = execFileSync('md5', ['-q', abs]).toString().trim();
+    const m = createHash('md5').update(fs.readFileSync(abs)).digest('hex');
     console.log(`  ${m === v.md5 ? 'MATCH ' : 'DIFFER'} ${v.file}  [${id}/${v.label}]`);
     if (m !== v.md5) bad++;
   }

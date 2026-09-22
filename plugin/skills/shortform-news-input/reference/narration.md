@@ -24,7 +24,7 @@ editorial-concept의 자막은 `narration.captions`와 공통 프로필, 타이�
 
 ## 4. 보이스
 
-- Typecast(키체인 `typecast-api-key`, `POST /v1/text-to-speech/with-timestamps` → 단어 타임스탬프 무료 동봉) — `GET /v1/voices/recommendations?query=…`로 후보 → 필요하면 짧은 샘플 비교 → `voice_samples/`에 근거를 보존한다. 위임받은 보이스는 제작자가 고른다. **기본값으로 특정 보이스를 가정하지 않는다** (직전 편 보이스는 참고일 뿐).
+- Typecast(키 `TYPECAST_API_KEY` — 환경변수 또는 저장소 `.env`, `POST /v1/text-to-speech/with-timestamps` → 단어 타임스탬프 무료 동봉) — `GET /v1/voices/recommendations?query=…`로 후보 → 필요하면 짧은 샘플 비교 → `voice_samples/`에 근거를 보존한다. 위임받은 보이스는 제작자가 고른다. **기본값으로 특정 보이스를 가정하지 않는다** (직전 편 보이스는 참고일 뿐).
 - 대안: [생성 제공자](../../shortform-news-pipeline/reference/generation-provider.md)에 따라 Higgsfield 오디오를 확인한다(타임스탬프 없음 → whisperx). 사람 WAV면 whisperx 강제정렬(`spoken_text` 프롬프트).
 
 ## 5. narration.json v1.1 (경계 파일)

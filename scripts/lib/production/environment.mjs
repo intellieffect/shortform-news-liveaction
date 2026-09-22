@@ -43,6 +43,52 @@ export const assertExecution = (repo = REPO) => {
   if (result.errors.length) throw new Error(result.errors.join("\n"));
   return result;
 };
+// 키 이름만 읽는다 — 값은 읽지도, 기록하지도 않는다.
+const CREDENTIALS = [
+  { name: "PEXELS_API_KEY", purpose: "스톡 사진·영상 검색" },
+  { name: "PIXABAY_API_KEY", purpose: "스톡 사진·영상 검색" },
+  { name: "UNSPLASH_ACCESS_KEY", purpose: "스톡 사진 검색" },
+  { name: "TYPECAST_API_KEY", purpose: "내레이션 TTS" },
+  { name: "TYPECAST_VOICE_ID", purpose: "내레이션 보이스 — 계정마다 다르다" },
+];
+// 파이썬 쪽 `_env` 와 같은 규칙으로 읽는다 — 어긋나면 doctor 가 «있다» 한 키를 스크립트가 못 읽는다.
+const dotenvValue = (line, name) => {
+  const at = line.indexOf("=");
+  if (at < 0 || line.slice(0, at).trim() !== name) return null;
+  let value = line.slice(at + 1).trim();
+  if (value.length > 1 && (value[0] === "'" || value[0] === '"') && value.at(-1) === value[0])
+    return value.slice(1, -1) || null;
+  for (let i = 1; i < value.length; i++)
+    if (value[i] === "#" && (value[i - 1] === " " || value[i - 1] === "\t")) {
+      value = value.slice(0, i);
+      break;
+    }
+  return value.trim() || null;
+};
+const dotenvNames = (repo) => {
+  const file = join(repo, ".env");
+  if (!existsSync(file)) return new Set();
+  let text;
+  try { text = readFileSync(file, "utf8"); } catch { return new Set(); }
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1); // Windows 편집기의 BOM
+  const names = new Set();
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    const at = line.indexOf("=");
+    if (at < 0) continue;
+    const name = line.slice(0, at).trim();
+    if (dotenvValue(line, name)) names.add(name);
+  }
+  return names;
+};
+const credentialStatus = (repo) => {
+  const inFile = dotenvNames(repo);
+  return CREDENTIALS.map(({ name, purpose }) => ({
+    name, purpose,
+    status: process.env[name]?.trim() ? "env" : inFile.has(name) ? "dotenv" : "missing",
+  }));
+};
 const command = (name, args) => {
   const r = spawnSync(name, args, { encoding: "utf8", timeout: 5000, maxBuffer: 1024 * 1024 });
   return { status: r.status === 0 ? "detected" : "unavailable", version: r.status === 0 ? String(r.stdout || r.stderr).split("\n")[0] : null };
@@ -51,7 +97,8 @@ const command = (name, args) => {
 export const productionEnvironment = ({ repo = REPO, pluginRoot, capabilities, installed = false } = {}) => {
   const execution = executionIdentity(repo, pluginRoot);
   const source = pluginInfo(join(repo, "plugin"));
-  const tools = { node: { status: "detected", version: process.version }, ffmpeg: command("ffmpeg", ["-version"]), ffprobe: command("ffprobe", ["-version"]) };
+  const tools = { node: { status: "detected", version: process.version }, ffmpeg: command("ffmpeg", ["-version"]), ffprobe: command("ffprobe", ["-version"]),
+    python: command(process.platform === "win32" ? "py" : "python3", ["--version"]) };
   const require = createRequire(join(repo, "package.json"));
   for (const name of ["remotion", "@remotion/renderer"]) {
     try { tools[name] = { status: "detected", version: require(name + "/package.json").version }; }
@@ -76,7 +123,9 @@ export const productionEnvironment = ({ repo = REPO, pluginRoot, capabilities, i
       } catch { installations = { status: "unverified", entries: [], reason: "호스트 설치 목록 해석 불가" }; }
     } else installations = { status: "unverified", entries: [], reason: "호스트 설치 목록 확인 불가" };
   }
-  return { at: new Date().toISOString(), execution, plugin_source: source, installations, local_tools: tools, session_tools: sessionTools,
-    warnings: [...execution.errors, ...(execution.plugin && execution.plugin.sha256 !== source.sha256 ? ["실행 플러그인이 저장소 소스와 다르다"] : []), ...(installations.entries.some((x) => !x.same_as_source) ? ["설치본과 저장소 소스가 다르다. 기존 설치본을 자동 교체하지 않는다"] : [])],
+  const credentials = credentialStatus(repo);
+  return { at: new Date().toISOString(), execution, plugin_source: source, installations, local_tools: tools, credentials, session_tools: sessionTools,
+    warnings: [...execution.errors, ...(execution.plugin && execution.plugin.sha256 !== source.sha256 ? ["실행 플러그인이 저장소 소스와 다르다"] : []), ...(installations.entries.some((x) => !x.same_as_source) ? ["설치본과 저장소 소스가 다르다. 기존 설치본을 자동 교체하지 않는다"] : []),
+      ...(credentials.some((c) => c.status === "missing") ? [`API 키가 없다: ${credentials.filter((c) => c.status === "missing").map((c) => c.name).join(", ")} — .env.example 을 .env 로 복사해 채운다`] : [])],
     limitation: "도구 탐지는 실제 기사 수집·생성·렌더·시청·청취 검증을 대신하지 않는다" };
 };

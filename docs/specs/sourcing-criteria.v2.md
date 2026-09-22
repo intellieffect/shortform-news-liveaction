@@ -2,7 +2,7 @@
 
 > **출처**: 브랜치 `archive/pilot1-shot-fit-generation`(옛 `experiment/shot-fit-generation`, 태그 `pilot1-shot-fit-experiment`)에서 2026-08-31 main 으로 옮김. 본문은 그대로다 — 파일명을 편별 접미사 규약(`_satellite_pollution`)에 맞추고 문서 간 링크만 새 이름으로 고쳤다. 본문이 가리키는 `src/data/pilot/`(단일 슬롯 시절)은 지금 `pilots/hani_satellite_pollution/`, `out/ShortformNews_*.mp4` 는 `out/pilots/hani_satellite_pollution/deliver/v3/` 다.
 
-정본은 input의 `~/Projects/shortform-news-input/docs/asset-sourcing-workflow.md`(v1). 이 문서는 **개정 제안**이며 input이 반영하면 v1을 갱신하고 이 파일은 근거로 남긴다. 판정 기준 원본: shot_fit.md (과거 내부 기록·로컬 보관).
+정본은 이 저장소의 [`docs/asset-sourcing-workflow.md`](../asset-sourcing-workflow.md)(v1, 2026-09-02 통합 전에는 별도 input 저장소에 있었다). 이 문서는 **개정 제안**이며 input이 반영하면 v1을 갱신하고 이 파일은 근거로 남긴다. 판정 기준 원본: shot_fit.md (과거 내부 기록·로컬 보관).
 
 ## 왜 개정하나 — «위성공해» 실측
 
