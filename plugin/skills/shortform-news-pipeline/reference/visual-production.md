@@ -36,11 +36,11 @@ Higgsfield는 배경·외형뿐 아니라 빛의 진행·산란, 유체·가스�
 
 실행 명령, 설정 파일 형식, 장면 컴포넌트 계약, 관찰 JSON 경로, 이미 실행 중이거나 렌더된 시도를 입력으로 잇는 방법은 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)이 정본이다. 이 문서에 사본을 두지 않으며, 옛 명령을 기억으로 재구성하지 않는다. 흐름만 적으면 — 설정과 자료를 갖춰 정지 시안을 렌더하고, 실제 이미지를 본 관찰을 사실대로 적어 열린 시도를 닫는다. 움직임이 설명의 핵심이면 같은 방식으로 동작 시안을 렌더하고 **처음부터 끝까지 이어서 본** 범위만 기록한다. 그다음 resume으로 현재 상태를 확인한다.
 
-시안 렌더는 자동으로 usable 판정을 쓰지 않는다. 선택 장면의 최신 composite still이 usable이어야 하고, motion_required면 composite motion의 실제 전체 연속 확인도 필요하다. revise/unverified/stale 상태에서는 narration begin과 adopt가 거절된다. 관측 수단이 없으면 미확인 결과를 보여주고 한계를 알린다. 스키마를 만족하려고 시청 기록을 꾸미거나 gate 필드를 제거하지 않는다. 외부 TTS는 **begin 성공 후에만** 호출한다 (`begin && TTS`; 무조건 다음 줄 실행 금지). 나중에 다른 컷의 미술을 수정했다고 이미 생성한 음성이 자동 무효화되지는 않는다.
+시안 렌더는 자동으로 usable 판정을 쓰지 않는다. 선택 장면의 최신 composite still은 usable이어야 한다. motion_required면 실제 composite motion도 필요하다. 연속 시청이 가능하면 전체 확인 뒤 usable로 기록한다. 연속 시청 수단이 없어 프레임 표본만 실제 확인했다면 아래 provisional 계약을 충족해 음성·후속 제작을 진행할 수 있다. 시안 부재, 단순 unverified, revise, stale는 narration begin과 adopt를 막는다. 스키마를 만족하려고 시청 기록을 꾸미거나 gate 필드를 제거하지 않는다. 외부 TTS는 **begin 성공 후에만** 호출한다 (`begin && TTS`; 무조건 다음 줄 실행 금지). 나중에 다른 컷의 미술을 수정했다고 이미 생성한 음성이 자동 무효화되지는 않는다.
 
 관찰 기록의 판단 규칙은 다음과 같다. 필드 이름과 파일 경로는 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)을 따른다.
 
-phase는 still/motion, scope는 asset/composite, verdict는 usable/revise/unverified다. 동작을 관찰했다면 continuous_viewing:true와 실제 viewed_seconds:[시작,끝]을 기록한다. 프레임만 확인했다면 motion usable로 기록하지 않는다. 자산만 확인한 asset 시안은 배경·자막과의 composite 확인을 대신하지 않는다. 입력 변경 시 기존 시안은 stale이며, 음성 확정 후에는 기존 proof로 실제 발화 결합을 다시 확인한다. 초기 시안은 최종 독립 검수를 대체하지 않는다.
+phase는 still/motion, scope는 asset/composite다. 기본 verdict는 usable/revise/unverified이고 새 @2 제작의 composite motion에만 provisional이 있다. 동작 전체를 실제로 이어 보았다면 continuous_viewing:true와 실제 viewed_seconds:[시작,끝]을 기록한다. 프레임 표본만 본 경우 motion usable로 기록하지 않는다. 시작·중간·끝의 실제 이미지와 독립 검수, 연속 미확인 범위를 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)에 따라 연결한 경우에만 provisional을 쓴다. 결함이 보이면 revise이고, 표본 자체를 확인하지 못했다면 unverified다. 자산만 확인한 asset 시안은 배경·자막과의 composite 확인을 대신하지 않는다. 입력 변경 시 기존 시안은 stale이며, 음성 확정 후에는 기존 proof로 실제 발화 결합을 다시 확인한다. 초기 시안은 최종 독립 검수를 대체하지 않는다.
 
 ## 화면 글자
 
@@ -58,6 +58,6 @@ resume과 intent의 screen_text는 선언 문구·동시 자막·시점 누락�
 
 수정한 뒤에는 원래 지적된 구간을 같은 방식으로 다시 걸어 **문제가 어떻게 달라졌는지**를 확인한다. 이전 통과 판정을 재사용하지 않고, 바뀌지 않은 부분까지 전부 다시 검수하지도 않는다. 최종 visual 검수의 explanations에는 concept_id/moment_id, 실제 observed_subject/action/result, text_dependency, evidence, basis(observed/code_inference/unverified), verdict(pass/changes_requested/unverified)를 기록한다. 코드의 계산이 맞는다는 이유로 시각적 이해 실패를 철회하지 않는다. 사실 오류를 철회해도 남는 설명 문제는 별도로 남긴다.
 
-동작 설명의 pass는 해당 개념의 실제 연속 확인 범위를 요구한다. 정지 이미지 관찰과 코드 추론은 모션 검수 완료가 아니다. 핵심 설명 실패는 blocking, 확인 수단 부재는 incomplete로 다룬다. 라벨 추가 전에 대상·구도·행동·재료를 바꿔 해결할 수 있는지 판단한다. 전체 영상의 이야기·호흡·음향 검수는 계속 별도로 수행한다.
+초기 provisional은 연속 동작의 pass가 아니다. first_scene.motion_continuity=incomplete와 현재 motion 작업이 남는다. 최종 동작 설명의 pass는 해당 개념의 실제 연속 확인 범위를 요구한다. 정지 이미지 관찰과 코드 추론은 모션 검수 완료가 아니다. 핵심 설명 실패는 blocking, 확인 수단 부재는 incomplete로 다룬다. 라벨 추가 전에 대상·구도·행동·재료를 바꿔 해결할 수 있는지 판단한다. 전체 영상의 이야기·호흡·음향 검수는 계속 별도로 수행한다.
 
 최종 visual 보고서의 text_review는 verdict, observation, evidence로 실제 추가 문구와 고정 자막의 읽기 부담을 기록한다. JSX·중복 경고는 개수만으로 차단하지 않고 이 실물 검수에서 판단한다. 초기 첫 장면 착수 조건과 최종 독립 검수는 별개다. 기존 편에는 새 착수 조건을 소급하지 않는다.

@@ -1,6 +1,7 @@
 import {readFileSync, realpathSync} from 'node:fs';
 import {join, sep} from 'node:path';
 import {fileSnapshot, hash, json, recipe} from './contracts.mjs';
+import {execFileSync} from 'node:child_process';
 
 export const FIRST_SCENE_GATE = 'first-core-scene@2';
 export const LEGACY_FIRST_SCENE_GATE = 'first-core-scene@1';
@@ -48,9 +49,20 @@ const validRawEvidence = (w, raw) => {
 
 // Validates bindings, not aesthetic quality or the truth of claimed viewing.
 export function sceneReviewErrors(w, state, report, artifactHash) {
-  if (!requiresSceneReview(w, state) || report.scope !== 'composite' || report.verdict !== 'usable') return [];
+  if (!requiresSceneReview(w, state) || report.scope !== 'composite' || !['usable', 'provisional'].includes(report.verdict)) return [];
   const errors = [], add = message => errors.push(message), r = report.review;
-  if (!r || r.schema !== 'scene-review@1') return ['실물 관찰→의도 대조 검수 review(scene-review@1)가 필요하다'];
+  const provisional = report.phase === 'motion' && report.verdict === 'provisional';
+  if (provisional) {
+    const samples = report.sampling?.frames, duration = Number(json(join(w.production, 'scene-proof.json')).duration_seconds);
+    if (report.sampling?.kind !== 'frames' || !text(report.sampling?.unobserved) || !Array.isArray(samples) || samples.length < 3 || !Number.isFinite(duration)) add('provisional 동작에는 시작·중간·끝 프레임과 연속 미확인 범위가 필요하다');
+    else {
+      const seconds = samples.map(s => s.second);
+      if (seconds.some((second, index) => !Number.isFinite(second) || second < 0 || second >= duration || (index && second <= seconds[index - 1])) || seconds[0] > Math.min(0.5, duration / 4) || seconds.at(-1) < duration - Math.min(0.5, duration / 4) || !seconds.some(s => s >= duration * 0.2 && s <= duration * 0.8)) add('표본 시각은 시안의 시작·중간·끝을 포함해 오름차순이어야 한다');
+      if (new Set(samples.map(s => s.path)).size !== samples.length || new Set(samples.map(s => s.sha256)).size < 2) add('서로 다른 표본 파일과 눈에 보이는 변화가 필요하다');
+      if (samples.some(s => !/\.png$/i.test(s.path ?? '') || !validRawEvidence(w, s))) add('표본 PNG는 해당 편 reviews/ 아래의 실제 파일·해시에 연결한다');
+    }
+  }
+  if (!r || r.schema !== 'scene-review@1') return [...errors, '실물 관찰→의도 대조 검수 review(scene-review@1)가 필요하다'];
   if (!text(r.reviewer?.id) || r.reviewer?.independent !== true) add('제작과 분리된 실제 검수자 id/independent를 기록한다');
   for (const phase of ['experience', 'intent']) {
     const part = r[phase];
@@ -70,15 +82,15 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
     for (const target of targets) {
       const row = rows.find(x => x.moment_id === target.id);
       if (!row || ['observed_subject', 'observed_action', 'observed_result', 'text_dependency'].some(k => !text(row[k]))) { add(`${target.id}: 실제 대상·작용·결과·문자 의존 관찰이 필요하다`); continue; }
-      const deferredMotion = report.phase === 'still' && target.motion_required;
+      const deferredMotion = target.motion_required && (report.phase === 'still' || provisional);
       if (row.verdict !== 'pass' && !(deferredMotion && row.verdict === 'unverified')) add(`${target.id}: 미해결 설명 결함·미확인은 usable로 기록할 수 없다`);
       if (row.verdict === 'pass' && row.basis !== 'observed') add(`${target.id}: 코드 추론으로 설명을 통과시키지 않는다`);
       if (!['observed', 'code_inference', 'unverified'].includes(row.basis)) add(`${target.id}: 관찰 근거 basis가 필요하다`);
-      if (deferredMotion && row.verdict === 'pass') add(`${target.id}: 정지 시안으로 동작 설명을 통과시키지 않는다`);
+      if (deferredMotion && row.verdict === 'pass') add(`${target.id}: ${report.phase === 'still' ? '정지 시안으로' : '연속 동작을 확인하기 전에는'} 동작 설명을 통과시키지 않는다`);
     }
   }
   if (!text(r.intent?.reference_observation) || !text(r.intent?.text_observation)) add('레퍼런스의 설명·미술 기준 대조와 실제 자막·추가 문구 관찰이 필요하다');
-  if (r.intent?.verdict !== 'pass') add('의도 대조 검수의 미해결 결함을 남긴 채 usable로 기록할 수 없다');
+  if (r.intent?.verdict !== (provisional ? 'unverified' : 'pass')) add('의도 대조 결과는 실제 확인 범위와 일치해야 한다. 미해결 결함은 revise로 기록한다');
   for (const previous of priorSceneRevisions(state, report)) {
     const check = r.rechecks?.find(x => x.receipt_id === previous.receipt_id);
     if (!check || check.verdict !== 'fixed' || !text(check.observation)) add(`이전 revise ${previous.receipt_id}의 실제 재확인이 필요하다`);
@@ -86,10 +98,22 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
   return errors;
 }
 
+export function provisionalFrameErrors(w, report) {
+  if (report.verdict !== 'provisional') return [];
+  const errors = [];
+  for (const sample of report.sampling?.frames ?? []) {
+    try {
+      const bytes = execFileSync('ffmpeg', ['-v', 'error', '-nostdin', '-ss', String(sample.second), '-i', w.path(report.artifact), '-frames:v', '1', '-f', 'image2pipe', '-vcodec', 'png', '-'], {timeout: 30000, maxBuffer: 32 * 1024 * 1024});
+      if (hash(bytes) !== sample.sha256) errors.push(`${sample.path}: 현재 동작 시안의 ${sample.second}초 프레임과 다르다`);
+    } catch { errors.push(`${sample.path}: 현재 동작 시안에서 표본 프레임을 추출할 수 없다`); }
+  }
+  return errors;
+}
+
 export function sceneReviewEvidence(w, state, report) {
   if (!requiresSceneReview(w, state)) return [];
-  return ['experience', 'intent'].flatMap(phase => {
+  return [...['experience', 'intent'].flatMap(phase => {
     const raw = report.review?.[phase]?.raw_report;
     return validRawEvidence(w, raw) ? [raw] : [];
-  });
+  }), ...(report.verdict === 'provisional' ? (report.sampling?.frames ?? []).filter(s => validRawEvidence(w, s)) : [])];
 }

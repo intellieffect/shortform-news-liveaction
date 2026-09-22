@@ -1,4 +1,4 @@
-import {sceneReviewErrors, sceneReviewEvidence} from './scene-review.mjs';
+import {provisionalFrameErrors, requiresSceneReview, sceneReviewErrors, sceneReviewEvidence} from './scene-review.mjs';
 import {sceneProofPhases} from '../scene-proof-contract.mjs';
 import {recipe} from './contracts.mjs';
 import {auditScreenText} from '../screen-text-audit.mjs';
@@ -23,7 +23,8 @@ export function validateSceneProof(w, attempt, outputs, state) {
   const concepts = read(w, 'concepts.json').concepts ?? [];
   requireValue(report.schema === 'scene-proof@1' && concepts.some(c => c.id === report.concept_id), 'scene-proof@1과 현재 concept_id가 필요하다');
   requireValue(['still', 'motion'].includes(report.phase) && ['asset', 'composite'].includes(report.scope), 'phase still/motion, scope asset/composite가 필요하다');
-  requireValue(['usable', 'revise', 'unverified'].includes(report.verdict), '시안 verdict usable/revise/unverified가 필요하다');
+  const provisional = report.verdict === 'provisional';
+  requireValue(['usable', 'revise', 'unverified'].includes(report.verdict) || (provisional && report.phase === 'motion' && report.scope === 'composite' && requiresSceneReview(w, state)), '시안 verdict usable/revise/unverified, 새 제작의 composite motion은 provisional도 가능하다');
   requireValue(typeof report.observation === 'string' && report.observation.trim() && typeof report.tool === 'string' && report.tool.trim(), '실제 관찰과 확인 도구를 기록한다');
   requireValue(outputs[report.artifact] && report.artifact !== reports[0], '관찰한 artifact를 --output으로 함께 등록한다');
   const probe = JSON.parse(execFileSync('ffprobe', ['-v', 'error', '-count_frames', '-show_entries', 'stream=codec_type,width,height,duration,nb_frames,nb_read_frames:format=format_name,duration', '-of', 'json', w.path(report.artifact)], {encoding: 'utf8', timeout: 15000}));
@@ -33,10 +34,13 @@ export function validateSceneProof(w, attempt, outputs, state) {
   if (report.phase === 'motion') {
     const duration = Number(stream.duration ?? probe.format?.duration);
     requireValue(!still && duration > 0 && Number(stream.nb_read_frames ?? stream.nb_frames) > 1, '정지 이미지 또는 한 프레임 영상을 동작 시안으로 기록할 수 없다');
-    requireValue(report.verdict === 'unverified' || (report.continuous_viewing === true && Array.isArray(report.viewed_seconds) && report.viewed_seconds.length === 2 && report.viewed_seconds[0] >= 0 && report.viewed_seconds[1] > report.viewed_seconds[0] && report.viewed_seconds[1] <= duration + 0.05), '동작 판단에는 실제 연속 확인 범위를 적는다. 미확인은 unverified');
+    requireValue(['unverified', 'provisional'].includes(report.verdict) || (report.continuous_viewing === true && Array.isArray(report.viewed_seconds) && report.viewed_seconds.length === 2 && report.viewed_seconds[0] >= 0 && report.viewed_seconds[1] > report.viewed_seconds[0] && report.viewed_seconds[1] <= duration + 0.05), '동작 판단에는 실제 연속 확인 범위를 적는다. 미확인은 unverified');
+    if (provisional) requireValue(report.continuous_viewing !== true && report.viewed_seconds == null, '표본 검수는 연속 시청으로 기록하지 않는다');
   }
   const reviewErrors = sceneReviewErrors(w, state, report, outputs[report.artifact]);
   requireValue(!reviewErrors.length, reviewErrors.join('\n'));
+  const frameErrors = provisionalFrameErrors(w, report);
+  requireValue(!frameErrors.length, frameErrors.join('\n'));
   for (const evidence of sceneReviewEvidence(w, state, report)) {
     requireValue(!outputs[evidence.path], '검수 원문과 시안·관찰 JSON 경로를 분리한다');
     requireValue(hash(readFileSync(w.path(evidence.path))) === evidence.sha256, '검수 원문 해시가 다르다');

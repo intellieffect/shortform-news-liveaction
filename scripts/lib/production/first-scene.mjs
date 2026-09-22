@@ -52,18 +52,20 @@ export function firstSceneReadiness(w, state) {
       catch { add('first-scene-generation', `${id}: 안전하지 않은 ${key}`); }
     }
   }
-  const proofs = sceneProofs(w, state), chosen = [];
-  for (const phase of sceneProofPhases(selected)) {
+  const proofs = sceneProofs(w, state), chosen = [], provisionalPhases = [], phases = sceneProofPhases(selected);
+  for (const phase of phases) {
     const p = proofs.findLast(p => p.concept_id === selected.id && p.scope === 'composite' && p.phase === phase);
-    if (!p || p.status !== 'current' || p.verdict !== 'usable') add('first-scene-proof', `${phase}: ${p?.status ?? 'unrecorded'}/${p?.verdict ?? 'unverified'} — 실물 확인·수정 후 기록한다. 미시청은 통과로 바꾸지 않는다`);
+    const provisional = (state.scene_gate ?? w.request?.scene_gate) === FIRST_SCENE_GATE && phase === 'motion' && p?.verdict === 'provisional';
+    if (!p || p.status !== 'current' || (p.verdict !== 'usable' && !provisional)) add('first-scene-proof', `${phase}: ${p?.status ?? 'unrecorded'}/${p?.verdict ?? 'unverified'} — 실물 확인·수정 후 기록한다. 미시청은 통과로 바꾸지 않는다`);
     if (!p) continue;
     chosen.push(p.receipt_id);
+    if (provisional) provisionalPhases.push(phase);
     const artifactHash = existsSync(w.path(p.artifact)) ? hash(readFileSync(w.path(p.artifact))) : null;
     // Exclude this report itself when checking prior revise observations.
     for (const error of sceneReviewErrors(w, {...state, attempts: state.attempts.filter(a => a.id !== p.receipt_id)}, p, artifactHash)) add('first-scene-review', error);
     const render = p.rendering;
     if (render?.kind !== SCENE_PROOF_RENDERING_KIND || render.config !== sceneProofConfigPath(w.id) || render.component !== config.component || JSON.stringify([...(render.asset_ids ?? [])].sort()) !== JSON.stringify([...ids].sort()) || render.profile_sha256 !== hash(readFileSync(join(w.repo, 'config/production-profile.json')))) add('first-scene-composite', `${phase}: 현재 실제 자산·장면 컴포넌트·공통 자막을 쓴 시안이 필요하다. scripts/scene-proof.mjs 사용`);
-    if (phase === 'motion' && (p.continuous_viewing !== true || !Array.isArray(p.viewed_seconds) || p.viewed_seconds[0] !== 0 || p.viewed_seconds[1] < config.duration_seconds - 0.05)) add('first-scene-viewing', '핵심 동작의 전체 시안 확인 범위가 필요하다. 프레임 표본만 봤다면 unverified를 유지한다');
+    if (phase === 'motion' && !provisional && (p.continuous_viewing !== true || !Array.isArray(p.viewed_seconds) || p.viewed_seconds[0] !== 0 || p.viewed_seconds[1] < config.duration_seconds - 0.05)) add('first-scene-viewing', '핵심 동작의 전체 시안 확인 범위가 필요하다');
   }
-  return {required: true, ready: blockers.length === 0, concept_id: selected.id, blockers, proof_ids: chosen};
+  return {required: true, ready: blockers.length === 0, concept_id: selected.id, blockers, proof_ids: chosen, motion_continuity: provisionalPhases.length ? 'incomplete' : phases.includes('motion') ? 'reviewed' : 'not-required', provisional_phases: provisionalPhases};
 }

@@ -110,4 +110,4 @@ realization.asset_ids에 생성 자산이 있으면 그 generation_job도 job_id
 
 새 @2 편의 usable은 기존 scene-proof 관찰 JSON의 review에 독립 초견·의도 대조 원문과 현재 시안 해시, 설명 관찰, 미해결 revise의 재확인을 연결한다. 열린 렌더 완료 시도도 review-input --source scene으로 확인할 수 있다. 정확한 형식은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. @1 편에는 새 검수 계약을 소급하지 않는다.
 
-첫 핵심 composite still usable과 필요한 motion usable(실제 전체 연속 확인)가 최신이어야 narration begin/adopt가 가능하다. 그 뒤 모든 다른 개념 시안을 음성에 의존시키지 않는다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.
+첫 핵심 composite still usable과 필요한 실제 composite motion이 최신이어야 narration begin/adopt가 가능하다. 새 @2 편의 motion은 전체 연속 확인 usable 또는 시작·중간·끝의 이미지 증거와 독립 검수를 연결한 provisional을 허용한다. provisional은 motion_continuity=incomplete를 남기고 최종 동작 검수의 pass로 옮기지 않는다. 그 뒤 모든 다른 개념 시안을 음성에 의존시키지 않는다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.
