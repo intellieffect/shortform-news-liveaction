@@ -101,3 +101,11 @@ npm run production:test
 `context.work.visual`과 intent 입력에는 작업 목록, 생성 상태, 시안 관찰, 설명 검수 대상, 선언 문구와 동시 자막, JSX 문구 진단이 제공된다. experience에는 제작 의도를 넣지 않는다. 최종 `review_visual.explanations[]`는 moment를 관찰 원문·증거·basis·verdict에 연결한다. 핵심 설명을 누락하거나 코드 추론만으로 pass할 수 없다. 동작이 필요한 설명은 해당 개념의 연속 확인 범위를 요구한다. 기계 검사는 기록의 연결만 확인하며 진짜 이해·미술·관찰의 진실을 증명하지 않는다.
 
 최종 visual pass에는 `text_review: {verdict, observation, evidence}`로 추가 문구와 고정 자막의 실제 읽기 부담을 화면 표본에 연결한다. 초기에 동결된 접수 해시는 run.json에도 보존하므로 request와 visual-system의 계약을 함께 삭제해 legacy로 바꿀 수 없다. 한 프레임 MP4는 motion 시안으로 인정하지 않는다. 프레임 수가 복수라는 조건도 실제 움직임·시청의 증명은 아니다.
+
+## 첫 핵심 장면 착수 — first-core-scene@1
+
+새 start의 request/run에만 scene_gate를 보존한다. legacy 편은 소급하지 않는다. 제작자는 `02_production/scene-proof.json`에서 concept_id를 고르며 실제 자산·장면 컴포넌트·임시 자막 시간은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. 선택한 explain concept의 moments.subject_ids는 해당 concept의 비문자 elements id 배열이다. subject/action/result는 구체적인 대상/작용 또는 비교/눈에 보일 결과이며, action에 질문을 그대로 복사하지 않는다. 의미 적합성은 실제 시안으로 검수한다.
+
+realization.asset_ids에 생성 자산이 있으면 그 generation_job도 job_ids에 연결한다. code method에 실제 미디어/생성이 있으면 source/generated/hybrid로 역할을 정확히 고친다. 계획·진행·채택 생성 작업에는 사용 개념이 있어야 한다. 필요 없어지면 기각/실패와 관찰을 기록한다.
+
+첫 핵심 composite still usable과 필요한 motion usable(실제 전체 연속 확인)가 최신이어야 narration begin/adopt가 가능하다. 그 뒤 모든 다른 개념 시안을 음성에 의존시키지 않는다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.

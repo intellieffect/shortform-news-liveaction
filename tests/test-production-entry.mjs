@@ -128,11 +128,13 @@ try {
     assert.equal(s.execution.host_session_load, "unverified");
   });
   check("중단 토큰·실패·입력 변경을 새 시작 경로에서도 유지", () => {
-    const token = JSON.parse(cli(["begin", id, "narration", "--tool", "synthetic-tts-not-called"], { bridge: true }).stdout);
+    const blocked = cli(["begin", id, "narration", "--tool", "synthetic-tts-not-called"], {bridge:true,expected:1});
+    assert.match(blocked.stderr, /first-scene-selection/);
+    const token = JSON.parse(cli(["begin", id, "scene_proof", "--output", `out/pilots/${id}/qa/test.png`, "--output", `out/pilots/${id}/qa/test.json`, "--tool", "synthetic-proof-not-called"], { bridge: true }).stdout);
     assert.equal(token.execution.plugin.path, installed);
-    assert.equal(token.command.tool, "synthetic-tts-not-called");
+    assert.equal(token.command.tool, "synthetic-proof-not-called");
     const resumed = JSON.parse(cli(["resume", id, "--json"], { bridge: true }).stdout);
-    assert.equal(resumed.actions.narration.pending.token, token.id);
+    assert.equal(resumed.actions.scene_proof.pending.token, token.id);
     put(join(production, "narration.txt"), "바뀐 테스트 원고\n");
     assert.throws(() => finishProductionAction(id, token.id, options), /도중 입력/);
     failProductionAction(id, token.id, "테스트 중단", options);

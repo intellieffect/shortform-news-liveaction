@@ -6,7 +6,8 @@ import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
 import {VISUAL_CONTRACT, validateVisualPlan, screenTextInventory} from '../scripts/lib/visual-plan.mjs';
 import {startProduction} from '../scripts/lib/production/start.mjs';
-import {beginProductionAction, finishProductionAction, productionStatus, productionReviewInput} from '../scripts/lib/production/state.mjs';
+import {beginProductionAction, finishProductionAction, productionStatus, productionReviewInput, adoptNarration} from '../scripts/lib/production/state.mjs';
+import {hash} from '../scripts/lib/production/contracts.mjs';
 import {workspace} from '../scripts/lib/production/contracts.mjs';
 import {validateExplanationReview, visualWork} from '../scripts/lib/production/visual-work.mjs';
 import {auditScreenText} from '../scripts/lib/screen-text-audit.mjs';
@@ -157,4 +158,102 @@ test('actual screen-text renderer requires global time and renders declared copy
  const html=renderToStaticMarkup(React.createElement(EditorialScreenText,{...props,globalFrame:150}));
  assert.ok(html.includes('대상'));assert.ok(html.includes('data-screen-text="name"'));assert.ok(html.includes('color:red'));
  assert.equal(renderToStaticMarkup(React.createElement(EditorialScreenText,{...props,globalFrame:201})),'');
+});
+
+function gatedFixture(t, motion = true) {
+ const f=fixture(t), c=plan();
+ c.concepts[0].elements.push({id:'cloud',kind:'diagram',role:'metaphor'});
+ c.concepts[0].visual.moments[0].subject_ids=['cloud'];
+ c.concepts[0].visual.moments[0].motion_required=motion;
+ put(f.repo,f.prefix+'concepts.json',c);
+ put(f.repo,'src/editorial/scenes/fresh.tsx','export default function Scene(){return null;}');
+ put(f.repo,f.prefix+'scene-proof.json',{schema:'scene-proof-config@1',concept_id:'pull',component:'src/editorial/scenes/fresh.tsx',duration_seconds:1,captions:[{narration_line:'s01',text:'돌아갑니다.',from:0,end:1}]});
+ return f;
+}
+function gatedProof(f,name,phase='still',verdict='usable') {
+ const p=proof(f,name,phase);p.data.verdict=verdict;
+ p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});return p;
+}
+test('first scene blocks narration and adoption on missing, revise, unverified and absent motion',t=>{
+ const f=gatedFixture(t);
+ const blocked=()=>{assert.throws(()=>beginProductionAction('fresh','narration',{repo:f.repo}),/first-scene/);assert.throws(()=>adoptNarration('fresh',{repo:f.repo}),/첫 핵심/);};
+ blocked();gatedProof(f,'revise','still','revise');blocked();
+ gatedProof(f,'still');blocked();gatedProof(f,'unverified','motion','unverified');blocked();
+ gatedProof(f,'ready','motion');
+ const status=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(status.context.work.first_scene.ready,true);
+ assert.equal(status.actions.narration.runnable,true);
+ const a=beginProductionAction('fresh','narration',{repo:f.repo});assert.equal(a.first_scene.proof_ids.length,2);
+});
+test('a static explanation needs only its selected still, other concepts do not require early proofs',t=>{
+ const f=gatedFixture(t,false),c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json')));
+ c.concepts.push({...c.concepts[0],id:'later'});put(f.repo,f.prefix+'concepts.json',c);
+ gatedProof(f,'static');assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready,true);
+});
+test('changing actual scene component or artifact invalidates first scene admission',t=>{
+ const f=gatedFixture(t,false),p=gatedProof(f,'original');
+ put(f.repo,'src/editorial/scenes/fresh.tsx','export default function Scene(){return "changed";}');
+ assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready,false);
+ gatedProof(f,'revised');writeFileSync(join(f.repo,p.art),'changed old artifact');
+ // Only the latest proof of a phase is used; tampering older superseded work does not block.
+ assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready,true);
+ writeFileSync(join(f.repo,'out/pilots/fresh/qa/revised.png'),'changed');
+ assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready,false);
+});
+test('question-as-action, text-only subject and orphan generation cannot pass admission',t=>{
+ const f=gatedFixture(t,false),c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json'))),v=JSON.parse(readFileSync(join(f.repo,f.prefix+'visual-system.json')));
+ c.concepts[0].visual.moments[0].action='왜 회전할까요?';c.concepts[0].visual.moments[0].subject_ids=['name'];
+ v.generation_jobs=[{id:'orphan',kind:'video',purpose:'visual motion',status:'planned'}];
+ put(f.repo,f.prefix+'concepts.json',c);put(f.repo,f.prefix+'visual-system.json',v);gatedProof(f,'incomplete');
+ const codes=productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.blockers.map(b=>b.code);
+ for(const code of ['first-scene-action','first-scene-subject','generation-orphan'])assert.ok(codes.includes(code));
+});
+test('legacy narration admission unchanged; removing new intake flag cannot bypass',t=>{
+ const f=gatedFixture(t,false),r='news/fresh/00_brief/request.json',q=JSON.parse(readFileSync(join(f.repo,r)));delete q.scene_gate;put(f.repo,r,q);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ // Explicit fixture of a pre-gate episode, not a supported production downgrade.
+ const run=JSON.parse(readFileSync(f.w.runFile));delete run.scene_gate;put(f.repo,f.w.rel(f.w.runFile),run);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,true);
+});
+test('standalone substitute image without shared composition provenance cannot pass',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'standalone');finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ assert.ok(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.blockers.some(b=>b.code==='first-scene-composite'));
+});
+
+test('other scene edits and linked planned jobs do not stale the chosen scene',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'selected');
+ const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json'))),v=JSON.parse(readFileSync(join(f.repo,f.prefix+'visual-system.json')));
+ c.concepts.push({...c.concepts[0],id:'later',narration_lines:['s02'],visual:{...c.concepts[0].visual,realization:{method:'generated',asset_ids:[],job_ids:['later_job'],generated_role:'later action'}}});
+ v.generation_jobs=[{id:'later_job',kind:'video',status:'planned',purpose:'later motion'}];
+ put(f.repo,f.prefix+'concepts.json',c);put(f.repo,f.prefix+'visual-system.json',v);
+ put(f.repo,f.prefix+'narration.txt','양끝을 다르게 당기면 돌아갑니다.\n다른 장면의 설명입니다.');
+ const state=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(state.context.work.first_scene.ready,true);assert.equal(state.actions.narration.runnable,true);
+ c.concepts[0].visual.moments[0].result='다른 결과';put(f.repo,f.prefix+'concepts.json',c);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+});
+test('invalid handwritten proof config leaves resume usable and blocks narration',t=>{
+ const f=gatedFixture(t,false);put(f.repo,f.prefix+'scene-proof.json','{not-json');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});assert.equal(s.actions.narration.runnable,false);
+ assert.ok(s.context.work.first_scene.blockers.some(b=>b.code==='first-scene-config'));
+});
+test('generation-as-code and missing reverse job ownership are detected explicitly',()=>{
+ const c=plan(),v={visual_contract:VISUAL_CONTRACT,generation_jobs:[{id:'flow',kind:'video',status:'planned',purpose:'flow'}],media:{assets:[{id:'flow_asset',generation_job:'flow'}]}};
+ c.concepts[0].visual.realization.asset_ids=['flow_asset'];
+ const codes=validateVisualPlan({concepts:c,visualSystem:v}).errors.map(e=>e.code);
+ assert.ok(codes.includes('visual-method'));assert.ok(codes.includes('visual-job-link'));
+});
+test('visual edits after admission do not discard generated narration; audio input checks remain',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'admitted');
+ const a=beginProductionAction('fresh','narration',{repo:f.repo});
+ const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json')));c.concepts[0].visual.focus='Changed later artwork';put(f.repo,f.prefix+'concepts.json',c);
+ const wav=f.prefix+'audio/narration.wav';mkdirSync(dirname(join(f.repo,wav)),{recursive:true});
+ execFileSync('ffmpeg',['-v','error','-f','lavfi','-i','anullsrc=r=24000:cl=mono','-t','1',join(f.repo,wav)]);
+ const line=readFileSync(join(f.repo,f.prefix+'narration.txt'),'utf8');
+ put(f.repo,f.prefix+'narration.json',{schema_version:'1.1',pilot:'fresh',source:{narration_txt:'02_production/narration.txt',narration_sha256:hash(line)},audio:{path:'02_production/audio/narration.wav',duration:1},sentences:[{id:'s01',text:line,start:0,end:1,words:[{text:line,start:0,end:1}]}]});
+ finishProductionAction('fresh',a.id,{repo:f.repo});
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'current');
+ put(f.repo,f.prefix+'narration.txt','Changed spoken input');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'stale');
 });

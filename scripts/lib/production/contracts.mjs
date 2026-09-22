@@ -1,3 +1,4 @@
+import {selectedSceneInputs} from './scene-inputs.mjs';
 import { sourceInputs } from '../source-inputs.mjs';
 import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
@@ -73,8 +74,10 @@ export const recipe = (w, action) => {
   ];
   const renderInputs = [...(w.request ? [join(w.root, "00_brief/request.json")] : []), ...commonCode, ...["package-lock.json", "remotion.config.ts", "scripts/pilot-run.mjs"].map((file) => join(w.repo, file)), join(data, "pilot.json")];
   const generationFiles = (Array.isArray(v.generation_jobs) ? v.generation_jobs : []).flatMap(j => [j.prompt_path, j.output].filter(Boolean).flatMap(path => {try { return [inEpisode(path)]; } catch { return []; }})); // Invalid paths are exposed by visual-plan; do not make resume unusable.
+  const sceneConfig = p('scene-proof.json');
+  const selectedScene = selectedSceneInputs(w);
   const spec = {
-    scene_proof: { deps: [], inputs: [...["facts.md", "concepts.json", "narration.txt", "visual-system.json"].map(p), ...commonCode, ...generationFiles, ...media.map(x => inEpisode(x.source))], required: [p("concepts.json"), p("narration.txt"), p("visual-system.json")], outputs: [] },
+    scene_proof: { deps: [], semantic: selectedScene?.semantic ?? null, inputs: selectedScene?.inputs ?? [...["facts.md", "concepts.json", "narration.txt", "visual-system.json"].map(p), ...commonCode, sceneConfig, ...generationFiles, ...media.map(x => inEpisode(x.source))], required: [p("concepts.json"), p("narration.txt"), p("visual-system.json")], outputs: [] },
     narration: {
       deps: [],
       inputs: [narrationText, ...(n.source?.script ? [inEpisode(n.source.script)] : walk(p("narration_drafts"))),
@@ -108,7 +111,7 @@ export const recipe = (w, action) => {
     review_facts: { deps: ["render"], inputs: [p("facts.md"), p("story.json"), p("concepts.json"), assetFile], required: [p("facts.md")], outputs: [] },
   }[action];
   return Object.fromEntries(Object.entries(spec).map(([key, values]) =>
-    [key, key === "deps" ? values : [...new Set(values.map(w.rel))].sort()]));
+    [key, ["deps", "semantic"].includes(key) ? values : [...new Set(values.map(w.rel))].sort()]));
 };
 
 export const fileSnapshot = (w, files, cache = new Map()) => Object.fromEntries(files.map((file) => {

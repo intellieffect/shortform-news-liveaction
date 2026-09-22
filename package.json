@@ -101,7 +101,8 @@
     "references:prepare": "node scripts/prepare-references.mjs",
     "references:render": "node scripts/render-reference.mjs",
     "references:test": "node --test tests/test-visual-references.mjs",
-    "visual-production:test": "node --test tests/test-visual-production.mjs"
+    "visual-production:test": "node --test tests/test-visual-production.mjs",
+    "scene:proof": "node scripts/scene-proof.mjs"
   },
   "sideEffects": [
     "*.css"
