@@ -1,4 +1,4 @@
-import {readFileSync} from 'node:fs';
+import {readFileSync, realpathSync} from 'node:fs';
 import {join, sep} from 'node:path';
 import {fileSnapshot, hash, json, recipe} from './contracts.mjs';
 
@@ -42,7 +42,7 @@ export function priorSceneRevisions(state, report) {
 
 const validRawEvidence = (w, raw) => {
   try {
-    return text(raw?.path) && w.path(raw.path).startsWith(join(w.production, 'reviews') + sep) && text(raw.sha256) && hash(readFileSync(w.path(raw.path))) === raw.sha256;
+    return text(raw?.path) && w.path(raw.path).startsWith(join(w.production, 'reviews') + sep) && realpathSync(w.path(raw.path)).startsWith(join(w.production, 'reviews') + sep) && text(raw.sha256) && hash(readFileSync(w.path(raw.path))) === raw.sha256;
   } catch { return false; }
 };
 
@@ -58,6 +58,8 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
     if (!text(part?.observation) || !text(part?.tool)) add(`${phase}: 실제 관찰과 확인 도구가 필요하다`);
     const raw = part?.raw_report;
     if (!validRawEvidence(w, raw)) add(`${phase}: 해당 편 reviews/ 아래 검수 원문 파일·해시가 필요하다`);
+    const reused = (state.attempts ?? []).some(a => a.status === 'succeeded' && a.validation?.kind === 'scene-proof' && a.outputs_sha256?.[a.validation.report.artifact] !== artifactHash && ['experience', 'intent'].some(p => a.validation.report.review?.[p]?.raw_report?.sha256 === raw?.sha256));
+    if (raw?.sha256 && reused) add(`${phase}: 다른 시안의 검수 원문을 재사용할 수 없다. 현재 실물을 새로 확인한다`);
   }
   if (r.experience?.raw_report?.path === r.intent?.raw_report?.path || r.experience?.raw_report?.sha256 === r.intent?.raw_report?.sha256) add('초견 관찰 원문을 의도 대조 응답으로 덮어쓰지 않는다');
   const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);

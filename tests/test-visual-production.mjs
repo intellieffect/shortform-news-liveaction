@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync} from 'node:fs';
+import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, symlinkSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
@@ -344,4 +344,14 @@ test('incomplete raw evidence does not prevent recording revise; legacy review i
  const old=fixture(t),q=proof(old,'legacy-optional');q.data.review=p.data.review;put(old.repo,q.report,q.data);
  const receipt=finishProductionAction('fresh',q.attempt.id,{repo:old.repo});
  assert.deepEqual(Object.keys(receipt.outputs).sort(),[q.art,q.report].sort());
+});
+
+test('review evidence cannot alias a production source or reuse another artifact review',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'alias-review');attachReview(f,p);
+ const raw=p.data.review.experience.raw_report;rmSync(join(f.repo,raw.path));symlinkSync(join(f.repo,'package.json'),join(f.repo,raw.path));raw.sha256=hash(readFileSync(join(f.repo,'package.json')));put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/reviews/);
+ rmSync(join(f.repo,raw.path));attachReview(f,p);put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ const q=proof(f,'different-artifact');writeFileSync(join(f.repo,q.art),Buffer.concat([readFileSync(join(f.repo,q.art)),Buffer.from('synthetic changed bytes')]));attachReview(f,q);
+ q.data.review.experience.raw_report=p.data.review.experience.raw_report;put(f.repo,q.report,q.data);
+ assert.throws(()=>finishProductionAction('fresh',q.attempt.id,{repo:f.repo}),/다른 시안/);
 });
