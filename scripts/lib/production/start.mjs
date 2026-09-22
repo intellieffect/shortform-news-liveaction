@@ -1,3 +1,4 @@
+import {FIRST_SCENE_GATE} from './first-scene.mjs';
 import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
@@ -47,7 +48,7 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   put("00_brief/user-request.txt", request);
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
-    visual_contract: VISUAL_CONTRACT,
+    visual_contract: VISUAL_CONTRACT, scene_gate: FIRST_SCENE_GATE,
     source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },

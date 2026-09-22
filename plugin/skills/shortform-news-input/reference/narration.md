@@ -44,3 +44,7 @@ editorial-concept의 자막은 `narration.captions`와 공통 프로필, 타이�
 ## 7. credit_log.md
 
 TTS 문자 과금·API 호출·생성 크레딧을 행으로. 재조립은 무과금 표기.
+
+## 새 기사 제작의 음성 착수
+
+새 start의 first-core-scene@1은 첫 핵심 장면의 실제 합성 확인을 요구한다. `produce resume`의 `context.work.first_scene`를 확인하고 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)을 먼저 수행한다. `produce begin <id> narration`이 성공한 경우에만 외부 TTS를 호출한다. 반환 오류를 무시하거나 begin과 TTS를 무조건 연속 실행하지 않는다. 미시청 동작을 usable로 바꾸어 통과시키지 않는다.

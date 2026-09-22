@@ -1,3 +1,4 @@
+import {firstSceneReadiness} from './first-scene.mjs';
 import {visualWork} from './visual-work.mjs';
 import {referenceContext} from '../visual-references.mjs';
 import { episodePrompt } from './prompt.mjs';
@@ -50,6 +51,7 @@ export const productionContext = (w, state, actions, completion) => {
     decisions: ["direction.md", "decisions.md", "review-actions.md"].filter((f) => existsSync(p(f))).map((f) => ({ path: w.rel(p(f)), text: readFileSync(p(f), "utf8") })),
     work: {
       visual,
+      first_scene: firstSceneReadiness(w, state),
       materials: episodeMaterials(w), review_inputs: reviewInputs,
       observations: { ...episodeObservations(w, state, actions), issues: completion.issues },
       refresh: Object.entries(actions).filter(([, action]) => action.status !== "current").map(([action, value]) => ({ action, status: value.status, reasons: value.reasons, runnable: value.runnable })),

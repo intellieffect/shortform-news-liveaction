@@ -21,7 +21,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 
 `shots`·비트별 등록 부품·`gate 4-3`·층별 승인·수집판과 생성판의 의무 분리는 script-faithful 경로의 절차다. editorial-concept에는 해당 경로의 정본·컴파일·렌더 검사와 독립 검수를 적용한다.
 
-새 제작의 화면 설계·생성·초기 시안·문구 연결은 [발화를 화면으로 만드는 계약](reference/visual-production.md)을 따른다. `context.work.visual`의 미확인 작업을 확인하고 파일 존재를 설명 성공으로 해석하지 않는다.
+새 제작의 화면 설계·생성·초기 시안·문구 연결은 [발화를 화면으로 만드는 계약](reference/visual-production.md)을 따른다. `context.work.visual`과 `context.work.first_scene`의 미확인 작업을 확인한다. 첫 핵심 합성 시안은 공통 자막과 실제 채택 재료로 제작하며, 수정 필요·미확인 상태에서 전편 음성으로 넘어가지 않는다. 파일 존재를 설명 성공으로 해석하지 않는다.
 
 ## 공통 계약
 

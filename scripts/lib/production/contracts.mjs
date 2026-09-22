@@ -73,8 +73,14 @@ export const recipe = (w, action) => {
   ];
   const renderInputs = [...(w.request ? [join(w.root, "00_brief/request.json")] : []), ...commonCode, ...["package-lock.json", "remotion.config.ts", "scripts/pilot-run.mjs"].map((file) => join(w.repo, file)), join(data, "pilot.json")];
   const generationFiles = (Array.isArray(v.generation_jobs) ? v.generation_jobs : []).flatMap(j => [j.prompt_path, j.output].filter(Boolean).flatMap(path => {try { return [inEpisode(path)]; } catch { return []; }})); // Invalid paths are exposed by visual-plan; do not make resume unusable.
+  const sceneConfig = p('scene-proof.json');
+  let sceneCode = [];
+  if (existsSync(sceneConfig)) {
+    const component = json(sceneConfig).component;
+    try { if (component) sceneCode = sourceInputs(w.repo, [w.rel(w.path(component))]); } catch { /* readiness reports unsafe config */ }
+  }
   const spec = {
-    scene_proof: { deps: [], inputs: [...["facts.md", "concepts.json", "narration.txt", "visual-system.json"].map(p), ...commonCode, ...generationFiles, ...media.map(x => inEpisode(x.source))], required: [p("concepts.json"), p("narration.txt"), p("visual-system.json")], outputs: [] },
+    scene_proof: { deps: [], inputs: [...["facts.md", "concepts.json", "narration.txt", "visual-system.json"].map(p), ...commonCode, sceneConfig, ...sceneCode, ...sourceInputs(w.repo, ['src/editorial/SceneProof.tsx']), join(w.repo, 'scripts/scene-proof.mjs'), ...generationFiles, ...media.map(x => inEpisode(x.source))], required: [p("concepts.json"), p("narration.txt"), p("visual-system.json")], outputs: [] },
     narration: {
       deps: [],
       inputs: [narrationText, ...(n.source?.script ? [inEpisode(n.source.script)] : walk(p("narration_drafts"))),

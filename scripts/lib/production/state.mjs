@@ -1,3 +1,4 @@
+import {firstSceneReadiness} from './first-scene.mjs';
 import {validateSceneProof} from './visual-work.mjs';
 import { episodePrompt } from './prompt.mjs';
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
@@ -12,7 +13,7 @@ import { buildReviewInput } from "./review-input.mjs";
 import { executionIdentity } from "./environment.mjs";
 import { productionCompletion, productionReviewTemplate, resolutionRecord, validateRender, validateReview } from "./review.mjs";
 
-const empty = (w) => ({ schema_version: "1.0", pilot: w.id, engine: "editorial-concept@1", receipts: {}, attempts: [], impacts: {}, ...(w.request?.visual_contract ? {visual_contract: w.request.visual_contract, intake_sha256: hash(readFileSync(join(w.root, "00_brief/request.json")))} : {}) });
+const empty = (w) => ({ schema_version: "1.0", pilot: w.id, engine: "editorial-concept@1", receipts: {}, attempts: [], impacts: {}, ...(w.request?.visual_contract ? {visual_contract: w.request.visual_contract, scene_gate: w.request.scene_gate, intake_sha256: hash(readFileSync(join(w.root, "00_brief/request.json")))} : {}) });
 const read = (w) => {
   if (!existsSync(w.runFile)) return empty(w);
   const state = json(w.runFile);
@@ -65,6 +66,9 @@ const inspect = (w, state) => {
       runnable: !pending && spec.deps.every((dep) => result[dep].status === "current") && !spec.required.some((file) => current.files[file] === null),
     };
   }
+  const firstScene = firstSceneReadiness(w, state);
+  result.narration.admission = firstScene;
+  if (!firstScene.ready) result.narration.runnable = false;
   return result;
 };
 
@@ -110,6 +114,7 @@ export const beginProductionAction = (id, action, { repo, outputs, command = nul
     try { commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: w.repo, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { /* 테스트·미커밋 저장소 */ }
     const attempt = {
       id: token, action, status: "running", started_at: now(),
+      ...(action === 'narration' ? {first_scene: statuses.narration.admission} : {}),
       inputs: fingerprint(w, action, state), outputs: outputPaths(w, action, outputs),
       source_commit: commit, execution: executionIdentity(w.repo), command,
       log: "out/pilots/" + id + "/production/" + token + ".log",
@@ -124,6 +129,10 @@ export const finishProductionAction = (id, token, { repo } = {}) => {
   return transaction(w, (state) => {
     const attempt = state.attempts.find((a) => a.id === token && a.status === "running");
     if (!attempt) throw new Error("열린 작업 토큰이 없다: " + token);
+    if (attempt.action === 'narration') {
+      const gate = firstSceneReadiness(w, state);
+      if (!gate.ready || (gate.required && JSON.stringify(gate.proof_ids) !== JSON.stringify(attempt.first_scene?.proof_ids))) throw new Error('음성 작업 중 첫 핵심 장면 확인이 바뀌었다');
+    }
     const current = fingerprint(w, attempt.action, state);
     if (current.sha256 !== attempt.inputs.sha256) throw new Error("작업 도중 입력·상위 결과·의미 영향이 바뀌었다. 기존 결과를 최신으로 기록하지 않는다");
     const expectedOutputs = recipe(w, attempt.action).outputs;
@@ -149,7 +158,7 @@ export const finishProductionAction = (id, token, { repo } = {}) => {
     for (const dep of recipe(w, attempt.action).deps) if (after[dep].status !== "current") throw new Error("검증 도중 상위 결과가 바뀌었다: " + dep);
     const finished = now();
     state.receipts[attempt.action] = {
-      id: attempt.id, action: attempt.action, inputs: attempt.inputs, outputs, validation,
+      id: attempt.id, action: attempt.action, first_scene: attempt.first_scene, inputs: attempt.inputs, outputs, validation,
       source_commit: attempt.source_commit, execution: attempt.execution, finished_at: finished, provenance: "executed",
     };
     Object.assign(attempt, { status: "succeeded", outputs_sha256: outputs, validation, finished_at: finished, elapsed_ms: Date.parse(finished) - Date.parse(attempt.started_at) });
@@ -181,12 +190,14 @@ export const adoptNarration = (id, { repo } = {}) => {
   const w = workspace(id, repo);
   return transaction(w, (state) => {
     if (state.receipts.narration || state.attempts.some((a) => a.action === "narration")) throw new Error("이미 추적 중인 음성은 adopt로 갱신할 수 없다. begin/finish를 사용한다");
+    const firstScene = firstSceneReadiness(w, state);
+    if (!firstScene.ready) throw new Error('첫 핵심 장면 미완료: ' + JSON.stringify(firstScene));
     const validation = validateOutput(w, "narration");
     const outputs = fileSnapshot(w, recipe(w, "narration").outputs);
     if (Object.values(outputs).some((v) => !v)) throw new Error("수입할 음성·정렬 파일이 없다");
     state.receipts.narration = {
       id: randomUUID(), action: "narration", inputs: fingerprint(w, "narration", state), outputs,
-      finished_at: now(), source_commit: null, validation, provenance: "adopted",
+      finished_at: now(), source_commit: null, validation, provenance: "adopted", first_scene: firstScene,
       limitation: "현재 원고·어절 기록·파일을 대조한 기존 결과 수입. 최초 생성 입력 전체와 청취를 소급 증명하지 않는다",
     };
     state.attempts.push({ ...state.receipts.narration, status: "adopted", outputs: Object.keys(outputs), outputs_sha256: outputs, started_at: state.receipts.narration.finished_at, elapsed_ms: null, log: null });

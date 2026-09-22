@@ -36,17 +36,22 @@ export function validateSceneProof(w, attempt, outputs) {
   return {kind: 'scene-proof', report_path: reports[0], report, media: {width: stream.width, height: stream.height, kind: still ? 'image' : 'video'}, limitation: '관찰 기록이며 독립 최종 검수·시청 사실의 자동 증명은 아니다'};
 }
 
+export function sceneProofs(w, state) {
+  const currentInputs = recipe(w, 'scene_proof').inputs;
+  const proofs = (state.attempts ?? []).filter(a => a.status === 'succeeded' && a.validation?.kind === 'scene-proof').map(a => ({
+    receipt_id: a.id, ...a.validation.report, report_path: a.validation.report_path,
+    status: JSON.stringify(Object.keys(a.inputs.files).sort()) !== JSON.stringify(currentInputs) || changed(w, a.inputs.files) || changed(w, a.outputs_sha256) || a.inputs.impact !== (state.impacts?.scene_proof?.id ?? null) ? 'stale' : 'current',
+  }));
+  return proofs;
+}
+
 export function visualWork(w, state = {attempts: []}) {
   const concepts = read(w, 'concepts.json'), visualSystem = read(w, 'visual-system.json');
   const required = state.visual_contract === VISUAL_CONTRACT || w.request?.visual_contract === VISUAL_CONTRACT;
   const check = validateVisualPlan({concepts, visualSystem, required});
   if (!check.active) return {status: 'legacy', contract: null, note: '기존 편에 새 설계·검수 완료를 소급하지 않는다'};
   const tasks = check.errors.map(e => ({kind: 'plan', ...e}));
-  const currentInputs = recipe(w, 'scene_proof').inputs;
-  const proofs = (state.attempts ?? []).filter(a => a.status === 'succeeded' && a.validation?.kind === 'scene-proof').map(a => ({
-    receipt_id: a.id, ...a.validation.report, report_path: a.validation.report_path,
-    status: JSON.stringify(Object.keys(a.inputs.files).sort()) !== JSON.stringify(currentInputs) || changed(w, a.inputs.files) || changed(w, a.outputs_sha256) || a.inputs.impact !== (state.impacts?.scene_proof?.id ?? null) ? 'stale' : 'current',
-  }));
+  const proofs = sceneProofs(w, state);
   for (const c of concepts.concepts ?? []) {
     if (c.visual?.purpose !== 'explain') continue;
     for (const phase of ['still', ...((c.visual.moments ?? []).some(m => m.motion_required) ? ['motion'] : [])]) {

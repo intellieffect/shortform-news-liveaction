@@ -20,15 +20,25 @@ Higgsfield는 배경·외형뿐 아니라 빛의 진행·산란, 유체·가스�
 
 핵심 설명 구간부터 실제 배경과 프로젝트 자막 영역을 포함한 합성 이미지로 구도·미술·정보 위계를 확인한다. 움직임이 설명의 핵심이면 이미지 방향을 확인한 후 허용된 범위에서 짧은 동작 시안을 본다. 단일 이미지에 시작과 결과를 모두 넣을 의무는 없다. 사용자에게 이미지 확인 후 영상화를 요청받았으면 그 순서를 지킨다. 그 외에는 내부 판단으로 진행하며 새 승인 관문을 만들지 않는다.
 
-`scene_proof`는 narration/timeline/sync 없이 시작할 수 있다. 먼저 concepts.json, narration.txt, visual-system.json과 사용할 자산을 준비한다. 도구 실행 전에 입력 버전을 기록하고, 새로운 시안과 관찰 JSON을 만든 뒤 finish한다.
+새 start의 `first-core-scene@1`은 **첫 핵심 장면 한 개**의 확인을 음성 착수 조건으로 사용한다. 모든 장면을 먼저 완성하는 절차가 아니다. 제작자가 `02_production/scene-proof.json`의 `concept_id`를 선택한다. 설명 개념이 있으면 그 중 기사 이해에 핵심인 것을 고른다. 선택 방법·공통 합성 실행은 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)을 따른다.
+
+선택한 설명의 moments에는 `subject_ids`로 실제 비문자 elements를 연결하고, `subject`에는 구체적인 대상, `action`에는 화면에서 일어날 작용이나 비교 관계, `result`에는 눈에 보일 결과를 쓴다. 질문을 action에 복사하거나 ‘길쭉한’ 같은 형용사를 subject로 남기지 않는다. 이 기술 연결은 설명 성공의 자동 판정이 아니다.
+
+생성 호출 전에 사용하는 개념의 realization.job_ids를 연결한다. 결과를 보면 채택·기각·실패 판단을 기록하고, 채택한 원본/파생본을 assets와 realization.asset_ids에 연결한다. 사용처 없는 진행 중 생성 작업이나 코드 방식으로 기록한 생성 합성은 초기 장면 확인을 끝낸 것으로 보지 않는다.
+
+`scene_proof`는 narration/timeline/sync 없이 제작한다. `npm run scene:proof`는 실제 채택 자산과 재사용 가능한 장면 컴포넌트, **공통 EditorialCaptionTrack**으로 짧은 합성 시안을 만든다. 임시 자막 시점은 시안용이며 음성 정렬 파일을 꾸며 만들지 않는다. 별도 PIL 자막이나 대체 입자 그림을 그려 실제 생성 영상의 합성을 검증했다고 기록하지 않는다.
 
 ```bash
-npm run produce -- begin <id> scene_proof --output out/pilots/<id>/qa/scene-a.png --output out/pilots/<id>/qa/scene-a.json
-# 이미 승인된 도구로 이미지/영상 시안 제작, 실제 관찰 JSON 작성
+npm run scene:proof -- <id> --phase still --output out/pilots/<id>/qa/core-still.png --frame 60
+# 실제 이미지 확인 → 반환된 관찰 JSON을 사실대로 작성 → 반환 token으로 finish
 npm run produce -- finish <id> <token>
-npm run produce -- review-input <id> --source scene --phase experience
-npm run produce -- review-input <id> --source scene --phase intent
+npm run scene:proof -- <id> --phase motion --output out/pilots/<id>/qa/core-motion.mp4
+# 실제 동작 확인 → 관찰 JSON 작성 → finish. 확인 불가면 unverified를 유지한다.
+npm run produce -- finish <id> <token>
+npm run produce -- resume <id> --json
 ```
+
+시안 렌더는 자동으로 usable 판정을 쓰지 않는다. 선택 장면의 최신 composite still이 usable이어야 하고, motion_required면 composite motion의 실제 전체 연속 확인도 필요하다. revise/unverified/stale 상태에서는 narration begin과 adopt가 거절된다. 관측 수단이 없으면 미확인 결과를 보여주고 한계를 알린다. 스키마를 만족하려고 시청 기록을 꾸미거나 gate 필드를 제거하지 않는다. 외부 TTS는 **begin 성공 후에만** 호출한다 (`begin && TTS`; 무조건 다음 줄 실행 금지). 나중에 다른 컷의 미술을 수정했다고 이미 생성한 음성이 자동 무효화되지는 않는다.
 
 관찰 JSON 형식:
 
@@ -63,4 +73,4 @@ experience에는 제작 의도와 해결 문구를 먼저 주지 않는다. inte
 
 동작 설명의 pass는 해당 개념의 실제 연속 확인 범위를 요구한다. 정지 이미지 관찰과 코드 추론은 모션 검수 완료가 아니다. 핵심 설명 실패는 blocking, 확인 수단 부재는 incomplete로 다룬다. 라벨 추가 전에 대상·구도·행동·재료를 바꿔 해결할 수 있는지 판단한다. 전체 영상의 이야기·호흡·음향 검수는 계속 별도로 수행한다.
 
-최종 visual 보고서의 text_review는 verdict, observation, evidence로 실제 추가 문구와 고정 자막의 읽기 부담을 기록한다. JSX·중복 경고는 개수만으로 차단하지 않고 이 실물 검수에서 판단한다. 초기 scene_proof 미작성은 재개 작업과 새 세션 시험에서 절차 누락으로 보되, 실제 최종 독립 검수와 혼동하지 않는다.
+최종 visual 보고서의 text_review는 verdict, observation, evidence로 실제 추가 문구와 고정 자막의 읽기 부담을 기록한다. JSX·중복 경고는 개수만으로 차단하지 않고 이 실물 검수에서 판단한다. 초기 첫 장면 착수 조건과 최종 독립 검수는 별개다. 기존 편에는 새 착수 조건을 소급하지 않는다.

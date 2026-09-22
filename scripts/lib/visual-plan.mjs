@@ -29,6 +29,8 @@ export function validateVisualPlan({concepts, visualSystem, required = false}) {
     } else {
       for (const a of r.asset_ids) if (!assetIds.has(a)) add('visual-asset-link', where, `없는 자산: ${a}`);
       for (const j of r.job_ids) if (!jobIds.has(j)) add('visual-job-link', where, `없는 생성 작업: ${j}`);
+      if (r.method === 'code' && (r.asset_ids.length || r.job_ids.length)) add('visual-method', where, '실제 자료·생성을 합성하면 source/generated/hybrid로 역할을 구분한다');
+      for (const a of assets.filter(a => r.asset_ids.includes(a.id) && a.generation_job)) if (!r.job_ids.includes(a.generation_job)) add('visual-job-link', where, `${a.id}의 생성 작업을 job_ids에도 연결한다`);
       if (r.method === 'generated' && !r.job_ids.length) add('visual-generation-plan', where, '생성 표현에는 실제 생성 작업을 연결한다');
       if (r.job_ids.length && !text(r.generated_role)) add('visual-generated-role', where, '생성할 외형 또는 동작의 역할이 필요하다');
       if (['code', 'hybrid'].includes(r.method) && !text(r.code_role)) add('visual-code-role', where, '코드가 담당할 정보·동작·합성 역할이 필요하다');
