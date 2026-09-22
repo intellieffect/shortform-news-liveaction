@@ -7,7 +7,33 @@ export const episodeForPath = (path) => {
   return m?.[1] ?? null;
 };
 export const safeRelative = (p) => typeof p === 'string' && p && !p.startsWith('/') && !p.includes('\\') && !p.split('/').some(v => v === '..' || v === '.' || v === '') && !p.includes('\0');
-export const forbiddenPath = p => /^(?:\.env(?:\.|$)|node_modules(?:\/|$)|internal\/|public\/references\/|out\/(?!pilots\/)|experiments\/|src\/experiments\/|docs\/research\/|reference-library\/|\.claude\/worktrees\/|\.claude\/settings.local.json$|\.codex\/config.toml$|\.mcp.json$|pilots\/(?:local.json|active.json|index.ts|index.json)$|docs\/PILOTS.md$|CUSTOMER-MANIFEST.json$|distribution\/customer\/templates\/)/.test(p);
+// `.env.example` 은 값이 아니라 키 이름 목록이라 함께 보낸다 (.gitignore 도 예외로 둔다).
+export const forbiddenPath = p => /^(?:\.env(?:$|\.(?!example$))|node_modules(?:\/|$)|internal\/|public\/references\/|out\/(?!pilots\/)|experiments\/|src\/experiments\/|docs\/research\/|reference-library\/|\.claude\/worktrees\/|\.claude\/settings.local.json$|\.codex\/config.toml$|\.mcp.json$|pilots\/(?:local.json|active.json|index.ts|index.json)$|docs\/PILOTS.md$|CUSTOMER-MANIFEST.json$|distribution\/customer\/templates\/)/.test(p);
+// 개발자 한 사람의 컴퓨터에서만 성립하는 것이 납품 트리에 실리지 않게 한다.
+// 값이 아니라 «접근 방법»을 막는 검사다 — 비밀값 패턴 검사는 따로 있다.
+const LOCAL_ONLY_RULES = [
+  { id: 'contact', re: /@intellieffect\.com/, why: '내부 연락처가 외부 요청에 실린다 — SHORTFORM_CONTACT 를 쓴다' },
+  { id: 'browser', re: /\baside repl\b/i, why: '개발자 로컬 브라우저 도구를 지시한다 — 호스트에 연결된 도구를 확인하게 쓴다' },
+  { id: 'path', re: /~\/(?:Projects|dev)\//, why: '개발자 컴퓨터의 절대경로다 — 저장소 상대경로로 쓴다' },
+  // [-] 는 이 규칙 정의 자체가 자기 패턴에 걸리지 않게 하려고 쓴다. 찾는 것은 실제 호출이다.
+  { id: 'keychain', re: /security find-generic[-]password/, why: 'macOS 키체인 전용 비밀키 읽기다 — 환경변수·.env 로 읽고 키체인은 darwin 폴백으로만 쓴다' },
+];
+// 옛 경로를 «지금 쓰라»가 아니라 «전에는 그랬다»로 인용하는 줄은 지시가 아니다.
+// 경로에만 적용한다 — 키체인 호출과 내부 연락처는 어떤 설명을 붙여도 실리면 안 된다.
+const OBSOLETE_MARKER = /전에는|폐기|옛 /;
+export const localOnlyErrors = (p, text) => {
+  const out = new Set();
+  const darwinGuarded = /sys\.platform\s*==\s*["']darwin["']|process\.platform\s*===\s*["']darwin["']/.test(text);
+  for (const line of text.split('\n')) {
+    for (const { id, re, why } of LOCAL_ONLY_RULES) {
+      if (!re.test(line)) continue;
+      if (id === 'keychain' && darwinGuarded) continue;
+      if (id === 'path' && OBSOLETE_MARKER.test(line)) continue;
+      out.add('로컬 전용 의존: ' + p + ' — ' + why);
+    }
+  }
+  return [...out];
+};
 export const stagedTree = (repo, ref = null) => {
   const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
   const entries = (ref ? git('ls-tree', '-r', '-z', ref) : git('ls-files', '--stage', '-z')).split('\0').filter(Boolean).map(line => {
@@ -38,9 +64,10 @@ export const sharingErrors = (entries, read) => {
     if (forbiddenPath(p)) add('로컬 전용 파일 혼입: ' + p);
     if (id && !allowed.get(id)?.has(p)) add('미선정 편/파일 혼입: ' + p);
     if (id && /(?:hf-account|hf-transactions|doctor\.json|execution-conditions|\.jsonl$)/.test(p)) add('내부 계정/세션 기록 혼입: ' + p);
-    if (/\.(?:json|md|txt|ya?ml|env)$/.test(p)) {
+    if (/\.(?:json|md|txt|ya?ml|env|py|mjs|cjs|jsx?|tsx?|sh)$/.test(p)) {
       let content; try { content = read(p); } catch { add('staged 파일 읽기 실패: ' + p); continue; }
       if (/(?:sk-(?:proj-|ant-)[A-Za-z0-9_-]{32,}|gh[pousr]_[A-Za-z0-9]{30,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----)/.test(content)) add('비밀값 패턴 확인 필요: ' + p);
+      for (const e of localOnlyErrors(p, content)) add(e);
     }
     if (entry.mode === '160000') add('외부 저장소 의존 금지: ' + p);
     if (id && entry.mode === '120000') add('공유 편 symlink 금지: ' + p);

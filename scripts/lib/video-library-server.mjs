@@ -1,51 +1,41 @@
 // 로컬 영상 보관함: 목록에 등록된 파일만 제공하고 재생 구간 요청·다운로드를 지원한다.
 import { createServer } from "node:http";
 import { createReadStream, statSync, readFileSync } from "node:fs";
-import { spawn, execFile } from "node:child_process";
+import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdtemp, copyFile, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
 import { resolve, join, extname, dirname, basename } from "node:path";
 import { buildVideoLibrary } from "./video-library.mjs";
+import { writeZip } from "./zip-stream.mjs";
 
 const run = promisify(execFile);
-// 시스템 zip의 한글 파일명 호환 차이를 피한다. 원본은 두고 ZIP 안의 이름만 정한다.
-async function zipPaths(files, id) {
-  const temp = await mkdtemp(join(tmpdir(), "video-library-zip-"));
-  const cleanup = () =>
-    rm(temp, { recursive: true, force: true }).catch(() => {});
-  try {
-    let thumbnail = 0;
-    const paths = [];
-    const used = new Set(
-      files
-        .map((file) => basename(file))
-        .filter((name) => /^[\x20-\x7e]+$/.test(name)),
-    );
-    for (const file of files) {
-      const isVideo = extname(file).toLowerCase() === ".mp4";
-      if (!isVideo) thumbnail++;
-      if (/^[\x20-\x7e]+$/.test(basename(file))) {
-        paths.push(file);
-        continue;
-      }
-      const stem = isVideo
-        ? id
-        : `${id}_thumbnail_${String(thumbnail).padStart(2, "0")}`;
-      let name = stem + extname(file).toLowerCase(),
-        suffix = 1;
-      while (used.has(name))
-        name = `${stem}_${suffix++}${extname(file).toLowerCase()}`;
-      used.add(name);
-      const target = join(temp, name);
-      await copyFile(file, target);
-      paths.push(target);
+// 압축 프로그램마다 한글 파일명 해석이 달라서, ZIP 안에서만 쓸 이름을 따로 정한다.
+// 원본 파일은 건드리지 않고 이름만 붙여 보낸다.
+function zipEntries(files, id) {
+  let thumbnail = 0;
+  const entries = [];
+  const used = new Set(
+    files
+      .map((file) => basename(file))
+      .filter((name) => /^[\x20-\x7e]+$/.test(name)),
+  );
+  for (const file of files) {
+    const isVideo = extname(file).toLowerCase() === ".mp4";
+    if (!isVideo) thumbnail++;
+    if (/^[\x20-\x7e]+$/.test(basename(file))) {
+      entries.push({ path: file, name: basename(file) });
+      continue;
     }
-    return { paths, cleanup };
-  } catch (error) {
-    await cleanup();
-    throw error;
+    const stem = isVideo
+      ? id
+      : `${id}_thumbnail_${String(thumbnail).padStart(2, "0")}`;
+    let name = stem + extname(file).toLowerCase(),
+      suffix = 1;
+    while (used.has(name))
+      name = `${stem}_${suffix++}${extname(file).toLowerCase()}`;
+    used.add(name);
+    entries.push({ path: file, name });
   }
+  return entries;
 }
 
 async function revealFolder(folder) {
@@ -152,39 +142,22 @@ export function createVideoLibraryServer({
           ...(kind === "bundle" ? [file] : []),
           ...video.thumbnails.map((t) => filePath(t.src)),
         ];
-        // MP4·이미지는 이미 압축되어 있으므로 재압축 없이 스트리밍한다. 셸을 거치지 않는다.
-        const prepared = await zipPaths(files, video.id);
-        if (res.destroyed) {
-          await prepared.cleanup();
-          return;
+        // MP4·이미지는 이미 압축되어 있으므로 저장 방식으로 그대로 흘려보낸다.
+        // 외부 zip 명령을 쓰지 않는다 — Windows에는 없다.
+        const prepared = zipEntries(files, video.id);
+        for (const entry of prepared) statSync(entry.path); // 헤더를 쓰기 전에 전부 있는지 본다
+        if (res.destroyed) return;
+        res.writeHead(200, {
+          "Content-Type": "application/zip",
+          "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(video.filename.replace(/\.mp4$/i, "") + (kind === "bundle" ? "_package.zip" : "_thumbnails.zip"))}`,
+          "Cache-Control": "no-store",
+        });
+        try {
+          await writeZip(res, prepared);
+          res.end();
+        } catch {
+          if (!res.writableEnded) res.destroy();
         }
-        const zip = spawn("zip", ["-j", "-0", "-q", "-", ...prepared.paths], {
-          stdio: ["ignore", "pipe", "ignore"],
-        });
-        zip.once("error", () => {
-          if (!res.headersSent)
-            sendJSON(res, 500, {
-              error:
-                "묶음 다운로드를 준비하지 못했습니다. 개별 파일을 받아 주세요.",
-            });
-          else res.destroy();
-        });
-        zip.once("spawn", () => {
-          res.writeHead(200, {
-            "Content-Type": "application/zip",
-            "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(video.filename.replace(/\.mp4$/i, "") + (kind === "bundle" ? "_package.zip" : "_thumbnails.zip"))}`,
-            "Cache-Control": "no-store",
-          });
-          zip.stdout.pipe(res, { end: false });
-        });
-        zip.once("close", (code) => {
-          void prepared.cleanup();
-          if (code === 0) res.end();
-          else if (!res.writableEnded) res.destroy();
-        });
-        res.once("close", () => {
-          if (zip.exitCode === null) zip.kill();
-        });
       } catch {
         sendJSON(res, 500, {
           error: "파일 작업을 완료하지 못했습니다. 파일 위치를 확인해 주세요.",

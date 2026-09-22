@@ -4,7 +4,7 @@
 
 ## 설치와 제작
 
-`git lfs pull`로 미디어를 받은 뒤 `npm ci`를 실행한다. prepare가 실행 인덱스를 만든다. `npm run setup:hooks`는 이 저장소의 공유 검사와 LFS pre-push 연결을 설치한다. 생성 서비스 인증과 실제 사용 가능 여부는 `node scripts/produce.mjs doctor --installed` 및 현재 세션 도구에서 별도로 확인한다.
+설치 절차 전체는 [README의 «처음 준비»](../README.md#처음-준비)가 정본이다 — 필요한 프로그램, 플러그인 설치, `.env` 키, Higgsfield 연결을 거기서 따른다. 요약하면 `git lfs pull`로 미디어를 받은 뒤 `npm ci`를 실행한다. prepare가 실행 인덱스를 만든다. `npm run setup:hooks`는 이 저장소의 공유 검사와 LFS pre-push 연결을 설치한다. 생성 서비스 인증과 실제 사용 가능 여부는 `node scripts/produce.mjs doctor --installed` 및 현재 세션 도구에서 별도로 확인한다.
 
 기사 URL과 “이 기사로 숏폼 만들어봐”를 전달하면 상위 지침이 실제 V2를 먼저 읽게 한다. start가 요청 원문과 V2 원문/URL 적용본을 구분해 저장한다. resume은 저장한 전문과 무결성 상태를 제공한다. 예전 편에 기록이 없으면 새 V2를 소급해서 넣지 않는다.
 
