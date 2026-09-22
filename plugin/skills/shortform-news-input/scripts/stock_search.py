@@ -1,9 +1,34 @@
 #!/usr/bin/env python3
-"""Pexels / Pixabay / Unsplash 검색 — 비트별 10쿼리, 사진+영상. 키는 키체인. 결과 → stock_results.json"""
-import json, urllib.request, urllib.parse, subprocess, os, time, datetime
-def key(s): return subprocess.check_output(["security","find-generic-password","-a",os.environ["USER"],"-s",s,"-w"]).decode().strip()
-PX, PB, US = key("pexels-api-key"), key("pixabay-api-key"), key("unsplash-access-key")
-UA="shortform-workflow/1.0 (mj@intellieffect.com)"
+"""Pexels / Pixabay / Unsplash 검색 — 비트별 10쿼리, 사진+영상. 키는 환경변수 또는 저장소 `.env`. 결과 → stock_results.json"""
+import json, urllib.request, urllib.parse, subprocess, os, sys, time, datetime
+def _env(name, keychain=None, default=None):
+    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고."""
+    v = os.environ.get(name)
+    if v: return v.strip()
+    seen = set()
+    for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        d = os.path.abspath(start)
+        while d not in seen:
+            seen.add(d)
+            p = os.path.join(d, ".env")
+            if os.path.isfile(p):
+                for line in open(p, encoding="utf-8"):
+                    line = line.strip()
+                    if line and not line.startswith("#") and line.split("=", 1)[0].strip() == name:
+                        return line.split("=", 1)[1].strip().strip("'\"")
+            nd = os.path.dirname(d)
+            if nd == d: break
+            d = nd
+    if keychain and sys.platform == "darwin":
+        try: return subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"]).decode().strip()
+        except Exception: pass
+    if default is not None: return default
+    sys.exit(f"{name} 가 없다 — 저장소 루트 `.env` 에 {name}=... 를 넣는다 (`.env.example` 참고).")
+_contact = _env("SHORTFORM_CONTACT", default="")
+UA = f"shortform-workflow/1.0 ({_contact})" if _contact else "shortform-workflow/1.0"
+PX = _env("PEXELS_API_KEY", "pexels-api-key")
+PB = _env("PIXABAY_API_KEY", "pixabay-api-key")
+US = _env("UNSPLASH_ACCESS_KEY", "unsplash-access-key")
 def get(url, headers={}):
     r=urllib.request.Request(url, headers={"User-Agent":UA, **headers}); return json.load(urllib.request.urlopen(r, timeout=30))
 Q=[("b01_b21","satellite trails night sky long exposure"),("b02","starlink satellite train night sky"),("b02alt","earth orbit satellites"),

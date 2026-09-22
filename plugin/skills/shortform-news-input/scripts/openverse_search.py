@@ -1,6 +1,31 @@
 #!/usr/bin/env python3
 """Openverse 무키 검색 — 비트별 쿼리, 상업적 사용+수정 허용 라이선스만. 결과 → openverse_results.json + .md"""
-import json, urllib.request, urllib.parse, time, datetime
+import json, urllib.request, urllib.parse, subprocess, os, sys, time, datetime
+def _env(name, keychain=None, default=None):
+    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고."""
+    v = os.environ.get(name)
+    if v: return v.strip()
+    seen = set()
+    for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        d = os.path.abspath(start)
+        while d not in seen:
+            seen.add(d)
+            p = os.path.join(d, ".env")
+            if os.path.isfile(p):
+                for line in open(p, encoding="utf-8"):
+                    line = line.strip()
+                    if line and not line.startswith("#") and line.split("=", 1)[0].strip() == name:
+                        return line.split("=", 1)[1].strip().strip("'\"")
+            nd = os.path.dirname(d)
+            if nd == d: break
+            d = nd
+    if keychain and sys.platform == "darwin":
+        try: return subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"]).decode().strip()
+        except Exception: pass
+    if default is not None: return default
+    sys.exit(f"{name} 가 없다 — 저장소 루트 `.env` 에 {name}=... 를 넣는다 (`.env.example` 참고).")
+_contact = _env("SHORTFORM_CONTACT", default="")
+UA = f"shortform-workflow/1.0 ({_contact})" if _contact else "shortform-workflow/1.0"
 Q = [
  ("b01_b21", "satellite trails night sky long exposure", "위성 궤적 (ESO eso2607a 대체 후보)"),
  ("b02",     "starlink satellite train night sky",        "스타링크 열차 (Starlink CTIO 대체 후보)"),
@@ -17,7 +42,7 @@ out=[]
 for key,q,why in Q:
     url="https://api.openverse.org/v1/images/?"+urllib.parse.urlencode({"q":q,"license_type":"commercial,modification","page_size":10,"mature":"false"})
     try:
-        d=json.load(urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"shortform-workflow/1.0 (mj@intellieffect.com)"}),timeout=30))
+        d=json.load(urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":UA}),timeout=30))
     except Exception as e:
         out.append({"beat":key,"query":q,"why":why,"error":str(e)}); continue
     rs=[]

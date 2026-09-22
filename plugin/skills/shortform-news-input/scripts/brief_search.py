@@ -1,8 +1,34 @@
 #!/usr/bin/env python3
 """asset_brief.json 5비트 — Openverse + Pexels(사진·영상) + Pixabay(사진·영상) + Unsplash. 결과 brief_results.json"""
-import json, urllib.request, urllib.parse, subprocess, os, time, datetime
-def key(s): return subprocess.check_output(["security","find-generic-password","-a",os.environ["USER"],"-s",s,"-w"]).decode().strip()
-PX,PB,US=key("pexels-api-key"),key("pixabay-api-key"),key("unsplash-access-key"); UA="shortform-workflow/1.0 (mj@intellieffect.com)"
+import json, urllib.request, urllib.parse, subprocess, os, sys, time, datetime
+def _env(name, keychain=None, default=None):
+    """키·설정 읽기 — 환경변수 → 상위 경로의 .env → (macOS일 때만) 키체인. 저장소 `.env.example` 참고."""
+    v = os.environ.get(name)
+    if v: return v.strip()
+    seen = set()
+    for start in (os.getcwd(), os.path.dirname(os.path.abspath(__file__))):
+        d = os.path.abspath(start)
+        while d not in seen:
+            seen.add(d)
+            p = os.path.join(d, ".env")
+            if os.path.isfile(p):
+                for line in open(p, encoding="utf-8"):
+                    line = line.strip()
+                    if line and not line.startswith("#") and line.split("=", 1)[0].strip() == name:
+                        return line.split("=", 1)[1].strip().strip("'\"")
+            nd = os.path.dirname(d)
+            if nd == d: break
+            d = nd
+    if keychain and sys.platform == "darwin":
+        try: return subprocess.check_output(["security", "find-generic-password", "-a", os.environ.get("USER", ""), "-s", keychain, "-w"]).decode().strip()
+        except Exception: pass
+    if default is not None: return default
+    sys.exit(f"{name} 가 없다 — 저장소 루트 `.env` 에 {name}=... 를 넣는다 (`.env.example` 참고).")
+_contact = _env("SHORTFORM_CONTACT", default="")
+UA = f"shortform-workflow/1.0 ({_contact})" if _contact else "shortform-workflow/1.0"
+PX = _env("PEXELS_API_KEY", "pexels-api-key")
+PB = _env("PIXABAY_API_KEY", "pixabay-api-key")
+US = _env("UNSPLASH_ACCESS_KEY", "unsplash-access-key")
 def get(url,h={}): return json.load(urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":UA,**h}),timeout=30))
 Q=[("b10","full moon close up night sky"),("b10","very bright light in night sky glare"),
    ("b11","person silhouette looking up night sky city"),("b11","city night sky timelapse stars"),

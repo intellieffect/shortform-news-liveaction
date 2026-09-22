@@ -13,7 +13,7 @@
 
 v2 규칙(`docs/asset-sourcing-workflow.md` 개정 8항): 검색어는 **문장의 명사**에서 · 기각 사유는 **A·B·라이선스** 중 하나(해상도·길이는 규격 게이트) · 실물 확인은 **9:16 컨택트시트** · SOURCES/assets.json에 **A/B 판정 병기**(B ∈ static|video, 4초+ 비트 static은 B3 표시) · Flickr는 페이지에서 원본 추출 가능하나 원본 크기·현재 라이선스를 oEmbed로 실측.
 
-키체인: `pexels-api-key` · `pixabay-api-key` · `unsplash-access-key` · `typecast-api-key`. 스크립트: `scripts/openverse_search.py`, `scripts/stock_search.py`, `scripts/brief_search.py` (쿼리 리스트만 바꿔 파일럿 `external_assets/_search/`에서 실행).
+키: `PEXELS_API_KEY` · `PIXABAY_API_KEY` · `UNSPLASH_ACCESS_KEY` · `TYPECAST_API_KEY` (환경변수 또는 저장소 `.env`, `.env.example` 참고). 스크립트: `scripts/openverse_search.py`, `scripts/stock_search.py`, `scripts/brief_search.py` (쿼리 리스트만 바꿔 파일럿 `external_assets/_search/`에서 실행).
 
 ## 오버레이용은 따로 뽑는다
 
