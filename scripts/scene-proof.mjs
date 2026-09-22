@@ -346,6 +346,7 @@ export const sceneProofReport = (plan, { artifact }) => ({
     asset_ids: plan.asset_ids,
     profile_sha256: plan.profile_sha256,
   },
+  review: null,
   limitation: "자동 렌더 기록이다. 시청 사실·품질·최종 검수를 대신하지 않는다. 자막 시각은 임시값이며 음성 확정 후 다시 확인한다.",
 });
 
@@ -420,7 +421,8 @@ const main = async (argv) => {
   console.log(`시안 ${phase} → ${output}`);
   console.log(`관찰 JSON  → ${reportRel}`);
   console.log(`열린 토큰  → ${attempt.id}`);
-  console.log("실물을 직접 보고 verdict/observation/tool을 고친 뒤(동작이면 continuous_viewing·viewed_seconds 실제 확인 범위만) " +
+  console.log(`초기 검수 → node scripts/produce.mjs review-input ${id} --source scene --phase experience (초견 응답 후 intent). docs/SCENE-PROOF.md 참조`);
+  console.log("실물을 직접 보고 review와 verdict/observation/tool을 고친 뒤(동작이면 continuous_viewing·viewed_seconds 실제 확인 범위만) " +
     `npm run produce -- finish ${id} ${attempt.id}`);
 };
 

@@ -1,3 +1,4 @@
+import {sceneReviewErrors, sceneReviewEvidence} from './scene-review.mjs';
 import {sceneProofPhases} from '../scene-proof-contract.mjs';
 import {recipe} from './contracts.mjs';
 import {auditScreenText} from '../screen-text-audit.mjs';
@@ -15,7 +16,7 @@ const changed = (w, files) => Object.entries(files).some(([p, h]) => {
   return (existsSync(f) ? hash(readFileSync(f)) : null) !== h;
 });
 
-export function validateSceneProof(w, attempt, outputs) {
+export function validateSceneProof(w, attempt, outputs, state) {
   const reports = Object.keys(outputs).filter(p => p.endsWith('.json'));
   requireValue(reports.length === 1, 'scene_proof에는 관찰 JSON 한 개와 실제 시안 파일이 필요하다');
   const report = JSON.parse(readFileSync(w.path(reports[0]), 'utf8'));
@@ -33,6 +34,13 @@ export function validateSceneProof(w, attempt, outputs) {
     const duration = Number(stream.duration ?? probe.format?.duration);
     requireValue(!still && duration > 0 && Number(stream.nb_read_frames ?? stream.nb_frames) > 1, '정지 이미지 또는 한 프레임 영상을 동작 시안으로 기록할 수 없다');
     requireValue(report.verdict === 'unverified' || (report.continuous_viewing === true && Array.isArray(report.viewed_seconds) && report.viewed_seconds.length === 2 && report.viewed_seconds[0] >= 0 && report.viewed_seconds[1] > report.viewed_seconds[0] && report.viewed_seconds[1] <= duration + 0.05), '동작 판단에는 실제 연속 확인 범위를 적는다. 미확인은 unverified');
+  }
+  const reviewErrors = sceneReviewErrors(w, state, report, outputs[report.artifact]);
+  requireValue(!reviewErrors.length, reviewErrors.join('\n'));
+  for (const evidence of sceneReviewEvidence(w, state, report)) {
+    requireValue(!outputs[evidence.path], '검수 원문과 시안·관찰 JSON 경로를 분리한다');
+    requireValue(hash(readFileSync(w.path(evidence.path))) === evidence.sha256, '검수 원문 해시가 다르다');
+    outputs[evidence.path] = evidence.sha256;
   }
   return {kind: 'scene-proof', report_path: reports[0], report, media: {width: stream.width, height: stream.height, kind: still ? 'image' : 'video'}, limitation: '관찰 기록이며 독립 최종 검수·시청 사실의 자동 증명은 아니다'};
 }

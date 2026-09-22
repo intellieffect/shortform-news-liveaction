@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync} from 'node:fs';
+import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, symlinkSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
@@ -14,13 +14,17 @@ import {auditScreenText} from '../scripts/lib/screen-text-audit.mjs';
 const project = new URL('../', import.meta.url).pathname;
 const put = (root, p, v) => {mkdirSync(dirname(join(root, p)), {recursive:true});writeFileSync(join(root, p), typeof v === 'string' ? v : JSON.stringify(v));};
 const plan = () => ({schema_version:'1.0', pilot:'fresh', concepts:[{id:'pull', narration_lines:['s01'], elements:[{id:'name', kind:'text', role:'necessary-label', text:'대상'}], visual:{purpose:'explain', focus:'같은 대상의 변화', moments:[{id:'turn', narration_lines:['s01'], subject:'길쭉한 물질', action:'양끝을 다르게 당김', result:'같은 물질이 돌아감', motion_required:true}], realization:{method:'code', asset_ids:[], job_ids:[], code_role:'관계와 방향 제어'}}}]});
-function fixture(t) {
+function fixture(t, gate = 'first-core-scene@1') {
  const repo=realpathSync(mkdtempSync(join(tmpdir(),'visual-production-')));
  t.after(()=>rmSync(repo,{recursive:true,force:true}));
  for(const dir of ['scripts','config','plugin','presets']) cpSync(join(project,dir),join(repo,dir),{recursive:true});
  cpSync(join(project,'package.json'),join(repo,'package.json'));
  put(repo,'docs/PRODUCTION_PROMPT_V2_RESTORED.txt',readFileSync(join(project,'docs/PRODUCTION_PROMPT_V2_RESTORED.txt'),'utf8'));
  const start=startProduction({id:'fresh',repo,url:'https://example.invalid/article',duration:[60,90],request:'이 기사로 숏폼 만들어줘. https://example.invalid/article'});
+ const requestPath='news/fresh/00_brief/request.json';
+ const request=JSON.parse(readFileSync(join(repo,requestPath)));request.scene_gate=gate;put(repo,requestPath,request);
+ const w=workspace('fresh',repo),run=JSON.parse(readFileSync(w.runFile));
+ run.scene_gate=gate;run.intake_sha256=hash(readFileSync(join(repo,requestPath)));put(repo,w.rel(w.runFile),run);
  const prefix='news/fresh/02_production/';
  put(repo,prefix+'concepts.json',plan());put(repo,prefix+'narration.txt','양끝을 다르게 당기면 돌아갑니다.');
  return {repo,start,prefix,w:workspace('fresh',repo)};
@@ -161,7 +165,7 @@ test('actual screen-text renderer requires global time and renders declared copy
 });
 
 function gatedFixture(t, motion = true) {
- const f=fixture(t), c=plan();
+ const f=fixture(t,'first-core-scene@2'), c=plan();
  c.concepts[0].elements.push({id:'cloud',kind:'diagram',role:'metaphor'});
  c.concepts[0].visual.moments[0].subject_ids=['cloud'];
  c.concepts[0].visual.moments[0].motion_required=motion;
@@ -173,7 +177,19 @@ function gatedFixture(t, motion = true) {
 function gatedProof(f,name,phase='still',verdict='usable') {
  const p=proof(f,name,phase);p.data.verdict=verdict;
  p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ if(verdict==='usable') attachReview(f,p);
  put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});return p;
+}
+function attachReview(f,p) {
+ const artifact_sha256=hash(readFileSync(join(f.repo,p.art)));
+ const part = phase => {
+  const path=f.prefix+'reviews/'+p.report.split('/').at(-1).replace('.json',`-${phase}.md`), body=`test-only ${phase} observation ${p.art}`;
+  put(f.repo,path,body);
+  return {artifact_sha256,raw_report:{path,sha256:hash(body)},observation:body,tool:'synthetic fixture, not real viewing'};
+ };
+ const c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json'))).concepts[0];
+ const state=JSON.parse(readFileSync(f.w.runFile));
+ p.data.review={schema:'scene-review@1',reviewer:{id:'fixture-judge',independent:true},experience:part('experience'),intent:{...part('intent'),verdict:'pass',reference_observation:'fixture comparison',text_observation:'fixture captions',explanations:c.visual.moments.map(m=>({moment_id:m.id,observed_subject:'fixture subject',observed_action:'fixture action',observed_result:'fixture result',text_dependency:'fixture text',basis:'observed',verdict:p.data.phase==='still'&&m.motion_required?'unverified':'pass'}))},rechecks:state.attempts.filter(a=>a.validation?.report.verdict==='revise'&&a.validation.report.phase===p.data.phase).map(a=>({receipt_id:a.id,verdict:'fixed',observation:'fixture rechecked'}))};
 }
 test('first scene blocks narration and adoption on missing, revise, unverified and absent motion',t=>{
  const f=gatedFixture(t);
@@ -217,7 +233,7 @@ test('legacy narration admission unchanged; removing new intake flag cannot bypa
  assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,true);
 });
 test('standalone substitute image without shared composition provenance cannot pass',t=>{
- const f=gatedFixture(t,false),p=proof(f,'standalone');finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ const f=gatedFixture(t,false),p=proof(f,'standalone');attachReview(f,p);put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
  assert.ok(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.blockers.some(b=>b.code==='first-scene-composite'));
 });
 
@@ -256,4 +272,86 @@ test('visual edits after admission do not discard generated narration; audio inp
  assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'current');
  put(f.repo,f.prefix+'narration.txt','Changed spoken input');
  assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'stale');
+});
+
+test('rendered running scene is reviewable without recording usable; missing render is not',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'open');
+ let exp=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'});
+ assert.equal(exp.attempt_status,'running');assert.equal(exp.receipt_id,p.attempt.id);
+ assert.equal(exp.context,undefined);assert.equal(exp.files.length,1);
+ assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.review_inputs.scene.reviewable,true);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ const intent=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'});
+ assert.ok(intent.context.documents.some(d=>d.path.endsWith('narration.txt')));
+ rmSync(join(f.repo,p.art));
+ assert.throws(()=>productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'}),/끝나지/);
+});
+test('new usable scene needs independent same-artifact experience and intent, not a self verdict',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'self-pass');
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/scene-review/);
+ attachReview(f,p);p.data.review.experience.artifact_sha256='other';put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/해시/);
+ attachReview(f,p);p.data.review.reviewer.independent=false;put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/분리/);
+ attachReview(f,p);p.data.review.intent.explanations[0].basis='code_inference';put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/코드 추론/);
+ attachReview(f,p);p.data.review.intent.explanations[0].verdict='changes_requested';put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/미해결/);
+});
+test('revise observations survive rerender and require explicit actual recheck',t=>{
+ const f=gatedFixture(t,false),old=gatedProof(f,'revise-first','still','revise'),p=proof(f,'fixed-next');
+ attachReview(f,p);p.data.review.rechecks=[];put(f.repo,p.report,p.data);
+ const input=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'});
+ assert.equal(input.context.previous_revisions[0].receipt_id,old.attempt.id);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/재확인/);
+ attachReview(f,p);put(f.repo,p.report,p.data);
+ finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+});
+test('review raw evidence is hashed and its later mutation invalidates admission',t=>{
+ const f=gatedFixture(t,false),p=gatedProof(f,'reviewed');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,true);
+ put(f.repo,p.data.review.experience.raw_report.path,'changed observation');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ assert.throws(()=>productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'}),/근거가 바뀌었다/);
+});
+test('still cannot certify motion meaning; unsupported motion viewing remains unverified',t=>{
+ const f=gatedFixture(t,true),p=proof(f,'false-motion-pass');attachReview(f,p);
+ p.data.review.intent.explanations[0].verdict='pass';put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/정지 시안/);
+ p.data.verdict='unverified';delete p.data.review;put(f.repo,p.report,p.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+});
+test('an already rechecked revise does not require repeated closure on every new proof',t=>{
+ const f=gatedFixture(t,false);gatedProof(f,'old-problem','still','revise');gatedProof(f,'first-fix');
+ const p=proof(f,'later-review');attachReview(f,p);p.data.review.rechecks=[];put(f.repo,p.report,p.data);
+ assert.deepEqual(productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'}).context.previous_revisions,[]);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+});
+test('review cannot bind production sources or duplicate one response into two phases',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'bad-evidence');attachReview(f,p);
+ p.data.review.experience.raw_report={path:'package.json',sha256:hash(readFileSync(join(f.repo,'package.json')))};put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/reviews/);
+ attachReview(f,p);const exp=p.data.review.experience.raw_report,intent=p.data.review.intent.raw_report;
+ put(f.repo,intent.path,readFileSync(join(f.repo,exp.path),'utf8'));intent.sha256=exp.sha256;put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/덮어쓰지/);
+});
+test('incomplete raw evidence does not prevent recording revise; legacy review is not retroactively bound',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'incomplete-review');p.data.verdict='revise';
+ p.data.review={experience:{raw_report:{path:f.prefix+'reviews/not-written.md',sha256:'pending'}}};put(f.repo,p.report,p.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ const old=fixture(t),q=proof(old,'legacy-optional');q.data.review=p.data.review;put(old.repo,q.report,q.data);
+ const receipt=finishProductionAction('fresh',q.attempt.id,{repo:old.repo});
+ assert.deepEqual(Object.keys(receipt.outputs).sort(),[q.art,q.report].sort());
+});
+
+test('review evidence cannot alias a production source or reuse another artifact review',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'alias-review');attachReview(f,p);
+ const raw=p.data.review.experience.raw_report;rmSync(join(f.repo,raw.path));symlinkSync(join(f.repo,'package.json'),join(f.repo,raw.path));raw.sha256=hash(readFileSync(join(f.repo,'package.json')));put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/reviews/);
+ rmSync(join(f.repo,raw.path));attachReview(f,p);put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ const q=proof(f,'different-artifact');writeFileSync(join(f.repo,q.art),Buffer.concat([readFileSync(join(f.repo,q.art)),Buffer.from('synthetic changed bytes')]));attachReview(f,q);
+ q.data.review.experience.raw_report=p.data.review.experience.raw_report;put(f.repo,q.report,q.data);
+ assert.throws(()=>finishProductionAction('fresh',q.attempt.id,{repo:f.repo}),/다른 시안/);
 });
