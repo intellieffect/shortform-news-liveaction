@@ -19,6 +19,8 @@ npm run produce -- status <id> --json
 
 이미 만든 음성을 처음 추적할 때는 `npm run produce -- adopt-narration <id>`로 원고 해시·정렬 토큰·실제 길이를 대조해 수입한다. 최초 생성의 모든 입력과 청취를 소급 증명하는 수입은 아니다. 기존 MP4·P7 파일은 자동 완료 처리하지 않는다. 추적 중인 음성을 adopt로 다시 최신화할 수 없다.
 
+음성 전 초기 합성 시안은 [발화→화면 제작](visual-production.md)의 scene_proof를 사용한다. `context.work.visual`에서 핵심 설명·생성·시안·문구의 미확인 작업을 먼저 확인한다.
+
 ## 실행 연결
 
 ```bash

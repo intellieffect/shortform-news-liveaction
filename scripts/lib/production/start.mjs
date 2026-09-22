@@ -1,3 +1,4 @@
+import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
 import { readProjectDefaults } from "./defaults.mjs";
@@ -29,6 +30,8 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
     if (existsSync(join(repo, path))) throw new Error("이 편의 경로가 이미 있다. resume하거나 다른 id를 사용한다: " + path);
   }
   const visual = json(join(repo, "plugin/skills/shortform-news-pipeline/templates/visual-system.json"));
+  visual.visual_contract = VISUAL_CONTRACT;
+  visual.generation_jobs = [];
   visual.production_profile = { id: profile.id, version: profile.version };
   visual.canvas = profile.canvas;
   visual.caption = { preset: profile.caption.preset };
@@ -44,6 +47,7 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   put("00_brief/user-request.txt", request);
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
+    visual_contract: VISUAL_CONTRACT,
     source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },

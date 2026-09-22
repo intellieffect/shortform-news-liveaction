@@ -291,3 +291,5 @@ npm run sticker:cut -- <png…> --check     # 판정만, 파일 안 씀
 ```
 
 생성 png(연회색 평면 배경 + 흰 다이컷 테두리) → 알파 png. 계약이 배경·테두리를 고정하므로 **가장자리 flood fill 하나**로 떨어진다 — 크로마키·알파 이진화·연결 성분 검사가 필요 없다(전부 실패했다). 옵션 `--tol`(배경 판정 허용치) · `--pad`(여백 비율 기본 6%). 계약·근거 = [templates/sticker_contract.md](../templates/sticker_contract.md)
+
+초기 장면은 `produce begin <id> scene_proof --output <새 시안> --output <관찰 JSON>` 후 실제 도구 실행·`finish`로 기록한다. 음성 확정 전 사용 가능하며 [발화→화면 제작](visual-production.md)의 형식을 따른다. `review-input --source scene --phase experience|intent`로 실물과 의도를 분리한다.

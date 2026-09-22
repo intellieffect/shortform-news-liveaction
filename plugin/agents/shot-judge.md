@@ -25,6 +25,8 @@ color: purple
 
 최종 MP4 검수는 [실물 검수 계약](../skills/shortform-news-pipeline/reference/review-loop.md)의 대상 해시·확인 범위·관찰 원문·findings/rechecks를 반환한다. 제작자가 제공한 판정 결론을 반복하지 않는다. 실제 청취 도구를 사용할 수 있어 음향 검수를 맡았다면 별도 `review_audio` 응답에 실제 청취 구간과 측정 근거를 기록한다. 도구가 없으면 미검수로 남긴다. 보고서 파일 기록은 제작자가 하며 너는 원문과 구조화 응답을 반환한다.
 
+새 계약이 있는 편은 [발화→화면 제작](../skills/shortform-news-pipeline/reference/visual-production.md)의 explanations를 반환한다. 실제 관찰과 코드 추론을 분리하고, 글자·화살표의 존재가 대상의 작용·결과를 대신했는지 본다. 의도 대조에서 사실 오류를 철회해도 초견의 설명 실패는 별도로 판단한다. 모호함의 수정은 라벨 추가 전에 구도·대상·동작·재료 변경 가능성을 검토한다.
+
 ## script-faithful와 기존 비트 경로
 
 ## 받아야 하는 것 — 없으면 판정하지 말고 되묻는다

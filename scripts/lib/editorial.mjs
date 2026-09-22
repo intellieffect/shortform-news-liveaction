@@ -1,3 +1,4 @@
+import {validateVisualPlan} from './visual-plan.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -78,8 +79,9 @@ const noAbsoluteFrames = (value, errors, path = "motion") => {
   }
 };
 
-export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile }) => {
-  const errors = [], warnings = [];
+export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false }) => {
+  const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
+  const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
   let lines = [];
   try { lines = normalizeNarration(narration); }
   catch (error) { issue(errors, "narration-shape", "narration.json", error.message); }
@@ -345,6 +347,7 @@ export const loadEditorialBundle = (root) => {
   const production = existsSync(join(root, "02_production")) ? join(root, "02_production") : root;
   const narrationPath = existsSync(join(production, "narration.json")) ? join(production, "narration.json") : join(root, "narration.json");
   return {
+    visualContractRequired: (existsSync(join(root, "00_brief/request.json")) && Boolean(readJson(join(root, "00_brief/request.json")).visual_contract)) || (existsSync(join(production, "run.json")) && Boolean(readJson(join(production, "run.json")).visual_contract)),
     story: readJson(join(production, "story.json")),
     concepts: readJson(join(production, "concepts.json")),
     motion: readJson(join(production, "motion.json")),

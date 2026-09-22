@@ -19,3 +19,5 @@ Node.js/npm, Python 3, FFmpeg, Git LFS를 준비한다. Git으로 받았다면 `
 ## 표현 레퍼런스
 
 모든 새 영상은 [공통 표현 레퍼런스](references/visual/README.md)를 확인하고 기사별 연출을 설계한다. `npm run videos:serve`의 **표현 레퍼런스** 탭에서 세 기준 영상을 재생하고 제작 요청에 연결할 수 있다. start/resume도 동일한 세트와 해설을 제공한다.
+
+새 제작의 화면 설계·생성·초기 시안·검수 연결: [변경 범위](docs/VISUAL-PRODUCTION-CHANGE.md) · [짧은 요청으로 새 세션 실증](docs/FRESH-SESSION-VALIDATION.md).

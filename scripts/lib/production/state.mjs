@@ -1,3 +1,4 @@
+import {validateSceneProof} from './visual-work.mjs';
 import { episodePrompt } from './prompt.mjs';
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -11,7 +12,7 @@ import { buildReviewInput } from "./review-input.mjs";
 import { executionIdentity } from "./environment.mjs";
 import { productionCompletion, productionReviewTemplate, resolutionRecord, validateRender, validateReview } from "./review.mjs";
 
-const empty = (w) => ({ schema_version: "1.0", pilot: w.id, engine: "editorial-concept@1", receipts: {}, attempts: [], impacts: {} });
+const empty = (w) => ({ schema_version: "1.0", pilot: w.id, engine: "editorial-concept@1", receipts: {}, attempts: [], impacts: {}, ...(w.request?.visual_contract ? {visual_contract: w.request.visual_contract, intake_sha256: hash(readFileSync(join(w.root, "00_brief/request.json")))} : {}) });
 const read = (w) => {
   if (!existsSync(w.runFile)) return empty(w);
   const state = json(w.runFile);
@@ -138,7 +139,8 @@ export const finishProductionAction = (id, token, { repo } = {}) => {
       if (script && prior.inputs.files[script] !== current.files[script] && prior.outputs[audio] === outputs[audio]) throw new Error("낭독 원고가 바뀌었는데 음성 파일이 이전과 같다");
     }
     let validation;
-    if (attempt.action === "render") validation = validateRender(w, outputs);
+    if (attempt.action === "scene_proof") validation = validateSceneProof(w, attempt, outputs);
+    else if (attempt.action === "render") validation = validateRender(w, outputs);
     else if (attempt.action.startsWith("review_")) ({ validation, outputs } = validateReview(w, state, attempt, outputs));
     else validation = validateOutput(w, attempt.action);
     // 디코드·증거 대조 중 입력이나 실물이 변해도 최신으로 기록하지 않는다.
@@ -206,7 +208,7 @@ export const productionRenderErrors = (id, options = {}) => {
 export const productionReviewInput = (id, { repo, source, phase } = {}) => {
   const w = workspace(id, repo), state = read(w), actions = inspect(w, state);
   const result = buildReviewInput(w, state, actions, { source, phase });
-  const latest = read(w), action = source === "render" ? "render" : "proof";
+  const latest = read(w), action = source === "render" ? "render" : source === "scene" ? "scene_proof" : "proof";
   if (latest.receipts[action]?.id !== result.receipt_id || inspect(w, latest)[action].status !== "current") throw new Error("입력 구성 중 시안의 입력·기록이 바뀌었다");
   return result;
 };

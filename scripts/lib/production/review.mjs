@@ -1,5 +1,7 @@
+import {visualReviewTargets} from '../visual-plan.mjs';
+import {visualWork, validateExplanationReview} from './visual-work.mjs';
 import { episodePrompt } from './prompt.mjs';
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { executionIdentity } from "./environment.mjs";
@@ -64,6 +66,7 @@ export const productionReviewTemplate = (w, state, action) => {
     verdict: "incomplete", raw_report: { path: "", sha256: "" }, evidence: [],
     coverage: { original_frames: [], mobile_frames: [], playback_ranges: [], listened_ranges: [], fact_ranges: [], audio_measurement: null },
     findings: [], rechecks: [],
+    ...(action === 'review_visual' ? {text_review: {verdict: 'unverified', observation: '', evidence: []}, explanations: visualReviewTargets(existsSync(join(w.production, 'concepts.json')) ? json(join(w.production, 'concepts.json')) : {}).map(t => ({concept_id: t.concept_id, moment_id: t.id, verdict: 'unverified', basis: 'unverified', observed_subject: '', observed_action: '', observed_result: '', text_dependency: '', evidence: []}))} : {}),
   };
 };
 
@@ -134,6 +137,7 @@ export const validateReview = (w, state, attempt, outputs) => {
     requireValue(covers(viewed, recheck.range), "재검수 구간의 실제 확인 기록이 없다");
     rechecked.add(recheck.issue);
   }
+  if (attempt.action === "review_visual") validateExplanationReview(w, report, t);
   const gaps = coverageGaps(report, t);
   requireValue(report.verdict !== "pass" || !report.findings.some((f) => f.severity === "blocking"), "차단 결함이 있는 보고서를 pass로 기록할 수 없다");
   return { validation: { contract: CONTRACT, kind: "review", report_path: files[0], report, gaps }, outputs: { ...outputs, ...hashes } };
@@ -150,6 +154,13 @@ export const productionCompletion = (w, state, actions) => {
   const blockers = [], add = (code, detail, action) => blockers.push({ code, detail, ...(action ? { action } : {}) });
   const prompt = episodePrompt(w);
   if (prompt.status === "invalid") add("invalid-production-prompt", prompt.error);
+  if (state.intake_sha256) {
+    const requestPath = join(w.root, '00_brief/request.json');
+    if (!existsSync(requestPath) || hash(readFileSync(requestPath)) !== state.intake_sha256) add('changed-intake-contract', '새 제작 접수 계약이 시작 기록과 다르다');
+  }
+  const visual = visualWork(w, state);
+  if (visual.status === 'invalid') add('visual-plan-invalid', '화면 설계 계약 누락·불일치');
+  for (const task of visual.tasks ?? []) if (task.kind === 'generation') add('visual-generation-unresolved', task.job_id + ': ' + task.status);
   const history = reviews(state), reviewSummary = {}, evidenceCache = new Map();
   if (w.request) {
     for (const error of executionIdentity(w.repo).errors) add("incompatible-environment", error);
