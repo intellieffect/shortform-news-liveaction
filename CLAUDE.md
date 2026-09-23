@@ -96,6 +96,6 @@ npm run videos                 # out/videos.html — 완성 영상 검색·재�
 ```
 
 
-## 로컬 제작과 원격 공유
+## 수록 편과 새 편
 
-코드·지침·설정은 로컬과 원격에서 동일하다. 기존 로컬 자료는 위치를 바꾸지 않는다. `config/shared-episodes.json`은 사용자가 공유하자고 지정한 편만 담는다. 로컬 테스트할 편은 `npm run episodes -- local add <id>`로 등록한다. 새 편의 sync는 로컬 목록만 갱신한다. 생성 인덱스·로컬 대장은 Git에 넣지 않는다. 공유는 [운영 안내](docs/LOCAL-AND-SHARED.md)의 파일 선정·누락 검사 절차를 따른다. 고객용 다른 코드/문서를 생성하지 않는다.
+기존 자료는 위치를 바꾸지 않는다. `config/shared-episodes.json`은 저장소에 수록된 편만 담는다. 새 편의 sync는 로컬 목록만 갱신하고, 로컬 테스트할 편은 `npm run episodes -- local add <id>`로 등록한다. 생성 인덱스·로컬 대장은 Git에 넣지 않는다. 환경별로 코드·지침 사본을 따로 만들지 않는다. 절차는 [편 목록과 로컬 테스트](docs/LOCAL-AND-SHARED.md).

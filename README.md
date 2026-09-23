@@ -30,7 +30,7 @@ npm ci
 npm run setup:hooks
 ```
 
-`setup:hooks` 는 이 저장소의 공유 검사와 LFS 업로드를 push 앞에 건다.
+`setup:hooks` 는 push 앞에 Git LFS 업로드를 건다.
 
 ### 3. 플러그인 설치
 
@@ -74,9 +74,9 @@ node scripts/produce.mjs doctor --installed
 
 수정 요청은 “N44에서 가스가 모이는 장면을 수정해줘”처럼 전달한다. 새 세션은 해당 편을 지정해 이어서 진행한다. 새 기사는 예시 대본·장면을 복제하지 않고 기사에 맞게 설계한다.
 
-## 로컬 제작과 공유
+## 수록 편과 새 편
 
-[동일 로컬·원격 운영 안내](docs/LOCAL-AND-SHARED.md)를 따른다. 기존 자료는 현재 위치에 보존한다. 코드·지침·설정을 별도 고객 버전으로 변환하지 않는다. 공유 선정은 config/shared-episodes.json, 로컬 활성은 pilots/local.json에서 구분한다. 원격에 올리기로 지정한 편만 파일 검사 후 일반 커밋으로 추가한다.
+저장소에 수록된 편은 `config/shared-episodes.json`이 정한다. 새로 만든 편은 sync할 때 로컬 활성 목록(`pilots/local.json`)에 등록되고, 수록 목록은 바뀌지 않는다. 기존 자료는 현재 위치에 보존한다. 활성 편 관리는 [편 목록과 로컬 테스트](docs/LOCAL-AND-SHARED.md)를 따른다.
 
 ## 표현 레퍼런스
 

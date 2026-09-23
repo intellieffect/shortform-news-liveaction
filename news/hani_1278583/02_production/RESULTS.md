@@ -78,13 +78,14 @@
 ## 재실행
 
 ```sh
-cd /Users/yubeenwon/Projects/shortform-news-1278583
+cd <저장소 루트>
 python3 news/hani_1278583/02_production/scripts/align_narration.py   # 음성 재정렬(전사 JSON 보존됨)
 npm run produce -- run hani_1278583 timeline && npm run produce -- run hani_1278583 sync
 npm run produce -- run hani_1278583 render
-python3 /Users/yubeenwon/Projects/shortform-news-liveaction/presets/hani/thumbnail-flexible/1.2.0/compose.py \
-  --project <project.json이 있는 경로> --input news/hani_1278583/02_production/work/thumbnails/input_A.json \
-  --output out/pilots/hani_1278583/thumbnails/v2/A.png
+# 썸네일은 제작 당시 로컬 프리셋 thumbnail-flexible/1.2.0(저장소 미수록)으로 만들었다 — 재생성은 현재 썸네일 절차를 따른다.
+# python3 presets/hani/thumbnail-flexible/1.2.0/compose.py \
+#   --project <project.json이 있는 경로> --input news/hani_1278583/02_production/work/thumbnails/input_A.json \
+#   --output out/pilots/hani_1278583/thumbnails/v2/A.png
 ```
 
 생성 원본·실제 프롬프트는 `02_production/generated/*.prompt.txt`, 음성 생성 기록은 `02_production/audio/higgsfield-generation.json`, 전사 원본은 `audio/narration.whisper.json`에 있다.

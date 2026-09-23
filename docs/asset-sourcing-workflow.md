@@ -1,6 +1,6 @@
 # 외부 소스 자산 확보 워크플로우 v2
 
-v1: 2026-08-28 09:50 KST, 세션 "input" (원유빈), 위성공해 파일럿 실측. **v2: 2026-08-29** — output 제안 `docs/specs/sourcing-criteria.v2.md`(적합성 2축 연동, 개정 7항) 반영 + input 실측 1항 추가. 근거 실측: `work/hani_satellite_pollution/02_production/external_assets/SOURCES.md` §1~§15. 채택 대상: 다음 편부터 input 단계 표준.
+v1: 2026-08-28 09:50 KST, 세션 "input", 위성공해 파일럿 실측. **v2: 2026-08-29** — output 제안 `docs/specs/sourcing-criteria.v2.md`(적합성 2축 연동, 개정 7항) 반영 + input 실측 1항 추가. 근거 실측: `work/hani_satellite_pollution/02_production/external_assets/SOURCES.md` §1~§15. 채택 대상: 다음 편부터 input 단계 표준.
 
 ## 왜 v2인가 — «위성공해» 실측
 

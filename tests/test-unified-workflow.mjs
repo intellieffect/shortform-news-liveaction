@@ -99,7 +99,7 @@ test('공유 검사는 실제 staged 트리를 검사하며 미선정 편·로�
 });
 
 test('push 검사에서 옛 개발 이력을 LFS 업로드 전에 거절',()=>{
- const result=spawnSync(process.execPath,[join(REPO,'scripts/pre-push.mjs'),'origin','unused'],{cwd:REPO,input:'refs/heads/old a4dd8ceb159fd04d60cb6cc513d4cbc6d4f6b660 refs/heads/main 0000000000000000000000000000000000000000\n',encoding:'utf8'});
+ const result=spawnSync(process.execPath,[join(REPO,'scripts/pre-push.mjs'),'origin','unused'],{cwd:REPO,env:{...process.env,SHORTFORM_SHARE_GUARD:'1'},input:'refs/heads/old a4dd8ceb159fd04d60cb6cc513d4cbc6d4f6b660 refs/heads/main 0000000000000000000000000000000000000000\n',encoding:'utf8'});
  assert.notEqual(result.status,0);assert.match(result.stderr,/공유 이력 밖/);
 });
 
@@ -113,6 +113,6 @@ test('최종 트리에서 삭제한 미선정 자료도 중간 커밋에 있으�
  git(['update-index','--add','--cacheinfo','100644',blob,'news/private_episode/02_production/story.json']);
  const bad=git(['commit-tree',git(['write-tree']),'-p',base,'-m','private intermediate']);
  const tip=git(['commit-tree',git(['rev-parse',base+'^{tree}']),'-p',bad,'-m','removed at tip']);
- const result=spawnSync(process.execPath,[join(REPO,'scripts/pre-push.mjs'),'origin','unused'],{cwd:repo,input:`refs/heads/test ${tip} refs/heads/main ${base}\n`,encoding:'utf8'});
+ const result=spawnSync(process.execPath,[join(REPO,'scripts/pre-push.mjs'),'origin','unused'],{cwd:repo,env:{...process.env,SHORTFORM_SHARE_GUARD:'1'},input:`refs/heads/test ${tip} refs/heads/main ${base}\n`,encoding:'utf8'});
  assert.notEqual(result.status,0);assert.match(result.stderr,/미선정/);
 });

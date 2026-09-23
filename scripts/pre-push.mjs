@@ -5,8 +5,12 @@ import { stagedTree, sharingErrors } from './lib/sharing.mjs';
 const repo = execFileSync('git',['rev-parse','--show-toplevel'],{encoding:'utf8'}).trim();
 const input = readFileSync(0,'utf8');
 const historyRoot = '8fc29f509bed2e730c5edbb817ec2b1bd5718c27';
+// 공유 검사는 납품 저장소를 관리하는 제작사 환경에서만 켠다(`npm run setup:hooks -- --share-guard`).
+// 한겨레 제작 환경은 자기 편을 자기 저장소에 올리므로 LFS 업로드만 연결한다.
+const guardConfig = spawnSync('git',['-C',repo,'config','--get','shortform.shareGuard'],{encoding:'utf8'}).stdout.trim();
+const shareGuard = process.env.SHORTFORM_SHARE_GUARD === '1' || guardConfig === 'true';
 try {
- for(const line of input.trim().split('\n').filter(Boolean)) {
+ for(const line of (shareGuard ? input : '').trim().split('\n').filter(Boolean)) {
   const [,pushed] = line.split(/\s+/); if(/^0+$/.test(pushed))continue;
   // 붙임표 태그를 push 하면 git 은 태그 객체 sha 를 준다 — 커밋 sha 로 바꿔야 끝 트리를 알아본다.
   const sha = execFileSync('git',['-C',repo,'rev-parse',pushed+'^{commit}'],{encoding:'utf8'}).trim();
