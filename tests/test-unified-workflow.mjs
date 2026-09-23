@@ -104,6 +104,12 @@ test('push 검사에서 옛 개발 이력을 LFS 업로드 전에 거절',()=>{
 });
 
 
+test('납품 저장소로 가는 push는 설정이 없어도 공유 검사를 건다',()=>{
+ const env={...process.env};delete env.SHORTFORM_SHARE_GUARD;
+ const result=spawnSync(process.execPath,[join(REPO,'scripts/pre-push.mjs'),'origin','git@github.com:intellieffect/shortform-news-liveaction.git'],{cwd:REPO,env:{...env,GIT_CONFIG_GLOBAL:'/dev/null',GIT_CONFIG_PARAMETERS:"'shortform.shareguard=false'"},input:'refs/heads/old a4dd8ceb159fd04d60cb6cc513d4cbc6d4f6b660 refs/heads/main 0000000000000000000000000000000000000000\n',encoding:'utf8'});
+ assert.notEqual(result.status,0);assert.match(result.stderr,/공유 이력 밖/);
+});
+
 test('최종 트리에서 삭제한 미선정 자료도 중간 커밋에 있으면 push 거절',t=>{
  const repo=temp(t);
  execFileSync('git',['clone','--shared','--no-checkout',REPO,repo],{stdio:'pipe'});
