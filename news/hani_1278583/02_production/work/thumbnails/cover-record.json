@@ -1,0 +1,194 @@
+{
+ "schema_version": "cover-generation/v1",
+ "episode": "hani_1278583",
+ "method": "preset_composite",
+ "preset": {
+  "id": "hani-thumbnail-flexible",
+  "version": "1.2.0",
+  "path": "@engine/presets/hani/thumbnail-flexible/1.2.0",
+  "guide": "GUIDE.md",
+  "why": "사용자가 지정한 두 프리셋 중 전체 화면형(최신). 달 실사를 꽉 채워 쓰는 편이 사각 이미지 칸(thumbnail-fixed)보다 이 소재에 맞는다"
+ },
+ "target": "youtube_shorts",
+ "brief": "news/hani_1278583/02_production/work/thumbnails/brief.md",
+ "branding": {
+  "logo_status": "received",
+  "logo_file": "@engine/presets/hani/brand-assets/v1/assets/logo.png",
+  "placeholder_text": null,
+  "area_normalized": {
+   "x": 0.796,
+   "y": 0.052,
+   "width": 0.13,
+   "height": 0.073
+  }
+ },
+ "presentation": {
+  "include_style_reference": false
+ },
+ "candidates": [
+  {
+   "id": "A",
+   "copy": [
+    "달을 보려면",
+    "반달이 낫다"
+   ],
+   "hook": "달을 보는 날인데 왜 보름달을 피할까",
+   "visual_intent": "상현달 실물 한 장. 명암 경계선이 화면을 세로로 가르고 밝은 쪽 가장자리의 충돌구 그림자가 보인다",
+   "prompt_file": "news/hani_1278583/02_production/work/thumbnails/input_A.json",
+   "reference_inputs": [
+    {
+     "file": "news/hani_1278583/02_production/external_assets/photo/svs5587_firstquarter_vplain_1080x1920.jpg",
+     "role": "evidence",
+     "handling": "preserve",
+     "source": "https://svs.gsfc.nasa.gov/5587 (Moon Phase and Libration, 2026)",
+     "license": "NASA PD",
+     "note": "원반을 크롭해 하단으로 배치. 화소는 가공하지 않았다"
+    }
+   ],
+   "generation": {
+    "tool": "presets/hani/thumbnail-flexible/1.2.0/compose.py",
+    "model": null,
+    "job_id": null,
+    "original_output": "out/pilots/hani_1278583/thumbnails/v1/A.png"
+   },
+   "output": {
+    "file": "out/pilots/hani_1278583/thumbnails/v1/A.png",
+    "width": 1080,
+    "height": 1920
+   },
+   "revision_of": null,
+   "review": {
+    "status": "approved",
+    "checked": [
+     "1080×1920 원본과 270×480 축소본을 실제로 열어 확인",
+     "제목 두 줄·우상단 로고 한 개 외 추가 글자 없음",
+     "축소본에서 제목과 핵심 대상이 모두 읽힘",
+     "상현달의 밝은 쪽이 오른쪽(북반구 기준)임을 유지"
+    ],
+    "issues": [
+     "NASA SVS는 LRO 지형 자료 기반 시각화이며 관측 사진이 아니다 — 배포 설명에 표기 필요"
+    ]
+   },
+   "credits": [
+    "NASA's Scientific Visualization Studio"
+   ],
+   "accent_color": "#f7c26b"
+  },
+  {
+   "id": "B",
+   "copy": [
+    "긴 그림자에",
+    "지형이 선다"
+   ],
+   "hook": "그림자가 지형을 세우는 장면 자체",
+   "visual_intent": "실제 명암 경계선 근접 사진. 긴 그림자가 충돌구 형태를 드러낸다",
+   "prompt_file": "news/hani_1278583/02_production/work/thumbnails/input_B.json",
+   "reference_inputs": [
+    {
+     "file": "news/hani_1278583/02_production/external_assets/photo/nasa_art002e009281_orig.jpg",
+     "role": "evidence",
+     "handling": "preserve",
+     "source": "https://images.nasa.gov/details/art002e009281 (Shadows at the Edge of Lunar Day, 2026-04-06, Artemis II)",
+     "license": "NASA PD",
+     "note": "9:16 크롭만 적용"
+    }
+   ],
+   "generation": {
+    "tool": "presets/hani/thumbnail-flexible/1.2.0/compose.py",
+    "model": null,
+    "job_id": null,
+    "original_output": "out/pilots/hani_1278583/thumbnails/v1/B.png"
+   },
+   "output": {
+    "file": "out/pilots/hani_1278583/thumbnails/v1/B.png",
+    "width": 1080,
+    "height": 1920
+   },
+   "revision_of": null,
+   "review": {
+    "status": "reviewed",
+    "checked": [
+     "1080×1920 원본과 270×480 축소본을 실제로 열어 확인",
+     "제목 두 줄·우상단 로고 한 개 외 추가 글자 없음",
+     "축소본에서 제목과 핵심 대상이 모두 읽힘",
+     "상현달의 밝은 쪽이 오른쪽(북반구 기준)임을 유지"
+    ],
+    "issues": [
+     "2026-04-06 아르테미스 2호 촬영본으로, 9월 19일 당일 사진이 아니다 — 특정 날짜 관측으로 소개하지 않는다"
+    ]
+   },
+   "credits": [
+    "NASA"
+   ],
+   "accent_color": "#9fd0ea"
+  },
+  {
+   "id": "C",
+   "copy": [
+    "같은 달인데",
+    "반달이 입체"
+   ],
+   "hook": "같은 달의 두 위상을 나란히 비교",
+   "visual_intent": "같은 시각화의 보름달·상현달을 같은 지름으로 나란히 배치해 위상 차이만 보이게 한다",
+   "prompt_file": "news/hani_1278583/02_production/work/thumbnails/input_C.json",
+   "reference_inputs": [
+    {
+     "file": "news/hani_1278583/02_production/external_assets/photo/svs5587_fullmoon_vplain_1080x1920.jpg",
+     "role": "evidence",
+     "handling": "preserve",
+     "source": "https://svs.gsfc.nasa.gov/5587",
+     "license": "NASA PD",
+     "note": "보름달(2026-09-26 16:00 UT 프레임)"
+    },
+    {
+     "file": "news/hani_1278583/02_production/external_assets/photo/svs5587_firstquarter_vplain_1080x1920.jpg",
+     "role": "evidence",
+     "handling": "preserve",
+     "source": "https://svs.gsfc.nasa.gov/5587",
+     "license": "NASA PD",
+     "note": "상현달(2026-09-18 21:00 UT 프레임)"
+    }
+   ],
+   "generation": {
+    "tool": "presets/hani/thumbnail-flexible/1.2.0/compose.py",
+    "model": null,
+    "job_id": null,
+    "original_output": "out/pilots/hani_1278583/thumbnails/v1/C.png"
+   },
+   "output": {
+    "file": "out/pilots/hani_1278583/thumbnails/v1/C.png",
+    "width": 1080,
+    "height": 1920
+   },
+   "revision_of": null,
+   "review": {
+    "status": "reviewed",
+    "checked": [
+     "1080×1920 원본과 270×480 축소본을 실제로 열어 확인",
+     "제목 두 줄·우상단 로고 한 개 외 추가 글자 없음",
+     "축소본에서 제목과 핵심 대상이 모두 읽힘",
+     "상현달의 밝은 쪽이 오른쪽(북반구 기준)임을 유지"
+    ],
+    "issues": [
+     "두 원반의 지름을 같게 배치해 크기 비교로 오인되지 않게 했다. 위상 차이만 보여준다"
+    ]
+   },
+   "credits": [
+    "NASA's Scientific Visualization Studio"
+   ],
+   "accent_color": "#f7c26b"
+  }
+ ],
+ "outputs_sha256": {
+  "A": "bfeb3724d37a3143ba10ca0c13cbd3bbce852344810e1301f6f61989854ac998",
+  "B": "8890138594021e7e64e5be41e6b179827736911269bff5829e5589b3d0e214e6",
+  "C": "f1e4b745a4ec0f00a4383ddb4a7121f5802e891c53cb56ec9265776bdf408dd3"
+ },
+ "limitation": "제작자가 원해상·축소본을 직접 확인한 검수다. 배포 플랫폼 실화면과 사용자 채택은 별개다.",
+ "user_confirmation": {
+  "raw": "굿 확정해",
+  "path": "news/hani_1278583/00_brief/closeout-request.txt",
+  "selected": "A",
+  "note": "사용자가 후보를 따로 지정하지 않아 제작자가 A(대상 인식과 제목 가독성이 가장 강함)를 대표로 확정했다. B·C는 후보로 보존."
+ }
+}

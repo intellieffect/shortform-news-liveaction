@@ -69,9 +69,22 @@ switch (task) {
   case "render":
     run(["render", `ShortformNews-${c}`, ensure(outArg ?? join(out, "ShortformNews.mp4")), ...rest]);
     break;
-  case "sheet":
+  case "sheet": {
+    // editorial-concept 편의 연락지는 Still 1장(proof 전체 동시 마운트)이 아니라 페이지 PNG 여러 장이다.
+    // proof 263장을 1200x40944 한 장에 얹던 옛 경로는 10분 넘게 멎었다(2026-09-22). legacy 편은 그대로 둔다.
+    if (editorial.editorial) {
+      if (rest.length) console.log(`editorial 연락지는 remotion CLI 인자를 쓰지 않는다 — 무시: ${rest.join(" ")}`);
+      const sheet = spawnSync(
+        process.execPath,
+        [join(REPO, "scripts", "render-editorial-proof-frames.mjs"), "--pilot", id, "--sheet", ...(outArg ? ["--out", outArg] : [])],
+        { stdio: "inherit", cwd: REPO },
+      );
+      if (sheet.status !== 0) process.exit(sheet.status ?? 1);
+      break;
+    }
     run(["still", `BeatSheet-${c}`, ensure(outArg ?? join(out, "qa", "beatsheet.png")), ...rest]);
     break;
+  }
   case "beat":
     run(["still", `BeatStill-${c}`, ensure(outArg ?? join(out, "qa", "beat.png")), ...rest]);
     break;

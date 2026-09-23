@@ -1,0 +1,1699 @@
+{
+ "schema_version": "1.0",
+ "pilot": "hani_1269147",
+ "fps": 30,
+ "total_frames": 2580,
+ "narration_word_sha256": "1dcedc02bbb819be34a8868a8c0456f7145981b9e4cfd69b5abd8fb2e05721ba",
+ "events": [
+  {
+   "id": "recon_note_show",
+   "concept_id": "leak",
+   "element_id": "recon_note",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s01",
+      "token_index": 0,
+      "word": "사십구",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s01",
+      "token_index": 0,
+      "word": "사십구",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 4,
+      "word": "행성입니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 4,
+      "word": "행성입니다.",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "생성 장면임을 첫 화면부터 표기"
+  },
+  {
+   "id": "name_reveal",
+   "concept_id": "leak",
+   "element_id": "planet_name",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 0,
+      "word": "엘에이치에스",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 0,
+      "word": "엘에이치에스",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 4,
+      "word": "행성입니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s03",
+      "token_index": 4,
+      "word": "행성입니다.",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "이름을 말할 때 이름·거리를 보여준다"
+  },
+  {
+   "id": "cond_reveal",
+   "concept_id": "conditions",
+   "element_id": "cond_list",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s04",
+      "token_index": 5,
+      "word": "단단한",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s04",
+      "token_index": 11,
+      "word": "그리고",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 10,
+      "word": "대기.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 10,
+      "word": "대기.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "세 항목을 발화 순서대로 드러내고 끝까지 유지"
+  },
+  {
+   "id": "goldilocks",
+   "concept_id": "conditions",
+   "element_id": "goldilocks",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 2,
+      "word": "골디락스",
+      "edge": "start",
+      "offset_frames": -6
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 2,
+      "word": "골디락스",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 5,
+      "word": "앞의",
+      "edge": "start",
+      "offset_frames": 20
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 5,
+      "word": "앞의",
+      "edge": "start",
+      "offset_frames": 30
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "별 주위 띠와 행성 위치"
+  },
+  {
+   "id": "cond_check",
+   "concept_id": "conditions",
+   "element_id": "cond_list",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 5,
+      "word": "앞의",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 7,
+      "word": "갖췄습니다.",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 10,
+      "word": "대기.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s05",
+      "token_index": 10,
+      "word": "대기.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "cond_reveal"
+    }
+   ],
+   "coexist_with": [],
+   "why": "위 두 항목에 확인 표시, '대기'는 비움"
+  },
+  {
+   "id": "star_label",
+   "concept_id": "threat",
+   "element_id": "star_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 2,
+      "word": "적색왜성.",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 2,
+      "word": "적색왜성.",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": -8
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "별 라벨"
+  },
+  {
+   "id": "strip_push",
+   "concept_id": "threat",
+   "element_id": "halo",
+   "kind": "motion",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 3,
+      "word": "강한",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 6,
+      "word": "벗겨내곤",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": -8
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    }
+   },
+   "easing": {
+    "enter": "linear",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "복사가 내려와 halo를 별 반대편으로 밀어내고 얇게 만든다"
+  },
+  {
+   "id": "trappist_show",
+   "concept_id": "threat",
+   "element_id": "trappist_diagram",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": -4
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 0,
+      "word": "트라피스트",
+      "edge": "start",
+      "offset_frames": 12
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "TRAPPIST-1 개념도로 전환"
+  },
+  {
+   "id": "trappist_label",
+   "concept_id": "threat",
+   "element_id": "trappist_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 2,
+      "word": "행성들에선",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 2,
+      "word": "행성들에선",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "trappist_show"
+    }
+   ],
+   "coexist_with": [],
+   "why": "개념도·귀속 표기"
+  },
+  {
+   "id": "recon_note2_show",
+   "concept_id": "threat",
+   "element_id": "recon_note2",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 0,
+      "word": "문제는",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s06",
+      "token_index": 0,
+      "word": "문제는",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s07",
+      "token_index": 6,
+      "word": "못했죠.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "재구성 표기"
+  },
+  {
+   "id": "model_note_show",
+   "concept_id": "model",
+   "element_id": "model_note",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 0,
+      "word": "그런데",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 0,
+      "word": "그런데",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "모델 예측 표기"
+  },
+  {
+   "id": "light_rise",
+   "concept_id": "model",
+   "element_id": "light_gas",
+   "kind": "motion",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 3,
+      "word": "가벼운",
+      "edge": "start",
+      "offset_frames": -4
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 8,
+      "word": "나가고,",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "밝은 작은 입자가 위로 떠올라 일부만 림 밖으로 흩어진다"
+  },
+  {
+   "id": "heavy_sink",
+   "concept_id": "model",
+   "element_id": "heavy_gas",
+   "kind": "motion",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 9,
+      "word": "무거운",
+      "edge": "start",
+      "offset_frames": -4
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 13,
+      "word": "남습니다.",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "light_rise"
+    }
+   ],
+   "coexist_with": [],
+   "why": "어두운 큰 입자가 아래로 내려가 표면 근처에 모인다"
+  },
+  {
+   "id": "light_label",
+   "concept_id": "model",
+   "element_id": "light_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 3,
+      "word": "가벼운",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 3,
+      "word": "가벼운",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "가벼운 기체를 말할 때 위층 라벨"
+  },
+  {
+   "id": "heavy_label",
+   "concept_id": "model",
+   "element_id": "heavy_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 9,
+      "word": "무거운",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s08",
+      "token_index": 9,
+      "word": "무거운",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s09",
+      "token_index": 9,
+      "word": "그럴까요?",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "무거운 기체를 말할 때 아래층 라벨"
+  },
+  {
+   "id": "telescope_show",
+   "concept_id": "observation",
+   "element_id": "telescope_scene",
+   "kind": "media",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 0,
+      "word": "이천이십사년,",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 0,
+      "word": "이천이십사년,",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": -4
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "실존 시설 실사"
+  },
+  {
+   "id": "telescope_label",
+   "concept_id": "observation",
+   "element_id": "telescope_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 0,
+      "word": "이천이십사년,",
+      "edge": "start",
+      "offset_frames": 2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 0,
+      "word": "이천이십사년,",
+      "edge": "start",
+      "offset_frames": 12
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": -6
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": 2
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "telescope_show",
+     "point": "from"
+    }
+   ],
+   "coexist_with": [],
+   "why": "망원경 이름·장소·연도"
+  },
+  {
+   "id": "transit_move",
+   "concept_id": "observation",
+   "element_id": "transit_scene",
+   "kind": "motion",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 9,
+      "word": "잡았습니다.",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "linear",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "행성이 별 원반 앞을 가로지른다"
+  },
+  {
+   "id": "spectrum_show",
+   "concept_id": "observation",
+   "element_id": "spectrum",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s11",
+      "token_index": 0,
+      "word": "별빛을",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s11",
+      "token_index": 2,
+      "word": "펼치면,",
+      "edge": "end",
+      "offset_frames": 4
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "transit_move"
+    }
+   ],
+   "coexist_with": [],
+   "why": "별빛을 색깔별로 펼친 띠가 나타난다"
+  },
+  {
+   "id": "spectrum_label",
+   "concept_id": "observation",
+   "element_id": "spectrum_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s11",
+      "token_index": 2,
+      "word": "펼치면,",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s11",
+      "token_index": 2,
+      "word": "펼치면,",
+      "edge": "end",
+      "offset_frames": 6
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "spectrum_show",
+     "point": "from"
+    }
+   ],
+   "coexist_with": [],
+   "why": "띠가 무엇인지 표기"
+  },
+  {
+   "id": "helium_dip",
+   "concept_id": "observation",
+   "element_id": "helium_line",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 0,
+      "word": "그",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 2,
+      "word": "나타났습니다.",
+      "edge": "end",
+      "offset_frames": -4
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "spectrum_show",
+     "point": "from"
+    }
+   ],
+   "coexist_with": [],
+   "why": "띠의 한 지점이 어두워져 선이 남는다"
+  },
+  {
+   "id": "obs_note_show",
+   "concept_id": "observation",
+   "element_id": "obs_note",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s10",
+      "token_index": 4,
+      "word": "행성이",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s12",
+      "token_index": 6,
+      "word": "겁니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "원리 도해 표기"
+  },
+  {
+   "id": "first_label",
+   "concept_id": "meaning",
+   "element_id": "first_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 0,
+      "word": "새는",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 0,
+      "word": "새는",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 10,
+      "word": "처음입니다.",
+      "edge": "end",
+      "offset_frames": 10
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 10,
+      "word": "처음입니다.",
+      "edge": "end",
+      "offset_frames": 18
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "같은 장면 위에 '첫 증거·처음' 라벨"
+  },
+  {
+   "id": "cond_recall",
+   "concept_id": "meaning",
+   "element_id": "cond_recall",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 6,
+      "word": "골디락스",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s13",
+      "token_index": 6,
+      "word": "골디락스",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 12,
+      "word": "온실효과를",
+      "edge": "start",
+      "offset_frames": -6
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 12,
+      "word": "온실효과를",
+      "edge": "start",
+      "offset_frames": 2
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "first_label"
+    }
+   ],
+   "coexist_with": [],
+   "why": "세 조건 모두 확인"
+  },
+  {
+   "id": "model_note2",
+   "concept_id": "meaning",
+   "element_id": "model_note2",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 0,
+      "word": "새는",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 0,
+      "word": "새는",
+      "edge": "start",
+      "offset_frames": 8
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 4,
+      "word": "기체뿐.",
+      "edge": "end",
+      "offset_frames": 20
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 4,
+      "word": "기체뿐.",
+      "edge": "end",
+      "offset_frames": 28
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "'가장 가벼운 기체만 샌다'는 모델 예측 표기"
+  },
+  {
+   "id": "heavy_layer",
+   "concept_id": "meaning",
+   "element_id": "heavy_layer",
+   "kind": "diagram",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 8,
+      "word": "남아",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 11,
+      "word": "있고,",
+      "edge": "end",
+      "offset_frames": 0
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 8,
+      "word": "높습니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 8,
+      "word": "높습니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "아래 남은 무거운 기체층 띠"
+  },
+  {
+   "id": "ocean_condition",
+   "concept_id": "meaning",
+   "element_id": "ocean_condition_text",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 12,
+      "word": "온실효과를",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 12,
+      "word": "온실효과를",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 0,
+      "word": "이",
+      "edge": "start",
+      "offset_frames": -6
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 0,
+      "word": "이",
+      "edge": "start",
+      "offset_frames": 2
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "heavy_layer"
+    }
+   ],
+   "coexist_with": [],
+   "why": "조건 문구"
+  },
+  {
+   "id": "ocean_value",
+   "concept_id": "meaning",
+   "element_id": "ocean_value",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 14,
+      "word": "액체",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s14",
+      "token_index": 14,
+      "word": "액체",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 0,
+      "word": "이",
+      "edge": "start",
+      "offset_frames": -6
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 0,
+      "word": "이",
+      "edge": "start",
+      "offset_frames": 2
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [
+    {
+     "event_id": "ocean_condition"
+    }
+   ],
+   "coexist_with": [],
+   "why": "바다 가능성 값 — 조건과 완전 표시 구간이 겹친다"
+  },
+  {
+   "id": "age_label",
+   "concept_id": "meaning",
+   "element_id": "age_label",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 2,
+      "word": "삼십억",
+      "edge": "start",
+      "offset_frames": -2
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 2,
+      "word": "삼십억",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 8,
+      "word": "높습니다.",
+      "edge": "end",
+      "offset_frames": -2
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s15",
+      "token_index": 8,
+      "word": "높습니다.",
+      "edge": "end",
+      "offset_frames": 8
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "30억년 유지 가능성"
+  },
+  {
+   "id": "variability_note",
+   "concept_id": "close",
+   "element_id": "variability_note",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s16",
+      "token_index": 0,
+      "word": "다만",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s16",
+      "token_index": 0,
+      "word": "다만",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s16",
+      "token_index": 8,
+      "word": "해석입니다.",
+      "edge": "end",
+      "offset_frames": 14
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s16",
+      "token_index": 8,
+      "word": "해석입니다.",
+      "edge": "end",
+      "offset_frames": 22
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "2025 미검출·변동 해석"
+  },
+  {
+   "id": "credits_show",
+   "concept_id": "close",
+   "element_id": "credits",
+   "kind": "label",
+   "timing": {
+    "from": {
+     "anchor": {
+      "line": "s17",
+      "token_index": 0,
+      "word": "새어",
+      "edge": "start",
+      "offset_frames": 0
+     }
+    },
+    "settled": {
+     "anchor": {
+      "line": "s17",
+      "token_index": 0,
+      "word": "새어",
+      "edge": "start",
+      "offset_frames": 10
+     }
+    },
+    "to": {
+     "anchor": {
+      "line": "s17",
+      "token_index": 9,
+      "word": "세웠습니다.",
+      "edge": "end",
+      "offset_frames": 40
+     }
+    },
+    "end": {
+     "anchor": {
+      "line": "s17",
+      "token_index": 9,
+      "word": "세웠습니다.",
+      "edge": "end",
+      "offset_frames": 48
+     }
+    }
+   },
+   "easing": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in"
+   },
+   "depends_on": [],
+   "coexist_with": [],
+   "why": "출처 크레딧"
+  }
+ ],
+ "audio_cues": [
+  {
+   "id": "strip_rush",
+   "kind": "sfx",
+   "bind": {
+    "event_id": "strip_push",
+    "point": "from",
+    "offset_frames": 0
+   },
+   "asset": "audio/sfx_rush.wav",
+   "gain_db": -14
+  },
+  {
+   "id": "rise_shimmer",
+   "kind": "sfx",
+   "bind": {
+    "event_id": "light_rise",
+    "point": "from",
+    "offset_frames": 0
+   },
+   "asset": "audio/sfx_shimmer.wav",
+   "gain_db": -16
+  },
+  {
+   "id": "dip_tick",
+   "kind": "sfx",
+   "bind": {
+    "event_id": "helium_dip",
+    "point": "settled",
+    "offset_frames": 0
+   },
+   "asset": "audio/sfx_tick.wav",
+   "gain_db": -12
+  }
+ ]
+}

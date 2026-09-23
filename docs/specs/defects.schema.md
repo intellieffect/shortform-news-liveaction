@@ -1,6 +1,6 @@
 # defects.json — 결함 장부 스키마
 
-`docs/defects.json` 은 편 1~8 이후 모든 편의 **품질 결함 전수 장부**다. 채점은 `npm run eval:defects`(check:all 에 편입). 원 행은 고치지 않는다 — 정정은 새 행 append(원문 보존).
+`docs/defects.json` 은 이 저장소에서 제작한 편의 **품질 결함 전수 장부**다. 제작사 로컬 장부라 저장소에 싣지 않으며, 없으면 첫 행을 기록할 때(`npm run gate:log -- to-defects <편id> --write`) 만든다. 채점은 `npm run eval:defects`(`check:all --history`에서 실행). 원 행은 고치지 않는다 — 정정은 새 행 append(원문 보존).
 
 ## 행 필드
 

@@ -36,7 +36,7 @@ try {
     assert.equal(existsSync(join(repo, "news/invalid")), false);
   });
   check("손상된 로고는 편 생성 전에 거절", () => {
-    const logoPath = join(repo, "presets/hani/brand-assets/v1/assets/logo.png");
+    const logoPath = join(repo, "presets/hani/brand-assets/v2/assets/logo.png");
     const original = readFileSync(logoPath);
     writeFileSync(logoPath, "broken");
     assert.throws(() => startProduction({ ...params, id: "broken_logo" }), /로고/);
@@ -127,9 +127,11 @@ try {
     assert.ok(existsSync(s.context.repository.editorial_schema));
     assert.equal(s.execution.host_session_load, "unverified");
   });
-  check("중단 토큰·실패·입력 변경을 새 시작 경로에서도 유지", () => {
-    const blocked = cli(["begin", id, "narration", "--tool", "synthetic-tts-not-called"], {bridge:true,expected:1});
-    assert.match(blocked.stderr, /first-scene-selection/);
+  check("첫 장면 없이 음성 착수 가능하고 선택적 시험의 중단·입력 변경은 보존", () => {
+    const narration = JSON.parse(cli(["begin", id, "narration", "--tool", "synthetic-tts-not-called"], {bridge:true}).stdout);
+    assert.equal(narration.first_scene.required, false);
+    assert.equal(narration.first_scene.admission_kind, 'optional-trials');
+    failProductionAction(id, narration.id, '합성 테스트: 외부 TTS 호출 안 함', options);
     const token = JSON.parse(cli(["begin", id, "scene_proof", "--output", `out/pilots/${id}/qa/test.png`, "--output", `out/pilots/${id}/qa/test.json`, "--tool", "synthetic-proof-not-called"], { bridge: true }).stdout);
     assert.equal(token.execution.plugin.path, installed);
     assert.equal(token.command.tool, "synthetic-proof-not-called");

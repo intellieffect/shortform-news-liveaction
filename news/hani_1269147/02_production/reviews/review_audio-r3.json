@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "action": "review_audio",
+  "artifact": {
+    "path": "out/pilots/hani_1269147/qa/production-182ca8fa-b685-4e2a-8e6a-802e093326f6.mp4",
+    "sha256": "09e0fc39a1141f25727094b5b829a594aa8daa2a896801cd6f28cd84706b9994",
+    "render_receipt": "273f3ebb-5247-40c9-bdd5-503fd7215ad0"
+  },
+  "source_commit": "9d7c225c495b3b968ccb86d6ac62b977075225d2",
+  "reviewer": {
+    "id": "producer-measurement",
+    "role": "audio-reviewer",
+    "independent": false,
+    "tool": "ffmpeg ebur128/volumedetect/silencedetect + whisper-1 transcript of final mix (no listening)"
+  },
+  "verdict": "incomplete",
+  "raw_report": {
+    "path": "out/pilots/hani_1269147/review/r3/audio-review.raw.md",
+    "sha256": "550aa0946f981d7bbcbf236defc48fc438f5357a1fe7a277febce1b747eea57d"
+  },
+  "evidence": [
+    {
+      "path": "out/pilots/hani_1269147/review/r3/audio-measure.log",
+      "sha256": "6ec96f4839906a0d9a6d140e2c51c4845d9728f0b600371a7a2e46e32424140e"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/mix-transcript.json",
+      "sha256": "2cf0dc25958bfed100d27adbbcf40891ac0d643347c3854e05fb7f3acb93e268"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/silence.log",
+      "sha256": "e1fb8f4ed10b70d933297e37bbadbb9dd83032b4036862eee848504b8cefc00a"
+    }
+  ],
+  "coverage": {
+    "original_frames": [],
+    "mobile_frames": [],
+    "playback_ranges": [],
+    "listened_ranges": [],
+    "fact_ranges": [],
+    "audio_measurement": "out/pilots/hani_1269147/review/r3/audio-measure.log"
+  },
+  "findings": [
+    {
+      "id": "r3-a1",
+      "severity": "minor",
+      "range": [
+        0,
+        2580
+      ],
+      "observation": "실제 청취 미수행. 측정상 발화 탈락·무음 없음, -15.0 LUFS, 전사 유사도 0.941."
+    }
+  ],
+  "rechecks": []
+}

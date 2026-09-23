@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 // 음성·timeline·sync 이전에 실제 공통 자막과 실제 선택 자료로 짧은 합성 시안을 만든다.
-// 렌더 전에 scene_proof 시도를 열고, 렌더 후 관찰 JSON 뼈대를 남긴 뒤 토큰을 열어 둔 채 끝낸다.
+// submit만 scene_proof 시도를 열고 관찰 JSON 뼈대를 남긴다. draft는 탐색 렌더다.
 // 판정은 제작자·검수자가 실물을 본 뒤 직접 적는다. 이 스크립트는 "사용 가능"을 주장하지 않는다.
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { dirname, extname, join } from "node:path";
+import { dirname, extname, join, posix } from "node:path";
 import { createHash } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { REPO, assertPilotId } from "./lib/pilot.mjs";
 import { repositoryPath } from "./lib/production/contracts.mjs";
 import { productionProfileErrors } from "./lib/production-profile.mjs";
+import {FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE} from './lib/production/scene-review.mjs';
 
 import {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_REPORT_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath} from './lib/scene-proof-contract.mjs';
 export {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_REPORT_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath};
@@ -222,6 +223,7 @@ export const validateSceneProofPlan = ({ repo = REPO, id, config, phase = "still
       phase,
       concept_id: concept.id,
       concept: { id: concept.id, question: concept.question, takeaway: concept.takeaway, focus: concept.visual?.focus, purpose: concept.visual?.purpose },
+      motion_required: (concept.visual?.moments ?? []).some(m => m.motion_required),
       component,
       component_path: componentAbs,
       config_path: sceneProofConfigPath(id),
@@ -352,7 +354,12 @@ export const sceneProofReport = (plan, { artifact }) => ({
 
 export const reportPathFor = (output) => output.replace(/\.[^./]+$/, "") + ".json";
 
-const USAGE = "usage: node scripts/scene-proof.mjs <id> --phase still|motion --output <저장소 상대 경로> [--frame N]";
+const USAGE = "usage: node scripts/scene-proof.mjs <id> --phase still|motion --output <저장소 상대 경로> [--frame N] [--mode draft|submit]";
+
+export const draftOutputError = (id, output) => posix.normalize(output) === output && output.startsWith(`out/pilots/${id}/qa/drafts/`) && !output.endsWith('.json')
+  ? null : `draft 출력은 out/pilots/${id}/qa/drafts/ 아래의 이미지·영상이어야 한다: ${output}`;
+export const submittedOutputError = (id, output) => posix.normalize(output).startsWith(`out/pilots/${id}/qa/drafts/`)
+  ? `submit 출력은 draft 영역에 저장할 수 없다: ${output}` : null;
 
 export const parseSceneProofArgs = (argv) => {
   const flags = {};
@@ -362,18 +369,25 @@ export const parseSceneProofArgs = (argv) => {
     if (token.startsWith("--")) flags[token] = argv[++i];
     else if (id === undefined) id = token;
   }
-  return { id, phase: flags["--phase"] ?? "still", output: flags["--output"], frame: flags["--frame"] === undefined ? 0 : Number(flags["--frame"]) };
+  return { id, phase: flags["--phase"] ?? "still", output: flags["--output"], frame: flags["--frame"] === undefined ? 0 : Number(flags["--frame"]), mode: flags["--mode"] ?? "submit" };
 };
 
 const main = async (argv) => {
-  const { id, phase, output, frame } = parseSceneProofArgs(argv);
-  if (!id || !output || !["still", "motion"].includes(phase)) throw new Error(USAGE);
+  const { id, phase, output, frame, mode } = parseSceneProofArgs(argv);
+  if (!id || !output || !["still", "motion"].includes(phase) || !["draft", "submit"].includes(mode)) throw new Error(USAGE);
   if (!Number.isInteger(frame) || frame < 0) throw new Error("--frame은 0 이상의 정수여야 한다");
   const outputPath = safeRepoPath(REPO, output);
   if (!outputPath) throw new Error(`출력은 저장소 안의 상대 경로여야 한다: ${output}`);
   const wantedExt = extname(output).toLowerCase();
   if (phase === "still" && ![".png", ".jpeg", ".jpg"].includes(wantedExt)) throw new Error("still 시안은 .png 또는 .jpeg로 저장한다");
   if (phase === "motion" && wantedExt !== ".mp4") throw new Error("motion 시안은 .mp4로 저장한다");
+  if (mode === "draft") {
+    const error = draftOutputError(id, output);
+    if (error) throw new Error(error);
+  } else {
+    const error = submittedOutputError(id, output);
+    if (error) throw new Error(error);
+  }
 
   const { errors, plan } = loadSceneProofPlan({ repo: REPO, id, phase });
   if (errors.length) throw new Error("설정 검사 실패\n" + errors.map((e) => `  [${e.code}] ${e.message}`).join("\n"));
@@ -389,18 +403,18 @@ const main = async (argv) => {
 
   const reportRel = reportPathFor(output);
   if (reportRel === output) throw new Error("관찰 JSON 경로가 시안 파일과 같다");
-  // 렌더 전에 시도를 연다 — 입력 판본이 결과보다 먼저 고정돼야 한다.
-  const attempt = beginProductionAction(id, "scene_proof", {
+  // 제출 시안만 입력·결과를 고정한다. 탐색 렌더는 착수 게이트의 근거가 아니다.
+  const attempt = mode === "submit" ? beginProductionAction(id, "scene_proof", {
     outputs: [output, reportRel],
     command: { executable: "node", args: ["scripts/scene-proof.mjs", id, "--phase", phase, "--output", output, ...(phase === "still" ? ["--frame", String(frame)] : [])] },
-  });
+  }) : null;
 
   let serveUrl = null;
   let browser = null;
   try {
     prepareSceneProofMedia(plan, { repo: REPO });
     const entry = writeSceneProofEntry(plan, { repo: REPO });
-    serveUrl = await bundle({ entryPoint: entry, publicDir: join(REPO, "public"), webpackOverride: enableTailwind, onProgress: () => undefined });
+    serveUrl = await bundle({ entryPoint: entry, publicDir: join(REPO, "public"), symlinkPublicDir: true, webpackOverride: enableTailwind, onProgress: () => undefined });
     browser = await openBrowser("chrome", { chromeMode: "headless-shell", logLevel: "warn", gl: "angle" });
     const composition = await selectComposition({ serveUrl, id: "SceneProof", puppeteerInstance: browser, logLevel: "warn" });
     mkdirSync(dirname(outputPath), { recursive: true });
@@ -409,9 +423,9 @@ const main = async (argv) => {
     } else {
       await renderMedia({ serveUrl, composition, codec: "h264", imageFormat: "jpeg", outputLocation: outputPath, overwrite: true, puppeteerInstance: browser, chromiumOptions: { gl: "angle" }, logLevel: "warn" });
     }
-    writeFileSync(join(REPO, reportRel), JSON.stringify(sceneProofReport(plan, { artifact: output }), null, 2) + "\n");
+    if (attempt) writeFileSync(join(REPO, reportRel), JSON.stringify(sceneProofReport(plan, { artifact: output }), null, 2) + "\n");
   } catch (error) {
-    failProductionAction(id, attempt.id, error.message);
+    if (attempt) failProductionAction(id, attempt.id, error.message);
     throw error;
   } finally {
     if (browser) await browser.close({ silent: true });
@@ -419,9 +433,18 @@ const main = async (argv) => {
   }
 
   console.log(`시안 ${phase} → ${output}`);
+  if (!attempt) {
+    console.log("탐색 렌더 — 제작 시도·검수 기록 없음. 후보가 정해지면 --mode submit으로 새로 렌더한다.");
+    return;
+  }
   console.log(`관찰 JSON  → ${reportRel}`);
   console.log(`열린 토큰  → ${attempt.id}`);
-  console.log(`초기 검수 → node scripts/produce.mjs review-input ${id} --source scene --phase experience (초견 응답 후 intent). docs/SCENE-PROOF.md 참조`);
+  const gate = readJson(join(REPO, 'news', id, '02_production', 'run.json')).scene_gate;
+  if ([FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE].includes(gate) && phase === 'still' && plan.motion_required) {
+    console.log('이 정지 시안은 제작자가 구도·재료·자막을 확인한다. 동작 의미의 독립 검수는 제출 motion에서 진행한다. @4에서는 motion 한 편만 착수 근거다.');
+  } else {
+    console.log(`초기 검수 → node scripts/produce.mjs review-input ${id} --source scene --phase experience (초견 응답 후 intent). docs/SCENE-PROOF.md 참조`);
+  }
   if (phase === 'motion') console.log('연속 시청이 불가능하면 현재 MP4의 시작·중간·끝 PNG를 실제 확인하고 sampling + provisional을 기록한다. docs/SCENE-PROOF.md 참조');
   console.log("실물을 직접 보고 review와 verdict/observation/tool을 고친 뒤(연속 동작을 실제로 봤을 때만 continuous_viewing·viewed_seconds) " +
     `npm run produce -- finish ${id} ${attempt.id}`);

@@ -1,0 +1,181 @@
+{
+  "schema_version": "cover-generation/v1",
+  "episode": "hani_1269147",
+  "method": "image_generation",
+  "target": "youtube_shorts",
+  "brief": "design/thumbnails/hani_1269147/v1/brief.md",
+  "branding": {
+    "logo_status": "received",
+    "logo_file": "news/hani_1269147/02_production/brand/logo.png",
+    "placeholder_text": "로고 영역",
+    "area_normalized": {
+      "x": 0.3,
+      "y": 0.91,
+      "width": 0.4,
+      "height": 0.06
+    }
+  },
+  "presentation": {
+    "include_style_reference": false
+  },
+  "candidates": [
+    {
+      "id": "A",
+      "copy": [
+        "대기가 새는 행성이",
+        "왜 반가운 소식일까"
+      ],
+      "hook": "역설: 대기를 잃는 행성이 왜 반가운가",
+      "visual_intent": "붉은 별빛 아래 암석 행성, 림에서 옅은 안개가 떠오름(분출 아님)",
+      "prompt_file": "design/thumbnails/hani_1269147/v1/prompts/A.txt",
+      "reference_inputs": [
+        {
+          "file": "design/thumbnails/hani_1269147/v1/references/style-solar-swirl.png",
+          "role": "style",
+          "handling": "reinterpret",
+          "source": "plugin assets/cover-style/solar-swirl.png",
+          "license": "내부 기준 이미지"
+        },
+        {
+          "file": "design/thumbnails/hani_1269147/v1/references/subject-planet_hero.png",
+          "role": "subject",
+          "handling": "reinterpret",
+          "source": "02_production/media/planet_hero.png (gpt_image_2_5 생성 상상도)",
+          "license": "생성물"
+        }
+      ],
+      "generation": {
+        "tool": "Higgsfield MCP generate_image_batch",
+        "model": "gpt_image_2_5 (quality high, 2k, 9:16)",
+        "job_id": "f07400e0-0ebc-4fe6-845c-e418de666540",
+        "original_output": "design/thumbnails/hani_1269147/v1/A.png"
+      },
+      "output": {
+        "file": "out/pilots/hani_1269147/thumbnails/v1/A.png",
+        "width": 1520,
+        "height": 2688
+      },
+      "revision_of": null,
+      "review": {
+        "status": "reviewed",
+        "checked": [
+          "원본 1520×2688 실제 크기 확인",
+          "제목 두 줄·줄바꿈·흰/연두 확인, 추가 텍스트 없음",
+          "하단 중앙 로고 영역(91%, 높이 6%)에 수령 로고 v2를 ffmpeg 합성(생성 아님)",
+          "360폭 축소 화면에서 제목·장면 식별 확인"
+        ],
+        "issues": [
+          "제목 시작 높이가 기준(18%)보다 약간 높음(A≈14%) — 인상 범위 내로 유지",
+          "연속 배포 UI 크롭은 미확인"
+        ]
+      },
+      "credits": [
+        "행성·별 장면: AI 생성 상상도(실제 관측 아님)",
+        "로고: 수령 패키지 v2"
+      ]
+    },
+    {
+      "id": "B",
+      "copy": [
+        "49광년 밖 암석 행성",
+        "대기 있다는 첫 증거"
+      ],
+      "hook": "증거: 통과 관측의 순간",
+      "visual_intent": "붉은 별 원반 앞 작은 검은 행성, 가장자리만 푸르게(대기)",
+      "prompt_file": "design/thumbnails/hani_1269147/v1/prompts/B.txt",
+      "reference_inputs": [
+        {
+          "file": "design/thumbnails/hani_1269147/v1/references/style-solar-swirl.png",
+          "role": "style",
+          "handling": "reinterpret",
+          "source": "plugin assets/cover-style/solar-swirl.png",
+          "license": "내부 기준 이미지"
+        }
+      ],
+      "generation": {
+        "tool": "Higgsfield MCP generate_image_batch",
+        "model": "gpt_image_2_5 (quality high, 2k, 9:16)",
+        "job_id": "a5816052-29ed-4108-ad7d-beee8aa17a00",
+        "original_output": "design/thumbnails/hani_1269147/v1/B.png"
+      },
+      "output": {
+        "file": "out/pilots/hani_1269147/thumbnails/v1/B.png",
+        "width": 1520,
+        "height": 2688
+      },
+      "revision_of": null,
+      "review": {
+        "status": "reviewed",
+        "checked": [
+          "원본 1520×2688 실제 크기 확인",
+          "제목 두 줄·줄바꿈·흰/연두 확인, 추가 텍스트 없음",
+          "하단 중앙 로고 영역(91%, 높이 6%)에 수령 로고 v2를 ffmpeg 합성(생성 아님)",
+          "360폭 축소 화면에서 제목·장면 식별 확인"
+        ],
+        "issues": [
+          "제목 시작 높이가 기준(18%)보다 약간 높음(A≈14%) — 인상 범위 내로 유지",
+          "연속 배포 UI 크롭은 미확인"
+        ]
+      },
+      "credits": [
+        "행성·별 장면: AI 생성 상상도(실제 관측 아님)",
+        "로고: 수령 패키지 v2"
+      ]
+    },
+    {
+      "id": "C",
+      "copy": [
+        "적색왜성 옆에서도",
+        "대기가 살아남았다"
+      ],
+      "hook": "관계: 적색왜성의 위협 속 대기 유지",
+      "visual_intent": "위 작은 붉은 별, 아래 온전한 푸른 halo의 행성(크기·거리 개념적)",
+      "prompt_file": "design/thumbnails/hani_1269147/v1/prompts/C.txt",
+      "reference_inputs": [
+        {
+          "file": "design/thumbnails/hani_1269147/v1/references/style-solar-swirl.png",
+          "role": "style",
+          "handling": "reinterpret",
+          "source": "plugin assets/cover-style/solar-swirl.png",
+          "license": "내부 기준 이미지"
+        },
+        {
+          "file": "design/thumbnails/hani_1269147/v1/references/subject-planet_hero.png",
+          "role": "subject",
+          "handling": "reinterpret",
+          "source": "02_production/media/planet_hero.png (gpt_image_2_5 생성 상상도)",
+          "license": "생성물"
+        }
+      ],
+      "generation": {
+        "tool": "Higgsfield MCP generate_image_batch",
+        "model": "gpt_image_2_5 (quality high, 2k, 9:16)",
+        "job_id": "29a2fb67-9ef6-4f39-9994-48d75b08ab7b",
+        "original_output": "design/thumbnails/hani_1269147/v1/C.png"
+      },
+      "output": {
+        "file": "out/pilots/hani_1269147/thumbnails/v1/C.png",
+        "width": 1520,
+        "height": 2688
+      },
+      "revision_of": null,
+      "review": {
+        "status": "reviewed",
+        "checked": [
+          "원본 1520×2688 실제 크기 확인",
+          "제목 두 줄·줄바꿈·흰/연두 확인, 추가 텍스트 없음",
+          "하단 중앙 로고 영역(91%, 높이 6%)에 수령 로고 v2를 ffmpeg 합성(생성 아님)",
+          "360폭 축소 화면에서 제목·장면 식별 확인"
+        ],
+        "issues": [
+          "제목 시작 높이가 기준(18%)보다 약간 높음(A≈14%) — 인상 범위 내로 유지",
+          "연속 배포 UI 크롭은 미확인"
+        ]
+      },
+      "credits": [
+        "행성·별 장면: AI 생성 상상도(실제 관측 아님)",
+        "로고: 수령 패키지 v2"
+      ]
+    }
+  ]
+}

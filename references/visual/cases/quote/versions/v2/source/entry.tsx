@@ -1,0 +1,11 @@
+import {AbsoluteFill,Composition,registerRoot,staticFile} from 'remotion';
+import {Audio} from '@remotion/media';
+import {loadFont} from '@remotion/fonts';
+import {EditorialCaptionTrack} from '../../../../../../../src/lib/editorial/visual';
+import timing from './timing.json';
+void loadFont({family:'GmarketSans',url:staticFile('fonts/GmarketSansTTFMedium.ttf'),weight:'500'});
+void loadFont({family:'GmarketSans',url:staticFile('fonts/GmarketSansTTFBold.ttf'),weight:'700'});
+import {QuoteScene as Visual} from './Quote';
+void loadFont({family:'QuoteSerif',url:staticFile('references/quote/v2/Times.ttf'),weight:'400'});
+const Scene=()=> <AbsoluteFill><Visual/><Audio src={staticFile('references/quote/v2/5-narration.wav')}/><EditorialCaptionTrack lines={timing.captions} fps={30}/></AbsoluteFill>;
+registerRoot(()=> <Composition id="ReferenceQuote" component={Scene} width={1080} height={1920} fps={30} durationInFrames={timing.frames}/>);

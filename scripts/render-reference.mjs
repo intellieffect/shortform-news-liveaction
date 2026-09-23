@@ -7,7 +7,7 @@ import { readReferenceCollection } from "./lib/visual-references.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url)),
   id = process.argv[2];
 const c = readReferenceCollection(root).cases.find((c) => c.id === id);
-if (!c) throw new Error("사례 ID 필요: scale|observation|scattering");
+if (!c) throw new Error("collection.json에 등록된 사례 ID가 필요합니다");
 execFileSync(
   process.execPath,
   [join(root, "scripts/prepare-references.mjs"), id],

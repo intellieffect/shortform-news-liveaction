@@ -1,0 +1,44 @@
+{
+ "schema_version": "1.0",
+ "master_mix": false,
+ "narration": {
+  "file": "audio/narration.wav",
+  "gain_db": 0
+ },
+ "bgm": {
+  "file": "audio/bgm.mp3",
+  "gain_db": -7,
+  "duck_db": -9,
+  "duck_attack_sec": 0.25,
+  "duck_release_sec": 0.8,
+  "fade_in_sec": 1.5,
+  "fade_out_sec": 3.0,
+  "start_offset_sec": 0,
+  "loop": false,
+  "credit": "\"Numinous Shine\" Kevin MacLeod (incompetech.com) — Licensed under Creative Commons: By Attribution 4.0 — http://creativecommons.org/licenses/by/4.0/"
+ },
+ "sfx": [
+  {
+   "id": "soft_tick",
+   "file": "audio/sfx_soft_tick.wav",
+   "gain_db": -14
+  },
+  {
+   "id": "whoosh",
+   "file": "audio/sfx_whoosh.wav",
+   "gain_db": -16
+  },
+  {
+   "id": "low_tail",
+   "file": "audio/sfx_low_tail.wav",
+   "gain_db": -14
+  }
+ ],
+ "master_gain_db": -1.0,
+ "measured": {
+  "integrated_lufs": null,
+  "true_peak_dbtp": null,
+  "measured_at": null,
+  "lra_lu": null
+ }
+}

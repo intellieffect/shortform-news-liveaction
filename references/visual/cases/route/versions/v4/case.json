@@ -1,0 +1,91 @@
+{
+  "id": "route",
+  "title": "경로와 목적지를 한 장면에서 연결하기",
+  "seconds": 8.733333333333333,
+  "goal": "지구 저궤도 비행 뒤 태평양으로 돌아오는 계획의 공간 관계를 설명한다.",
+  "transfer": [
+    "이동 대상·경로·목적지의 관계를 발화와 연결한다.",
+    "장면 내부 카메라 이동으로 공간 맥락을 드러내며 화면 가장자리를 채운다."
+  ],
+  "specific": [
+    "통합 생성된 계획 개념도이며 정확한 1.5회 궤도와 실측 좌표는 검증되지 않았다.",
+    "영상 평면을 확대·축소하지 않으며 생성 원본 내부 카메라 동작을 사용한다."
+  ],
+  "beats": [
+    {
+      "time": 0.64,
+      "note": "계획임을 나레이션으로 밝힌다."
+    },
+    {
+      "time": 1.56,
+      "note": "궤도와 이동점을 따라간다."
+    },
+    {
+      "time": 4.25,
+      "note": "태평양 발화에서 해당 해역을 본다."
+    },
+    {
+      "time": 6.35,
+      "note": "귀환 표시와 주변 지형을 관찰한다."
+    }
+  ],
+  "composition": "ReferenceRoute",
+  "gain": 0,
+  "version": "v4",
+  "original_file": "06-starfall-route-generated-v4.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "dd07804d82b15fe5a99b34f5e1ed3b22cb36e84240904ee195043a6988c8bfac",
+  "files": {
+    "src": "references/visual/cases/route/versions/v4/final.mp4",
+    "poster": "references/visual/cases/route/versions/v4/poster.jpg",
+    "walkthrough": "references/visual/cases/route/versions/v4/walkthrough.md",
+    "credits": "references/visual/cases/route/versions/v4/credits.md",
+    "sourceGuide": "references/visual/cases/route/versions/v4/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/route/versions/v4/assets/06-generated-unified-v3.mp4",
+      "sha256": "b4cc35f02f2d549e56fbf4808490f59f76db1838f9a20ce6756f387a11310d07"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/assets/6-narration-polish-v2.wav",
+      "sha256": "df4f05cb5e5eb4befae80ce8b854033355ca3025613fcc396853f0da2e955e5c"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/credits.md",
+      "sha256": "db5489ffc7731e9f88f62a2faa960580acc13afcf8ca2a0e41490e0d6063ecb9"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/final.mp4",
+      "sha256": "dd07804d82b15fe5a99b34f5e1ed3b22cb36e84240904ee195043a6988c8bfac"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/poster.jpg",
+      "sha256": "eddbece8deeba44a58c5fd127980e673e5c09878fe68a0684df35a1e7235ac68"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/source/README.md",
+      "sha256": "24fc2efef6d40f0136cb7e1978d552901abf8bff5f1961822274f65a923245e4"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/source/entry.tsx",
+      "sha256": "09232ad401f7d9814679c42dd1e0b24337ad26d427d9c086a2a6f85e561ea505"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/source/generation-prompt.txt",
+      "sha256": "45d4a54de1b60d88ef99e465f9a9081f41ff34d537ab8f8f3056e6307884727b"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/source/timing.json",
+      "sha256": "06f26d300879e06334e93a6f080e08c317f3a55aa6571077c2f6fec39771848b"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/validation.md",
+      "sha256": "18dc4f1199865a7810dc37cfc8b0e78a086bbef8e0f7e783716162436184c241"
+    },
+    {
+      "path": "references/visual/cases/route/versions/v4/walkthrough.md",
+      "sha256": "b6ac2885e3972152f4c5efa6bc61cb77cd8adc8bdcbca0ce02d19126c6334c29"
+    }
+  ]
+}

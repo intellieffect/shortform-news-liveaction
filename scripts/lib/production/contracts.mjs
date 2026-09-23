@@ -89,7 +89,7 @@ export const recipe = (w, action) => {
     timeline: {
       deps: ["narration"],
       inputs: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p).concat(
-        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/visual-plan.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles"))),
+        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/screen-text-policy.mjs", "scripts/lib/visual-plan.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles"))),
       required: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p),
       outputs: [p("timeline.json")],
     },

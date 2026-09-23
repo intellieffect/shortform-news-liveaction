@@ -1,0 +1,672 @@
+{
+  "schema_version": "1.0",
+  "action": "review_facts",
+  "artifact": {
+    "path": "out/pilots/hani_1269147/qa/production-182ca8fa-b685-4e2a-8e6a-802e093326f6.mp4",
+    "sha256": "09e0fc39a1141f25727094b5b829a594aa8daa2a896801cd6f28cd84706b9994",
+    "render_receipt": "273f3ebb-5247-40c9-bdd5-503fd7215ad0"
+  },
+  "source_commit": "9d7c225c495b3b968ccb86d6ac62b977075225d2",
+  "reviewer": {
+    "id": "fact-check",
+    "role": "fact-check",
+    "independent": true,
+    "tool": "ffmpeg frame sampling + narration.json text"
+  },
+  "verdict": "pass",
+  "raw_report": {
+    "path": "out/pilots/hani_1269147/review/r3/fact-check-r3.raw.md",
+    "sha256": "3e1c5cc68aecdad3664c907d54a48b969ce4b831c082bc6695e0b2da11f94d87"
+  },
+  "evidence": [
+    {
+      "path": "news/hani_1269147/02_production/facts.md",
+      "sha256": "0cc545c48c1d253931415c90f8f96664c6d7782d8ecfa78d8cdcf4719cc6bc02"
+    },
+    {
+      "path": "news/hani_1269147/02_production/narration.json",
+      "sha256": "bd71688a2808c288a47fcb50e41b53f449cf60cdf2c1896234afc3481fc6cea0"
+    },
+    {
+      "path": "news/hani_1269147/00_brief/primary-sources.md",
+      "sha256": "ad5a6b5017c155bf6bbb0633236e216ab301818d082805c51bf838e87aeb9ee8"
+    },
+    {
+      "path": "news/hani_1269147/01_input/01_원문_기사/[원문]또다른_지구_생명체_3대_조건_외계행성.md",
+      "sha256": "1fc8d9325f0b77f1cc37256a6e8a8de965fce6802833885ad1943c15f71643bb"
+    },
+    {
+      "path": "news/hani_1269147/01_input/05_참고자료/RIGHTS.md",
+      "sha256": "bd50bbad0cf686c0b653631dab35f72f48e29bd000b27f11df59ab63d8ba81d5"
+    },
+    {
+      "path": "src/editorial/episodes/hani_1269147.tsx",
+      "sha256": "e027cbbd30172854c303db97d9ac7e62b0000749493184f3e6d86effec1f2f03"
+    },
+    {
+      "path": "news/hani_1269147/02_production/concepts.json",
+      "sha256": "b27966a8472ed7463c1a7197449195b8749bfdc35ccb1b2ee1b7034d5ca09fcb"
+    },
+    {
+      "path": "pilots/hani_1269147/timeline.json",
+      "sha256": "2fb87e32775bcae1b336dde8cf8bbb0df6a88c3a6ecc95c22d07a04d7cc263fb"
+    },
+    {
+      "path": "news/hani_1269147/02_production/direction.md",
+      "sha256": "18395925d0ef467a41c0fcb3dc27d087bcb94e0e46b3c6edff87644164dda474"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f30.png",
+      "sha256": "90593771777457cfa5f226edaf35165577a23f66840ed15592a255211dcb219d"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f150.png",
+      "sha256": "3506c569dc318b43ac44f3b528c96a8a7ac98a7b834d325e16d553ea4efcb844"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f250.png",
+      "sha256": "d9b190ffaae6aaa76622b3036d301e757200ebda03e0119c677f33005602f4e3"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f420.png",
+      "sha256": "caf51946549d8c6cd071b0c91a76947f7550157974488fdc7b05bf37c414f884"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f600.png",
+      "sha256": "9f7ab3b51d9c8c054891a8a1db77cbb0e809469ca49672d51c9ead218acee903"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f700.png",
+      "sha256": "accb6e98cc91d5dfdb6fc55c2522772d712053842f46618c604f1dde8a9a4e37"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f780.png",
+      "sha256": "48dbaa83daef72e2914f13d160ecb7e866cc866c80e0207fe2ff6f756844fdd0"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f870.png",
+      "sha256": "1607e123e4f005eb126817a96630d0d69d54dd32ec30c4c8d489fda03fef2653"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f930.png",
+      "sha256": "5635ee59291e0648cb610334c1225e41bcec340ddb2257b6c14e54a1251746ee"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f940.png",
+      "sha256": "5598bd2a9d622adfb26bd24c7f455cfda0b451b72d83e4ad0589c7836d9aa301"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f943.png",
+      "sha256": "4f806726c30b9007660dd723c412c7e5ae6b1b3406c5c9920102dcafbfbb19bc"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f944.png",
+      "sha256": "4f806726c30b9007660dd723c412c7e5ae6b1b3406c5c9920102dcafbfbb19bc"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f946.png",
+      "sha256": "67ed4e8c18d1fe3e943382607b0737850af322ba314aefbf59a744978509b02b"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f950.png",
+      "sha256": "e13c1933f8b9ec40f5281f94a731c3ebd8edbc953c7adf763a5fcd9cc2f47b7b"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f956.png",
+      "sha256": "b7477b670e7d7d0fddbfc18dfa3ba33999ea354c14d81e6ad68e73d8f0a830e5"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f960.png",
+      "sha256": "b432e5a718a0ac621f0ce21bd0e055fa247fe6f650eb8e9206c1aa3c740e65a4"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1000.png",
+      "sha256": "c1142d36a01a9d3bae5c774d1fd5698242ff6875b8bf6fb6c86a573c6fbcf8b9"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1100.png",
+      "sha256": "933aef2b24e2b214be0cb93820e82e9928cf10e2d4db0169511b55baf4cbaf8c"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1250.png",
+      "sha256": "ee59dfb85b4f8df5e2d9ab83efd5bc110ef160b9dd47a786ce0a9d78e9a6d851"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1320.png",
+      "sha256": "a978ee1b4e8e13629012c91b3af75f301a8e0b6db9c6ce999edbbf95a9cdc520"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1400.png",
+      "sha256": "558dbcdd1749dfcae22fd438e60c1ad37f75e8788e982b42a95d83f9ecdb6dc4"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1470.png",
+      "sha256": "a9d3603b3fe3e34bd2d3a6e7f6a71018be295066f9d8b2bf78fd516a5848cc4a"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1560.png",
+      "sha256": "7b9693d2330d1f661e029b73bba7094f8a02c28137b8d25e8a512aa3bd9fc498"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1640.png",
+      "sha256": "29c457584e07d925df85e97c5a0b78ed3e1d36a9ddcb38a991364d25338344c0"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1700.png",
+      "sha256": "1e0e41b6d4dbdf7618c0703c87d7f48ea80010116f854eb40523ed95b6f01213"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1725.png",
+      "sha256": "d69b06a48d07078908610975bf3316976d54282dbf2a4cfdea7033cf515c19cb"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1760.png",
+      "sha256": "a5522f93aee142f11fd21f058a0ebf1035c86d0017956e158bbc3716132e9760"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1850.png",
+      "sha256": "202b85e295bf774ec8e1eb79d2af7c9f3648530d55b0f693fdcd684fd2c65bdf"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1898.png",
+      "sha256": "586b6da9bcd254095f0a2d9d91054d97eaf1f80f466f6a6adb7a434f1639b2b8"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1905.png",
+      "sha256": "4bc789877c46c6c2dd9796001533eb58916964dbf17a5324ccf3d414d1fea549"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1915.png",
+      "sha256": "ce531bbcb3dc62abec8c39b4383dcca672eecd6aa3f34c83e0713c525997afff"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1930.png",
+      "sha256": "36d5d6c682ade6ce230d8757aca06cce89474678cd48cdf14764bb3561e2f6ad"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1960.png",
+      "sha256": "37daf3e27fce70fa3964ac2480c5634a8cd67eb1f4b5293203d4b52ca7f25f6e"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1975.png",
+      "sha256": "eab69a2ae9aedbd1370b20d60a55039742e6073bdc17f7e2ccb572010b90ab59"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1985.png",
+      "sha256": "285307aef84af59a1fb437a0113290dc14c9215bb93b69c9584fef1d7949d568"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f1993.png",
+      "sha256": "c4d544f4d4437cf605713dc29d0b6100a44c6731a160a3117a27fb800bdeab23"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2000.png",
+      "sha256": "a30c3fe3e406b008a3f243ccb6f877508258217c1e3eec2580f9ec98623c5c69"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2010.png",
+      "sha256": "0c30b91859b8f2bbb181c30d155f1efb035256f031fb3aa88ce055df39c04b70"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2030.png",
+      "sha256": "22a7c430725b204291293d54f8eae25a95c8aff71997a7df524664d13430c2dd"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2060.png",
+      "sha256": "f3abd21d533e9973780a08ff01ead985aa788092cba0a98001415d031b38df3c"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2100.png",
+      "sha256": "b5a26f40ac5097e4f75bd7c1d2ce93d16491887a468b0397a574b4cbf318009c"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2125.png",
+      "sha256": "44d233925f464bb0ad5a3f761b1aad44b600a99648f38ca63dd06f32ed181e6b"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2150.png",
+      "sha256": "83989a08c313d659f8d769353f6d16e7570e1d002dcb6eabbe21864549025c32"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2200.png",
+      "sha256": "5f94c0993af91d6d148983f94af5650da84f9666f87ac6bcc9c664e8d7eccdeb"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2230.png",
+      "sha256": "73b6ed7c31a219a3b5304d4a7a615f050ab803a5cb959af5f98f10a6e4588310"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2240.png",
+      "sha256": "236be6195d5372ed39c24a7ed635183e708cf89e7b38d5771ffd08d428f68150"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2250.png",
+      "sha256": "348bc3091a9d280010dbded9652ac8ee21dfe0be7c1b613c25d7931945f2d100"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2320.png",
+      "sha256": "4b6920fd0fe819f818ee809a3fa957359d2af176105e78d84bf146cc29d8766a"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2400.png",
+      "sha256": "1de26aa82eb7702571929aebbc6b76a050acb589ee5c3fddd614acd94017f186"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2480.png",
+      "sha256": "f164bad7d3396f86032db466bd29bfee8b51bdb32ceab1ee81584a4fb610e66e"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2540.png",
+      "sha256": "15ad08b5cc970470613c92ecb28438ccaa6774fa5d597e02fd620c797c816268"
+    },
+    {
+      "path": "out/pilots/hani_1269147/review/r3/fact-check/f2578.png",
+      "sha256": "af774027080152dbe191a01f3376a02fe4c6347eca43b6136b810e5a6c771b1b"
+    }
+  ],
+  "coverage": {
+    "original_frames": [
+      {
+        "frame": 30,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f30.png"
+      },
+      {
+        "frame": 150,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f150.png"
+      },
+      {
+        "frame": 250,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f250.png"
+      },
+      {
+        "frame": 420,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f420.png"
+      },
+      {
+        "frame": 600,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f600.png"
+      },
+      {
+        "frame": 700,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f700.png"
+      },
+      {
+        "frame": 780,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f780.png"
+      },
+      {
+        "frame": 870,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f870.png"
+      },
+      {
+        "frame": 930,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f930.png"
+      },
+      {
+        "frame": 940,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f940.png"
+      },
+      {
+        "frame": 943,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f943.png"
+      },
+      {
+        "frame": 944,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f944.png"
+      },
+      {
+        "frame": 946,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f946.png"
+      },
+      {
+        "frame": 950,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f950.png"
+      },
+      {
+        "frame": 956,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f956.png"
+      },
+      {
+        "frame": 960,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f960.png"
+      },
+      {
+        "frame": 1000,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1000.png"
+      },
+      {
+        "frame": 1100,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1100.png"
+      },
+      {
+        "frame": 1250,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1250.png"
+      },
+      {
+        "frame": 1320,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1320.png"
+      },
+      {
+        "frame": 1400,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1400.png"
+      },
+      {
+        "frame": 1470,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1470.png"
+      },
+      {
+        "frame": 1560,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1560.png"
+      },
+      {
+        "frame": 1640,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1640.png"
+      },
+      {
+        "frame": 1700,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1700.png"
+      },
+      {
+        "frame": 1725,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1725.png"
+      },
+      {
+        "frame": 1760,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1760.png"
+      },
+      {
+        "frame": 1850,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1850.png"
+      },
+      {
+        "frame": 1898,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1898.png"
+      },
+      {
+        "frame": 1905,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1905.png"
+      },
+      {
+        "frame": 1915,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1915.png"
+      },
+      {
+        "frame": 1930,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1930.png"
+      },
+      {
+        "frame": 1960,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1960.png"
+      },
+      {
+        "frame": 1975,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1975.png"
+      },
+      {
+        "frame": 1985,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1985.png"
+      },
+      {
+        "frame": 1993,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f1993.png"
+      },
+      {
+        "frame": 2000,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2000.png"
+      },
+      {
+        "frame": 2010,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2010.png"
+      },
+      {
+        "frame": 2030,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2030.png"
+      },
+      {
+        "frame": 2060,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2060.png"
+      },
+      {
+        "frame": 2100,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2100.png"
+      },
+      {
+        "frame": 2125,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2125.png"
+      },
+      {
+        "frame": 2150,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2150.png"
+      },
+      {
+        "frame": 2200,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2200.png"
+      },
+      {
+        "frame": 2230,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2230.png"
+      },
+      {
+        "frame": 2240,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2240.png"
+      },
+      {
+        "frame": 2250,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2250.png"
+      },
+      {
+        "frame": 2320,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2320.png"
+      },
+      {
+        "frame": 2400,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2400.png"
+      },
+      {
+        "frame": 2480,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2480.png"
+      },
+      {
+        "frame": 2540,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2540.png"
+      },
+      {
+        "frame": 2578,
+        "evidence": "out/pilots/hani_1269147/review/r3/fact-check/f2578.png"
+      }
+    ],
+    "mobile_frames": [],
+    "playback_ranges": [],
+    "listened_ranges": [],
+    "fact_ranges": [
+      [
+        2,
+        114
+      ],
+      [
+        132,
+        233
+      ],
+      [
+        238,
+        329
+      ],
+      [
+        342,
+        494
+      ],
+      [
+        502,
+        656
+      ],
+      [
+        672,
+        801
+      ],
+      [
+        822,
+        934
+      ],
+      [
+        957,
+        1167
+      ],
+      [
+        1180,
+        1306
+      ],
+      [
+        1313,
+        1469
+      ],
+      [
+        1489,
+        1625
+      ],
+      [
+        1624,
+        1723
+      ],
+      [
+        1740,
+        1886
+      ],
+      [
+        1903,
+        2110
+      ],
+      [
+        2118,
+        2229
+      ],
+      [
+        2243,
+        2365
+      ],
+      [
+        2364,
+        2509
+      ],
+      [
+        0,
+        2580
+      ]
+    ],
+    "audio_measurement": null,
+    "notes": " r1/r2 이슈 재확인(10건: fixed 9, open 1 minor)은 r2 토큰이 finish 전 입력 변경으로 실패 기록되어 정식 receipt가 없으므로 rechecks 배열 대신 raw_report(fact-check-r3.raw.md)에 원문 보존. "
+  },
+  "findings": [
+    {
+      "id": "heavyband",
+      "severity": "minor",
+      "range": [
+        2120,
+        2237
+      ],
+      "observation": "heavy_layer 띠 앞부분은 수정됨: 1995(s14 「남아」)에 들어오고 2010에 자막 「있을 수 있고」와 함께 보임(f2000, f2010, f2030). 남은 부분: 조건 상자 「무거운 기체가 남아 있을 수 있고, 온실효과가 있다면」가 2120에 빠진 뒤에도 띠가 s15 끝 2237까지 남음. [2120,2136)에는 자막 「이 대기는 30억 년 넘게」뿐이고 가능성 표기가 없음(strip 2112–2140). 2136부터 붙는 「가능성 높음 · 연구진 추산」은 나이 라벨이지 무거운 기체층 표기가 아님(f2150, f2200, f2230). 내레이션이 가능성 표현을 담고 있어 minor."
+    }
+  ],
+  "rechecks": [],
+  "rechecks_unrecorded_issues": [
+    {
+      "issue": "r2:b1rest",
+      "resolution_id": null,
+      "range": [
+        1902,
+        1991
+      ],
+      "verdict": "fixed",
+      "observation": "s14 첫 절 「새는 건 가장 가벼운 기체뿐.」(음성·자막 1903–1963)과 함께 [1902,1991)에 테두리 라벨 「연구진 모델 예측」(model_note2)이 표시됨(f1905, f1915, f1930, f1960, f1975, f1985; f1993에서 사라짐, s14 전 f1898에는 없음). 이 절이 모델(F11, 기사 12행 「컴퓨터 모델링을 통해 추론」)로 표시됨. 원고는 바뀌지 않았고 모델 조건은 화면 라벨이 전달함."
+    },
+    {
+      "issue": "r2:m2label",
+      "resolution_id": null,
+      "range": [
+        2136,
+        2237
+      ],
+      "verdict": "fixed",
+      "observation": "라벨이 「이 대기 / 30억 년 넘게 유지돼 왔을 / 가능성 높음 · 연구진 추산」으로 렌더됨(f2150, f2200, f2230). F22·기사 23행 「30억년 이상 유지돼 왔을 가능성이 높다」와 일치. tsx L382 「넘게 유지돼 왔을」."
+    },
+    {
+      "issue": "r2:gap945",
+      "resolution_id": null,
+      "range": [
+        938,
+        960
+      ],
+      "verdict": "fixed",
+      "observation": "strip 938–949: 938–941 TRAPPIST 개념도와 라벨이 흐려짐, 942–944 코드로 그린 개념도(검은 배경, 별 + 점 7개, 생성 이미지 아님)만 남음, 945부터 AI 생성 행성 림 이미지가 첫 프레임부터 정적 표기 「컴퓨터 모델 예측 · 관측 아님」과 함께 나옴(f946, f950, f956, f960). 938–960에 표기 없는 생성 프레임 없음."
+    },
+    {
+      "issue": "r2:heavyband",
+      "resolution_id": null,
+      "range": [
+        1995,
+        2237
+      ],
+      "verdict": "open",
+      "observation": "앞부분 수정: 띠가 1995(「남아」)에 시작, f2000 흐림, f2010 자막 「있을 수 있고」(2006)와 함께 보임, 2030 고정. 1968–1995 구간은 사라짐. 남은 부분: 조건 상자가 2120에 빠진 뒤 띠가 2237까지 남고 [2120,2136)에는 가능성 표기가 없음(strip 2112–2140). 2136부터의 「가능성 높음 · 연구진 추산」은 나이 라벨임. minor 유지."
+    },
+    {
+      "issue": "r1:B1",
+      "resolution_id": null,
+      "range": [
+        1903,
+        2120
+      ],
+      "verdict": "fixed",
+      "observation": "두 절 모두 해결. 첫 절은 「연구진 모델 예측」 라벨로 표시(r2:b1rest 참조). 둘째 절 「무거운 기체가 남아 있을 수 있고, 온실효과를 낸다면 액체 바다도 가능합니다」와 조건 상자 「무거운 기체가 남아 있을 수 있고, 온실효과가 있다면」 + 「액체 바다 가능성」 [2038,2120)(f2060, f2100)이 F19·기사 19행과 일치."
+    },
+    {
+      "issue": "r1:m1",
+      "resolution_id": null,
+      "range": [
+        938,
+        2580
+      ],
+      "verdict": "fixed",
+      "observation": "close [2236,2580)에 2240부터 2578까지 「상상도 · AI 재구성」(f2240, f2250, f2320, f2400, f2480, f2540, f2578). 크레딧 [2365,2557)에 「행성·별 장면: AI 생성 상상도 · 도해는 원리 개념도」(f2400, f2480, f2540). 짧은 공백도 해소(r2:gap945 참조)."
+    },
+    {
+      "issue": "r1:m2",
+      "resolution_id": null,
+      "range": [
+        2136,
+        2237
+      ],
+      "verdict": "fixed",
+      "observation": "r2:m2label 참조. 「30억 년 넘게 유지돼 왔을 / 가능성 높음 · 연구진 추산」(f2150, f2200)."
+    },
+    {
+      "issue": "r1:m3",
+      "resolution_id": null,
+      "range": [
+        1487,
+        1731
+      ],
+      "verdict": "fixed",
+      "observation": "유지됨. 띠의 붉은 끝에 어두운 선, 「헬륨 흡수선」, 파장 수치 없음, 「통과 관측 원리 도해 · 실제 데이터 아님」(f1640, f1700, f1725)."
+    },
+    {
+      "issue": "r1:m4",
+      "resolution_id": null,
+      "range": [
+        1313,
+        2557
+      ],
+      "verdict": "fixed",
+      "observation": "유지됨. 사진 표기 「사진: Denys / Wikimedia Commons · CC BY 3.0」(f1320, f1400). 크레딧 「마젤란 망원경 사진: Denys / Wikimedia Commons · CC BY 3.0 (creativecommons.org/licenses/by/3.0) · 크롭 · 2004년 촬영」(f2480)."
+    },
+    {
+      "issue": "r1:m5",
+      "resolution_id": null,
+      "range": [
+        132,
+        233
+      ],
+      "verdict": "fixed",
+      "observation": "유지됨. s02 자막 「그런데 이게 오히려 반가운」(f150). 과학자 귀속 없음, 따옴표 없음."
+    }
+  ]
+}

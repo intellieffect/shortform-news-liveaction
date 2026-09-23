@@ -1,4 +1,5 @@
-import {FIRST_SCENE_GATE} from './scene-review.mjs';
+import {OPTIONAL_SCENE_GATE} from '../scene-proof-contract.mjs';
+import {SCREEN_TEXT_POLICY} from '../screen-text-policy.mjs';
 import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
@@ -43,12 +44,14 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   const root = join(repo, "news", id);
   mkdirSync(join(repo, "news"), { recursive: true });
   mkdirSync(root); // 기존 폴더를 덮어쓰지 않는다. 동시에 같은 id를 시작해도 한 번만 성공한다.
-  for (const dir of ["00_brief", "01_input/01_원문_기사", "01_input/05_참고자료", "02_production"]) mkdirSync(join(root, dir), { recursive: true });
+  for (const dir of ["00_brief", "01_input/01_원문_기사", "01_input/05_참고자료", "02_production", "02_production/audio", "02_production/external_assets/audio/bgm", "02_production/external_assets/audio/sfx", "02_production/external_assets/audio/derived", "02_production/sourcing"]) mkdirSync(join(root, dir), { recursive: true });
   const put = (path, body) => writeFileSync(join(root, path), typeof body === "string" ? body : JSON.stringify(body, null, 2) + "\n", { flag: "wx" });
   put("00_brief/user-request.txt", request);
+  // Empty registry means nothing collected yet; it is not a rights/collection receipt.
+  put("01_input/assets.json", { schema_version: "1.0", pilot: id, assets: [] });
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
-    visual_contract: VISUAL_CONTRACT, scene_gate: FIRST_SCENE_GATE,
+    visual_contract: VISUAL_CONTRACT, scene_gate: OPTIONAL_SCENE_GATE, screen_text: SCREEN_TEXT_POLICY,
     source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },

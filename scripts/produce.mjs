@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { startProduction } from "./lib/production/start.mjs";
 import { assertExecution, productionEnvironment } from "./lib/production/environment.mjs";
 import { runProductionAction } from "./lib/production/actions.mjs";
+import { productionPreflight, productionSpecification } from "./lib/production/preflight.mjs";
 
 const [command, id, ...args] = process.argv.slice(2);
 const flags = command === "doctor" || (command === "start" && id?.startsWith("--")) ? [id, ...args].filter(Boolean) : args;
@@ -13,8 +14,10 @@ const usage = [
   "produce start [id] --url <기사 URL> --duration <최소초:최대초> --request-file <요청 원문 파일>",
   "produce doctor [--installed] [--capabilities <현재 세션 도구 JSON>]",
   "produce status|resume <id> [--json]",
+  "produce spec <id>  # 현재 프로필·스키마·발화 앵커를 한 번에 조회",
+  "produce preflight <id> narration|alignment|timeline|sync  # 읽기 전용 검사",
   "produce adopt-narration <id>",
-  "produce run <id> timeline|sync|proof|render [--output <저장소 상대 경로>] [--frame <정수>]",
+  "produce run <id> timeline|sync|proof|render [--output <저장소 상대 경로>] [--frame <정수>] [--timeout-ms <양의 정수>]",
   "produce begin <id> scene_proof|narration|proof|render|review_visual|review_audio|review_facts [--output <새 파일>]...",
   "produce finish <id> <token>",
   "produce fail <id> <token> --reason <실패 이유>",
@@ -50,6 +53,10 @@ try {
       if (result.context) console.log(JSON.stringify(result.context, null, 2));
       process.exit(0);
     }
+  } else if (command === "spec") result = productionSpecification(id);
+  else if (command === "preflight") {
+    result = productionPreflight(id, args[0]);
+    if (!result.ready) process.exitCode = 1;
   } else if (command === "adopt-narration") result = adoptNarration(id);
   else if (command === "begin") result = beginProductionAction(id, args[0], { outputs: values("--output"), command: value("--tool") ? { tool: value("--tool"), kind: "external-selection" } : null });
   else if (command === "finish") result = finishProductionAction(id, args[0]);
@@ -61,7 +68,7 @@ try {
   else if (command === "review-template") result = reviewTemplate(id, args[0]);
   else if (command === "resolve") result = resolveProductionIssue(id, args[0], value("--reason"), [Number(value("--from")), Number(value("--end"))]);
   else if (command === "complete") result = completeProduction(id);
-  else if (command === "run") result = await runProductionAction(id, args[0], { output: value("--output"), frame: value("--frame") === undefined ? 30 : Number(value("--frame")) });
+  else if (command === "run") result = await runProductionAction(id, args[0], { output: value("--output"), frame: value("--frame") === undefined ? 30 : Number(value("--frame")), ...(value("--timeout-ms") === undefined ? {} : { timeoutMs: Number(value("--timeout-ms")) }) });
   else throw new Error(usage);
   console.log(JSON.stringify(result, null, 2));
 } catch (error) {

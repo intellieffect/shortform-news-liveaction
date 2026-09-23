@@ -1,0 +1,21 @@
+id            hani_1269147
+title         대기가 새는 행성이 왜 반가운 소식일까
+version       v2
+ledger_label  final_v2
+latest        yes
+pilot_status  delivered (delivered 2026-09-23)
+file          hani_1269147_v2.mp4
+md5           9ef9661d93a4c0c1e47ee8054e96f3e7
+master        hani_1269147_v2.master.mp4  md5 9ef9661d93a4c0c1e47ee8054e96f3e7
+duration      89.98 s
+resolution    1080x1920 @ 30 fps
+loudness      ? LUFS / true peak ? dBTP
+engine_commit 9d7c225c
+input         news/hani_1269147 @ 9d7c225c
+extras        —
+generated     2026-09-22 · scripts/out-deliver.mjs
+
+이 파일은 pilot.json 에서 파생됐다. 손으로 고치지 않는다 — 대장을 고치고 다시 생성한다.
+
+note
+  

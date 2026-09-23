@@ -25,7 +25,7 @@ editorial-concept의 자막은 `narration.captions`와 공통 프로필, 타이�
 ## 4. 보이스
 
 - Typecast(키 `TYPECAST_API_KEY` — 환경변수 또는 저장소 `.env`, `POST /v1/text-to-speech/with-timestamps` → 단어 타임스탬프 무료 동봉) — `GET /v1/voices/recommendations?query=…`로 후보 → 필요하면 짧은 샘플 비교 → `voice_samples/`에 근거를 보존한다. 위임받은 보이스는 제작자가 고른다. **기본값으로 특정 보이스를 가정하지 않는다** (직전 편 보이스는 참고일 뿐).
-- 대안: [생성 제공자](../../shortform-news-pipeline/reference/generation-provider.md)에 따라 Higgsfield 오디오를 확인한다(타임스탬프 없음 → whisperx). 사람 WAV면 whisperx 강제정렬(`spoken_text` 프롬프트).
+- 대안: [생성 제공자](../../shortform-news-pipeline/reference/generation-provider.md)에 따라 Higgsfield 오디오를 확인한다(타임스탬프 없음 → whisperx). 사람 WAV면 whisperx 강제정렬(`spoken_text` 프롬프트). 전사가 숫자·영문을 화면 표기로 적어 원고와 다르면 정렬 스크립트를 새로 짜지 않고 `npm run narration:assemble -- <id> --alignment <전사.json> --force-align`을 쓴다([실행 효율](../../shortform-news-pipeline/reference/execution-efficiency.md#음성과-정렬-재사용)).
 
 ## 5. narration.json v1.1 (경계 파일)
 
@@ -47,4 +47,6 @@ TTS 문자 과금·API 호출·생성 크레딧을 행으로. 재조립은 무�
 
 ## 새 기사 제작의 음성 착수
 
-새 start의 first-core-scene@2은 첫 핵심 장면의 실제 합성 확인을 요구한다. `produce resume`의 `context.work.first_scene`를 확인하고 [초기 합성 시안](../../../../docs/SCENE-PROOF.md)을 먼저 수행한다. `produce begin <id> narration`이 성공한 경우에만 외부 TTS를 호출한다. 반환 오류를 무시하거나 begin과 TTS를 무조건 연속 실행하지 않는다. 연속으로 보지 못한 동작을 usable로 바꾸지 않는다. 실제 프레임 표본과 독립 검수를 갖춘 provisional은 음성 착수만 허용하며 연속 동작 품질은 미검수로 남는다.
+`produce resume`의 `context.work.first_scene`와 그 편의 기록된 계약을 따른다. 새 `first-core-scene@5`의 첫 핵심 장면 시험은 선택이며 음성 착수 게이트가 아니다. 이전 `@1`~`@4` 편의 기록된 게이트는 유지한다. [초기 합성 시안](../../../../docs/SCENE-PROOF.md)을 참고하고 `produce begin <id> narration`이 성공한 경우에만 외부 TTS를 호출한다. 반환 오류를 무시하거나 미확인 동작을 usable로 바꾸지 않는다.
+
+보이스·원고·치환표를 begin 전에 확정하고 [음성 재조립과 사전 검사](../../shortform-news-pipeline/reference/execution-efficiency.md)를 사용한다. 실제 word timestamps가 있으면 `npm run narration:assemble`로 기존 WAV와 정렬을 재사용한다. 합성 시각을 발명하거나 실제 청취를 자동 통과시키지 않는다.

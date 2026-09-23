@@ -1,0 +1,11 @@
+# 크레딧·출처 (hani_1269147)
+- 기사: 한겨레 곽노필, 「또다른 지구?…‘생명체 3대 조건’ 다 갖춘 외계행성 찾았다」 2026-07-21. https://www.hani.co.kr/arti/science/science_general/1269147.html
+- 1차 출처: Cherubim et al., Science 393(6815), 2026, DOI 10.1126/science.aea9708 (arXiv 2607.14326, CC BY 4.0 — 도판 미사용)
+- 마젤란 망원경 사진: Denys / Wikimedia Commons, "Magellan Campanas.jpg", CC BY 3.0, 2004-02-01 촬영, 세로 크롭 (RIGHTS R16)
+- 행성·적색왜성·림·별 원반 이미지/영상: Higgsfield MCP 생성(gpt_image_2_5, kling3_0) — 상상도, 관측 아님. v2부터 화면 표기 없음(사용자 지시 2026-09-23) — 영상 설명란 등에 이 고지를 함께 싣는다.
+- 도해(세 조건·골디락스·TRAPPIST 개념도·기체 분리·통과/흡수선·연표·시간 막대·무거운 층): 코드(Remotion). 원리 개념도.
+- BGM: "On the Shore" Kevin MacLeod (incompetech.com), CC BY 4.0. https://creativecommons.org/licenses/by/4.0/
+- SFX: ffmpeg 합성(rush/shimmer/tick), 자체 제작.
+- 내레이션(v2): Typecast 체험 캐릭터 "송진섭 기자", 한국어, 속도 보통. (v1: Higgsfield qwen_audio_tts preset "Mark")
+- 로고: 수령 패키지 v2 (02_production/brand/logo.png).
+- 미사용 후보(권리·적합성): CfA Weiss 상상도(CC0, 참고만), ESO eso1712a(공동 크레딧 미확인), Carnegie 분광기 사진(허가 필요), NASA/JPL TRAPPIST 상상도(대기 묘사 충돌), NASA SVS MAVEN/Swift 영상(다른 천체).

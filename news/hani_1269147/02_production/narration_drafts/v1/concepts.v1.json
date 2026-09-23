@@ -1,0 +1,773 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_1269147",
+  "concepts": [
+    {
+      "id": "leak",
+      "question": "대기가 새어 나가는데 왜 반가운 소식인가?",
+      "takeaway": "49광년 밖 암석형 행성 LHS 1140b에서 대기가 우주로 빠져나가고 있다는 역설이 출발점이다.",
+      "narration_lines": [
+        "s01",
+        "s02",
+        "s03"
+      ],
+      "facts": [
+        "F2",
+        "F3"
+      ],
+      "prerequisites": [],
+      "representation": {
+        "kind": "footage",
+        "role": "metaphor",
+        "assets": [
+          "planet_leak"
+        ],
+        "why": "행성 실사가 없으므로 상상도 영상으로 행성 림 전체에서 옅은 기체가 위로 떠올라 흩어지는 작용을 먼저 보게 한다. 표면 분출로 읽히지 않게 림에서 고르게 떠오르는 판을 채택한다. 관측 아님을 표기한다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "planet_scene",
+          "planet_name",
+          "recon_note"
+        ],
+        "remove": []
+      },
+      "elements": [
+        {
+          "id": "planet_scene",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "planet_name",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "LHS 1140b\n49광년 · 암석형"
+        },
+        {
+          "id": "recon_note",
+          "kind": "text",
+          "role": "provenance",
+          "text": "상상도 · AI 재구성"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 2,
+        "focal_priority": [
+          "planet_scene",
+          "planet_name"
+        ]
+      },
+      "visual": {
+        "purpose": "atmosphere",
+        "focus": "행성 림에서 위로 떠올라 흩어지는 옅은 기체",
+        "moments": [],
+        "realization": {
+          "method": "generated",
+          "asset_ids": [
+            "planet_leak",
+            "planet_leak_last"
+          ],
+          "job_ids": [
+            "gen_planet_leak_v2"
+          ],
+          "generated_role": "행성·희미한 대기·림에서 떠오르는 옅은 기체 동작 전체",
+          "code_role": "이름·거리 라벨, 재구성 표기, 클립 종료 후 마지막 프레임 유지"
+        }
+      }
+    },
+    {
+      "id": "conditions",
+      "question": "생명의 세 조건 중 이 행성은 무엇을 갖췄나?",
+      "takeaway": "단단한 땅과 적정 온도(골디락스)는 이미 확인됐고, 남은 하나는 대기다.",
+      "narration_lines": [
+        "s04",
+        "s05"
+      ],
+      "facts": [
+        "F1",
+        "F5"
+      ],
+      "prerequisites": [
+        "leak"
+      ],
+      "representation": {
+        "kind": "hybrid",
+        "role": "evidence",
+        "assets": [
+          "planet_still"
+        ],
+        "why": "행성 정지 이미지를 어둡게 깔고 세 조건을 같은 위계의 항목으로 발화 순서대로 드러낸다. 골디락스는 별 주위 띠와 행성 위치로 관계만 보이고, 두 항목이 채워지고 '대기'만 비어 있는 상태를 읽을 시간을 남긴다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "planet_bg",
+          "cond_list",
+          "goldilocks"
+        ],
+        "remove": [
+          "planet_scene",
+          "planet_name",
+          "recon_note"
+        ]
+      },
+      "elements": [
+        {
+          "id": "planet_bg",
+          "kind": "media",
+          "role": "tone"
+        },
+        {
+          "id": "cond_list",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "단단한 땅\n액체 물이 남을 온도\n대기"
+        },
+        {
+          "id": "goldilocks",
+          "kind": "shape",
+          "role": "metaphor"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "cond_list",
+          "goldilocks"
+        ]
+      },
+      "visual": {
+        "purpose": "explain",
+        "focus": "세 조건 목록에서 두 개가 채워지고 '대기'만 비어 있는 상태",
+        "moments": [
+          {
+            "id": "m_two_of_three",
+            "narration_lines": [
+              "s05"
+            ],
+            "subject": "세 조건 항목 목록",
+            "action": "골디락스 띠 안의 행성 위치가 보인 뒤 위의 두 항목에 확인 표시가 붙는다",
+            "result": "'대기' 항목만 표시 없이 남아 다음 질문의 대상이 된다",
+            "motion_required": false
+          }
+        ],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "planet_still"
+          ],
+          "job_ids": [
+            "gen_planet_still"
+          ],
+          "generated_role": "행성 배경 외형",
+          "code_role": "조건 항목 위계·확인 표시, 골디락스 띠"
+        }
+      }
+    },
+    {
+      "id": "threat",
+      "question": "왜 대기가 문제였나?",
+      "takeaway": "적색왜성의 강한 복사는 행성의 대기를 벗겨낼 수 있고, TRAPPIST-1 행성들에선 대기 흔적을 찾지 못했다.",
+      "narration_lines": [
+        "s06",
+        "s07"
+      ],
+      "facts": [
+        "F7",
+        "F9",
+        "F10"
+      ],
+      "prerequisites": [
+        "conditions"
+      ],
+      "representation": {
+        "kind": "hybrid",
+        "role": "metaphor",
+        "assets": [
+          "reddwarf_pair"
+        ],
+        "why": "위 붉은 별·아래 행성 정지 이미지 위에 코드로 넓은 복사 흐름과 대기 halo를 그린다. 복사가 닿으면 halo가 별 반대편으로 끌려 나가 얇아지는 결과 상태를 코드로 제어해, 별이 행성을 태우거나 폭발하는 오독과 '이 행성이 지금 벗겨지는 중'이라는 오독을 피한다(별 라벨은 '적색왜성'으로만). TRAPPIST-1은 같은 화면에서 작은 별과 일곱 개의 어두운 점으로 된 개념도로 전환한다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "pair_bg",
+          "radiation",
+          "halo",
+          "star_label",
+          "trappist_diagram",
+          "trappist_label",
+          "recon_note2"
+        ],
+        "remove": [
+          "planet_bg",
+          "cond_list",
+          "goldilocks"
+        ]
+      },
+      "elements": [
+        {
+          "id": "pair_bg",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "radiation",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "halo",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "star_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "적색왜성"
+        },
+        {
+          "id": "trappist_diagram",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "trappist_label",
+          "kind": "text",
+          "role": "condition",
+          "text": "TRAPPIST-1 행성계 · 개념도"
+        },
+        {
+          "id": "recon_note2",
+          "kind": "text",
+          "role": "provenance",
+          "text": "상상도 · AI 재구성 + 도해"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 2,
+        "focal_priority": [
+          "radiation",
+          "halo",
+          "star_label"
+        ]
+      },
+      "visual": {
+        "purpose": "explain",
+        "focus": "붉은 별에서 내려오는 넓은 복사와, 그에 밀려 별 반대편으로 끌려 나가 얇아지는 행성의 대기 halo",
+        "moments": [
+          {
+            "id": "m_strip",
+            "narration_lines": [
+              "s06"
+            ],
+            "subject": "행성을 감싼 푸른 대기 halo",
+            "action": "위쪽 별에서 넓게 내려온 붉은 복사에 밀려 halo가 아래쪽(별 반대편)으로 길게 끌려 나간다",
+            "result": "행성 몸체는 그대로이고 halo는 얇아진 채 아래로 흐르는 꼬리만 남는다",
+            "motion_required": true
+          }
+        ],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "reddwarf_pair"
+          ],
+          "job_ids": [
+            "gen_reddwarf_pair"
+          ],
+          "generated_role": "별·행성·우주 배경 외형",
+          "code_role": "복사 흐름, halo 변형과 얇아짐, TRAPPIST 개념도, 라벨·타이밍"
+        }
+      }
+    },
+    {
+      "id": "model",
+      "question": "그런데 이 행성은 어떻게 대기를 지킬 수 있나?",
+      "takeaway": "가벼운 수소·헬륨만 조금씩 새어 나가고, 무거운 질소는 중력에 붙잡혀 아래에 남는다는 모델 예측. 새는 것과 벗겨지는 것은 다르다.",
+      "narration_lines": [
+        "s08",
+        "s09"
+      ],
+      "facts": [
+        "F11",
+        "F12"
+      ],
+      "prerequisites": [
+        "threat"
+      ],
+      "representation": {
+        "kind": "diagram",
+        "role": "metaphor",
+        "assets": [
+          "planet_limb"
+        ],
+        "why": "행성 림 위에 기체 입자를 두 무게로 나누어, 가벼운 것(헬륨 색)은 위로 떠올라 일부만 림 밖으로 흩어지고 위쪽에 옅은 층으로 남으며, 무거운 것은 아래층에 가라앉는 과정을 코드로 제어한다. 위쪽 옅은 헬륨층이 남아 있는 상태에서 '맨 바깥에서 헬륨이 샌다'를 읽을 시간을 남긴다. 헬륨 색은 observation의 대기 테두리·흡수선 라벨과 같은 색으로 이어간다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "limb_scene",
+          "light_gas",
+          "heavy_gas",
+          "model_note",
+          "light_label",
+          "heavy_label"
+        ],
+        "remove": [
+          "pair_bg",
+          "radiation",
+          "halo",
+          "star_label",
+          "trappist_diagram",
+          "trappist_label",
+          "recon_note2"
+        ]
+      },
+      "elements": [
+        {
+          "id": "limb_scene",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "light_gas",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "heavy_gas",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "model_note",
+          "kind": "text",
+          "role": "condition",
+          "text": "컴퓨터 모델 예측 · 관측 아님"
+        },
+        {
+          "id": "light_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "수소·헬륨 ↑ 조금씩 우주로"
+        },
+        {
+          "id": "heavy_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "질소 ↓ 아래에 남음"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "light_gas",
+          "heavy_gas",
+          "light_label"
+        ]
+      },
+      "visual": {
+        "purpose": "explain",
+        "focus": "행성 림 위 두 종류 기체 입자의 위아래 분리",
+        "moments": [
+          {
+            "id": "m_sort",
+            "narration_lines": [
+              "s08"
+            ],
+            "subject": "섞여 있던 밝은 작은 입자와 어두운 큰 입자",
+            "action": "작은 입자는 위로 올라가 일부가 림 밖으로 흩어지고 나머지는 위쪽 옅은 층에 머문다. 큰 입자는 아래로 내려가 표면 가까이 모인다",
+            "result": "위쪽은 옅은 헬륨층(남아 있음), 아래쪽은 짙은 무거운 기체층으로 갈라진다",
+            "motion_required": true
+          }
+        ],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "planet_limb"
+          ],
+          "job_ids": [
+            "gen_planet_limb"
+          ],
+          "generated_role": "행성 림·표면 질감·우주 배경 외형",
+          "code_role": "입자 분리 동작, 층 라벨, 모델 표기, 발화 타이밍"
+        }
+      }
+    },
+    {
+      "id": "observation",
+      "question": "예측이 맞는지 어떻게 확인했나?",
+      "takeaway": "행성이 별 앞을 지날 때 별빛을 색깔별로 펼치면, 헬륨이 삼킨 파장 자리에 어두운 선이 남는다. 그 선이 나타났다.",
+      "narration_lines": [
+        "s10",
+        "s11",
+        "s12"
+      ],
+      "facts": [
+        "F13",
+        "F14"
+      ],
+      "prerequisites": [
+        "model"
+      ],
+      "representation": {
+        "kind": "hybrid",
+        "role": "evidence",
+        "assets": [
+          "magellan_photo",
+          "star_transit"
+        ],
+        "why": "실존 시설은 실사로. 이어 별 원반 앞을 행성이 지나는 통과 장면을 생성 배경 위에 두고, 별빛을 색깔별로 펼친 띠(라벨로 무엇인지 밝힘)에 헬륨 색의 어두운 선이 생기는 과정을 코드로 제어한다. 흡수선은 원리 도해로 표기하고 파장 수치는 쓰지 않는다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "telescope_scene",
+          "telescope_label",
+          "transit_scene",
+          "spectrum",
+          "spectrum_label",
+          "helium_line",
+          "obs_note"
+        ],
+        "remove": [
+          "limb_scene",
+          "light_gas",
+          "heavy_gas",
+          "model_note",
+          "light_label",
+          "heavy_label"
+        ]
+      },
+      "elements": [
+        {
+          "id": "telescope_scene",
+          "kind": "media",
+          "role": "evidence"
+        },
+        {
+          "id": "telescope_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "2024년\n마젤란 망원경 · 칠레 라스캄파나스"
+        },
+        {
+          "id": "transit_scene",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "spectrum",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "spectrum_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "별빛을 색깔별로 펼친 띠"
+        },
+        {
+          "id": "helium_line",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "헬륨 흡수선"
+        },
+        {
+          "id": "obs_note",
+          "kind": "text",
+          "role": "condition",
+          "text": "통과 관측 원리 도해 · 실제 데이터 아님"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "transit_scene",
+          "spectrum",
+          "helium_line"
+        ]
+      },
+      "visual": {
+        "purpose": "explain",
+        "focus": "별 앞을 지나는 행성, 이어 색깔 띠에 생기는 어두운 선",
+        "moments": [
+          {
+            "id": "m_absorb",
+            "narration_lines": [
+              "s11",
+              "s12"
+            ],
+            "subject": "별빛이 통과하는 행성 대기 테두리(헬륨 색)와 아래 색깔 띠",
+            "action": "행성이 별 원반 앞을 가로지르는 동안 대기 테두리가 헬륨 색으로 밝아지고, 띠의 한 지점이 어두워진다",
+            "result": "띠 위에 뚜렷한 어두운 세로 선 하나가 남고 '헬륨 흡수선' 라벨이 붙는다",
+            "motion_required": true
+          }
+        ],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "magellan_photo",
+            "star_transit"
+          ],
+          "job_ids": [
+            "gen_star_transit"
+          ],
+          "generated_role": "붉은 별 원반과 우주 배경 외형",
+          "code_role": "행성 통과 이동, 대기 테두리 강조, 스펙트럼 띠·라벨·흡수선·타이밍"
+        }
+      }
+    },
+    {
+      "id": "meaning",
+      "question": "그래서 새어 나가는 헬륨이 무슨 뜻인가?",
+      "takeaway": "헬륨 유출은 대기가 있다는 첫 증거다. 새는 것은 가장 가벼운 기체뿐이며 아래 남은 무거운 기체가 조건부 바다의 가능성을 만들고, 대기는 30억년 넘게 유지돼 왔을 가능성이 높다.",
+      "narration_lines": [
+        "s13",
+        "s14",
+        "s15"
+      ],
+      "facts": [
+        "F3",
+        "F4",
+        "F19",
+        "F22"
+      ],
+      "prerequisites": [
+        "observation"
+      ],
+      "representation": {
+        "kind": "hybrid",
+        "role": "metaphor",
+        "assets": [
+          "planet_leak"
+        ],
+        "why": "도입의 같은 장면으로 돌아와 같은 옅은 기체를 이번엔 '첫 증거'로 읽게 한다. 세 조건 목록을 다시 불러 '대기'에도 확인 표시를 붙여 도입의 약속을 닫는다. 이어 행성 아래쪽에 무거운 기체층 띠를 그려 '그 아래'의 참조 대상을 만들고, 조건 문구와 바다 가능성, 30억년 유지 가능성을 차례로 붙인다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "planet_scene2",
+          "first_label",
+          "cond_recall",
+          "heavy_layer",
+          "age_label",
+          "ocean_condition_text",
+          "ocean_value",
+          "model_note2"
+        ],
+        "remove": [
+          "telescope_scene",
+          "telescope_label",
+          "transit_scene",
+          "spectrum",
+          "spectrum_label",
+          "helium_line",
+          "obs_note"
+        ]
+      },
+      "elements": [
+        {
+          "id": "planet_scene2",
+          "kind": "media",
+          "role": "metaphor"
+        },
+        {
+          "id": "first_label",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "골디락스 영역 암석형 행성\n대기 확인 · 처음"
+        },
+        {
+          "id": "cond_recall",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "단단한 땅 ✓  온도 ✓  대기 ✓"
+        },
+        {
+          "id": "heavy_layer",
+          "kind": "shape",
+          "role": "metaphor"
+        },
+        {
+          "id": "age_label",
+          "kind": "text",
+          "role": "condition",
+          "text": "30억 년 넘게 유지돼 왔을\n가능성 높음 · 연구진 추산"
+        },
+        {
+          "id": "ocean_condition_text",
+          "kind": "text",
+          "role": "condition",
+          "text": "무거운 기체가 남아 있을 수 있고, 온실효과가 있다면"
+        },
+        {
+          "id": "ocean_value",
+          "kind": "text",
+          "role": "necessary-label",
+          "text": "액체 바다 가능성"
+        },
+        {
+          "id": "model_note2",
+          "kind": "text",
+          "role": "condition",
+          "text": "연구진 모델 예측"
+        }
+      ],
+      "semantic_pairs": [
+        {
+          "id": "ocean_condition",
+          "condition_element": "ocean_condition_text",
+          "value_element": "ocean_value"
+        }
+      ],
+      "mobile": {
+        "max_simultaneous_labels": 3,
+        "focal_priority": [
+          "planet_scene2",
+          "first_label",
+          "ocean_value"
+        ]
+      },
+      "visual": {
+        "purpose": "explain",
+        "focus": "같은 옅은 기체, 이번엔 증거로. 이어 아래 남은 무거운 층",
+        "moments": [
+          {
+            "id": "m_reframe",
+            "narration_lines": [
+              "s13"
+            ],
+            "subject": "행성 림에서 떠오르는 옅은 기체",
+            "action": "도입과 같은 장면이 다시 나타나고 '대기 확인 · 처음' 라벨과 세 조건 모두 확인된 목록이 붙는다",
+            "result": "같은 그림이 문제가 아니라 증거로 읽히고 세 번째 조건이 채워진다",
+            "motion_required": false
+          },
+          {
+            "id": "m_below",
+            "narration_lines": [
+              "s14"
+            ],
+            "subject": "행성 아래쪽 대기층 띠",
+            "action": "림 안쪽 낮은 곳에 림 곡선을 따라 무거운 기체층 띠가 나타나고 \"가능성\" 조건 문구가 붙는다",
+            "result": "새는 위층과 남는 아래층이 화면에서 구분된다",
+            "motion_required": false
+          }
+        ],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "planet_leak",
+            "planet_leak_last"
+          ],
+          "job_ids": [
+            "gen_planet_leak_v2"
+          ],
+          "generated_role": "행성·기체 동작",
+          "code_role": "라벨·조건 문구·무거운 층 띠·타이밍"
+        }
+      }
+    },
+    {
+      "id": "close",
+      "question": "남은 불확실성과 의미는?",
+      "takeaway": "이듬해엔 신호가 없었고 방출량이 변할 수 있다는 해석이지만, 이 발견은 제2의 지구 탐색의 이정표다.",
+      "narration_lines": [
+        "s16",
+        "s17"
+      ],
+      "facts": [
+        "F17",
+        "F23"
+      ],
+      "prerequisites": [
+        "meaning"
+      ],
+      "representation": {
+        "kind": "footage",
+        "role": "tone",
+        "assets": [
+          "planet_leak"
+        ],
+        "why": "같은 행성 장면을 천천히 넓혀 물러난다. 2025 미검출은 조건 문구로만 남긴다. 크레딧을 하단에 둔다.",
+        "full_bleed": true
+      },
+      "state": {
+        "keep": [],
+        "add": [
+          "wide_scene",
+          "variability_note",
+          "credits"
+        ],
+        "remove": [
+          "planet_scene2",
+          "first_label",
+          "cond_recall",
+          "heavy_layer",
+          "age_label",
+          "ocean_condition_text",
+          "ocean_value",
+          "model_note2"
+        ]
+      },
+      "elements": [
+        {
+          "id": "wide_scene",
+          "kind": "media",
+          "role": "tone"
+        },
+        {
+          "id": "variability_note",
+          "kind": "text",
+          "role": "condition",
+          "text": "2025년 관측: 헬륨 신호 없음\n방출량 변동 가능성으로 해석"
+        },
+        {
+          "id": "credits",
+          "kind": "text",
+          "role": "provenance",
+          "text": "자료: Science, Cherubim et al. 2026 (DOI 10.1126/science.aea9708) · 한겨레\n마젤란 망원경 사진: Denys / Wikimedia Commons · CC BY 3.0 (creativecommons.org/licenses/by/3.0) · 크롭 · 2004년 촬영\n행성·별 장면: AI 생성 상상도 · 도해는 원리 개념도\n\"On the Shore\" Kevin MacLeod (incompetech.com) · CC BY 4.0"
+        }
+      ],
+      "semantic_pairs": [],
+      "mobile": {
+        "max_simultaneous_labels": 2,
+        "focal_priority": [
+          "wide_scene",
+          "variability_note"
+        ]
+      },
+      "visual": {
+        "purpose": "atmosphere",
+        "focus": "물러나는 행성",
+        "moments": [],
+        "realization": {
+          "method": "hybrid",
+          "asset_ids": [
+            "planet_leak",
+            "planet_leak_last"
+          ],
+          "job_ids": [
+            "gen_planet_leak_v2"
+          ],
+          "generated_role": "행성 장면",
+          "code_role": "느린 스케일 다운, 조건 문구, 크레딧"
+        }
+      }
+    }
+  ]
+}

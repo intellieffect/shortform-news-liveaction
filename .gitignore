@@ -26,7 +26,8 @@ docs/research/
 /internal/
 /experiments/
 /src/experiments/
-/tools/
+/tools/*
+!/tools/motion-canvas/
 /web/
 /distribution/customer/templates/
 /scripts/episodes/

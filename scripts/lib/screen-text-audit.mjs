@@ -1,4 +1,5 @@
 import {readFileSync} from 'node:fs';
+import {isProvenanceText} from './screen-text-policy.mjs';
 import {relative} from 'node:path';
 import {createRequire} from 'node:module';
 import {sourceInputs} from './source-inputs.mjs';
@@ -19,7 +20,7 @@ export function auditScreenText(repo, episodeId, inventory) {
       if (ts.isJsxText(node)) text = node.text.trim();
       if (ts.isJsxExpression(node) && !ts.isJsxAttribute(node.parent) && node.expression && ts.isStringLiteralLike(node.expression)) text = node.expression.text.trim();
       if (ts.isJsxAttribute(node) && ['text', 'label', 'title'].includes(node.name.getText(source)) && node.initializer && ts.isStringLiteral(node.initializer)) text = node.initializer.text.trim();
-      if (text) warnings.push({code: inventory.some(e => e.text === text) ? 'screen-text-bypass' : 'screen-text-undeclared',
+      if (text) warnings.push({code: isProvenanceText(text) ? 'screen-text-provenance' : inventory.some(e => e.text === text) ? 'screen-text-bypass' : 'screen-text-undeclared',
         file: relative(repo, file), line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1, text,
         message: 'JSX 직접 문구: 선언과 렌더를 연결하고 고정 자막과 함께 필요성을 검토한다'});
       ts.forEachChild(node, visit);

@@ -1,0 +1,30 @@
+{
+  "id": "ReferenceQuote",
+  "frames": 216,
+  "captions": [
+    {
+      "id": "a",
+      "text": "회사는",
+      "start": 0.34,
+      "end": 1.15
+    },
+    {
+      "id": "b",
+      "text": "지상 연소 시험 중",
+      "start": 1.15,
+      "end": 3.9
+    },
+    {
+      "id": "c",
+      "text": "이상이 발생했다고",
+      "start": 3.9,
+      "end": 5.18
+    },
+    {
+      "id": "d",
+      "text": "밝혔습니다",
+      "start": 5.18,
+      "end": 6.2
+    }
+  ]
+}

@@ -26,6 +26,7 @@
   ],
   "_comment": "src/index.ts와 선택 편의 생성 인덱스에서 실제 import되는 코드를 검사한다. 로컬 연구 사본은 빌드 입력이 아니다.",
   "include": [
-    "src/index.ts"
+    "src/index.ts",
+    "src/proof-sheet-entry.tsx"
   ]
 }

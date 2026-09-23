@@ -1,0 +1,12 @@
+{
+  "provider": "Higgsfield MCP generate_audio",
+  "model": "text2speech_v2",
+  "variant": "elevenlabs",
+  "voice_id": "d8ba9f14-8a24-44db-932b-99e16c45bd32",
+  "voice_name": "Cillian",
+  "voice_type": "preset",
+  "job_id": "1dfe7b5b-bc8a-47e3-8519-88b3bb9a5bbf",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_37WVceR7RuuVFwtdBjTf7sdSNjr/hf_20260922_082619_1dfe7b5b-bc8a-47e3-8519-88b3bb9a5bbf.mp3",
+  "duration_sec": 76.72,
+  "why": "Typecast API가 403 UNUSUAL_ACTIVITY_DETECTED로 거절해 사용자 지시의 대체 경로를 사용했다"
+}

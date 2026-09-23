@@ -9,6 +9,8 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 
 새 편은 [프로젝트 기본값](../../../config/production-defaults.md)을 읽고 [생성 제공자](reference/generation-provider.md)와 [검수 보완](reference/quality-review.md)을 적용한다.
 
+반복 실행은 [실행 도구와 병렬 작업](reference/execution-efficiency.md)의 규격 조회·자료 준비·음성 재조립·사전 검사를 재사용한다. 판단과 필수 검수는 유지한다.
+
 - 썸네일·커버 제작은 [커버 판단](reference/cover.md)과 [생성·검수](reference/cover-build.md)를 따른다. 구상과 수정 모두 [표현력과 실물의 신뢰성](reference/cover.md#표현력과-실물의-신뢰성을-함께-설계한다)을 적용한다. [고정 스타일](reference/cover-style.md)의 두 줄 제목과 하단 중앙 로고 영역을 자동 적용한다. 수량 지정이 없으면 서로 다른 후보 세 장을 만들고, 제출 화면에는 기준 PNG를 제외한 후보만 보여준다. 커버만 요청받으면 영상 제작을 다시 시작하지 않는다.
 
 - 기사 기반이거나 설명·자료·도해·모션·음향 판단을 위임받으면 [표현 선택 권한](reference/creative-authority.md)과 [editorial-concept 후보 경로](reference/editorial-concept-track.md)를 읽는다. 한 줄 자막은 공통 제작 프로필을 자동 적용하며 사용자 프롬프트에 스타일 설명이나 과거 편 참조를 요구하지 않는다.
@@ -21,7 +23,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 
 `shots`·비트별 등록 부품·`gate 4-3`·층별 승인·수집판과 생성판의 의무 분리는 script-faithful 경로의 절차다. editorial-concept에는 해당 경로의 정본·컴파일·렌더 검사와 독립 검수를 적용한다.
 
-새 제작의 화면 설계·생성·초기 시안·문구 연결은 [발화를 화면으로 만드는 계약](reference/visual-production.md)을 따른다. `context.work.visual`과 `context.work.first_scene`의 미확인 작업을 확인한다. 첫 핵심 합성 시안은 공통 자막과 실제 채택 재료로 제작하며, 수정 필요·미확인 상태에서 전편 음성으로 넘어가지 않는다. 파일 존재를 설명 성공으로 해석하지 않는다.
+새 제작의 화면 설계·생성·초기 시안·문구 연결은 [발화를 화면으로 만드는 계약](reference/visual-production.md)을 따른다. `context.work.visual`과 `context.work.first_scene`의 상태를 확인한다. 새 편의 첫 핵심 장면 시험(`first-core-scene@5`)은 **선택이며 음성 착수 게이트가 아니다.** 원고·주요 자료·표현 수단 확정 후 음성과 전체 시안으로 진행하고, 그 선택을 바꿀 구체적 불확실성이 있을 때만 시험한다. 단순 미술 조정은 시험 사유가 아니다. 시험을 한다면 공통 자막과 실제 채택 재료로 만들고, 파일 존재를 설명 성공으로 해석하지 않는다. `@1`~`@4`로 시작한 편은 기록된 게이트를 그대로 유지한다.
 
 ## 공통 계약
 

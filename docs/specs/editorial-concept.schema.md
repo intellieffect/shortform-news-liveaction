@@ -30,7 +30,7 @@
 - `why`: 이 표현이 관계나 현상을 가장 정확히 전달하는 이유
 - 영상·이미지가 포함되면 `full_bleed:true`. 예외는 `layout_exception`에 핵심 피사체와 자막을 위해 필요한 이유를 적는다.
 
-`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`만 허용한다. 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
+`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`만 허용한다. `screen-text@1` 편은 `provenance`를 쓰지 않고, 출처·재구성 표기와 나레이션을 다시 적는 설명 문구를 넣지 않는다([화면 글자](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md#화면-글자)). 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
 
 개념 경계에 정확한 전환 시점이 필요하면 `range.from/end`를 motion과 같은 발화 앵커 형식으로 적는다. 없으면 인접 내레이션의 무음 중간점으로 컴파일한다. 경계에도 절대 프레임을 적지 않는다.
 
@@ -102,12 +102,22 @@ npm run production:test
 
 최종 visual pass에는 `text_review: {verdict, observation, evidence}`로 추가 문구와 고정 자막의 실제 읽기 부담을 화면 표본에 연결한다. 초기에 동결된 접수 해시는 run.json에도 보존하므로 request와 visual-system의 계약을 함께 삭제해 legacy로 바꿀 수 없다. 한 프레임 MP4는 motion 시안으로 인정하지 않는다. 프레임 수가 복수라는 조건도 실제 움직임·시청의 증명은 아니다.
 
-## 첫 핵심 장면 착수 — first-core-scene@2
+## 선택적 표현 시험 — first-core-scene@5
 
-새 start의 request/run에만 scene_gate를 보존한다. legacy 편은 소급하지 않는다. 제작자는 `02_production/scene-proof.json`에서 concept_id를 고르며 실제 자산·장면 컴포넌트·임시 자막 시간은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. 선택한 explain concept의 moments.subject_ids는 해당 concept의 비문자 elements id 배열이다. subject/action/result는 구체적인 대상/작용 또는 비교/눈에 보일 결과이며, action에 질문을 그대로 복사하지 않는다. 의미 적합성은 실제 시안으로 검수한다.
+새 start는 request/run에 `scene_gate: "first-core-scene@5"`를 보존한다. 필수 첫 장면 시안 없이 narration begin/adopt를 사용할 수 있다. 저장된 접수 무결성 검사는 유지한다. `first_scene`은 `required:false`, `ready`(접수 무결성), `proof_ids:[]`, `admission_kind:"optional-trials"`, `motion_continuity:"unverified"`를 반환한다. 음성 착수 가능은 시험·최종 시청 완료 판정이 아니다.
+
+시험은 선택적 scene_proof 액션이며 `next`의 필수 제작 안내에서 제외한다. 설정·관찰의 기존 schema와 실제 미디어 검사·입출력 해시 기록은 유지한다. `scene-proof-config@1.viewer_context`는 선택적 문자열로 실제 시청 맥락만 제공하며 @5의 렌더 입력 해시에서 제외한다. 다른 설정값은 의미 해시로 검사한다. 입력의 viewer_context_status는 provided/not-provided다. 질문·진행 판단·실패 대안·채택/표현 변경/판단 보류는 기존 제작 노트에 둔다. `scene-proof@1.evidence`는 선택적 `{path,sha256}[]`로 해당 편 reviews/ 아래의 실제 관찰 원문·표본을 연결하며 finish가 보존한다. 동작의 usable/revise에는 실제 연속 확인 범위를 적고 미확인은 unverified다. usable은 시험한 범위만 뜻한다.
+
+`scene-trial-input@1`은 experience에 실물과 viewer_context, 필요한 intent에 사실·원고·제작 노트를 제공한다. 독립 검수와 두 단계 호출을 모든 시험에 요구하지 않으며 all-moments pass·레퍼런스 전체 미술 심사·이전 revise 전부 닫기를 시험 종료 조건으로 삼지 않는다. 시험과 실패·미확인·stale 기록은 `context.work.visual.scene_proofs`에 남지만 narration을 차단하지 않는다. 실제 표현 실패는 수정·교체하고 이월 사항은 전체 시안에서 회수한다. 최종 설명·연속 시청·음향·사실 검수 계약은 바뀌지 않는다.
+
+## 기존 첫 핵심 장면 착수 — first-core-scene@1~4
+
+아래는 @1~@4로 보존된 편에만 적용한다. 새 계약을 구형 접수·시안에 소급 적용하지 않는다.
+
+구형 start의 request/run에 scene_gate를 보존한다. legacy 편은 소급하지 않는다. 제작자는 `02_production/scene-proof.json`에서 concept_id를 고르며 실제 자산·장면 컴포넌트·임시 자막 시간은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. 선택한 explain concept의 moments.subject_ids는 해당 concept의 비문자 elements id 배열이다. subject/action/result는 구체적인 대상/작용 또는 비교/눈에 보일 결과이며, action에 질문을 그대로 복사하지 않는다. 의미 적합성은 실제 시안으로 검수한다.
 
 realization.asset_ids에 생성 자산이 있으면 그 generation_job도 job_ids에 연결한다. code method에 실제 미디어/생성이 있으면 source/generated/hybrid로 역할을 정확히 고친다. 계획·진행·채택 생성 작업에는 사용 개념이 있어야 한다. 필요 없어지면 기각/실패와 관찰을 기록한다.
 
-새 @2 편의 usable은 기존 scene-proof 관찰 JSON의 review에 독립 초견·의도 대조 원문과 현재 시안 해시, 설명 관찰, 미해결 revise의 재확인을 연결한다. 열린 렌더 완료 시도도 review-input --source scene으로 확인할 수 있다. 정확한 형식은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다. @1 편에는 새 검수 계약을 소급하지 않는다.
+탐색 draft는 시도·관찰 JSON·검수 입력을 만들지 않으며 착수 근거가 아니다. @4로 시작한 편은 동작 설명의 제출 motion 한 편에 구도·재료·작용·결과의 독립 초견·의도 대조를 연결하고, 정적 설명은 제출 still을 검수한다. 기존 @2·@3 편의 단계별 기록과 @1 편의 계약은 소급 변경하지 않는다. 독립 검수 대상의 열린 렌더 완료 시도는 review-input --source scene으로 확인할 수 있다. 초기 검수는 핵심 이해·명백한 오독에 집중하며, 음성 전 임시 자막의 프레임 전수 측정은 요구하지 않는다. 정확한 형식은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다.
 
-첫 핵심 composite still usable과 필요한 실제 composite motion이 최신이어야 narration begin/adopt가 가능하다. 새 @2 편의 motion은 전체 연속 확인 usable 또는 시작·중간·끝의 이미지 증거와 독립 검수를 연결한 provisional을 허용한다. provisional은 motion_continuity=incomplete를 남기고 최종 동작 검수의 pass로 옮기지 않는다. 그 뒤 모든 다른 개념 시안을 음성에 의존시키지 않는다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.
+@4의 동작 설명은 현재 composite motion 한 편, 정적 설명은 composite still이 음성 착수 근거다. @2·@3·@4 편의 motion은 전체 연속 확인 usable 또는 시작·중간·끝의 이미지 증거와 독립 검수를 연결한 provisional을 허용한다. 사용자 지시로 미해결 문제를 안고 착수할 때는 현재 시안·독립 검수·사용자 원문·후속 문제를 해시로 묶는 `scene-admission@1`을 별도로 기록한다. 이것은 proof verdict나 최종 화면 pass를 바꾸지 않으며 열린 문제를 남긴다. 다른 explain 개념마다 초기 scene-proof를 강제하지 않으며, 전체 영상의 설명은 최종 visual 검수에서 확인한다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.

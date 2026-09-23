@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_1278583",
+  "note": "이 편이 실제로 사용한 자산. 원본 위치와 사용 근거는 05_참고자료/RIGHTS.md·INDEX.md, 후보 전체는 02_production/external_assets/candidates.*.json에 있다.",
+  "assets": [
+    {"id": "phases_v", "kind": "video", "path": "02_production/external_assets/video/phases_2026_plain_v_1920p30.mp4", "source": "https://svs.gsfc.nasa.gov/5587/", "credit": "NASA's Scientific Visualization Studio", "license": "NASA PD", "role": "evidence"},
+    {"id": "fq_still", "kind": "image", "path": "02_production/external_assets/photo/svs5587_firstquarter_vplain_1080x1920.jpg", "source": "https://svs.gsfc.nasa.gov/5587/", "credit": "NASA's Scientific Visualization Studio", "license": "NASA PD", "role": "evidence"},
+    {"id": "full_still", "kind": "image", "path": "02_production/external_assets/photo/svs5587_fullmoon_vplain_1080x1920.jpg", "source": "https://svs.gsfc.nasa.gov/5587/", "credit": "NASA's Scientific Visualization Studio", "license": "NASA PD", "role": "evidence"},
+    {"id": "crater_real", "kind": "image", "path": "02_production/external_assets/photo/nasa_art002e009281_orig.jpg", "source": "https://images.nasa.gov/details/art002e009281", "credit": "NASA", "license": "NASA PD", "role": "evidence"},
+    {"id": "mw_photo", "kind": "image", "path": "02_production/external_assets/photo/eso0934a_large.jpg", "source": "https://www.eso.org/public/images/eso0934a/", "credit": "ESO/S. Guisard (www.eso.org/~sguisard)", "license": "CC BY 4.0", "role": "context"},
+    {"id": "twilight_v", "kind": "video", "path": "02_production/external_assets/video/c_twilight_pexels_34177427.mp4", "source": "https://www.pexels.com/video/34177427/", "credit": "Malcoln Oliveira / Pexels", "license": "Pexels License", "role": "tone"},
+    {"id": "crater_model_v", "kind": "video", "path": "02_production/generated/crater_light_sweep.mp4", "source": "Higgsfield minimax_h3 (job 82dce3ac-0546-42f2-a764-166e948dff5d)", "credit": "AI 생성 재구성", "license": "생성물", "role": "metaphor"},
+    {"id": "bgm", "kind": "audio", "path": "02_production/external_assets/audio/bgm/incompetech_numinous-shine.mp3", "source": "https://incompetech.com/", "credit": "\"Numinous Shine\" Kevin MacLeod (incompetech.com)", "license": "CC BY 4.0", "role": "tone"},
+    {"id": "sfx_set", "kind": "audio", "path": "02_production/audio/sfx_soft_tick.wav", "source": "ffmpeg 합성(자체 제작)", "credit": null, "license": "자체 제작", "role": "tone"}
+  ]
+}

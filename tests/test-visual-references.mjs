@@ -69,9 +69,9 @@ function fixture(t) {
   put(root, "config/shared-references.json", selected);
   return root;
 }
-test("all three references are supplied without topic matching; missing chosen video never falls back", (t) => {
+test("all registered references are supplied without topic matching; missing chosen video never falls back", (t) => {
   const root = fixture(t);
-  assert.equal(captureReferences(root).cases.length, 3);
+  assert.equal(captureReferences(root).cases.length, 8);
   const p = readReferenceCollection(root).cases[2].files.src;
   rmSync(join(root, p));
   const c = collectReferences(root, join(root, "out"));
@@ -142,7 +142,7 @@ test("new article start persists baseline before scene planning, without a reque
     request: "이 경제 기사로 숏폼 만들어줘.",
   });
   assert.equal(s.context.reference_library.status, "preserved");
-  assert.equal(s.context.reference_library.cases.length, 3);
+  assert.equal(s.context.reference_library.cases.length, 8);
   assert.equal(s.context.reference_library.inspection, "not_performed");
   assert.equal(s.context.question, null);
 });

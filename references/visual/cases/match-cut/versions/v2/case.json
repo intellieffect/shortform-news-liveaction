@@ -1,0 +1,87 @@
+{
+  "id": "match-cut",
+  "title": "익숙한 움직임에서 실제 관측으로 연결하기",
+  "seconds": 8.066666666666666,
+  "goal": "커피 속 흐름을 비유로 태양 표면의 소용돌이 관측에 진입한다.",
+  "transfer": [
+    "친숙한 비유에서 실제 증거로 전환하는 시점을 발화에 맞춘다.",
+    "유사한 움직임을 연결하되 실제 관측과 비유의 역할을 구별한다."
+  ],
+  "specific": [
+    "커피와 태양은 같은 물리 현상의 증명으로 제시하지 않는다.",
+    "태양은 착색된 실제 관측 영상이며 생성·모핑하지 않았다. 원본 클립 재생속도 1배이고 실제 현상의 시간 축척은 주장하지 않는다."
+  ],
+  "beats": [
+    {
+      "time": 0.58,
+      "note": "커피에 섞이는 크림을 본다."
+    },
+    {
+      "time": 1.87,
+      "note": "태양 발화에 실제 관측 영상으로 하드 컷한다."
+    },
+    {
+      "time": 5.1,
+      "note": "발화가 끝난 뒤에도 관측 움직임을 본다."
+    }
+  ],
+  "composition": "ReferenceMatchCut",
+  "gain": 0,
+  "version": "v2",
+  "original_file": "08-coffee-solar-v2.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "add71e6d8b76867d1fc12843b9241470b05e9720d9c476747cc7c2b1d04e971d",
+  "files": {
+    "src": "references/visual/cases/match-cut/versions/v2/final.mp4",
+    "poster": "references/visual/cases/match-cut/versions/v2/poster.jpg",
+    "walkthrough": "references/visual/cases/match-cut/versions/v2/walkthrough.md",
+    "credits": "references/visual/cases/match-cut/versions/v2/credits.md",
+    "sourceGuide": "references/visual/cases/match-cut/versions/v2/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/assets/8-narration.wav",
+      "sha256": "404a5d2588b64fb5ad69255d32f2cd609df2a4206a79d00e2ca3ffcfde0ae85e"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/assets/coffee.mp4",
+      "sha256": "0c669c9004378e0b623453062bf8ef0575ddff52c454f0dad8d900981a7193da"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/assets/solar.mp4",
+      "sha256": "1af5ad81036882a78da70abd1dee4317ff68091004df82596da808e50d874eae"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/credits.md",
+      "sha256": "9117a07821b124ef784d4adee6f3c5fd53f1254b3810a6a3f75207c04ec5ee9a"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/final.mp4",
+      "sha256": "add71e6d8b76867d1fc12843b9241470b05e9720d9c476747cc7c2b1d04e971d"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/poster.jpg",
+      "sha256": "ac5218bc021d2fac29eaced6655ddba87d932ece082c1ed94cd258e5b4e7bad1"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/source/README.md",
+      "sha256": "cb2de3dd00c7ae4ec5f8b9784078fa7b13d5046f53917e1a3f33374c7ff74d83"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/source/entry.tsx",
+      "sha256": "9450076d0d738c7c46db348f74ec18167702f40a39d90a39dde54690d12c1103"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/source/timing.json",
+      "sha256": "a8b9b5378d8ba1022e3b901193725bf7b3707f249e8f1b2fcf734fb0a0fa8907"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/validation.md",
+      "sha256": "56b1d03ab0cd886a902efafde3a8cc4c6a1a810d498813aab3cf3c2c23189f15"
+    },
+    {
+      "path": "references/visual/cases/match-cut/versions/v2/walkthrough.md",
+      "sha256": "d6ac8957c620fd3193861927097a851e6ab2bb9ad3d2a3475abb81cea8669f2a"
+    }
+  ]
+}

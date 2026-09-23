@@ -1,10 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
-export const readProductionProfile = (reference) => {
-  const current = JSON.parse(readFileSync(new URL("../../config/production-profile.json", import.meta.url), "utf8"));
+export const readProductionProfile = (reference, repo) => {
+  const current = JSON.parse(readFileSync(repo ? join(repo, "config/production-profile.json") : new URL("../../config/production-profile.json", import.meta.url), "utf8"));
   if (!reference || (reference.id === current.id && reference.version === current.version)) return current;
   if (/^[a-z0-9_-]+$/.test(reference.id ?? "") && /^\d+\.\d+\.\d+$/.test(reference.version ?? "")) {
-    const archive = new URL(`../../config/production-profiles/${reference.id}-${reference.version}.json`, import.meta.url);
+    const archive = repo ? join(repo, `config/production-profiles/${reference.id}-${reference.version}.json`) : new URL(`../../config/production-profiles/${reference.id}-${reference.version}.json`, import.meta.url);
     if (existsSync(archive)) return JSON.parse(readFileSync(archive, "utf8"));
   }
   // 없는 버전은 호출자의 id/version 검사에서 거절한다.

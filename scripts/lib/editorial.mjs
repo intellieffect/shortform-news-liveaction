@@ -1,4 +1,5 @@
 import {validateVisualPlan} from './visual-plan.mjs';
+import {SCREEN_TEXT_POLICY, screenTextPolicyIssues} from './screen-text-policy.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -11,6 +12,12 @@ const MEDIA = new Set(["footage", "image", "diagram", "hybrid", "text"]);
 const ROLES = new Set(["evidence", "metaphor", "tone"]);
 const TEXT_ROLES = new Set(["necessary-label", "condition", "provenance"]);
 const EASING = new Set(["ease-out", "ease-in-out", "ease-in", "linear", "cubic-in", "cubic-out", "quad-in"]);
+// The agent-facing specification uses the same values as validation.
+export const editorialContract = () => ({
+  script_policies: [...SCRIPT_POLICIES], creative_scope: [...SCOPE_VALUES],
+  representation_kinds: [...MEDIA], representation_roles: [...ROLES],
+  text_roles: [...TEXT_ROLES], easing: [...EASING],
+});
 const validEasing = (value) => EASING.has(value) || (
   Array.isArray(value) && value.length === 4 && value.every(Number.isFinite) &&
   value[0] >= 0 && value[0] <= 1 && value[2] >= 0 && value[2] <= 1
@@ -79,9 +86,14 @@ const noAbsoluteFrames = (value, errors, path = "motion") => {
   }
 };
 
-export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false }) => {
+export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null }) => {
   const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
   const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
+  // screen-text@1 편만 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
+  if (screenTextPolicy === SCREEN_TEXT_POLICY) {
+    const policy = screenTextPolicyIssues({ concepts, narration });
+    errors.push(...policy.errors); warnings.push(...policy.warnings);
+  }
   let lines = [];
   try { lines = normalizeNarration(narration); }
   catch (error) { issue(errors, "narration-shape", "narration.json", error.message); }
@@ -346,7 +358,9 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
 export const loadEditorialBundle = (root) => {
   const production = existsSync(join(root, "02_production")) ? join(root, "02_production") : root;
   const narrationPath = existsSync(join(production, "narration.json")) ? join(production, "narration.json") : join(root, "narration.json");
+  const request = existsSync(join(root, "00_brief/request.json")) ? readJson(join(root, "00_brief/request.json")) : null;
   return {
+    screenTextPolicy: request?.screen_text ?? null,
     visualContractRequired: (existsSync(join(root, "00_brief/request.json")) && Boolean(readJson(join(root, "00_brief/request.json")).visual_contract)) || (existsSync(join(production, "run.json")) && Boolean(readJson(join(production, "run.json")).visual_contract)),
     story: readJson(join(production, "story.json")),
     concepts: readJson(join(production, "concepts.json")),

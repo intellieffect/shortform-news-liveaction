@@ -1,0 +1,94 @@
+{
+  "id": "quote",
+  "title": "원문에서 핵심 구절만 강조하기",
+  "seconds": 7.2,
+  "goal": "공식 발표의 이상 발생 설명을 핵심 구절과 함께 읽는다.",
+  "transfer": [
+    "인용의 맥락·출처를 남기고 이해에 필요한 구절만 강조한다.",
+    "발화와 강조 진행을 연결하고 불필요한 번역·상단 설명을 중복하지 않는다."
+  ],
+  "specific": [
+    "종이·세리프·파란 마커는 이 인용에 선택한 미술이며 공식 웹페이지 캡처가 아니다."
+  ],
+  "beats": [
+    {
+      "time": 0.34,
+      "note": "공식 인용과 출처를 함께 읽는다."
+    },
+    {
+      "time": 1.3,
+      "note": "hotfire test 강조가 시작된다."
+    },
+    {
+      "time": 2.63,
+      "note": "핵심 구절 강조가 정착한다."
+    },
+    {
+      "time": 6.2,
+      "note": "발화 종료 뒤 짧게 관찰한다."
+    }
+  ],
+  "composition": "ReferenceQuote",
+  "gain": 0,
+  "version": "v2",
+  "original_file": "05-hotfire-quote-v2.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "4783043aa410eae406f374a47aca455c1c9b4652801eddd4dcababddae630205",
+  "files": {
+    "src": "references/visual/cases/quote/versions/v2/final.mp4",
+    "poster": "references/visual/cases/quote/versions/v2/poster.jpg",
+    "walkthrough": "references/visual/cases/quote/versions/v2/walkthrough.md",
+    "credits": "references/visual/cases/quote/versions/v2/credits.md",
+    "sourceGuide": "references/visual/cases/quote/versions/v2/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/quote/versions/v2/assets/5-narration.wav",
+      "sha256": "9925a956ab3c005f18dcef45f2d8c83ef84191d725e2bfd2fe0c11cb7c28cbff"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/assets/Times.ttf",
+      "sha256": "f3b4ffff71c2a0c7227d37497683b2498fb2d0a4e8beae26f022e3ccfcaabfa3"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/assets/paper.png",
+      "sha256": "5a0b43248b35999499bae084f6d466a2e3fcf9c383b9dc5fa746bcaf8947da26"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/credits.md",
+      "sha256": "b8f3796b5af6ddf6e3d275059960bee4633ba1af7b323780e5c9dfb41a74b322"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/final.mp4",
+      "sha256": "4783043aa410eae406f374a47aca455c1c9b4652801eddd4dcababddae630205"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/poster.jpg",
+      "sha256": "dfa6bc421661f6945aa92332325db4cadb266fea020007d089e2a84f78b0e755"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/source/Quote.tsx",
+      "sha256": "c4513a2ea26eeb996de28c6f336145f2ee1ed16b38a56199310a950787924a3e"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/source/README.md",
+      "sha256": "19fbe38c036aac4cc9b122b7cd306da35c200b962892d951646800af6cd8404b"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/source/entry.tsx",
+      "sha256": "411a55674dbd8cc6e72f79e5a66f392284378c4f2fd2c9eb47804e7114f4e21d"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/source/timing.json",
+      "sha256": "73f34d3608ea7d5cce92e2389c047034bbcdedf2a1220e4b1a77a57a311fffc0"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/validation.md",
+      "sha256": "07052320709813ae5d73609ddd2dc0311d2f9e84dbcffe90cbb2212cb0c59724"
+    },
+    {
+      "path": "references/visual/cases/quote/versions/v2/walkthrough.md",
+      "sha256": "933a902e7547a91bb242447c5536e1de4b3e92362ae78ff96fbe523f2c29d0d4"
+    }
+  ]
+}

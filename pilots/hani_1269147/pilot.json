@@ -1,0 +1,74 @@
+{
+ "_comment": "편 매니페스트 — 대장(docs/PILOTS.md)·index.json 은 이 파일들에서 생성한다. id = news/<id> 폴더명. 순서는 started 로 파생, 폴더명에 번호 없음.",
+ "id": "hani_1269147",
+ "title": "대기가 새는 행성이 왜 반가운 소식일까",
+ "client": "hani",
+ "article": {
+  "id": "1269147",
+  "url": "https://www.hani.co.kr/arti/science/science_general/1269147.html",
+  "author": "곽노필",
+  "date": "2026-07-21"
+ },
+ "parent": null,
+ "status": "delivered",
+ "started": "2026-09-22",
+ "delivered": "2026-09-23",
+ "input": {
+  "path": "news/hani_1269147",
+  "commit": "9d7c225c"
+ },
+ "engine": "editorial-concept@1",
+ "engine_commit": "9d7c225c",
+ "versions": [
+  {
+   "label": "final_v1",
+   "file": "out/pilots/hani_1269147/deliver/v1/hani_1269147_v1.mp4",
+   "master": "out/pilots/hani_1269147/qa/production-182ca8fa-b685-4e2a-8e6a-802e093326f6.mp4",
+   "sha256": "09e0fc39a1141f25727094b5b829a594aa8daa2a896801cd6f28cd84706b9994",
+   "rendered": "2026-09-23",
+   "render_receipt": "273f3ebb-5247-40c9-bdd5-503fd7215ad0",
+   "duration_sec": 86.06,
+   "review": "P7 r3: shot-judge blocking 0(verdict incomplete — 연속 시청·청취 미확인), fact-check pass(minor 1), audio 측정만(청취 미확인). completion=incomplete."
+  },
+  {
+   "label": "final_v2",
+   "file": "out/pilots/hani_1269147/deliver/v2/hani_1269147_v2.mp4",
+   "master": "out/pilots/hani_1269147/qa/production-54ba6f4c-a9bc-41c1-a42a-e1ae5a355b2f.mp4",
+   "sha256": "a5e4b6bae8798dbf8121b924fe7c2663117b2d66be40773c364b095482c99dfe",
+   "rendered": "2026-09-23",
+   "render_receipt": "c47f5f1c-bf78-4def-871e-d4eda99584fd",
+   "duration_sec": 89.98,
+   "review": "사용자 지시로 독립 검수(shot-judge·fact-check) 미실시(2026-09-23 \"검수 에이전트는 ㄴㄴ\"). 화면 출처·상상도·설명 텍스트 제거, 도해 개선, Typecast 송진섭 기자 재녹음(16kHz 원본). 연속 시청·청취 미확인.",
+   "version": "v2",
+   "file_sha256": "a5e4b6bae8798dbf8121b924fe7c2663117b2d66be40773c364b095482c99dfe",
+   "confirmed_by": "user",
+   "confirmation": "대화 확정(2026-09-23) \"와우 짱!! 커밋해 이걸로 확정\" — 검수 없이 확정",
+   "confirmed_at": "2026-09-23T08:58:00+09:00"
+  }
+ ],
+ "gates_open": [],
+ "docs": null,
+ "linear": null,
+ "thumbnails": {
+  "method": "image_generation",
+  "target": "youtube_shorts",
+  "manifest": "design/thumbnails/hani_1269147/v1/manifest.json",
+  "candidates": [
+   {
+    "id": "A",
+    "file": "out/pilots/hani_1269147/thumbnails/v1/A.png",
+    "status": "reviewed"
+   },
+   {
+    "id": "B",
+    "file": "out/pilots/hani_1269147/thumbnails/v1/B.png",
+    "status": "reviewed"
+   },
+   {
+    "id": "C",
+    "file": "out/pilots/hani_1269147/thumbnails/v1/C.png",
+    "status": "reviewed"
+   }
+  ]
+ }
+}

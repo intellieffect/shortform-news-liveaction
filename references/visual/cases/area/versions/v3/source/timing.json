@@ -1,0 +1,33 @@
+{
+  "durationFrames": 300,
+  "audio": true,
+  "expandStart": 92,
+  "expandEnd": 123,
+  "romanLabel": 123,
+  "captions": [
+    {
+      "id": "a",
+      "text": "허블이 한 번에 보는 면적을",
+      "start": 0.63,
+      "end": 2.0
+    },
+    {
+      "id": "b",
+      "text": "1로 놓으면",
+      "start": 2.0,
+      "end": 2.96
+    },
+    {
+      "id": "c",
+      "text": "로먼은 약 100입니다",
+      "start": 3.145,
+      "end": 4.6
+    },
+    {
+      "id": "d",
+      "text": "같은 하늘을 더 넓게 봅니다",
+      "start": 4.94,
+      "end": 7.15
+    }
+  ]
+}

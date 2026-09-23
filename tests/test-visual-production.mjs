@@ -7,9 +7,10 @@ import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
 import {VISUAL_CONTRACT, validateVisualPlan, screenTextInventory} from '../scripts/lib/visual-plan.mjs';
 import {startProduction} from '../scripts/lib/production/start.mjs';
-import {beginProductionAction, finishProductionAction, productionStatus, productionReviewInput, adoptNarration} from '../scripts/lib/production/state.mjs';
+import {beginProductionAction, finishProductionAction, failProductionAction, productionStatus, productionReviewInput, adoptNarration} from '../scripts/lib/production/state.mjs';
 import {hash} from '../scripts/lib/production/contracts.mjs';
 import {workspace} from '../scripts/lib/production/contracts.mjs';
+import {priorSceneRevisions} from '../scripts/lib/production/scene-review.mjs';
 import {validateExplanationReview, visualWork} from '../scripts/lib/production/visual-work.mjs';
 import {auditScreenText} from '../scripts/lib/screen-text-audit.mjs';
 // URL 의 pathname 은 Windows 에서 `/D:/...` 가 되고 공백·한글은 %20 그대로다 — fileURLToPath 를 쓴다.
@@ -41,12 +42,107 @@ function proof(f, name, phase='still') {
 }
 test('new start exposes visual work with no topic hints; legacy remains unchanged',t=>{
  const f=fixture(t);assert.equal(f.start.context.request.visual_contract,VISUAL_CONTRACT);
+ assert.equal(f.start.context.request.scene_gate,'first-core-scene@5');
  assert.equal(f.start.context.work.visual.status,'invalid');
  assert.ok(f.start.context.instructions.some(p=>p.endsWith('visual-production.md')));
  const v=JSON.parse(readFileSync(join(f.repo,f.prefix+'visual-system.json')));
  assert.equal(validateVisualPlan({concepts:plan(),visualSystem:v}).errors.length,0);
  assert.equal(validateVisualPlan({concepts:{},visualSystem:{}}).active,false);
  assert.ok(validateVisualPlan({concepts:plan(),visualSystem:{},required:true}).errors.some(e=>e.code==='visual-contract'));
+});
+test('@5 starts narration without a first scene; optional unresolved trials stay visible without granting final approval',t=>{
+ const f=fixture(t,'first-core-scene@5');
+ let s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.first_scene.required,false);
+ assert.equal(s.actions.narration.runnable,true);
+ assert.ok(!s.next.includes('scene_proof'));
+ assert.equal(s.actions.scene_proof.optional,true);
+ assert.ok(!s.context.work.refresh.some(item=>item.action==='scene_proof'));
+ const p=proof(f,'optional','still');
+ p.data.verdict='revise';p.data.observation='fixture: material choice needs follow-up in full preview';
+ put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ put(f.repo,f.prefix+'scene-proof.json',{concept_id:'pull'});
+ s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.first_scene.ready,true);
+ assert.equal(s.context.work.visual.scene_proofs[0].verdict,'revise');
+ assert.ok(!s.context.work.visual.tasks.some(task=>task.kind==='scene-proof'));
+ assert.notEqual(s.completion.status,'complete');
+ const attempt=beginProductionAction('fresh','narration',{repo:f.repo});
+ assert.equal(attempt.first_scene.required,false);
+ assert.deepEqual(attempt.first_scene.proof_ids,[]);
+});
+test('@5 still preserves intake integrity and old gates remain mandatory',t=>{
+ const f=fixture(t,'first-core-scene@5');
+ const requestPath='news/fresh/00_brief/request.json';
+ const request=JSON.parse(readFileSync(join(f.repo,requestPath)));request.source_url='https://example.invalid/changed';
+ put(f.repo,requestPath,request);
+ assert.throws(()=>beginProductionAction('fresh','narration',{repo:f.repo}),/first-scene-intake/);
+ for(const gate of ['first-core-scene@1','first-core-scene@2','first-core-scene@3','first-core-scene@4']) {
+   const old=fixture(t,gate);
+   assert.throws(()=>beginProductionAction('fresh','narration',{repo:old.repo}),/first-scene-selection/);
+   const state=JSON.parse(readFileSync(old.w.runFile));state.scene_gate='first-core-scene@5';put(old.repo,old.w.rel(old.w.runFile),state);
+   assert.throws(()=>beginProductionAction('fresh','narration',{repo:old.repo}),/first-scene-contract/);
+ }
+});
+test('@5 optional trial review carries audience context, preserves a single observation, and does not require every moment to pass',t=>{
+ const f=fixture(t,'first-core-scene@5');
+ put(f.repo,f.prefix+'scene-proof.json',{concept_id:'pull',viewer_context:'앞 장면: 대상은 수성이다.'});
+ put(f.repo,f.prefix+'direction.md','시험 질문: 이 자료로 핵심 비교가 가능한가? 실패 시 다른 자료를 고른다.');
+ const p=proof(f,'trial');
+ const exp=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'});
+ assert.equal(exp.contract,'scene-trial-input@1');
+ assert.equal(exp.viewer_context,'앞 장면: 대상은 수성이다.');
+ assert.equal(exp.context,undefined);
+ const intent=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'});
+ assert.ok(intent.context.documents.some(d=>d.path.endsWith('direction.md')));
+ const raw=f.prefix+'reviews/trial.md';put(f.repo,raw,'fixture independent observation; question answered, not full scene approval');
+ p.data.evidence=[{path:raw,sha256:hash(readFileSync(join(f.repo,raw)))}];put(f.repo,p.report,p.data);
+ finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ const run=JSON.parse(readFileSync(f.w.runFile));
+ assert.equal(run.receipts.scene_proof.outputs[raw],p.data.evidence[0].sha256);
+ put(f.repo,raw,'changed');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.visual.scene_proofs[0].status,'stale');
+ assert.equal(s.actions.narration.runnable,true);
+});
+test('@5 adopts validated audio without a trial and keeps narration text invalidation',t=>{
+ const f=fixture(t,'first-core-scene@5'),wav=f.prefix+'audio/narration.wav';
+ mkdirSync(dirname(join(f.repo,wav)),{recursive:true});
+ execFileSync('ffmpeg',['-v','error','-f','lavfi','-i','anullsrc=r=24000:cl=mono','-t','1',join(f.repo,wav)]);
+ const line=readFileSync(join(f.repo,f.prefix+'narration.txt'),'utf8');
+ const path=f.prefix+'narration.json';
+ const narration={schema_version:'1.1',pilot:'fresh',source:{narration_txt:'02_production/narration.txt',narration_sha256:'invalid'},audio:{path:'02_production/audio/narration.wav',duration:1},sentences:[{id:'s01',text:line,start:0,end:1,words:[{text:line,start:0,end:1}]}]};
+ put(f.repo,path,narration);
+ assert.throws(()=>adoptNarration('fresh',{repo:f.repo}));
+ narration.source.narration_sha256=hash(line);put(f.repo,path,narration);
+ const adopted=adoptNarration('fresh',{repo:f.repo});
+ assert.equal(adopted.first_scene.required,false);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'current');
+ put(f.repo,f.prefix+'narration.txt','Changed spoken input');
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.status,'stale');
+});
+test('@5 adding review context after rendering reuses the artifact; actual caption changes still stale it',t=>{
+ const f=gatedFixture(t,false,'first-core-scene@5'),p=proof(f,'context-later');
+ const input=()=>productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'});
+ assert.equal(input().viewer_context_status,'not-provided');
+ const path=f.prefix+'scene-proof.json',config=JSON.parse(readFileSync(join(f.repo,path)));
+ config.viewer_context='시청자는 앞 장면에서 대상을 소개받았다.';put(f.repo,path,config);
+ assert.equal(input().viewer_context,config.viewer_context);
+ finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ config.viewer_context='앞 장면 자막: 대상은 수성이다.';put(f.repo,path,config);
+ assert.equal(input().receipt_id,p.attempt.id);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.scene_proof.status,'current');
+ config.viewer_context={text:'오타'};put(f.repo,path,config);
+ assert.throws(input,/viewer_context/);
+ config.viewer_context='맥락 복원';config.captions[0].from=0.1;put(f.repo,path,config);
+ assert.throws(input,/입력이 바뀌었다/);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,true);
+});
+test('mismatched @5 run cannot weaken an older scene review contract',t=>{
+ const f=gatedFixture(t,false),p=proof(f,'mismatch');
+ const state=JSON.parse(readFileSync(f.w.runFile));state.scene_gate='first-core-scene@5';put(f.repo,f.w.rel(f.w.runFile),state);
+ assert.throws(()=>productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'}),/계약이 다르다/);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/계약이 다르다/);
 });
 test('missing action, unrelated narration, missing text, and unlinked generation fail technically',()=>{
  const concepts=plan(),visualSystem={visual_contract:VISUAL_CONTRACT,media:{assets:[]},generation_jobs:[]};
@@ -60,7 +156,7 @@ test('early composite proof works before narration/timeline; experience stays bl
  let s=productionStatus('fresh',{repo:f.repo,includeContext:true});
  assert.equal(s.actions.narration.status,'unrecorded');assert.equal(s.actions.scene_proof.status,'current');
  assert.equal(s.context.work.visual.scene_proofs[0].status,'current');
- assert.ok(s.context.work.visual.tasks.some(t=>t.phase==='motion'));
+ assert.ok(!s.context.work.visual.tasks.some(t=>t.kind==='scene-proof')); // no selected first scene in this fixture
  const exp=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'});
  assert.equal(exp.context,undefined);assert.equal(exp.files[0].media.kind,'image');
  const intent=productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'intent'});
@@ -104,7 +200,7 @@ test('text inventory compares caption overlap and AST flags literal bypass witho
  const audit=auditScreenText(f.repo,'fresh',inv);assert.equal(audit.warnings.length,2);
 });
 test('final explanation pass requires observation and actual motion coverage, not code inference',t=>{
- const f=fixture(t),timeline={concepts:[{id:'pull',from:0,end:30}]};
+ const f=fixture(t,'first-core-scene@5'),timeline={concepts:[{id:'pull',from:0,end:30}]};
  const report={verdict:'pass',text_review:{verdict:'pass',observation:'자막과 추가 문구 실물 확인',evidence:['frame.png']},evidence:[{path:'frame.png'}],coverage:{playback_ranges:[[0,30]],original_frames:[{frame:10,evidence:'frame.png'}]},explanations:[{concept_id:'pull',moment_id:'turn',verdict:'pass',basis:'code_inference',observed_subject:'물질',observed_action:'끌림',observed_result:'회전',text_dependency:'라벨 없이 작용 확인',evidence:['frame.png']}]};
  assert.throws(()=>validateExplanationReview(f.w,report,timeline),/코드 추론/);
  report.explanations[0].basis='observed';report.coverage.playback_ranges=[];
@@ -166,8 +262,8 @@ test('actual screen-text renderer requires global time and renders declared copy
  assert.equal(renderToStaticMarkup(React.createElement(EditorialScreenText,{...props,globalFrame:201})),'');
 });
 
-function gatedFixture(t, motion = true) {
- const f=fixture(t,'first-core-scene@2'), c=plan();
+function gatedFixture(t, motion = true, gate = 'first-core-scene@2') {
+ const f=fixture(t,gate), c=plan();
  c.concepts[0].elements.push({id:'cloud',kind:'diagram',role:'metaphor'});
  c.concepts[0].visual.moments[0].subject_ids=['cloud'];
  c.concepts[0].visual.moments[0].motion_required=motion;
@@ -203,6 +299,83 @@ function attachReview(f,p) {
  const state=JSON.parse(readFileSync(f.w.runFile));
  p.data.review={schema:'scene-review@1',reviewer:{id:'fixture-judge',independent:true},experience:part('experience'),intent:{...part('intent'),verdict:p.data.verdict==='provisional'?'unverified':'pass',reference_observation:'fixture comparison',text_observation:'fixture captions',explanations:c.visual.moments.map(m=>({moment_id:m.id,observed_subject:'fixture subject',observed_action:'fixture action',observed_result:'fixture result',text_dependency:'fixture text',basis:'observed',verdict:(p.data.phase==='still'||p.data.verdict==='provisional')&&m.motion_required?'unverified':'pass'}))},rechecks:state.attempts.filter(a=>a.validation?.report.verdict==='revise'&&a.validation.report.phase===p.data.phase).map(a=>({receipt_id:a.id,verdict:'fixed',observation:'fixture rechecked'}))};
 }
+function conditionalMotion(f,name='accepted-motion') {
+ const p=proof(f,name,'motion');p.data.verdict='unverified';
+ p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ delete p.data.continuous_viewing;delete p.data.viewed_seconds;
+ attachReview(f,p);p.data.review.intent.verdict='changes_requested';p.data.review.intent.explanations[0].verdict='changes_requested';
+ put(f.repo,p.report,p.data);finishProductionAction('fresh',p.attempt.id,{repo:f.repo});
+ const admission={schema:'scene-admission@1',decision:'narration-ready-with-issues',phase:'motion',concept_id:'pull',proof_receipt_id:p.attempt.id,artifact:p.art,artifact_sha256:hash(readFileSync(join(f.repo,p.art))),report_sha256:hash(readFileSync(join(f.repo,p.report))),authority:'user',instruction_quote:'이 시안으로 음성을 진행해',known_issues:[{moment_id:'turn',finding:'움직임의 방향이 충분히 읽히지 않음',followup_stage:'P5'}]};
+ put(f.repo,f.prefix+'scene-admission.json',admission);
+ return {p,admission};
+}
+test('new @4 dynamic scene admits a reviewed motion without a duplicate still',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@4');gatedProof(f,'motion-only','motion');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.first_scene.ready,true);
+ assert.equal(s.context.work.first_scene.proof_ids.length,1);
+ assert.ok(!s.context.work.visual.tasks.some(x=>x.kind==='scene-proof'&&x.phase==='still'));
+});
+test('explicit accepted issues admit current @2 motion without rerender or falsifying its verdict',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@2');const old=gatedProof(f,'old-still');const {p}=conditionalMotion(f);
+ writeFileSync(join(f.repo,old.art),'stale still');
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.first_scene.ready,true);
+ assert.equal(s.context.work.first_scene.admission_kind,'narration-ready-with-issues');
+ assert.equal(s.context.work.first_scene.motion_continuity,'incomplete');
+ assert.deepEqual(s.context.work.first_scene.proof_ids,[p.attempt.id]);
+ assert.ok(s.context.work.visual.tasks.some(x=>x.kind==='scene-proof'&&x.phase==='motion'));
+ assert.equal(s.actions.narration.runnable,true);
+ const a=beginProductionAction('fresh','narration',{repo:f.repo});
+ assert.equal(a.first_scene.open_issues[0].moment_id,'turn');
+});
+test('conditional admission survives runner-only updates but not visual input changes',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@2');conditionalMotion(f);
+ const ready=()=>productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready;
+ assert.equal(ready(),true);
+ const runner='scripts/scene-proof.mjs';writeFileSync(join(f.repo,runner),readFileSync(join(f.repo,runner),'utf8')+'\n// runner metadata update\n');
+ assert.equal(ready(),true);
+ put(f.repo,'src/editorial/scenes/fresh.tsx','export default function Scene(){return "changed visual";}');
+ assert.equal(ready(),false);
+});
+test('conditional admission rejects changed proof, missing user direction and missing independent review',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@3'),{p,admission}=conditionalMotion(f);
+ const ready=()=>productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready;
+ assert.equal(ready(),true);
+ admission.instruction_quote='';put(f.repo,f.prefix+'scene-admission.json',admission);assert.equal(ready(),false);
+ admission.instruction_quote='이 시안으로 음성을 진행해';admission.artifact_sha256='bad';put(f.repo,f.prefix+'scene-admission.json',admission);assert.equal(ready(),false);
+ admission.artifact_sha256=hash(readFileSync(join(f.repo,p.art)));put(f.repo,f.prefix+'scene-admission.json',admission);assert.equal(ready(),true);
+ const raw=p.data.review.experience.raw_report.path,original=readFileSync(join(f.repo,raw));
+ rmSync(join(f.repo,raw));assert.equal(ready(),false);
+ writeFileSync(join(f.repo,raw),original);assert.equal(ready(),true);
+ writeFileSync(join(f.repo,p.art),'changed');assert.equal(ready(),false);
+});
+test('a static explanation cannot use a motion acceptance to skip its still',t=>{
+ const f=gatedFixture(t,false,'first-core-scene@3');conditionalMotion(f);
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.first_scene.ready,false);
+ assert.ok(s.context.work.first_scene.blockers.some(b=>b.code==='first-scene-admission'));
+});
+test('final visual pass explicitly rechecks accepted scene issues against current evidence',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@3');conditionalMotion(f);
+ const evidence='news/fresh/02_production/reviews/final-frame.png';
+ const report={verdict:'pass',text_review:{verdict:'pass',observation:'자막 확인',evidence:[evidence]},evidence:[{path:evidence}],coverage:{playback_ranges:[[0,30]],original_frames:[{frame:10,evidence}]},explanations:[{concept_id:'pull',moment_id:'turn',verdict:'pass',basis:'observed',observed_subject:'물질',observed_action:'끌림',observed_result:'회전',text_dependency:'없음',evidence:[evidence]}]};
+ const timeline={concepts:[{id:'pull',from:0,end:30}]};
+ assert.throws(()=>validateExplanationReview(f.w,report,timeline),/재확인/);
+ beginProductionAction('fresh','narration',{repo:f.repo});
+ rmSync(join(f.repo,f.prefix+'scene-admission.json'));
+ assert.throws(()=>validateExplanationReview(f.w,report,timeline),/재확인/);
+ report.scene_admission_rechecks=[{moment_id:'turn',finding:'움직임의 방향이 충분히 읽히지 않음',verdict:'fixed',observation:'현재 영상에서 회전 방향 확인',evidence:[evidence]}];
+ assert.doesNotThrow(()=>validateExplanationReview(f.w,report,timeline));
+});
+test('a provisional recheck closes an earlier revise on later submissions',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@3');gatedProof(f,'still');
+ const old=gatedProof(f,'old-motion','motion','revise');
+ const sampled=gatedProof(f,'sampled-motion','motion','provisional');
+ const state=JSON.parse(readFileSync(f.w.runFile));
+ assert.deepEqual(priorSceneRevisions(state,{concept_id:'pull',phase:'motion',scope:'composite'}),[]);
+ assert.equal(sampled.data.review.rechecks[0].receipt_id,old.attempt.id);
+});
 test('first scene blocks narration and adoption on missing, revise, unverified and absent motion',t=>{
  const f=gatedFixture(t);
  const blocked=()=>{assert.throws(()=>beginProductionAction('fresh','narration',{repo:f.repo}),/first-scene/);assert.throws(()=>adoptNarration('fresh',{repo:f.repo}),/첫 핵심/);};
@@ -217,7 +390,50 @@ test('first scene blocks narration and adoption on missing, revise, unverified a
 test('a static explanation needs only its selected still, other concepts do not require early proofs',t=>{
  const f=gatedFixture(t,false),c=JSON.parse(readFileSync(join(f.repo,f.prefix+'concepts.json')));
  c.concepts.push({...c.concepts[0],id:'later'});put(f.repo,f.prefix+'concepts.json',c);
- gatedProof(f,'static');assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.first_scene.ready,true);
+ gatedProof(f,'static');const status=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(status.context.work.first_scene.ready,true);
+ assert.ok(!status.context.work.visual.tasks.some(t=>t.kind==='scene-proof'&&t.concept_id==='later'));
+});
+test('@3 defers independent review of a dynamic still until its motion candidate',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@3'),still=proof(f,'producer-still');
+ still.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ put(f.repo,still.report,still.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',still.attempt.id,{repo:f.repo}));
+ assert.equal(productionStatus('fresh',{repo:f.repo,includeContext:true}).context.work.review_inputs.scene.reviewable,false);
+ assert.throws(()=>productionReviewInput('fresh',{repo:f.repo,source:'scene',phase:'experience'}),/제작자가 확인/);
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,false);
+ const motion=proof(f,'candidate','motion');
+ motion.data.rendering=still.data.rendering;put(f.repo,motion.report,motion.data);
+ assert.throws(()=>finishProductionAction('fresh',motion.attempt.id,{repo:f.repo}),/scene-review/);
+ attachReview(f,motion);put(f.repo,motion.report,motion.data);
+ finishProductionAction('fresh',motion.attempt.id,{repo:f.repo});
+ assert.equal(productionStatus('fresh',{repo:f.repo}).actions.narration.runnable,true);
+});
+test('@3 still-only explanation keeps independent review',t=>{
+ const f=gatedFixture(t,false,'first-core-scene@3'),p=proof(f,'static-candidate');
+ p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/scene-review/);
+});
+test('@3 producer-reviewed still explicitly rechecks an earlier submitted revise',t=>{
+ const f=gatedFixture(t,true,'first-core-scene@3'),old=gatedProof(f,'old-still','still','revise'),p=proof(f,'new-still');
+ p.data.rendering={kind:'shared-scene-proof@1',config:f.prefix+'scene-proof.json',component:'src/editorial/scenes/fresh.tsx',asset_ids:[],profile_sha256:hash(readFileSync(join(f.repo,'config/production-profile.json')))};
+ put(f.repo,p.report,p.data);
+ assert.throws(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}),/재확인/);
+ p.data.rechecks=[{receipt_id:old.attempt.id,verdict:'fixed',observation:'현재 이미지에서 수정 부위가 보임'}];
+ put(f.repo,p.report,p.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',p.attempt.id,{repo:f.repo}));
+ const later=proof(f,'later-still');later.data.rendering=p.data.rendering;
+ put(f.repo,later.report,later.data);
+ assert.doesNotThrow(()=>finishProductionAction('fresh',later.attempt.id,{repo:f.repo}));
+});
+test('failed scene submission does not stale a previous current proof',t=>{
+ const f=gatedFixture(t,false),p=gatedProof(f,'valid');
+ const failed=beginProductionAction('fresh','scene_proof',{repo:f.repo,outputs:['out/pilots/fresh/qa/failed.png','out/pilots/fresh/qa/failed.json']});
+ failProductionAction('fresh',failed.id,'synthetic render failure',{repo:f.repo});
+ const s=productionStatus('fresh',{repo:f.repo,includeContext:true});
+ assert.equal(s.context.work.visual.scene_proofs.find(x=>x.receipt_id===p.attempt.id).status,'current');
+ assert.equal(s.context.work.first_scene.ready,true);
 });
 test('changing actual scene component or artifact invalidates first scene admission',t=>{
  const f=gatedFixture(t,false),p=gatedProof(f,'original');

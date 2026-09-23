@@ -2,7 +2,7 @@
   "schema_version": "restored-production-defaults@1",
   "baseline_commit": "59a2af79",
   "guide": "config/production-defaults.md",
-  "logo_package": "presets/hani/brand-assets/v1/manifest.json",
+  "logo_package": "presets/hani/brand-assets/v2/manifest.json",
   "production_prompt": {
     "version": "v2-original@1",
     "path": "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"

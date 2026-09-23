@@ -1,0 +1,83 @@
+{
+  "id": "structure",
+  "title": "부분 연결에서 전체 구조로 보기",
+  "seconds": 6.6,
+  "goal": "탄소 원자 60개가 이루는 속이 빈 C60 구조를 이해한다.",
+  "transfer": [
+    "부분의 연결을 먼저 읽고 전체 형태로 시야를 넓힌다.",
+    "구조를 말하는 순간 전체 형상을 보여주고 작은 시점 이동으로 입체성을 전달한다."
+  ],
+  "specific": [
+    "60개 꼭짓점·90개 결합·각 꼭짓점 차수 3의 잘린 정이십면체 모형이다.",
+    "원자 크기·결합 굵기는 연결 설명용이며 실측 원자 크기가 아니다."
+  ],
+  "beats": [
+    {
+      "time": 0.64,
+      "note": "근접 화면에서 원자와 결합을 본다."
+    },
+    {
+      "time": 3.2,
+      "note": "속이 빈 공 발화에 전체 구조가 보인다."
+    },
+    {
+      "time": 5.5,
+      "note": "작은 시점 이동을 마치고 형태를 관찰한다."
+    }
+  ],
+  "composition": "ReferenceStructure",
+  "gain": 0,
+  "version": "v2",
+  "original_file": "07-c60-structure-v2.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "7c35eb5575c591d1276181ef8e82293f23559d4dde2efe0f51846bfe83511bd6",
+  "files": {
+    "src": "references/visual/cases/structure/versions/v2/final.mp4",
+    "poster": "references/visual/cases/structure/versions/v2/poster.jpg",
+    "walkthrough": "references/visual/cases/structure/versions/v2/walkthrough.md",
+    "credits": "references/visual/cases/structure/versions/v2/credits.md",
+    "sourceGuide": "references/visual/cases/structure/versions/v2/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/structure/versions/v2/assets/7-narration.wav",
+      "sha256": "581165025870624ea244920337663d47320348c94e879e1ddf22235b91478081"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/credits.md",
+      "sha256": "05e94df8a63b4963d66c3b774debaffce766fdf99063859f6e3b8c225b19ba35"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/final.mp4",
+      "sha256": "7c35eb5575c591d1276181ef8e82293f23559d4dde2efe0f51846bfe83511bd6"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/poster.jpg",
+      "sha256": "e95b1497a2d323de2b4c7f295f223914ee6eae13093f7d14f92c944ca06c6e02"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/source/C60.tsx",
+      "sha256": "631d96ae37fa7f65e1e2bbcfbf6b759cb9ac4b8b6342eda62fc6db7473ef12af"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/source/README.md",
+      "sha256": "34479e1a64d6b4d0f4273f9284390cb67e7b046f2cc96803644e7f80a6dd9b1f"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/source/entry.tsx",
+      "sha256": "017157f5e69e80408f24136e522a466dd5e02567d311345fff805c517c638295"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/source/timing.json",
+      "sha256": "8813bfa46792770ba50e5a1235f122138a0cb281b9d9d853d2c6b5fb40528265"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/validation.md",
+      "sha256": "91f62f9da8f80100bb40b22726fc14ba18e1dba3506ee453df3307fa8dba25f1"
+    },
+    {
+      "path": "references/visual/cases/structure/versions/v2/walkthrough.md",
+      "sha256": "7b7ac85b10b14097ff0e1177a224bd38029f6c122188a1fa747c34bd8a293bdf"
+    }
+  ]
+}

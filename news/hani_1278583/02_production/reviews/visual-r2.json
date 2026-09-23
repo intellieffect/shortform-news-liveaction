@@ -1,0 +1,215 @@
+{
+  "schema_version": "1.0",
+  "action": "review_visual",
+  "artifact": {
+    "path": "out/pilots/hani_1278583/qa/production-c2579af1-72f7-476d-a7d8-98cc3dfb141f.mp4",
+    "sha256": "0e5d1e09f84eafde9757dfa528a16728a2b2497dfaa7a592b1b7fab5a4553d44",
+    "render_receipt": "b825e91f-6118-479b-948c-cbfe460bd97a"
+  },
+  "source_commit": "d6b22e0db21dfabe5a5c3651cb70732174c1533a",
+  "reviewer": {
+    "id": "shot-judge 2026-09-22 P7 세션 — 같은 검수자의 재확인 라운드",
+    "role": "shot-judge",
+    "independent": true,
+    "tool": "ffmpeg 프레임 추출 + 원해상·360폭 직접 열람. 연속 재생·청취 수단 없음"
+  },
+  "verdict": "incomplete",
+  "raw_report": {
+    "path": "news/hani_1278583/02_production/reviews/p7-visual-r2.md",
+    "sha256": "d6cc3606c777c83fa5967f4fd2eacb55d65a6f4eab5790a17d37151647893970"
+  },
+  "evidence": [
+    {
+      "path": "news/hani_1278583/02_production/reviews/p7-visual-r1.md",
+      "sha256": "7f5f9f2dffe95bca320111ba214e5aa3fd4ee203866ae709780dfe4c729d5e52"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/p7-visual-r2.md",
+      "sha256": "d6cc3606c777c83fa5967f4fd2eacb55d65a6f4eab5790a17d37151647893970"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/orig_576.png",
+      "sha256": "6a3ea75b28e010efc59ee35460b1035a95c02fd8f3beee412aeb3c2560beadd6"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/orig_675.png",
+      "sha256": "a31762c907493c6f73eba94fd351c661665a8b924629ed82a494569b129bc54e"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/orig_840.png",
+      "sha256": "5a0415eb6dc9a79a30500379530d360020047e2a2678c4f24cb07455fe0854a4"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/orig_1680.png",
+      "sha256": "3f05234533f3f4fd8edd1629a1504d72cab438ed2af73890a18519b1bc38a1d3"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/orig_1860.png",
+      "sha256": "c56f14e8fb0daf883eaae968a001111c7aaade2a78712c947f8d730c5a668b72"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/mobile_576.png",
+      "sha256": "6d991f84dc76cbc9dbadc42ad2410fd5f78dcc456365c556659d575b684debe2"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/mobile_675.png",
+      "sha256": "997e7650591c6001398b63ea459f9458464ee080a22445757d32357e87618251"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/mobile_840.png",
+      "sha256": "07bec9c354df3483310c695b462a54e6b872fc87a10d6686cef4d270f011aedd"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/mobile_1680.png",
+      "sha256": "5f819d2820f129ef305a53ff2535d7330c9f3dbf1e39dff40a568c9fd5b98bc4"
+    },
+    {
+      "path": "news/hani_1278583/02_production/reviews/frames/mobile_1860.png",
+      "sha256": "7d4075389dadb7d9a86733cedba3a1e6f89716e144f600cd0e908e1ee138bb94"
+    }
+  ],
+  "coverage": {
+    "original_frames": [
+      {
+        "frame": 576,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/orig_576.png"
+      },
+      {
+        "frame": 675,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/orig_675.png"
+      },
+      {
+        "frame": 840,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/orig_840.png"
+      },
+      {
+        "frame": 1680,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/orig_1680.png"
+      },
+      {
+        "frame": 1860,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/orig_1860.png"
+      }
+    ],
+    "mobile_frames": [
+      {
+        "frame": 576,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/mobile_576.png"
+      },
+      {
+        "frame": 675,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/mobile_675.png"
+      },
+      {
+        "frame": 840,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/mobile_840.png"
+      },
+      {
+        "frame": 1680,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/mobile_1680.png"
+      },
+      {
+        "frame": 1860,
+        "evidence": "news/hani_1278583/02_production/reviews/frames/mobile_1860.png"
+      }
+    ],
+    "playback_ranges": [],
+    "listened_ranges": [],
+    "fact_ranges": [],
+    "audio_measurement": null
+  },
+  "findings": [],
+  "rechecks": [],
+  "text_review": {
+    "verdict": "pass",
+    "observation": "「햇빛」·「그림자」 라벨과 출처 표기는 큰 글씨에 어두운 배경이라 1/3 모바일 축소에서도 판독된다. 공통 자막은 동결 프리셋 위치에서 주대상과 겹치지 않는다. 은하수 구간만 라벨 의존도가 높다.",
+    "evidence": [
+      "news/hani_1278583/02_production/reviews/frames/mobile_576.png",
+      "news/hani_1278583/02_production/reviews/frames/mobile_675.png",
+      "news/hani_1278583/02_production/reviews/frames/mobile_1860.png"
+    ]
+  },
+  "explanations": [
+    {
+      "concept_id": "terminator",
+      "moment_id": "m_edge",
+      "observed_subject": "반달 전체 화면과 왼쪽 위 위치창 인셋",
+      "observed_action": "인셋이 경계선 쪽 목표를 가리키며 화면이 확대된다",
+      "observed_result": "경계선 옆 충돌구가 크게 보인다 (미확인: 연속 재생 수단이 없어 확대 동작 전체는 확인하지 못했다. 표본에서 위치창과 확대 결과는 읽힌다.)",
+      "text_dependency": "낮음 — 시각 장치로 전달된다",
+      "basis": "observed",
+      "verdict": "unverified",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    },
+    {
+      "concept_id": "terminator",
+      "moment_id": "m_light",
+      "observed_subject": "재구성 충돌구 지형과 햇빛 띠",
+      "observed_action": "빛이 거의 수직에서 낮은 사선으로 내려온다. 재확인에서 \"들어옵니다.\" 시점에 낮은 각이 정착함을 표본으로 확인했다.",
+      "observed_result": "그림자가 길어지고 평평하던 지형이 입체로 바뀐다 (미확인: 빛 각도 하강과 그림자 신장의 연속 변화는 프레임 표본으로만 보았다. 22s 표본에서 말과 그림의 시차가 관찰됐다.)",
+      "text_dependency": "높음 — 「햇빛」·「그림자」 라벨 없이는 그래픽의 의미가 불명",
+      "basis": "observed",
+      "verdict": "unverified",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    },
+    {
+      "concept_id": "terminator",
+      "moment_id": "m_real",
+      "observed_subject": "NASA 아르테미스 2호 명암경계선 사진",
+      "observed_action": "정지 관찰",
+      "observed_result": "같은 형태의 긴 그림자로 지형이 드러난다. 「NASA · 아르테미스 2호 촬영」 표기 동반",
+      "text_dependency": "높음 — 라벨 없이는 실사 여부 불명",
+      "basis": "observed",
+      "verdict": "pass",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/frames/orig_840.png",
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    },
+    {
+      "concept_id": "terminator",
+      "moment_id": "m_full",
+      "observed_subject": "같은 시각화의 상현달과 보름달",
+      "observed_action": "크로스페이드로 정면광 상태로 바뀐다",
+      "observed_result": "그림자 없이 평평한 표면. 「보름달 · 정면광」 라벨 동반 (미확인: 상현↔보름 교차 동작은 연속 확인하지 못했다. 결과 상태만 표본에서 확인.)",
+      "text_dependency": "높음",
+      "basis": "observed",
+      "verdict": "unverified",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    },
+    {
+      "concept_id": "timing",
+      "moment_id": "m_arc",
+      "observed_subject": "황혼 하늘 위의 호와 달 표식",
+      "observed_action": "달 표식이 호를 따라 남쪽 정점까지 올라가 멈춘다",
+      "observed_result": "정점 곁에 「저녁 6:50 가장 높이」, 이어 서쪽 끝에 「밤 11:24 달이 짐」이 남는다 (미확인: 호를 따라 올라가는 동작은 연속 확인하지 못했다. 라벨 등장 순서는 표본에서 확인.)",
+      "text_dependency": "보통 — 수치는 라벨이 전달하고 위치는 도해가 전달",
+      "basis": "observed",
+      "verdict": "unverified",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    },
+    {
+      "concept_id": "maria",
+      "moment_id": "m_mare",
+      "observed_subject": "상현달 밝은 쪽의 어두운 평원",
+      "observed_action": "확대하며 두 평원에 점선 윤곽이 그려진다",
+      "observed_result": "어두운 평원이 이름·정체와 함께 식별된다",
+      "text_dependency": "높음",
+      "basis": "observed",
+      "verdict": "pass",
+      "evidence": [
+        "news/hani_1278583/02_production/reviews/frames/orig_1680.png",
+        "news/hani_1278583/02_production/reviews/p7-visual-r1.md"
+      ]
+    }
+  ],
+  "limitation": "재확인 라운드다. 검수자는 수정 구간(562~750프레임)의 프레임 표본으로 F-01·F-02를 fixed로 관찰했고 그 원문은 p7-visual-r2.md에 있다. 다만 이 계약의 rechecks 기록에는 해당 구간의 **연속 시청 범위**가 필요하고 이 세션에는 연속 재생·청취 수단이 없어 rechecks를 비워 둔다. 따라서 F-01·F-02는 제작자 수정과 표본 관찰까지만 근거가 있고, 계약상 미해결로 남는다. F-03은 유지 결정이며 미재검수다."
+}

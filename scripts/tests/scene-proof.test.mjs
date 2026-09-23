@@ -9,6 +9,7 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import {
   SCENE_PROOF_CONFIG_SCHEMA,
+  draftOutputError,
   fontFaces,
   loadSceneProofPlan,
   narrationLines,
@@ -16,6 +17,7 @@ import {
   parseSceneProofArgs,
   prepareSceneProofMedia,
   sceneProofReport,
+  submittedOutputError,
   validateSceneProofPlan,
   writeSceneProofEntry,
 } from "../scene-proof.mjs";
@@ -295,11 +297,17 @@ test("관찰 보고서는 unverified로 시작하고 실제 렌더 근거를 기
 
 test("CLI 인자는 id/phase/output/frame으로 갈린다", () => {
   assert.deepEqual(parseSceneProofArgs(["ep", "--phase", "motion", "--output", "out/a.mp4"]), {
-    id: "ep", phase: "motion", output: "out/a.mp4", frame: 0,
+    id: "ep", phase: "motion", output: "out/a.mp4", frame: 0, mode: "submit",
   });
-  assert.deepEqual(parseSceneProofArgs(["--phase", "still", "ep", "--output", "out/a.png", "--frame", "12"]), {
-    id: "ep", phase: "still", output: "out/a.png", frame: 12,
+  assert.deepEqual(parseSceneProofArgs(["--phase", "still", "ep", "--output", "out/a.png", "--frame", "12", "--mode", "draft"]), {
+    id: "ep", phase: "still", output: "out/a.png", frame: 12, mode: "draft",
   });
+  assert.equal(draftOutputError("ep", "out/pilots/ep/qa/drafts/scene.png"), null);
+  assert.match(draftOutputError("ep", "out/pilots/ep/qa/scene.png"), /draft 출력/);
+  assert.match(draftOutputError("ep", "out/pilots/other/qa/drafts/scene.png"), /draft 출력/);
+  assert.match(draftOutputError("ep", "out/pilots/ep/qa/drafts/../scene.png"), /draft 출력/);
+  assert.match(submittedOutputError("ep", "out/pilots/ep/qa/drafts/scene.png"), /submit 출력/);
+  assert.equal(submittedOutputError("ep", "out/pilots/ep/qa/scene.png"), null);
 });
 
 test("실제 저장소의 자막 서체는 가중치와 함께 잡힌다", () => {

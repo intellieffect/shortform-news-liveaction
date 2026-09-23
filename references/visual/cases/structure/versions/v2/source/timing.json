@@ -1,0 +1,30 @@
+{
+  "id": "ReferenceStructure",
+  "frames": 198,
+  "captions": [
+    {
+      "id": "0",
+      "text": "탄소 원자 예순 개가",
+      "start": 0.64,
+      "end": 1.97
+    },
+    {
+      "id": "1",
+      "text": "연결돼",
+      "start": 1.97,
+      "end": 3.12
+    },
+    {
+      "id": "2",
+      "text": "속이 빈 공 모양을",
+      "start": 3.31,
+      "end": 4.48
+    },
+    {
+      "id": "3",
+      "text": "이룹니다",
+      "start": 4.48,
+      "end": 5.75
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import {sceneReviewCandidate, priorSceneRevisions} from './scene-review.mjs';
+import {optionalSceneTrials} from '../scene-proof-contract.mjs';
 import {visualWork} from './visual-work.mjs';
 import {referenceContext} from '../visual-references.mjs';
 import { existsSync, readdirSync, statSync } from "node:fs";
@@ -84,6 +85,28 @@ export const buildReviewInput = (w, state, actions, { source, phase }) => {
   if (!["experience", "intent"].includes(phase)) throw new Error("--phase experience|intent를 지정한다");
   if (source === 'scene') {
     const {attempt, report, outputs} = sceneReviewCandidate(w, state);
+    if (optionalSceneTrials(w, state)) {
+      const configPath = join(w.production, 'scene-proof.json');
+      const config = existsSync(configPath) ? json(configPath) : {};
+      if (config.viewer_context != null && typeof config.viewer_context !== 'string') throw new Error('viewer_context는 실제 시청 맥락을 적은 문자열이어야 한다');
+      // Only audience-facing context belongs in an unprimed observation.
+      // The question, expected outcome and implementation remain in intent notes.
+      return {contract: 'scene-trial-input@1', pilot: w.id, source, phase, receipt_id: attempt.id,
+        attempt_status: attempt.status,
+        files: [{...inputReference(w, report.artifact, outputs[report.artifact]), scope: report.scope, phase: report.phase, media: previewMedia(w, report.artifact)}],
+        viewer_context: typeof config.viewer_context === 'string' ? config.viewer_context : '',
+        viewer_context_status: config.viewer_context?.trim() ? 'provided' : 'not-provided',
+        observation_status: 'not_performed', purpose: 'optional_expression_trial_not_final',
+        instructions: phase === 'experience'
+          ? '실제 시청자가 받는 앞뒤 맥락과 시안을 보고 무엇이 읽히는지 짧게 관찰한다. viewer_context_status가 not-provided이면 시안 자체만 제공된 것이므로 맥락 부족과 실제 오독을 구분한다. 없는 음성·동작은 추측하지 않는다. 설계 정답을 요구하거나 픽셀·미술 전수 검수를 하지 않는다.'
+          : '기존 제작 노트의 시험 질문에만 답하고 채택·표현 변경·판단 보류에 필요한 관찰과 미확인 범위를 반환한다. 설계 형태·궤적은 가설이며 모든 moments의 통과를 요구하지 않는다. 의도 대조가 필요할 때만 이 입력을 사용한다.',
+        ...(phase === 'intent' ? {context: {
+          documents: refs(w, ['facts.md', 'narration.txt', 'direction.md', 'decisions.md']),
+          trials: visualWork(w, state).scene_proofs,
+          note: '시험 결과·원문은 보존하고 부수적 개선점은 전체 시안에서 확인한다. 이 입력은 음성 착수나 최종 품질 승인용이 아니다.',
+        }} : {}),
+      };
+    }
     const result = {contract: 'scene-review-input@2', pilot: w.id, source, phase, receipt_id: attempt.id,
       attempt_status: attempt.status,
       files: [{...inputReference(w, report.artifact, outputs[report.artifact]), scope: report.scope, phase: report.phase, media: previewMedia(w, report.artifact)}],

@@ -2,15 +2,24 @@ import {readFileSync, realpathSync} from 'node:fs';
 import {join, sep} from 'node:path';
 import {fileSnapshot, hash, json, recipe} from './contracts.mjs';
 import {execFileSync} from 'node:child_process';
+import {optionalSceneTrials, sceneGateMismatch} from '../scene-proof-contract.mjs';
 
-export const FIRST_SCENE_GATE = 'first-core-scene@2';
+export const FAST_FIRST_SCENE_GATE = 'first-core-scene@4';
+export const FIRST_SCENE_GATE = 'first-core-scene@3';
+export const PREVIOUS_FIRST_SCENE_GATE = 'first-core-scene@2';
 export const LEGACY_FIRST_SCENE_GATE = 'first-core-scene@1';
-export const requiresSceneReview = (w, state = {}) => (state.scene_gate ?? w.request?.scene_gate) === FIRST_SCENE_GATE;
+export const requiresSceneReview = (w, state = {}) => [FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE, PREVIOUS_FIRST_SCENE_GATE].includes(state.scene_gate ?? w.request?.scene_gate);
 const text = value => typeof value === 'string' && value.trim().length > 0;
+const producerReviewedStill = (w, state, report) => {
+  if (![FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE].includes(state.scene_gate ?? w.request?.scene_gate) || report.phase !== 'still') return false;
+  const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);
+  return Boolean(concept?.visual?.moments?.some(m => m.motion_required));
+};
 
 // A rendered, still-open attempt is reviewable before a verdict is recorded.
 // This does not finish the attempt or claim that its media has been watched.
 export function sceneReviewCandidate(w, state) {
+  if (sceneGateMismatch(w, state)) throw new Error('접수와 실행 기록의 초기 장면 계약이 다르다');
   const attempt = state.attempts.findLast(a => a.action === 'scene_proof' && ['running', 'succeeded'].includes(a.status));
   if (!attempt) throw new Error('검토할 초기 장면 시안이 없다');
   const spec = recipe(w, 'scene_proof');
@@ -20,6 +29,7 @@ export function sceneReviewCandidate(w, state) {
   if (paths.length !== 1) throw new Error('초기 장면 관찰 JSON이 필요하다');
   const report = json(w.path(paths[0]));
   if (report.schema !== 'scene-proof@1' || !attempt.outputs.includes(report.artifact)) throw new Error('초기 장면 artifact 연결이 잘못됐다');
+  if (producerReviewedStill(w, state, report)) throw new Error('동작 설명의 정지 시안은 제작자가 확인한다. 독립 검수는 제출 motion에서 진행한다');
   const outputs = fileSnapshot(w, attempt.outputs);
   if (Object.values(outputs).some(v => !v)) throw new Error('시안 렌더가 아직 끝나지 않았다');
   if (attempt.status === 'succeeded' && Object.entries(attempt.outputs_sha256).some(([p, h]) => fileSnapshot(w, [p])[p] !== h)) throw new Error('기록된 시안·검수 근거가 바뀌었다');
@@ -34,7 +44,7 @@ export function priorSceneRevisions(state, report) {
     const previous = attempt.validation?.report;
     if (attempt.status !== 'succeeded' || attempt.validation?.kind !== 'scene-proof' || previous.concept_id !== report.concept_id || previous.phase !== report.phase || previous.scope !== report.scope) continue;
     if (previous.verdict === 'revise') open.set(attempt.id, {receipt_id: attempt.id, artifact: previous.artifact, observation: previous.observation, review: previous.review ?? null});
-    if (previous.verdict === 'usable') for (const check of previous.review?.rechecks ?? []) {
+    if (['usable', 'provisional'].includes(previous.verdict)) for (const check of previous.review?.rechecks ?? previous.rechecks ?? []) {
       if (check.verdict === 'fixed' && text(check.observation)) open.delete(check.receipt_id);
     }
   }
@@ -49,8 +59,26 @@ const validRawEvidence = (w, raw) => {
 
 // Validates bindings, not aesthetic quality or the truth of claimed viewing.
 export function sceneReviewErrors(w, state, report, artifactHash) {
+  if (sceneGateMismatch(w, state)) return ['접수와 실행 기록의 초기 장면 계약이 다르다'];
+  if (optionalSceneTrials(w, state)) {
+    // Independent observations are optional and may be a single report. Preserve
+    // their original bytes without manufacturing a two-phase review contract.
+    if (report.evidence == null) return [];
+    if (!Array.isArray(report.evidence) || report.evidence.some(e => !e || !validRawEvidence(w, e))) return ['선택적 시험 evidence는 해당 편 reviews/ 아래의 실제 파일·해시에 연결한다'];
+    return [];
+  }
   if (!requiresSceneReview(w, state) || report.scope !== 'composite' || !['usable', 'provisional'].includes(report.verdict)) return [];
   const errors = [], add = message => errors.push(message), r = report.review;
+  const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);
+  // On @3, the producer checks the still's composition. The independent judge
+  // sees the submitted motion, where the action and the still's artwork coexist.
+  if (producerReviewedStill(w, state, report)) {
+    for (const previous of priorSceneRevisions(state, report)) {
+      const check = report.rechecks?.find(x => x.receipt_id === previous.receipt_id);
+      if (!check || check.verdict !== 'fixed' || !text(check.observation)) add(`이전 revise ${previous.receipt_id}의 실제 재확인이 필요하다`);
+    }
+    return errors;
+  }
   const provisional = report.phase === 'motion' && report.verdict === 'provisional';
   if (provisional) {
     const samples = report.sampling?.frames, duration = Number(json(join(w.production, 'scene-proof.json')).duration_seconds);
@@ -74,7 +102,6 @@ export function sceneReviewErrors(w, state, report, artifactHash) {
     if (raw?.sha256 && reused) add(`${phase}: 다른 시안의 검수 원문을 재사용할 수 없다. 현재 실물을 새로 확인한다`);
   }
   if (r.experience?.raw_report?.path === r.intent?.raw_report?.path || r.experience?.raw_report?.sha256 === r.intent?.raw_report?.sha256) add('초견 관찰 원문을 의도 대조 응답으로 덮어쓰지 않는다');
-  const concept = json(join(w.production, 'concepts.json')).concepts.find(c => c.id === report.concept_id);
   const targets = concept?.visual?.moments ?? [], rows = r.intent?.explanations;
   if (!Array.isArray(rows)) add('intent.explanations에 실제로 읽힌 대상·작용·결과를 기록한다');
   else {
@@ -111,6 +138,7 @@ export function provisionalFrameErrors(w, report) {
 }
 
 export function sceneReviewEvidence(w, state, report) {
+  if (optionalSceneTrials(w, state)) return report.evidence ?? [];
   if (!requiresSceneReview(w, state)) return [];
   return [...['experience', 'intent'].flatMap(phase => {
     const raw = report.review?.[phase]?.raw_report;

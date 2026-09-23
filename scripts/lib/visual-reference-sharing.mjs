@@ -75,11 +75,11 @@ export function referenceSharingErrors(entries, read) {
         if (!/^[a-f0-9]{64}$/.test(f.sha256)) add("파일 해시 오류: " + f.path);
         if (
           paths.has(f.path) &&
-          !/\.(mp4|webm|wav|png|jpg)$/.test(f.path) &&
+          !/\.(mp4|mov|webm|m4v|wav|mp3|m4a|png|jpg|jpeg|webp|ttf|otf)$/.test(f.path) &&
           createHash("sha256").update(read(f.path)).digest("hex") !== f.sha256
         )
           add("파일 해시 불일치: " + f.path);
-        if (paths.has(f.path) && /\.(mp4|webm|wav|png|jpg)$/.test(f.path)) {
+        if (paths.has(f.path) && /\.(mp4|mov|webm|m4v|wav|mp3|m4a|png|jpg|jpeg|webp|ttf|otf)$/.test(f.path)) {
           const body = read(f.path),
             oid = /^oid sha256:([a-f0-9]{64})$/m.exec(body)?.[1];
           if (

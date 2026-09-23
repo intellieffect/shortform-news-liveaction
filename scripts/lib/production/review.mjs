@@ -30,6 +30,31 @@ const covers = (ranges, [from, end]) => {
   }
   return false;
 };
+const succeeded = (state, id) => id ? state.attempts.findLast((a) => a.id === id && a.status === "succeeded") ?? null : null;
+// render → sync → timeline → narration 사슬을 따라 그 렌더가 쓴 낭독 기록을 찾는다.
+const narrationOf = (state, renderId) => {
+  let a = succeeded(state, renderId);
+  for (const dep of ["sync", "timeline", "narration"]) a = a && succeeded(state, a.inputs?.dependencies?.[dep]);
+  return a?.id ?? null;
+};
+
+// 화면만 고친 재렌더에서는 이전 렌더의 사실 대조 범위를 잇는다. 낭독 기록·총 프레임·사실 입력(facts·story·concepts·assets)이
+// 같고, 현재 렌더의 제작자 수정 구간 전체를 새 독립 사실 검수가 덮었을 때만이다. 새 렌더의 기존 이슈 재확인 규칙은 그대로다.
+export const factCoverageCarry = (state, history, artifact, currentFactRanges) => {
+  const receipt = state.receipts.review_facts;
+  const render = artifact && succeeded(state, artifact.render_receipt);
+  if (!receipt || !render) return [];
+  const changed = (state.resolutions ?? []).filter((r) => same(r.artifact, artifact)).map((r) => r.range);
+  if (!changed.length || !changed.every((range) => covers(currentFactRanges, range))) return [];
+  const narration = narrationOf(state, render.id), frames = render.validation?.media?.total_frames, files = JSON.stringify(receipt.inputs.files);
+  if (!narration || !Number.isInteger(frames)) return [];
+  return history.filter((a) => {
+    if (a.action !== "review_facts" || !a.validation.report.reviewer.independent || same(a.validation.report.artifact, artifact)) return false;
+    const prior = succeeded(state, a.validation.report.artifact.render_receipt);
+    return prior?.validation?.media?.total_frames === frames && narrationOf(state, prior.id) === narration && JSON.stringify(a.inputs.files) === files;
+  });
+};
+
 const reviews = (state) => state.attempts.filter((a) => a.status === "succeeded" && a.validation?.contract === CONTRACT && a.validation.kind === "review");
 
 // 관찰 원문은 성공한 검수 기록에 남고, 제작자 수정과 검수자 재확인은 별도 사건으로 붙는다.
@@ -179,6 +204,8 @@ export const productionCompletion = (w, state, actions) => {
     if (v.report.verdict !== "pass") add("review-not-passed", v.report.verdict, action);
     // 같은 실물·입력의 독립 검수 범위만 합친다. 부분 재검수 때문에 이미 본 범위를 반복하지 않는다.
     const eligible = history.filter((a) => a.action === action && a.inputs.sha256 === state.receipts[action].inputs.sha256 && same(a.validation.report.artifact, artifact) && a.validation.report.reviewer.independent);
+    const carried = action === "review_facts" ? factCoverageCarry(state, history, artifact, eligible.flatMap((a) => a.validation.report.coverage.fact_ranges)) : [];
+    eligible.push(...carried);
     const coverage = { original_frames: [], mobile_frames: [], playback_ranges: [], listened_ranges: [], fact_ranges: [], audio_measurement: null };
     for (const a of eligible) {
       const actual = fileSnapshot(w, Object.keys(a.outputs_sha256), evidenceCache);
@@ -186,7 +213,7 @@ export const productionCompletion = (w, state, actions) => {
       for (const key of ["original_frames", "mobile_frames", "playback_ranges", "listened_ranges", "fact_ranges"]) coverage[key].push(...a.validation.report.coverage[key]);
       coverage.audio_measurement = a.validation.report.coverage.audio_measurement ?? coverage.audio_measurement;
     }
-    reviewSummary[action] = { reports: eligible.map((a) => a.validation.report_path), coverage, reviewer: v.report.reviewer };
+    reviewSummary[action] = { reports: eligible.map((a) => a.validation.report_path), ...(carried.length ? { carried_from: carried.map((a) => a.validation.report_path) } : {}), coverage, reviewer: v.report.reviewer };
     for (const gap of coverageGaps({ ...v.report, coverage }, timeline(w))) add("coverage-gap", gap, action);
   }
   const issues = productionIssues(state).map((issue) => {

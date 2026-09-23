@@ -474,7 +474,7 @@
     if (!e.target.closest("#file-tools")) $("file-tools").open = false;
   });
 
-  // 제작 프롬프트 탭: docs/PRODUCTION_PROMPT.md 본문을 그대로 싣고, [URL] 자리만 채워 복사한다.
+  // 제작 프롬프트 탭: docs/PRODUCTION_PROMPT_V2_RESTORED.txt 본문을 그대로 싣고, [기사 URL] 자리만 채워 복사한다.
   const promptText = prompt?.text ?? "";
   let referenceRequest = "";
   const filled = (url) => {
@@ -710,7 +710,6 @@
     $("prompt-text").scrollTop = $("prompt-text").scrollHeight;
   });
   function initReferences() {
-    $("tab-references").hidden = !library;
     if (!library) return;
     if (library.title) $("reference-title").textContent = library.title;
     $("reference-version").textContent = library.version

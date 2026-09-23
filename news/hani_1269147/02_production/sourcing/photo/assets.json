@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_1269147",
+  "assets": [
+    {
+      "id": "earth_bluemarble_2012",
+      "path": "02_production/sourcing/photo/raw/earth_bluemarble_2012.jpg",
+      "url": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e001386/GSFC_20171208_Archive_e001386~orig.jpg",
+      "credit": "NASA/NOAA/GSFC/Suomi NPP/VIIRS/Norman Kuring",
+      "license": "Public Domain (NASA image use policy, http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html)"
+    },
+    {
+      "id": "magellan_dome_close_denys",
+      "path": "02_production/sourcing/photo/raw/magellan_dome_close_denys.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Magellan_Campanas.jpg",
+      "credit": "Denys (fr) — Wikimedia Commons, own work",
+      "license": "CC BY 3.0"
+    },
+    {
+      "id": "magellan_dome_wide_denys",
+      "path": "02_production/sourcing/photo/raw/magellan_dome_wide_denys.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Las_Campanas_Magellan.jpg",
+      "credit": "Denys (fr) — Wikimedia Commons, own work",
+      "license": "CC BY 3.0"
+    },
+    {
+      "id": "magellan_ridge_wide_foellmi",
+      "path": "02_production/sourcing/photo/raw/magellan_ridge_wide_foellmi.jpg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/LasCampanasObservatory.jpg",
+      "credit": "Cédric Foellmi — Wikimedia Commons, own work",
+      "license": "CC BY 2.5"
+    },
+    {
+      "id": "trappist_lineup_pia22093",
+      "path": "02_production/sourcing/photo/raw/trappist_lineup_pia22093.tif",
+      "url": "https://images-assets.nasa.gov/image/PIA22093/PIA22093~orig.tif",
+      "credit": "NASA/JPL-Caltech",
+      "license": "Public Domain (NASA/JPL image use policy)"
+    },
+    {
+      "id": "trappist_system_pia21751",
+      "path": "02_production/sourcing/photo/raw/trappist_system_pia21751.jpg",
+      "url": "https://images-assets.nasa.gov/image/PIA21751/PIA21751~orig.jpg",
+      "credit": "NASA/JPL-Caltech",
+      "license": "Public Domain (NASA/JPL image use policy)"
+    },
+    {
+      "id": "lhs1140b_cfa_weiss_official",
+      "path": "02_production/sourcing/photo/raw/lhs1140b_cfa_weiss_official.jpg",
+      "url": "https://www.cfa.harvard.edu/sites/default/files/2026-07/cfa-055-helium_atomsphere_planet3H_lrg.jpg",
+      "credit": "Melissa Weiss/CfA (Carnegie 재게시 표기: Melissa Weiss/Center for Astrophysics | Harvard & Smithsonian)",
+      "license": "CC0 / Public Domain (Smithsonian Institution Open Access policy — CfA image use policy https://www.cfa.harvard.edu/news/image-use-policy)"
+    },
+    {
+      "id": "lhs1140b_eso1712a_2017",
+      "path": "02_production/sourcing/photo/raw/lhs1140b_eso1712a_2017.jpg",
+      "url": "https://cdn.eso.org/images/large/eso1712a.jpg",
+      "credit": "ESO/spaceengine.org",
+      "license": "CC BY 4.0 (ESO copyright policy https://www.eso.org/public/copyright/ — 공동 크레딧에 대한 별도 예외 문구 없음, 근거는 candidates.md 참조)"
+    }
+  ]
+}

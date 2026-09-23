@@ -63,8 +63,12 @@ For a new article or resumed production, read the checked-out [production entry]
 | P0, once the article and asset list exist | `source-verify` | alongside 원문 보존 |
 | P3, once `asset_gaps.json` is split by `kind` | `sourcing` | **three at once** — video · photo · music |
 | Editorial concept, after story·concepts·facts·draft script and asset candidates exist, before TTS | `editorial-judge` | alongside the final source-plan check |
-| P4 (3′), P5 (4-3R), P7 (final) | `shot-judge` | at P7, alongside `fact-check` |
-| P7 final review | `fact-check` | alongside `shot-judge` |
+| First core scene, when a submitted test raises a question about independent meaning or a likely misreading (`first-core-scene@5`: optional, not a voice gate) | `scene-judge` | one experience pass; intent only if the question needs it; no call for drafts or art tweaks |
+| First core scene on an episode started under `@2`–`@4` | `scene-judge` | that episode keeps its recorded gate — experience → intent, narration admission only |
+| P4 (3′), P5 (4-3R), P7 (final) | `shot-judge` | at P5 and P7, alongside `fact-check` |
+| P5 first full draft, P7 final review | `fact-check` | alongside `shot-judge` |
+
+`first-core-scene@5`에서 시험 자체가 선택이다. 원고·주요 자료·표현 수단 선택을 바꿀 구체적 불확실성이 없으면 시험도 호출도 하지 않고, 음성과 전체 시안으로 간다. 독립 검토가 필요한 시험인데 `scene-judge`가 설치본에 없으면 검수를 생략하거나 전체 영상용 `shot-judge`의 장문 절차로 되돌리지 않는다. 이 저장소의 [scene-judge 원문](plugin/agents/scene-judge.md)을 읽고 동일한 범위로 로컬 Opus CLI에 위임한다. 설치본과 저장소 소스의 차이는 `doctor --installed`로 기록한다. 계약 전문은 [발화→화면 제작](plugin/skills/shortform-news-pipeline/reference/visual-production.md)과 [docs/SCENE-PROOF.md](docs/SCENE-PROOF.md)에 있다.
 
 Anywhere else, ask first. Issue parallel calls in a single message.
 

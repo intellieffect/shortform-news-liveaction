@@ -1,0 +1,2516 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_1278583",
+  "fps": 30,
+  "total_frames": 2326,
+  "source": {
+    "narration_word_sha256": "0bd45176b9a5377779e320fd6adaf07921f6f154c250c00612329eea8f778843",
+    "story_sha256": "a2131f162975ab580b7cb9c6a47bb49b54b47c1d6913435cd53215fc737a23ff",
+    "concepts_sha256": "f00742a8cf1a1946341358f897cd3477c21a1981893fed5005681d20fe463189",
+    "motion_sha256": "11be6e194e5d66e734433ea8963a12a962d97cccceb6d5929954c6095ca442e2",
+    "visual_system_sha256": "6f52565c193342e37ee0a59c203836c31ee10fdd553af9bebcb69411b6b382b4",
+    "production_profile_sha256": "06f64fca74caf039b93cd1e764094d4a36a47de8ebf90543660cda5fe357b22b"
+  },
+  "concepts": [
+    {
+      "id": "intro",
+      "from": 0,
+      "end": 368,
+      "duration": 368,
+      "narration_lines": [
+        "s01",
+        "s02",
+        "s03"
+      ]
+    },
+    {
+      "id": "terminator",
+      "from": 368,
+      "end": 1055,
+      "duration": 687,
+      "narration_lines": [
+        "s04",
+        "s05",
+        "s06",
+        "s07"
+      ]
+    },
+    {
+      "id": "timing",
+      "from": 1055,
+      "end": 1414,
+      "duration": 359,
+      "narration_lines": [
+        "s08",
+        "s09",
+        "s10"
+      ]
+    },
+    {
+      "id": "maria",
+      "from": 1414,
+      "end": 1749,
+      "duration": 335,
+      "narration_lines": [
+        "s11",
+        "s12"
+      ]
+    },
+    {
+      "id": "sagittarius",
+      "from": 1749,
+      "end": 1916,
+      "duration": 167,
+      "narration_lines": [
+        "s13"
+      ]
+    },
+    {
+      "id": "history",
+      "from": 1916,
+      "end": 2326,
+      "duration": 410,
+      "narration_lines": [
+        "s14",
+        "s15"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "phase_wax",
+      "concept_id": "intro",
+      "element_id": "phase_moon",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s01",
+            "token_index": 0,
+            "word": "지난",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s02",
+            "token_index": 5,
+            "word": "반달인",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 1,
+            "word": "반달일까요?",
+            "edge": "end",
+            "offset_frames": 10
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s03",
+            "token_index": 1,
+            "word": "반달일까요?",
+            "edge": "end",
+            "offset_frames": 10
+          }
+        }
+      },
+      "easing": {
+        "enter": "linear",
+        "move": "linear",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "초승달에서 상현달로 차오르다 '반달인'에서 멈춘다",
+      "from": 0,
+      "settled": 241,
+      "to": 367,
+      "end": 367
+    },
+    {
+      "id": "fq_show",
+      "concept_id": "terminator",
+      "element_id": "fq_moon",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 0,
+            "word": "상현달은",
+            "edge": "start",
+            "offset_frames": -8
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s04",
+            "token_index": 0,
+            "word": "상현달은",
+            "edge": "start",
+            "offset_frames": 4
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "보름달은",
+            "edge": "start",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 9,
+            "word": "보입니다.",
+            "edge": "end",
+            "offset_frames": 3
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "상현달 전면이 개념 시작에 서고 보름 교차까지 유지",
+      "from": 371,
+      "settled": 383,
+      "to": 861,
+      "end": 1054
+    },
+    {
+      "id": "edge_zoom",
+      "concept_id": "terminator",
+      "element_id": "locator",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 4,
+            "word": "갈리는",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 6,
+            "word": "근처에서는,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "햇빛이",
+            "edge": "start",
+            "offset_frames": 4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "햇빛이",
+            "edge": "start",
+            "offset_frames": 14
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "fq_show",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "'경계선 근처'에서 확대·위치창, '햇빛이'에서 재구성으로 넘어간다",
+      "from": 562,
+      "settled": 624,
+      "to": 628,
+      "end": 638
+    },
+    {
+      "id": "model_show",
+      "concept_id": "terminator",
+      "element_id": "crater_model",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "햇빛이",
+            "edge": "start",
+            "offset_frames": 4
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s05",
+            "token_index": 7,
+            "word": "햇빛이",
+            "edge": "start",
+            "offset_frames": 14
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 7,
+            "word": "지형이",
+            "edge": "start",
+            "offset_frames": -4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 7,
+            "word": "지형이",
+            "edge": "start",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "edge_zoom",
+          "point": "to"
+        }
+      ],
+      "coexist_with": [],
+      "why": "재구성 영상 구간",
+      "from": 628,
+      "settled": 638,
+      "to": 808,
+      "end": 818
+    },
+    {
+      "id": "real_show",
+      "concept_id": "terminator",
+      "element_id": "crater_real",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 7,
+            "word": "지형이",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s06",
+            "token_index": 7,
+            "word": "지형이",
+            "edge": "start",
+            "offset_frames": 10
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "보름달은",
+            "edge": "start",
+            "offset_frames": -14
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "보름달은",
+            "edge": "start",
+            "offset_frames": -4
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "model_show",
+          "point": "to"
+        }
+      ],
+      "coexist_with": [],
+      "why": "'지형이 입체적으로'에서 실제 사진",
+      "from": 812,
+      "settled": 822,
+      "to": 851,
+      "end": 861
+    },
+    {
+      "id": "full_cross",
+      "concept_id": "terminator",
+      "element_id": "full_moon",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 0,
+            "word": "보름달은",
+            "edge": "start",
+            "offset_frames": -4
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 3,
+            "word": "비쳐",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 9,
+            "word": "보입니다.",
+            "edge": "end",
+            "offset_frames": 3
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s07",
+            "token_index": 9,
+            "word": "보입니다.",
+            "edge": "end",
+            "offset_frames": 3
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-in-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "fq_show",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "상현→보름 교차",
+      "from": 861,
+      "settled": 945,
+      "to": 1054,
+      "end": 1054
+    },
+    {
+      "id": "sky_in",
+      "concept_id": "timing",
+      "element_id": "sky",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "두",
+            "edge": "start",
+            "offset_frames": -3
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s08",
+            "token_index": 0,
+            "word": "두",
+            "edge": "start",
+            "offset_frames": 6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "황혼 하늘",
+      "from": 1055,
+      "settled": 1064,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "arc_draw",
+      "concept_id": "timing",
+      "element_id": "arc",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 0,
+            "word": "상현달은",
+            "edge": "start",
+            "offset_frames": -4
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 1,
+            "word": "초저녁에",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "sky_in",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "지평선과 호",
+      "from": 1122,
+      "settled": 1163,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "moon_rise",
+      "concept_id": "timing",
+      "element_id": "arc_moon",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 1,
+            "word": "초저녁에",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 3,
+            "word": "높이",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "arc_draw",
+          "point": "from"
+        }
+      ],
+      "coexist_with": [],
+      "why": "'가장 높이'에서 정점 도달",
+      "from": 1142,
+      "settled": 1180,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "peak_in",
+      "concept_id": "timing",
+      "element_id": "peak_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 4,
+            "word": "6시",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 5,
+            "word": "50분에",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "moon_rise",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "6시 50분",
+      "from": 1258,
+      "settled": 1297,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "set_in",
+      "concept_id": "timing",
+      "element_id": "set_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 8,
+            "word": "밤",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 10,
+            "word": "24분에",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "peak_in",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "11시 24분",
+      "from": 1330,
+      "settled": 1382,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "fq2_show",
+      "concept_id": "maria",
+      "element_id": "fq_moon2",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 0,
+            "word": "쌍안경이나",
+            "edge": "start",
+            "offset_frames": -6
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 0,
+            "word": "쌍안경이나",
+            "edge": "start",
+            "offset_frames": 4
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 7,
+            "word": "지형입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 7,
+            "word": "지형입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "상현달로 복귀·확대",
+      "from": 1414,
+      "settled": 1424,
+      "to": 1748,
+      "end": 1748
+    },
+    {
+      "id": "mare_ring",
+      "concept_id": "maria",
+      "element_id": "mare_outline",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 5,
+            "word": "'바다'라",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s11",
+            "token_index": 6,
+            "word": "불리는",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 7,
+            "word": "지형입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s12",
+            "token_index": 7,
+            "word": "지형입니다.",
+            "edge": "end",
+            "offset_frames": 6
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "fq2_show",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "바다 윤곽",
+      "from": 1519,
+      "settled": 1547,
+      "to": 1748,
+      "end": 1748
+    },
+    {
+      "id": "mw_pan",
+      "concept_id": "sagittarius",
+      "element_id": "mw",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 0,
+            "word": "이번",
+            "edge": "start",
+            "offset_frames": -6
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 0,
+            "word": "이번",
+            "edge": "start",
+            "offset_frames": 6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 8,
+            "word": "지나갔습니다.",
+            "edge": "end",
+            "offset_frames": 4
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s13",
+            "token_index": 8,
+            "word": "지나갔습니다.",
+            "edge": "end",
+            "offset_frames": 4
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "linear",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "은하 중심부 느린 팬",
+      "from": 1749,
+      "settled": 1761,
+      "to": 1915,
+      "end": 1915
+    },
+    {
+      "id": "moon_end_show",
+      "concept_id": "history",
+      "element_id": "moon_end",
+      "kind": "media",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 0,
+            "word": "달",
+            "edge": "start",
+            "offset_frames": -5
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 0,
+            "word": "달",
+            "edge": "start",
+            "offset_frames": 6
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "찾아보세요.",
+            "edge": "end",
+            "offset_frames": 17
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "찾아보세요.",
+            "edge": "end",
+            "offset_frames": 17
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "상현달로 회귀, 끝까지",
+      "from": 1916,
+      "settled": 1927,
+      "to": 2318,
+      "end": 2318
+    },
+    {
+      "id": "next_in",
+      "concept_id": "history",
+      "element_id": "next_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 1,
+            "word": "2027년",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 3,
+            "word": "10일.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 6,
+            "word": "저녁,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "다음 날짜",
+      "from": 2140,
+      "settled": 2207,
+      "to": 2250,
+      "end": 2250
+    },
+    {
+      "id": "horizon_in",
+      "concept_id": "timing",
+      "element_id": "horizon",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 0,
+            "word": "상현달은",
+            "edge": "start",
+            "offset_frames": -8
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 0,
+            "word": "상현달은",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "sky_in",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "지평선과 방위 기준",
+      "from": 1118,
+      "settled": 1142,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "dir_in",
+      "concept_id": "timing",
+      "element_id": "dir_south",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 2,
+            "word": "가장",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s09",
+            "token_index": 3,
+            "word": "높이",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "moon_rise",
+          "point": "from"
+        }
+      ],
+      "coexist_with": [],
+      "why": "남쪽 정점",
+      "from": 1163,
+      "settled": 1180,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "cond_in",
+      "concept_id": "timing",
+      "element_id": "cond_label",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 0,
+            "word": "서울",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 2,
+            "word": "19일",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "서울 기준 19일 조건",
+      "from": 1214,
+      "settled": 1248,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "moon_set",
+      "concept_id": "timing",
+      "element_id": "arc_moon",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 8,
+            "word": "밤",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s10",
+            "token_index": 11,
+            "word": "졌습니다.",
+            "edge": "end",
+            "offset_frames": 5
+          }
+        }
+      },
+      "easing": {
+        "enter": "linear",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "moon_rise",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "졌습니다에서 서쪽 지평선으로 내려감",
+      "from": 1332,
+      "settled": 1408,
+      "to": 1413,
+      "end": 1413
+    },
+    {
+      "id": "tl_in",
+      "concept_id": "history",
+      "element_id": "timeline",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 0,
+            "word": "달",
+            "edge": "start",
+            "offset_frames": 6
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 3,
+            "word": "2009년",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 6,
+            "word": "저녁,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "moon_end_show",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "연혁 시간축",
+      "from": 1927,
+      "settled": 1948,
+      "to": 2250,
+      "end": 2250
+    },
+    {
+      "id": "y2009_in",
+      "concept_id": "history",
+      "element_id": "y2009",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 3,
+            "word": "2009년",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 3,
+            "word": "2009년",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 6,
+            "word": "저녁,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "tl_in",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "2009 기점",
+      "from": 1948,
+      "settled": 1967,
+      "to": 2250,
+      "end": 2250
+    },
+    {
+      "id": "y2010_in",
+      "concept_id": "history",
+      "element_id": "y2010",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 9,
+            "word": "2010년부터",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s14",
+            "token_index": 10,
+            "word": "매년",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 6,
+            "word": "저녁,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "y2009_in",
+          "point": "settled"
+        }
+      ],
+      "coexist_with": [],
+      "why": "2010부터 매년",
+      "from": 2031,
+      "settled": 2081,
+      "to": 2250,
+      "end": 2250
+    },
+    {
+      "id": "note_in",
+      "concept_id": "history",
+      "element_id": "next_note",
+      "kind": "label",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 0,
+            "word": "다음은",
+            "edge": "start",
+            "offset_frames": -2
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 0,
+            "word": "다음은",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 6,
+            "word": "저녁,",
+            "edge": "end",
+            "offset_frames": 0
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [],
+      "coexist_with": [],
+      "why": "다음 개최 표시",
+      "from": 2127,
+      "settled": 2142,
+      "to": 2250,
+      "end": 2250
+    },
+    {
+      "id": "end_zoom",
+      "concept_id": "history",
+      "element_id": "moon_end",
+      "kind": "motion",
+      "timing": {
+        "from": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 7,
+            "word": "경계선의",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "settled": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "찾아보세요.",
+            "edge": "start",
+            "offset_frames": 0
+          }
+        },
+        "to": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "찾아보세요.",
+            "edge": "end",
+            "offset_frames": 17
+          }
+        },
+        "end": {
+          "anchor": {
+            "line": "s15",
+            "token_index": 9,
+            "word": "찾아보세요.",
+            "edge": "end",
+            "offset_frames": 17
+          }
+        }
+      },
+      "easing": {
+        "enter": "ease-out",
+        "move": "ease-in-out",
+        "exit": "ease-in"
+      },
+      "depends_on": [
+        {
+          "event_id": "tl_in",
+          "point": "to"
+        }
+      ],
+      "coexist_with": [],
+      "why": "경계선의 그림자로 다가감",
+      "from": 2250,
+      "settled": 2282,
+      "to": 2318,
+      "end": 2318
+    }
+  ],
+  "audio_cues": [
+    {
+      "id": "sfx_stop",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "phase_wax",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "frame": 241
+    },
+    {
+      "id": "sfx_model",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "model_show",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_whoosh.wav",
+      "gain_db": -17,
+      "frame": 628
+    },
+    {
+      "id": "sfx_shadow",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "model_show",
+        "point": "settled",
+        "offset_frames": 60
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "why": "재구성 지형이 자리 잡는 순간 낮은 잔향 하나",
+      "frame": 698
+    },
+    {
+      "id": "sfx_full",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "full_cross",
+        "point": "from",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_whoosh.wav",
+      "gain_db": -17,
+      "frame": 861
+    },
+    {
+      "id": "sfx_peak",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "peak_in",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "frame": 1297
+    },
+    {
+      "id": "sfx_set",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "set_in",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "frame": 1382
+    },
+    {
+      "id": "sfx_mare",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "mare_ring",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "frame": 1547
+    },
+    {
+      "id": "sfx_next",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "next_in",
+        "point": "settled",
+        "offset_frames": 0
+      },
+      "asset": "audio/sfx_soft_tick.wav",
+      "gain_db": -15,
+      "frame": 2207
+    },
+    {
+      "id": "sfx_end",
+      "kind": "sfx",
+      "bind": {
+        "event_id": "next_in",
+        "point": "to",
+        "offset_frames": -30
+      },
+      "asset": "audio/sfx_low_tail.wav",
+      "gain_db": -15,
+      "frame": 2220
+    }
+  ],
+  "proof_frames": [
+    {
+      "id": "p001",
+      "frame": 0,
+      "labels": [
+        "concept:intro:from",
+        "event:phase_wax:from",
+        "event:phase_wax:before"
+      ]
+    },
+    {
+      "id": "p002",
+      "frame": 121,
+      "labels": [
+        "event:phase_wax:enter-mid"
+      ]
+    },
+    {
+      "id": "p003",
+      "frame": 241,
+      "labels": [
+        "event:phase_wax:settled"
+      ]
+    },
+    {
+      "id": "p004",
+      "frame": 367,
+      "labels": [
+        "concept:intro:end",
+        "event:phase_wax:to",
+        "event:phase_wax:end",
+        "event:phase_wax:exit-mid"
+      ]
+    },
+    {
+      "id": "p005",
+      "frame": 368,
+      "labels": [
+        "concept:terminator:from"
+      ]
+    },
+    {
+      "id": "p006",
+      "frame": 370,
+      "labels": [
+        "event:fq_show:before"
+      ]
+    },
+    {
+      "id": "p007",
+      "frame": 371,
+      "labels": [
+        "event:fq_show:from"
+      ]
+    },
+    {
+      "id": "p008",
+      "frame": 377,
+      "labels": [
+        "event:fq_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p009",
+      "frame": 383,
+      "labels": [
+        "event:fq_show:settled"
+      ]
+    },
+    {
+      "id": "p010",
+      "frame": 561,
+      "labels": [
+        "event:edge_zoom:before"
+      ]
+    },
+    {
+      "id": "p011",
+      "frame": 562,
+      "labels": [
+        "event:edge_zoom:from"
+      ]
+    },
+    {
+      "id": "p012",
+      "frame": 593,
+      "labels": [
+        "event:edge_zoom:enter-mid"
+      ]
+    },
+    {
+      "id": "p013",
+      "frame": 624,
+      "labels": [
+        "event:edge_zoom:settled"
+      ]
+    },
+    {
+      "id": "p014",
+      "frame": 627,
+      "labels": [
+        "event:model_show:before"
+      ]
+    },
+    {
+      "id": "p015",
+      "frame": 628,
+      "labels": [
+        "event:edge_zoom:to",
+        "event:model_show:from"
+      ]
+    },
+    {
+      "id": "p016",
+      "frame": 633,
+      "labels": [
+        "event:edge_zoom:exit-mid",
+        "event:model_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p017",
+      "frame": 638,
+      "labels": [
+        "event:edge_zoom:end",
+        "event:model_show:settled"
+      ]
+    },
+    {
+      "id": "p018",
+      "frame": 808,
+      "labels": [
+        "event:model_show:to"
+      ]
+    },
+    {
+      "id": "p019",
+      "frame": 811,
+      "labels": [
+        "event:real_show:before"
+      ]
+    },
+    {
+      "id": "p020",
+      "frame": 812,
+      "labels": [
+        "event:real_show:from"
+      ]
+    },
+    {
+      "id": "p021",
+      "frame": 813,
+      "labels": [
+        "event:model_show:exit-mid"
+      ]
+    },
+    {
+      "id": "p022",
+      "frame": 817,
+      "labels": [
+        "event:real_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p023",
+      "frame": 818,
+      "labels": [
+        "event:model_show:end"
+      ]
+    },
+    {
+      "id": "p024",
+      "frame": 822,
+      "labels": [
+        "event:real_show:settled"
+      ]
+    },
+    {
+      "id": "p025",
+      "frame": 851,
+      "labels": [
+        "event:real_show:to"
+      ]
+    },
+    {
+      "id": "p026",
+      "frame": 856,
+      "labels": [
+        "event:real_show:exit-mid"
+      ]
+    },
+    {
+      "id": "p027",
+      "frame": 860,
+      "labels": [
+        "event:full_cross:before"
+      ]
+    },
+    {
+      "id": "p028",
+      "frame": 861,
+      "labels": [
+        "event:fq_show:to",
+        "event:real_show:end",
+        "event:full_cross:from"
+      ]
+    },
+    {
+      "id": "p029",
+      "frame": 903,
+      "labels": [
+        "event:full_cross:enter-mid"
+      ]
+    },
+    {
+      "id": "p030",
+      "frame": 945,
+      "labels": [
+        "event:full_cross:settled"
+      ]
+    },
+    {
+      "id": "p031",
+      "frame": 958,
+      "labels": [
+        "event:fq_show:exit-mid"
+      ]
+    },
+    {
+      "id": "p032",
+      "frame": 1054,
+      "labels": [
+        "concept:terminator:end",
+        "event:fq_show:end",
+        "event:full_cross:to",
+        "event:full_cross:end",
+        "event:full_cross:exit-mid",
+        "event:sky_in:before"
+      ]
+    },
+    {
+      "id": "p033",
+      "frame": 1055,
+      "labels": [
+        "concept:timing:from",
+        "event:sky_in:from"
+      ]
+    },
+    {
+      "id": "p034",
+      "frame": 1060,
+      "labels": [
+        "event:sky_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p035",
+      "frame": 1064,
+      "labels": [
+        "event:sky_in:settled"
+      ]
+    },
+    {
+      "id": "p036",
+      "frame": 1117,
+      "labels": [
+        "event:horizon_in:before"
+      ]
+    },
+    {
+      "id": "p037",
+      "frame": 1118,
+      "labels": [
+        "event:horizon_in:from"
+      ]
+    },
+    {
+      "id": "p038",
+      "frame": 1121,
+      "labels": [
+        "event:arc_draw:before"
+      ]
+    },
+    {
+      "id": "p039",
+      "frame": 1122,
+      "labels": [
+        "event:arc_draw:from"
+      ]
+    },
+    {
+      "id": "p040",
+      "frame": 1130,
+      "labels": [
+        "event:horizon_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p041",
+      "frame": 1141,
+      "labels": [
+        "event:moon_rise:before"
+      ]
+    },
+    {
+      "id": "p042",
+      "frame": 1142,
+      "labels": [
+        "event:moon_rise:from",
+        "event:horizon_in:settled"
+      ]
+    },
+    {
+      "id": "p043",
+      "frame": 1143,
+      "labels": [
+        "event:arc_draw:enter-mid"
+      ]
+    },
+    {
+      "id": "p044",
+      "frame": 1161,
+      "labels": [
+        "event:moon_rise:enter-mid"
+      ]
+    },
+    {
+      "id": "p045",
+      "frame": 1162,
+      "labels": [
+        "event:dir_in:before"
+      ]
+    },
+    {
+      "id": "p046",
+      "frame": 1163,
+      "labels": [
+        "event:arc_draw:settled",
+        "event:dir_in:from"
+      ]
+    },
+    {
+      "id": "p047",
+      "frame": 1172,
+      "labels": [
+        "event:dir_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p048",
+      "frame": 1180,
+      "labels": [
+        "event:moon_rise:settled",
+        "event:dir_in:settled"
+      ]
+    },
+    {
+      "id": "p049",
+      "frame": 1213,
+      "labels": [
+        "event:cond_in:before"
+      ]
+    },
+    {
+      "id": "p050",
+      "frame": 1214,
+      "labels": [
+        "event:cond_in:from"
+      ]
+    },
+    {
+      "id": "p051",
+      "frame": 1231,
+      "labels": [
+        "event:cond_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p052",
+      "frame": 1248,
+      "labels": [
+        "event:cond_in:settled"
+      ]
+    },
+    {
+      "id": "p053",
+      "frame": 1257,
+      "labels": [
+        "event:peak_in:before"
+      ]
+    },
+    {
+      "id": "p054",
+      "frame": 1258,
+      "labels": [
+        "event:peak_in:from"
+      ]
+    },
+    {
+      "id": "p055",
+      "frame": 1278,
+      "labels": [
+        "event:peak_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p056",
+      "frame": 1297,
+      "labels": [
+        "event:peak_in:settled"
+      ]
+    },
+    {
+      "id": "p057",
+      "frame": 1329,
+      "labels": [
+        "event:set_in:before"
+      ]
+    },
+    {
+      "id": "p058",
+      "frame": 1330,
+      "labels": [
+        "event:set_in:from"
+      ]
+    },
+    {
+      "id": "p059",
+      "frame": 1331,
+      "labels": [
+        "event:moon_set:before"
+      ]
+    },
+    {
+      "id": "p060",
+      "frame": 1332,
+      "labels": [
+        "event:moon_set:from"
+      ]
+    },
+    {
+      "id": "p061",
+      "frame": 1356,
+      "labels": [
+        "event:set_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p062",
+      "frame": 1370,
+      "labels": [
+        "event:moon_set:enter-mid"
+      ]
+    },
+    {
+      "id": "p063",
+      "frame": 1382,
+      "labels": [
+        "event:set_in:settled"
+      ]
+    },
+    {
+      "id": "p064",
+      "frame": 1408,
+      "labels": [
+        "event:moon_set:settled"
+      ]
+    },
+    {
+      "id": "p065",
+      "frame": 1413,
+      "labels": [
+        "concept:timing:end",
+        "event:sky_in:to",
+        "event:sky_in:end",
+        "event:arc_draw:to",
+        "event:arc_draw:end",
+        "event:moon_rise:to",
+        "event:moon_rise:end",
+        "event:peak_in:to",
+        "event:peak_in:end",
+        "event:set_in:to",
+        "event:set_in:end",
+        "event:horizon_in:to",
+        "event:horizon_in:end",
+        "event:dir_in:to",
+        "event:dir_in:end",
+        "event:cond_in:to",
+        "event:cond_in:end",
+        "event:moon_set:to",
+        "event:moon_set:end",
+        "event:sky_in:exit-mid",
+        "event:arc_draw:exit-mid",
+        "event:moon_rise:exit-mid",
+        "event:peak_in:exit-mid",
+        "event:set_in:exit-mid",
+        "event:fq2_show:before",
+        "event:horizon_in:exit-mid",
+        "event:dir_in:exit-mid",
+        "event:cond_in:exit-mid",
+        "event:moon_set:exit-mid"
+      ]
+    },
+    {
+      "id": "p066",
+      "frame": 1414,
+      "labels": [
+        "concept:maria:from",
+        "event:fq2_show:from"
+      ]
+    },
+    {
+      "id": "p067",
+      "frame": 1419,
+      "labels": [
+        "event:fq2_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p068",
+      "frame": 1424,
+      "labels": [
+        "event:fq2_show:settled"
+      ]
+    },
+    {
+      "id": "p069",
+      "frame": 1518,
+      "labels": [
+        "event:mare_ring:before"
+      ]
+    },
+    {
+      "id": "p070",
+      "frame": 1519,
+      "labels": [
+        "event:mare_ring:from"
+      ]
+    },
+    {
+      "id": "p071",
+      "frame": 1533,
+      "labels": [
+        "event:mare_ring:enter-mid"
+      ]
+    },
+    {
+      "id": "p072",
+      "frame": 1547,
+      "labels": [
+        "event:mare_ring:settled"
+      ]
+    },
+    {
+      "id": "p073",
+      "frame": 1748,
+      "labels": [
+        "concept:maria:end",
+        "event:fq2_show:to",
+        "event:fq2_show:end",
+        "event:mare_ring:to",
+        "event:mare_ring:end",
+        "event:fq2_show:exit-mid",
+        "event:mare_ring:exit-mid",
+        "event:mw_pan:before"
+      ]
+    },
+    {
+      "id": "p074",
+      "frame": 1749,
+      "labels": [
+        "concept:sagittarius:from",
+        "event:mw_pan:from"
+      ]
+    },
+    {
+      "id": "p075",
+      "frame": 1755,
+      "labels": [
+        "event:mw_pan:enter-mid"
+      ]
+    },
+    {
+      "id": "p076",
+      "frame": 1761,
+      "labels": [
+        "event:mw_pan:settled"
+      ]
+    },
+    {
+      "id": "p077",
+      "frame": 1915,
+      "labels": [
+        "concept:sagittarius:end",
+        "event:mw_pan:to",
+        "event:mw_pan:end",
+        "event:mw_pan:exit-mid",
+        "event:moon_end_show:before"
+      ]
+    },
+    {
+      "id": "p078",
+      "frame": 1916,
+      "labels": [
+        "concept:history:from",
+        "event:moon_end_show:from"
+      ]
+    },
+    {
+      "id": "p079",
+      "frame": 1922,
+      "labels": [
+        "event:moon_end_show:enter-mid"
+      ]
+    },
+    {
+      "id": "p080",
+      "frame": 1926,
+      "labels": [
+        "event:tl_in:before"
+      ]
+    },
+    {
+      "id": "p081",
+      "frame": 1927,
+      "labels": [
+        "event:moon_end_show:settled",
+        "event:tl_in:from"
+      ]
+    },
+    {
+      "id": "p082",
+      "frame": 1938,
+      "labels": [
+        "event:tl_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p083",
+      "frame": 1947,
+      "labels": [
+        "event:y2009_in:before"
+      ]
+    },
+    {
+      "id": "p084",
+      "frame": 1948,
+      "labels": [
+        "event:tl_in:settled",
+        "event:y2009_in:from"
+      ]
+    },
+    {
+      "id": "p085",
+      "frame": 1958,
+      "labels": [
+        "event:y2009_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p086",
+      "frame": 1967,
+      "labels": [
+        "event:y2009_in:settled"
+      ]
+    },
+    {
+      "id": "p087",
+      "frame": 2030,
+      "labels": [
+        "event:y2010_in:before"
+      ]
+    },
+    {
+      "id": "p088",
+      "frame": 2031,
+      "labels": [
+        "event:y2010_in:from"
+      ]
+    },
+    {
+      "id": "p089",
+      "frame": 2056,
+      "labels": [
+        "event:y2010_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p090",
+      "frame": 2081,
+      "labels": [
+        "event:y2010_in:settled"
+      ]
+    },
+    {
+      "id": "p091",
+      "frame": 2126,
+      "labels": [
+        "event:note_in:before"
+      ]
+    },
+    {
+      "id": "p092",
+      "frame": 2127,
+      "labels": [
+        "event:note_in:from"
+      ]
+    },
+    {
+      "id": "p093",
+      "frame": 2135,
+      "labels": [
+        "event:note_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p094",
+      "frame": 2139,
+      "labels": [
+        "event:next_in:before"
+      ]
+    },
+    {
+      "id": "p095",
+      "frame": 2140,
+      "labels": [
+        "event:next_in:from"
+      ]
+    },
+    {
+      "id": "p096",
+      "frame": 2142,
+      "labels": [
+        "event:note_in:settled"
+      ]
+    },
+    {
+      "id": "p097",
+      "frame": 2174,
+      "labels": [
+        "event:next_in:enter-mid"
+      ]
+    },
+    {
+      "id": "p098",
+      "frame": 2207,
+      "labels": [
+        "event:next_in:settled"
+      ]
+    },
+    {
+      "id": "p099",
+      "frame": 2249,
+      "labels": [
+        "event:end_zoom:before"
+      ]
+    },
+    {
+      "id": "p100",
+      "frame": 2250,
+      "labels": [
+        "event:next_in:to",
+        "event:next_in:end",
+        "event:tl_in:to",
+        "event:tl_in:end",
+        "event:y2009_in:to",
+        "event:y2009_in:end",
+        "event:y2010_in:to",
+        "event:y2010_in:end",
+        "event:note_in:to",
+        "event:note_in:end",
+        "event:end_zoom:from",
+        "event:next_in:exit-mid",
+        "event:tl_in:exit-mid",
+        "event:y2009_in:exit-mid",
+        "event:y2010_in:exit-mid",
+        "event:note_in:exit-mid"
+      ]
+    },
+    {
+      "id": "p101",
+      "frame": 2266,
+      "labels": [
+        "event:end_zoom:enter-mid"
+      ]
+    },
+    {
+      "id": "p102",
+      "frame": 2282,
+      "labels": [
+        "event:end_zoom:settled"
+      ]
+    },
+    {
+      "id": "p103",
+      "frame": 2318,
+      "labels": [
+        "event:moon_end_show:to",
+        "event:moon_end_show:end",
+        "event:end_zoom:to",
+        "event:end_zoom:end",
+        "event:moon_end_show:exit-mid",
+        "event:end_zoom:exit-mid"
+      ]
+    },
+    {
+      "id": "p104",
+      "frame": 2325,
+      "labels": [
+        "concept:history:end"
+      ]
+    }
+  ],
+  "production_profile": {
+    "schema_version": "1.0",
+    "id": "hani-shortform",
+    "version": "1.2.0",
+    "canvas": {
+      "width": 1080,
+      "height": 1920,
+      "fps": 30
+    },
+    "caption": {
+      "max_lines": 1,
+      "preset": "betelgeuse-v1",
+      "font_family": "GmarketSans",
+      "font_size": 70,
+      "weight": 500,
+      "emphasis_weight": 700,
+      "color": "#FFFFFF",
+      "accent": "#f2b879",
+      "line_height": 1.35,
+      "top": 1523,
+      "side_inset": 74,
+      "backdrop": "rgba(0,0,0,0.3)",
+      "padding_y": 0,
+      "padding_x": 12,
+      "radius": 4,
+      "lead_frames": 3,
+      "enter_frames": 6,
+      "rise_px": 16,
+      "box_height": 94
+    }
+  }
+}

@@ -1,11 +1,12 @@
-import {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath, sceneProofPhases} from '../scene-proof-contract.mjs';
+import {SCENE_PROOF_CONFIG_SCHEMA, SCENE_PROOF_RENDERING_KIND, SCENE_COMPONENT_ROOT, sceneProofConfigPath, sceneProofPhases, OPTIONAL_SCENE_GATE, sceneGateMismatch} from '../scene-proof-contract.mjs';
 import {existsSync, readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {hash, json} from './contracts.mjs';
 import {sceneProofs} from './visual-work.mjs';
 import {validateVisualPlan} from '../visual-plan.mjs';
+import {sceneAdmission} from './scene-admission.mjs';
 
-import {FIRST_SCENE_GATE, LEGACY_FIRST_SCENE_GATE, sceneReviewErrors} from './scene-review.mjs';
+import {FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE, PREVIOUS_FIRST_SCENE_GATE, LEGACY_FIRST_SCENE_GATE, sceneReviewErrors} from './scene-review.mjs';
 const read = (w, name) => { try { return existsSync(join(w.production, name)) ? json(join(w.production, name)) : {}; } catch (e) { return {_parse_error: e.message}; } };
 
 // Admission to costly narration, not a narration dependency: later visual edits
@@ -13,8 +14,13 @@ const read = (w, name) => { try { return existsSync(join(w.production, name)) ? 
 export function firstSceneReadiness(w, state) {
   if (!state.scene_gate && !w.request?.scene_gate) return {required: false, ready: true, proof_ids: []};
   const blockers = [], add = (code, detail) => blockers.push({code, detail});
-  if (![FIRST_SCENE_GATE, LEGACY_FIRST_SCENE_GATE].includes(state.scene_gate ?? w.request?.scene_gate)) add('first-scene-contract', '지원하지 않는 초기 장면 계약');
+  const gate = state.scene_gate ?? w.request?.scene_gate;
+  if (sceneGateMismatch(w, state)) add('first-scene-contract', '보존된 접수와 실행 기록의 초기 장면 계약이 다르다');
+  if (![OPTIONAL_SCENE_GATE, FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE, PREVIOUS_FIRST_SCENE_GATE, LEGACY_FIRST_SCENE_GATE].includes(gate)) add('first-scene-contract', '지원하지 않는 초기 장면 계약');
   if (!w.request || (state.intake_sha256 && hash(readFileSync(join(w.root, '00_brief/request.json'))) !== state.intake_sha256)) add('first-scene-intake', '보존된 시작 요청이 변경 또는 삭제됐다');
+  // Trials inform material/direction choices, never certify the scene or hold
+  // narration hostage. Keep frozen-intake checks and older gates intact.
+  if (gate === OPTIONAL_SCENE_GATE) return {required: false, ready: blockers.length === 0, blockers, proof_ids: [], admission_kind: 'optional-trials', motion_continuity: 'unverified'};
   const config = read(w, 'scene-proof.json'), concepts = read(w, 'concepts.json'), visual = read(w, 'visual-system.json');
   if (config._parse_error) add('first-scene-config', 'scene-proof.json JSON 오류: ' + config._parse_error);
   const cs = concepts.concepts ?? [], selected = cs.find(c => c.id === config.concept_id);
@@ -52,11 +58,19 @@ export function firstSceneReadiness(w, state) {
       catch { add('first-scene-generation', `${id}: 안전하지 않은 ${key}`); }
     }
   }
-  const proofs = sceneProofs(w, state), chosen = [], provisionalPhases = [], phases = sceneProofPhases(selected);
+  const proofs = sceneProofs(w, state), chosen = [], provisionalPhases = [];
+  const motion = proofs.findLast(p => p.concept_id === selected.id && p.scope === 'composite' && p.phase === 'motion');
+  const admission = existsSync(join(w.production, 'scene-admission.json')) && motion?.verdict !== 'usable' ? sceneAdmission(w, state, motion, selected) : null;
+  if (admission && gate === LEGACY_FIRST_SCENE_GATE) add('first-scene-admission', '기존 @1 계약에는 조건부 착수를 적용하지 않는다');
+  for (const error of admission?.errors ?? []) add('first-scene-admission', error);
+  const conditional = admission && admission.errors.length === 0 && gate !== LEGACY_FIRST_SCENE_GATE;
+  // A current composite motion contains the still composition. Explicit user
+  // acceptance of its open issues avoids re-registering an unchanged still.
+  const phases = conditional ? ['motion'] : sceneProofPhases(selected, gate);
   for (const phase of phases) {
     const p = proofs.findLast(p => p.concept_id === selected.id && p.scope === 'composite' && p.phase === phase);
-    const provisional = (state.scene_gate ?? w.request?.scene_gate) === FIRST_SCENE_GATE && phase === 'motion' && p?.verdict === 'provisional';
-    if (!p || p.status !== 'current' || (p.verdict !== 'usable' && !provisional)) add('first-scene-proof', `${phase}: ${p?.status ?? 'unrecorded'}/${p?.verdict ?? 'unverified'} — 실물 확인·수정 후 기록한다. 미시청은 통과로 바꾸지 않는다`);
+    const provisional = [FAST_FIRST_SCENE_GATE, FIRST_SCENE_GATE, PREVIOUS_FIRST_SCENE_GATE].includes(gate) && phase === 'motion' && p?.verdict === 'provisional';
+    if (!p || (p.status !== 'current' && !(conditional && phase === 'motion')) || (p.verdict !== 'usable' && !provisional && !(conditional && phase === 'motion'))) add('first-scene-proof', `${phase}: ${p?.status ?? 'unrecorded'}/${p?.verdict ?? 'unverified'} — 실물 확인·수정 후 기록한다. 미시청은 통과로 바꾸지 않는다`);
     if (!p) continue;
     chosen.push(p.receipt_id);
     if (provisional) provisionalPhases.push(phase);
@@ -65,7 +79,7 @@ export function firstSceneReadiness(w, state) {
     for (const error of sceneReviewErrors(w, {...state, attempts: state.attempts.filter(a => a.id !== p.receipt_id)}, p, artifactHash)) add('first-scene-review', error);
     const render = p.rendering;
     if (render?.kind !== SCENE_PROOF_RENDERING_KIND || render.config !== sceneProofConfigPath(w.id) || render.component !== config.component || JSON.stringify([...(render.asset_ids ?? [])].sort()) !== JSON.stringify([...ids].sort()) || render.profile_sha256 !== hash(readFileSync(join(w.repo, 'config/production-profile.json')))) add('first-scene-composite', `${phase}: 현재 실제 자산·장면 컴포넌트·공통 자막을 쓴 시안이 필요하다. scripts/scene-proof.mjs 사용`);
-    if (phase === 'motion' && !provisional && (p.continuous_viewing !== true || !Array.isArray(p.viewed_seconds) || p.viewed_seconds[0] !== 0 || p.viewed_seconds[1] < config.duration_seconds - 0.05)) add('first-scene-viewing', '핵심 동작의 전체 시안 확인 범위가 필요하다');
+    if (phase === 'motion' && !provisional && !conditional && (p.continuous_viewing !== true || !Array.isArray(p.viewed_seconds) || p.viewed_seconds[0] !== 0 || p.viewed_seconds[1] < config.duration_seconds - 0.05)) add('first-scene-viewing', '핵심 동작의 전체 시안 확인 범위가 필요하다');
   }
-  return {required: true, ready: blockers.length === 0, concept_id: selected.id, blockers, proof_ids: chosen, motion_continuity: provisionalPhases.length ? 'incomplete' : phases.includes('motion') ? 'reviewed' : 'not-required', provisional_phases: provisionalPhases};
+  return {required: true, ready: blockers.length === 0, concept_id: selected.id, blockers, proof_ids: chosen, admission_kind: conditional ? 'narration-ready-with-issues' : 'reviewed', open_issues: conditional ? admission.record.known_issues : [], motion_continuity: conditional || provisionalPhases.length ? 'incomplete' : phases.includes('motion') ? 'reviewed' : 'not-required', provisional_phases: provisionalPhases};
 }

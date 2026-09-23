@@ -66,9 +66,13 @@ export function visualWork(w, state = {attempts: []}) {
   if (!check.active) return {status: 'legacy', contract: null, note: '기존 편에 새 설계·검수 완료를 소급하지 않는다'};
   const tasks = check.errors.map(e => ({kind: 'plan', ...e}));
   const proofs = sceneProofs(w, state);
+  let firstSceneId = null;
+  try { firstSceneId = read(w, 'scene-proof.json').concept_id ?? null; } catch { /* first-scene readiness reports the malformed config */ }
   for (const c of concepts.concepts ?? []) {
-    if (c.visual?.purpose !== 'explain') continue;
-    for (const phase of sceneProofPhases(c)) {
+    // The early proof covers one selected explanation. Other cuts are judged in
+    // the full preview/final review, not preflighted as mandatory scene proofs.
+    if (c.visual?.purpose !== 'explain' || c.id !== firstSceneId) continue;
+    for (const phase of sceneProofPhases(c, state.scene_gate ?? w.request?.scene_gate)) {
       const proof = proofs.findLast(p => p.concept_id === c.id && p.phase === phase && p.scope === 'composite');
       if (!proof || proof.status !== 'current' || proof.verdict !== 'usable') tasks.push({kind: 'scene-proof', concept_id: c.id, phase, status: proof?.status ?? 'unrecorded', verdict: proof?.verdict ?? 'unverified'});
     }
@@ -122,4 +126,20 @@ export function validateExplanationReview(w, report, timeline) {
     requireValue(Array.isArray(text.evidence) && text.evidence.length && text.evidence.every(p => report.evidence.some(e => e.path === p)) && samples.some(s => text.evidence.includes(s.evidence)), '문구 검수를 실제 화면 표본에 연결한다');
   }
   if (report.verdict === 'pass') requireValue(targets.every(t => report.explanations.some(e => e.concept_id === t.concept_id && e.moment_id === t.id && e.verdict === 'pass')), '미확인·실패한 핵심 설명을 남긴 채 visual pass로 기록할 수 없다');
+  const admissionPath = join(w.production, 'scene-admission.json');
+  const admission = read(w, 'scene-admission.json', null);
+  const run = read(w, 'run.json', {});
+  const narration = run.receipts?.narration ?? run.attempts?.findLast(a => a.action === 'narration' && a.first_scene);
+  const frozen = narration?.first_scene?.admission_kind === 'narration-ready-with-issues' ? narration.first_scene : null;
+  if (report.verdict === 'pass' && (existsSync(admissionPath) || frozen)) {
+    if (existsSync(admissionPath)) requireValue(admission?.schema === 'scene-admission@1' && Array.isArray(admission.known_issues) && admission.known_issues.length, '조건부 착수 문제 기록이 유효해야 한다');
+    const issues = frozen?.open_issues ?? admission?.known_issues ?? [];
+    const conceptId = frozen?.concept_id ?? admission?.concept_id;
+    for (const issue of issues) {
+      const check = report.scene_admission_rechecks?.find(r => r.moment_id === issue.moment_id && r.finding === issue.finding);
+      requireValue(check?.verdict === 'fixed' && typeof check.observation === 'string' && check.observation.trim(), `조건부 착수 문제 ${issue.moment_id}의 실제 재확인이 필요하다`);
+      const explanation = report.explanations.find(e => e.concept_id === conceptId && e.moment_id === issue.moment_id);
+      requireValue(explanation?.verdict === 'pass' && Array.isArray(check.evidence) && check.evidence.length && check.evidence.some(path => explanation.evidence?.includes(path) && report.evidence?.some(e => e.path === path)), `조건부 착수 문제 ${issue.moment_id}를 현재 화면 근거에 연결한다`);
+    }
+  }
 }

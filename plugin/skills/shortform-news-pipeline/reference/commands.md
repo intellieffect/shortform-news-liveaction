@@ -23,6 +23,31 @@
   - 편 이름 절(옛 「2·3·4편 추가 명령」)은 2026-09-02 에 주제 절로 접었다 — 편마다 절을 더하면 같은 명령이 세 곳에 갈라진다([maintenance §7](maintenance.md)). 편별 유래는 줄 끝 `(N편)` 로 남는다.
 - **렌더 없이 확인하기** — 실측 표(5편 84초/2534프레임 기준)
 
+## 반복 작업 단축 도구
+
+[실행 효율 지침](execution-efficiency.md)에 따라 판단·독립 검수는 유지하고 반복 조회·가공을 도구로 실행한다.
+
+```bash
+npm run produce -- spec <id>                         # 현재 profile·허용 enum·실제 단어 앵커 조회
+npm run produce -- preflight <id> narration          # TTS 착수 전 원고·voice·착수 조건
+npm run narration:assemble -- <id> --alignment 02_production/alignment.json
+# 기존 TTS/정렬의 초 단위 words로 narration.json 조립. 새 타임스탬프를 추정하지 않는다.
+# --audio 02_production/audio/narration.wav --caption-text 02_production/caption.txt
+# 기존 출력 교체는 --replace, 별도 출력은 --output 02_production/narration.candidate.json
+npm run narration:assemble -- <id> --alignment 02_production/audio/<전사>.json --force-align [--allow-estimated]
+# 전사 표기가 원고와 다를 때(숫자·영문). 치환표를 전사에 적용한 문자 단위 강제정렬. 못 찾은 토큰은 실패, --allow-estimated면 추정 목록을 남긴다
+npm run produce -- preflight <id> alignment          # 실제 오디오·단어 구간 검증
+npm run motion:rebase -- <id> [--write]              # 원고·음성 변경 뒤 motion/concepts 앵커 token_index·해시 재정렬
+npm run produce -- preflight <id> timeline           # 컴파일 전에 계약 검사
+npm run produce -- preflight <id> sync               # 미디어·manifest 누락까지 확인
+npm run produce -- run <id> proof --timeout-ms 900000 # 기본 15분; 초과 시 프로세스 그룹 종료
+npm run fetch:assets -- news/<id> --manifest 02_production/sourcing/video/assets.json --jobs 4
+npm run review:packet -- <id> --mp4 <mp4> --round r<N> [--ranges 900-960] [--transcript <json>]
+# 검수자에게 넘길 원해상·모바일 프레임, 시트, 음량 측정, 전사를 out/pilots/<id>/review/r<N>/packet/에 준비
+```
+
+실행 중 진행 정보는 stderr, 전체 로그는 명령이 알리는 파일에 남는다. `preflight`는 읽기 전용이며 검수 통과 기록을 만들지 않는다. 다운로드는 실제 병렬 실행하고, 받아 둔 원본은 `--force`로도 교체하지 않는다.
+
 ## Editorial concept 후보
 
 ```bash
@@ -30,7 +55,7 @@ npm run editorial:check -- news/<id>       # story·concepts·motion·visual-sys
 npm run editorial:compile -- news/<id>     # 검사 통과 뒤 02_production/timeline.json 생성
 npm run sync -- news/<id>                  # 여섯 정본/파생 JSON·미디어 동기화. beats/overlays/shots 불필요
 npm run still -- <id> out/pilots/<id>/qa/editorial.png --frame=<n>  # 표준 Composition 스틸
-npm run still:sheet -- <id>                # 모든 concept/event 경계가 자동 수집된 proof sheet
+npm run still:sheet -- <id>                # 모든 concept/event 경계 → qa/beatsheet/index.html·page-NN.png·manifest.json
 npm run still:beat -- <id> --props='{"proofId":"p012"}'  # event 경계 원해상 proof
 npm run slides -- <id>                     # event 경계 웹 검수판 + 내레이션 탐색
 npm run render -- <id>                     # 표준 Composition 완성본
@@ -268,6 +293,8 @@ npm run mc:check -- <root>                                                 # 씬
 
 ## 렌더 없이 확인하기 (실측 2026-09-01, 5편 84초/2534프레임 기준)
 
+아래 시간·단일 시트는 **legacy 편**의 과거 측정이다. Editorial 편의 `still:sheet`는 proof JPEG를 개별 렌더한 뒤 페이지당 최대 24장씩 이미지로 합성한다. 기본 출력은 `qa/beatsheet/index.html`, `page-01.png` 등과 `manifest.json`이다. 출력 파일을 지정하면 `<stem>-01.png` 등과 `<stem>-index.html`, `<stem>-manifest.json`을 만든다. `BeatSheet-*`를 Remotion CLI에서 직접 호출하는 구형 합성 대신 npm 명령을 사용한다. 전체 소요 시간은 proof 개수와 장면 비용에 따라 달라진다.
+
 전체 렌더는 비싸다. **비트시트(3.4초)가 검토의 90%를 잡는다** — `Beat.tsx` 를 그대로 쓰므로 도해·카드·인셋·자막이 진짜로 그려진다.
 
 | 단 | 명령 | 실측 | 쓰는 때 |
@@ -294,4 +321,4 @@ npm run sticker:cut -- <png…> --check     # 판정만, 파일 안 씀
 
 초기 장면은 `produce begin <id> scene_proof --output <새 시안> --output <관찰 JSON>` 후 실제 도구 실행·`finish`로 기록한다. 음성 확정 전 사용 가능하며 [발화→화면 제작](visual-production.md)의 형식을 따른다. `review-input --source scene --phase experience|intent`로 실물과 의도를 분리한다.
 
-초기 핵심 합성(음성·timeline 전): `npm run scene:proof -- <id> --phase still|motion --output out/pilots/<id>/qa/<name>.png|mp4`. [입력·관찰 절차](../../../../docs/SCENE-PROOF.md).
+초기 핵심 합성(음성·timeline 전): 탐색은 `npm run scene:proof -- <id> --mode draft --phase still|motion --output out/pilots/<id>/qa/drafts/<name>.png|mp4`, 제출은 같은 명령의 `--mode submit`과 `qa/<name>.png|mp4`. draft는 제작 기록·검수 입력이 아니다. [입력·관찰 절차](../../../../docs/SCENE-PROOF.md).

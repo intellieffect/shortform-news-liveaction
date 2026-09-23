@@ -1,0 +1,91 @@
+{
+  "id": "area",
+  "title": "면적비를 같은 하늘 위에서 읽히기",
+  "seconds": 10.0,
+  "goal": "로먼과 허블의 상대 관측 면적을 1 대 약 100으로 이해한다.",
+  "transfer": [
+    "선형 길이와 면적의 비를 구분해 실제 도형 비율로 전달한다.",
+    "수치와 해당 영역을 발화에 맞춰 직접 연결한다."
+  ],
+  "specific": [
+    "생성 은하 배경은 실제 관측 자료가 아니다.",
+    "로먼 WFI 대 HST/ACS의 상대 면적 약 100배를 설명하며 실제 검출기 형상·절대 각면적을 재현하지 않는다."
+  ],
+  "beats": [
+    {
+      "time": 0.63,
+      "note": "같은 배율의 하늘 위에서 허블 기준 영역을 읽는다."
+    },
+    {
+      "time": 2,
+      "note": "1 발화에 기준값이 나타난다."
+    },
+    {
+      "time": 3.1,
+      "note": "고정 기준 영역에서 큰 영역이 확장된다."
+    },
+    {
+      "time": 4.1,
+      "note": "약 100배 수치와 최종 면적을 함께 본다."
+    }
+  ],
+  "composition": "ReferenceAreaV3",
+  "gain": 0,
+  "version": "v3",
+  "original_file": "04-roman-field-v3.mp4",
+  "approval": "user-accepted",
+  "video_sha256": "8f5fe78c11159c075cf0f369400d6c070203617847099850de5cc8b73f4ac883",
+  "files": {
+    "src": "references/visual/cases/area/versions/v3/final.mp4",
+    "poster": "references/visual/cases/area/versions/v3/poster.jpg",
+    "walkthrough": "references/visual/cases/area/versions/v3/walkthrough.md",
+    "credits": "references/visual/cases/area/versions/v3/credits.md",
+    "sourceGuide": "references/visual/cases/area/versions/v3/source/README.md"
+  },
+  "inventory": [
+    {
+      "path": "references/visual/cases/area/versions/v3/assets/galaxy-clean.png",
+      "sha256": "d63de29ab8c4050170f65a6b89a4685d4c5f396698efeff1547387f6add9735e"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/assets/original-audio.m4a",
+      "sha256": "acb67782ad2213ab48d2d45be096130f05eef84bce1c39974ac4b1f52b6155cd"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/credits.md",
+      "sha256": "8d0fe784c0b248efe1506b19c6a857046eadae256ae774fc454a9e009fff026c"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/final.mp4",
+      "sha256": "8f5fe78c11159c075cf0f369400d6c070203617847099850de5cc8b73f4ac883"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/poster.jpg",
+      "sha256": "8aea0335c257d0a58c119378791d04e2e3b54cb190309f6932dff9120cd9bd2d"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/source/README.md",
+      "sha256": "18758ae6b403e7674009b3c902bce5d5ce59066a679cac5d9db7490ede661edd"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/source/entry.tsx",
+      "sha256": "846fa317a527316a44bbb4208d75999e6fc759fa02ef6ec978759f6bc75e880f"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/source/original-production.md",
+      "sha256": "3bbdc8b00c02d6b4459237dac07f80eb32ea2fa5f4da24d9927a50309ab5d087"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/source/timing.json",
+      "sha256": "959487f1b60074df01a2da98b8df452567b895c61bae182681950ec5e968735f"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/validation.md",
+      "sha256": "1231e4f1a42d52588727d688fe1163fbe003dfdba74d7af636905f712180afa8"
+    },
+    {
+      "path": "references/visual/cases/area/versions/v3/walkthrough.md",
+      "sha256": "10099d616906bc9fbe33d57f0ed0773a22f0a293c16970ec40a451a9a1d66bcc"
+    }
+  ]
+}

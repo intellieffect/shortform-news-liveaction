@@ -52,6 +52,8 @@ start가 만드는 것은 요청 원문, URL·분량·프로필 참조, 원본 �
 
 ## 재개와 제작
 
+반복 파일 처리·사전 검사·자료 준비는 [실행 도구와 병렬 작업](execution-efficiency.md)을 따른다. 규격은 `produce spec`, 경계 검사는 `produce preflight`로 함께 조회해 반복 탐색을 줄인다.
+
 ```bash
 node <플러그인 루트>/scripts/produce.mjs --project <제작 저장소> resume <id> --json
 ```

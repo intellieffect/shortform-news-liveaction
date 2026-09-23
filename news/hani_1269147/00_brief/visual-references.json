@@ -1,0 +1,797 @@
+{
+  "schema": "visual-reference-snapshot@1",
+  "version": "2026-09-22.3",
+  "guide": "references/visual/README.md",
+  "guide_sha256": "67578072ca5456bfdc60219aff5bb6dca4def99035164bb9858a0613372704eb",
+  "guide_text": "# 모든 제작에서 참고하는 표현 레퍼런스\n\n이 라이브러리는 에이전트의 표현 선택과 결과 수준을 넓히는 공통 제작 입력이다. 새 영상의 연출 설계 전에 지정 공통 세트의 실제 영상을 모두 확인한다. 기사 주제나 표현 종류가 다르다는 이유로 열람을 생략하지 않는다. 현재 기준 세트와 파일은 collection.json이 정본이다.\n\n## 확인과 판단\n\n실제 MP4와 walkthrough의 시점을 연결해서 배경과 정보의 관계, 시선 유도, 미술, 발화와 움직임, 충분한 관찰 시간과 퇴장을 본다. 영상 인식 수단이 없으면 가능한 프레임 표본·타임코드·코드를 확인하고 그 범위를 기존 direction.md/decisions.md에 기록한다. 파일 전달과 열람 완료는 다르며, 표본 확인을 연속 시청으로 쓰지 않는다. 같은 세션에서 변경 없는 자료를 매번 재생할 필요는 없다.\n\n내용과 자료에서 각 컷의 역할을 정하고 실사·사진·문서·지도·인용·비교·그래프·일러스트·도해 등을 판단한다. 공통 자막은 유지하고 색·선·재료·구도·등장 효과는 내용에 맞게 선택한다. 실사만으로 충분한 구간도 가능하다. 어려운 핵심 구간은 익숙한 첫 표현 외의 접근도 검토하되 컷마다 의무 후보 수·인용 기록·효과 수를 채우지 않는다. 생성 재료가 필요하면 기존 Higgsfield 지침에 따라 확보한다.\n\n레퍼런스의 설명력·정보 위계·시선 유도·미술·합성·발화와 움직임의 완성도는 이번 장면에서도 충족한다. 사례의 구도·색·도형·배치·등장 순서를 가져올 때는 이번 대상·자료·관계를 명확하게 전달하는지 판단한다. 익숙하거나 승인된 형태라는 이유만으로 선택을 고정하지 않는다. 사실·대상·관계가 바뀌면 표현과 적용 판단도 다시 확인한다. 적합한 같은 기법을 사용할 수 있으며 외형의 차이 자체를 목표로 삼지 않는다. 핵심 정보와 필요한 조건·출처를 보존하면서 명확하게 전달하는 것이 기준이다.\n\n## 실제 사례와 전체 영상\n\n규모 비교는 공통 기준과 정보 위계, 관측 확대는 시선 유도와 전체 맥락, 산란은 원인-작용-결과와 실사 합성의 사례다. 개별 기법의 적용 조건이 사례 열람 조건은 아니다. 짧은 사례 장면만으로 한 편의 도입·전개·결말·음향을 검증할 수 없으므로 기존 전체 시청 경험 검수를 유지한다.\n\n검수는 이번 영상 자체의 관찰을 먼저 받고, 의도 대조 단계에서 같은 기준 세트와 비교한다. 유사도나 사용 기법 수로 평가하지 않는다. 새로운 좋은 표현은 사용자 확정 후 후보로 추가한다. 사례 수 자체를 채우기 위해 만들지 않는다.\n\n## 납품과 재현\n\nGit LFS 미디어를 받은 뒤 npm ci. npm run videos:serve로 표현 레퍼런스 탭을 연다. 각 사례 source/README.md에 수정·재렌더 명령이 있다. 자료 출처는 사례별 credits.md를 함께 전달한다. 확정 영상은 불변이고 개선본은 새 버전으로 추가한다. 생성 캐시는 public/references, 시험 출력은 out/references에 복원하며 공유에 포함하지 않는다.\n\n## 현재 등록 사례\n\n- [scale@v1](cases/scale/versions/v1/case.json)\n- [observation@v1](cases/observation/versions/v1/case.json)\n- [scattering@v1](cases/scattering/versions/v1/case.json)\n- [area@v3](cases/area/versions/v3/case.json)\n- [quote@v2](cases/quote/versions/v2/case.json)\n- [route@v4](cases/route/versions/v4/case.json)\n- [structure@v2](cases/structure/versions/v2/case.json)\n- [match-cut@v2](cases/match-cut/versions/v2/case.json)\n\n새 등록은 로컬 main 기준이다. 파일 선정 대장 갱신 자체는 원격 업로드·게시를 뜻하지 않는다. 개별 출처와 검증 한계는 각 사례 문서에 보존한다.\n",
+  "collection_sha256": "863d4cefcdcb80aaf00b934c2efba3320557244e5b1dca501b37f439b4845c30",
+  "purpose": "모든 영상의 기획에서 실제 기준 영상을 확인하고, 기사에 맞는 각 컷과 전체 영상의 표현·완성도를 판단합니다. 사례 형식이 다르더라도 지정 영상 모두를 참고합니다.",
+  "criteria": [
+    "배경과 오버레이가 함께 내용을 설명하고 주대상과 자막이 읽히는가.",
+    "크기·위치·이미지·변화로 관계를 직관적으로 이해시키는가.",
+    "기사 내용과 실제 자료에 맞는 구도·재료·표현을 선택하는가.",
+    "발화와 등장·전개·관찰·퇴장이 맞물리는가.",
+    "전체 영상의 이야기·호흡·장면 연결이 살아 있고 의미 없는 반복이 없는가."
+  ],
+  "requestText": "표현 레퍼런스 공통 세트 2026-09-22.3 (scale@v1, observation@v1, scattering@v1, area@v3, quote@v2, route@v4, structure@v2, match-cut@v2)의 실제 영상을 모두 확인하고 제작해 주세요. 설명력·미술·모션 완성도를 기준으로 각 컷과 전체 흐름을 기사에 맞게 설계해 주세요. 사례의 색·구도·기법을 고정 템플릿으로 반복하지 말고 필요한 새로운 표현도 선택해 주세요. 사례의 형태를 가져올 때는 이번 대상·자료·관계를 명확하게 전달하는지 판단하고, 내용이 바뀌면 그 적합성도 다시 확인해 주세요. 핵심 정보와 필요한 조건·출처를 보존하고, 외형의 차이 자체를 목표로 삼지 마세요. 기존 자막 규칙은 유지해 주세요.",
+  "cases": [
+    {
+      "id": "scale",
+      "title": "수량 차이를 같은 기준으로 읽히기",
+      "seconds": 16.5,
+      "goal": "주요 위성 신청·계획의 수량 차이를 한눈에 비교한다.",
+      "transfer": [
+        "정보를 같은 기준에 놓아 차이를 형태로 읽히게 한다.",
+        "발화에 맞춰 정보를 공개하고 비교할 시간을 남긴다.",
+        "배경의 맥락과 그래픽의 읽힘을 함께 설계한다."
+      ],
+      "specific": [
+        "막대그래프와 공통 영점은 이 사례의 선택이다. 비교표·면적·대상 이미지로도 재설계할 수 있다.",
+        "신청·계획 수치이며 현재 운용 수량이나 시간 추이가 아니다. 네 항목은 전체의 일부다."
+      ],
+      "beats": [
+        {
+          "time": 0,
+          "note": "실제 지구 영상 위에 비교 기준을 세운다."
+        },
+        {
+          "time": 3.6,
+          "note": "첫 막대가 공통 영점에서 펼쳐진다. 수치는 카운터로 흔들지 않는다."
+        },
+        {
+          "time": 12.1,
+          "note": "마지막 작은 값도 같은 척도로 표현한다."
+        },
+        {
+          "time": 14.6,
+          "note": "전체 항목을 비교할 시간을 유지한다."
+        }
+      ],
+      "composition": "ReferenceScale",
+      "gain": -3.18,
+      "version": "v1",
+      "original_file": "01-satellite-plans-v1.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "8a672616b0b22ce009299589b438c6f5b0677006729b0aded77faba0c6a86119",
+      "files": {
+        "src": "references/visual/cases/scale/versions/v1/final.mp4",
+        "poster": "references/visual/cases/scale/versions/v1/poster.jpg",
+        "walkthrough": "references/visual/cases/scale/versions/v1/walkthrough.md",
+        "credits": "references/visual/cases/scale/versions/v1/credits.md",
+        "sourceGuide": "references/visual/cases/scale/versions/v1/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/scale/versions/v1/assets/earth-original.webm",
+          "sha256": "9bc7e4ea492013255d79a5db9c5d7c6ed3412eacf2937f52c11e3bda02b24e15"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/assets/narration.wav",
+          "sha256": "c96bbf1a4a054d2c1fad2badc65d3125d5403de1397a32952148f570e5b554e5"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/assets/settle.wav",
+          "sha256": "b5699d7f6abd0855e70cbcc0f4e1dc3db6bd78780b0cf0480ac44f91c4ceb70b"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/credits.md",
+          "sha256": "539f13925d68360288cec72141e72ebdb2f2bad359e92ce889e154277e39b10c"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/final.mp4",
+          "sha256": "8a672616b0b22ce009299589b438c6f5b0677006729b0aded77faba0c6a86119"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/poster.jpg",
+          "sha256": "fa3cb8d775cbf497fee3cf0c535c6ba4db36697c418c50a6c59e1f4707b2adc8"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/source/README.md",
+          "sha256": "8639acba75ac1861050180748464ab65a63e47a43b9caf426274eb6a195a3f7c"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/source/entry.tsx",
+          "sha256": "b9bd0705e1e73f2d548bd4e141973c358f8501f5e16a8dca6c60436a39cf7e1e"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/source/timing.json",
+          "sha256": "9f7547ad7e6156bca37cf5359c5bfc9dbf7880690dc3399c2c93f65d8522271f"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/validation.md",
+          "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+        },
+        {
+          "path": "references/visual/cases/scale/versions/v1/walkthrough.md",
+          "sha256": "a831f40f5fcf61641608ca965a7f69bc99c4ed1101e9728c457c72299f67d4d6"
+        }
+      ],
+      "article_url": "https://www.hani.co.kr/arti/science/science_general/1273728.html",
+      "manifest": "references/visual/cases/scale/versions/v1/case.json",
+      "manifest_sha256": "70fde47948b06545aaa9c7e150f4b59566338b41df746fa77bd4bba7215148b1"
+    },
+    {
+      "id": "observation",
+      "title": "작은 대상을 전체 맥락 속에서 보여주기",
+      "seconds": 11.5,
+      "goal": "관측 사진에서 동반별 후보의 위치와 모습을 찾게 한다.",
+      "transfer": [
+        "시선을 유도하면서 원래 위치와 전체 맥락을 유지한다.",
+        "실제 자료의 해상도·표식을 보존하며 보여줄 영역을 설계한다.",
+        "등장·확대·관찰·퇴장을 하나의 장면 흐름으로 만든다."
+      ],
+      "specific": [
+        "연속 확대와 전체 위치창은 이 사진에 맞춘 선택이며 모든 사진의 고정 양식이 아니다.",
+        "베텔게우스 동반별 후보다. 광점 선명화나 생성 보강을 하지 않는다."
+      ],
+      "beats": [
+        {
+          "time": 0.2,
+          "note": "관측 사진이 실제 천문대 배경 위에 등장한다."
+        },
+        {
+          "time": 1.7,
+          "note": "왼쪽 아래로 확대하면서 전체 위치창을 함께 제공한다."
+        },
+        {
+          "time": 4.6,
+          "note": "십자선과 작은 광점을 읽을 시간을 유지한다."
+        },
+        {
+          "time": 9.4,
+          "note": "사진과 위치창이 함께 퇴장하고 배경으로 돌아간다."
+        }
+      ],
+      "composition": "ReferenceObservation",
+      "gain": -2.75,
+      "version": "v1",
+      "original_file": "02-observation-v2.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "0e05538d54e58834be46df8907373d8a06d2b6ed5338a82f035bfaca53bdbf4f",
+      "files": {
+        "src": "references/visual/cases/observation/versions/v1/final.mp4",
+        "poster": "references/visual/cases/observation/versions/v1/poster.jpg",
+        "walkthrough": "references/visual/cases/observation/versions/v1/walkthrough.md",
+        "credits": "references/visual/cases/observation/versions/v1/credits.md",
+        "sourceGuide": "references/visual/cases/observation/versions/v1/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/observation/versions/v1/assets/narration.wav",
+          "sha256": "b02d1dae23b165b99750a1d521af8a3ca17912225d46fbf772853bcd95f7d022"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/assets/observation.jpg",
+          "sha256": "9ec3b57559ee7512a4ec597b80c27be7b7d06bc681acf875de827a0c6ae9230b"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/assets/vlt.mp4",
+          "sha256": "42f694ef83dd69383fa02cca16fd261646deaf42be9c44dbcccf1ca547002126"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/credits.md",
+          "sha256": "f7d84cab153be9a7528f94966f2c76c29356d2a38e1fd472a7638122b5dc5da2"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/final.mp4",
+          "sha256": "0e05538d54e58834be46df8907373d8a06d2b6ed5338a82f035bfaca53bdbf4f"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/poster.jpg",
+          "sha256": "58d2660f2fb03740108db23a857ed0ed798e7b2182827e31edf597c4e3a9571d"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/source/README.md",
+          "sha256": "8be24b49b02fe3f093d89fdaa511a2e5d580f7f39157785e4808594c23dd0633"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/source/entry.tsx",
+          "sha256": "a567c92fbe0caa6571ba570deb98d126e9f20fd165a9742106cd579d5194276c"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/source/timing.json",
+          "sha256": "9c149ee05e1b7708751b5cc8397022a0c78f75650f8ecc4eb50947f3695d156f"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/validation.md",
+          "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+        },
+        {
+          "path": "references/visual/cases/observation/versions/v1/walkthrough.md",
+          "sha256": "3bd38746f1707d8e5fc2f486085ba83dc556e77b1598797e8567e95b8bb0e246"
+        }
+      ],
+      "article_url": "https://www.hani.co.kr/arti/science/science_general/1271265.html",
+      "manifest": "references/visual/cases/observation/versions/v1/case.json",
+      "manifest_sha256": "f81e6f601d69ed3c988690846306f2977f5de1d3c61d75fb1d9272762c42f605"
+    },
+    {
+      "id": "scattering",
+      "title": "보이지 않는 작용을 결과까지 연결하기",
+      "seconds": 12.033333333333333,
+      "goal": "반사빛의 대기 산란과 희미한 별의 대비 저하를 연결한다.",
+      "transfer": [
+        "같은 대상의 작용과 결과를 끊김 없이 설명한다.",
+        "생성 재료와 실제 배경을 하나의 화면으로 합성한다.",
+        "발화에 맞춰 변화를 전개하고 변화 전후의 기준을 유지한다."
+      ],
+      "specific": [
+        "금빛 리본·청색 대기·위성 형태는 이 장면의 개별 미술 선택이다.",
+        "생성 도해이며 정량 광학 시뮬레이션이 아니다. 후반은 같은 하늘 프레임에 배경 밝기를 더한 예시다."
+      ],
+      "beats": [
+        {
+          "time": 0.9,
+          "note": "입사광을 오른쪽에서 위성 쪽으로 드러낸다."
+        },
+        {
+          "time": 2.5,
+          "note": "연결된 반사 경로가 대기로 이어진다."
+        },
+        {
+          "time": 4.6,
+          "note": "대기의 여러 지점에서 빛이 퍼지는 상태를 보여준다."
+        },
+        {
+          "time": 6.5,
+          "note": "같은 하늘에서 배경이 밝아지며 별의 대비가 낮아진다."
+        }
+      ],
+      "composition": "ReferenceScatteringMotionGraphic",
+      "gain": -2.04,
+      "version": "v1",
+      "original_file": "03-scattering-motion-graphic-v1.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "3f8a2c6e5bf22f8e43794afc020c8b784b5f7ef7ce0ba800f5fcf52aadb0292e",
+      "files": {
+        "src": "references/visual/cases/scattering/versions/v1/final.mp4",
+        "poster": "references/visual/cases/scattering/versions/v1/poster.jpg",
+        "walkthrough": "references/visual/cases/scattering/versions/v1/walkthrough.md",
+        "credits": "references/visual/cases/scattering/versions/v1/credits.md",
+        "sourceGuide": "references/visual/cases/scattering/versions/v1/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/approved-overlay.png",
+          "sha256": "d3c4ef840871896ecb02d05111a19c7c85130683353ef7eec429143c1a1771a9"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/end.png",
+          "sha256": "4ef9dcaef994e33a2fe7b9c4eb3eb2b1c776200594b54a3d7fe0673ff9df1f1c"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/narration.wav",
+          "sha256": "3a79f6f896f6585bc1fc8fbd7e43901b98bb994994db2f8b41e3cede510f8377"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/original.mp4",
+          "sha256": "1b8a1fc35c1c09f9542d411423a904d7206e00acd9d0b74de809cc8931ab76d8"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/sky-source.png",
+          "sha256": "248d3f9b0bb71a85e17830f379ccdad2d4c8a428f172f6d54d40b0ac24c71360"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/start.png",
+          "sha256": "59d98293c3d2ed2f3d60b1792ebc05c5e477ac5262fc21d160551c514347d8b5"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/assets/vlt.mp4",
+          "sha256": "42f694ef83dd69383fa02cca16fd261646deaf42be9c44dbcccf1ca547002126"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/credits.md",
+          "sha256": "d972434469b675cb49bdfa067d8ebf0ddac61e36bc676ae76ad0d42a1213eb46"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/final.mp4",
+          "sha256": "3f8a2c6e5bf22f8e43794afc020c8b784b5f7ef7ce0ba800f5fcf52aadb0292e"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/poster.jpg",
+          "sha256": "3f9326869c4b354ce51fccb8df4d49ee9a3b5ddaaea1ffc85990af4e32ebdcfb"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/reviews/p5-motion.txt",
+          "sha256": "a646f2810eceaa480a8e05166e3da1a34b5b8118f02e6e84d5f40bf04527aa0e"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/reviews/p7-fact.txt",
+          "sha256": "5f13541dbd68b03310543fa4d83ffce930d621d4da523fd4928d4d93c3c0bb8b"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/reviews/p7-shot.txt",
+          "sha256": "b8abe1173c5d625a7d6196c9d4c4107d22112966e311bef953dc588e20559a41"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/source/README.md",
+          "sha256": "f5c8af6208da596447c0e5eb4fb774a9f81964965ed680fd00f9b40ff97fecc9"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/source/entry.tsx",
+          "sha256": "8a832f0877030a8358c2623dddd460f1868d519e630e0ef62a6d59bbb8413305"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/source/generation-prompt.txt",
+          "sha256": "603c893a80da2ace0d401da4cf57aefae4f22dd2522b85dd04ca7c641d9a8eff"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/source/key-overlay.py",
+          "sha256": "813ec9fbd10ce47dfd9fb69c69f10c7c685e1994ba5b9113856d77340f8cf15e"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/source/timing.json",
+          "sha256": "765f89569e6bad18e44ea12faca385670d3d8fccfb0b54a831a2f7d3544cb06b"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/validation.md",
+          "sha256": "6e72613082b999f27e204c275a911617d8143a15ff98826b5fcf8ad7c93f044c"
+        },
+        {
+          "path": "references/visual/cases/scattering/versions/v1/walkthrough.md",
+          "sha256": "dd67aa7b56759b7b4b45960c270c7f1446f41467bedf28cc7c06e2f986f39e1d"
+        }
+      ],
+      "article_url": "https://www.hani.co.kr/arti/science/science_general/1273728.html",
+      "manifest": "references/visual/cases/scattering/versions/v1/case.json",
+      "manifest_sha256": "440024b46ccfbafe0fc5526d277cd74018912f78bb673903a4be9dbff10d93ee"
+    },
+    {
+      "id": "area",
+      "title": "면적비를 같은 하늘 위에서 읽히기",
+      "seconds": 10,
+      "goal": "로먼과 허블의 상대 관측 면적을 1 대 약 100으로 이해한다.",
+      "transfer": [
+        "선형 길이와 면적의 비를 구분해 실제 도형 비율로 전달한다.",
+        "수치와 해당 영역을 발화에 맞춰 직접 연결한다."
+      ],
+      "specific": [
+        "생성 은하 배경은 실제 관측 자료가 아니다.",
+        "로먼 WFI 대 HST/ACS의 상대 면적 약 100배를 설명하며 실제 검출기 형상·절대 각면적을 재현하지 않는다."
+      ],
+      "beats": [
+        {
+          "time": 0.63,
+          "note": "같은 배율의 하늘 위에서 허블 기준 영역을 읽는다."
+        },
+        {
+          "time": 2,
+          "note": "1 발화에 기준값이 나타난다."
+        },
+        {
+          "time": 3.1,
+          "note": "고정 기준 영역에서 큰 영역이 확장된다."
+        },
+        {
+          "time": 4.1,
+          "note": "약 100배 수치와 최종 면적을 함께 본다."
+        }
+      ],
+      "composition": "ReferenceAreaV3",
+      "gain": 0,
+      "version": "v3",
+      "original_file": "04-roman-field-v3.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "8f5fe78c11159c075cf0f369400d6c070203617847099850de5cc8b73f4ac883",
+      "files": {
+        "src": "references/visual/cases/area/versions/v3/final.mp4",
+        "poster": "references/visual/cases/area/versions/v3/poster.jpg",
+        "walkthrough": "references/visual/cases/area/versions/v3/walkthrough.md",
+        "credits": "references/visual/cases/area/versions/v3/credits.md",
+        "sourceGuide": "references/visual/cases/area/versions/v3/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/area/versions/v3/assets/galaxy-clean.png",
+          "sha256": "d63de29ab8c4050170f65a6b89a4685d4c5f396698efeff1547387f6add9735e"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/assets/original-audio.m4a",
+          "sha256": "acb67782ad2213ab48d2d45be096130f05eef84bce1c39974ac4b1f52b6155cd"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/credits.md",
+          "sha256": "8d0fe784c0b248efe1506b19c6a857046eadae256ae774fc454a9e009fff026c"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/final.mp4",
+          "sha256": "8f5fe78c11159c075cf0f369400d6c070203617847099850de5cc8b73f4ac883"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/poster.jpg",
+          "sha256": "8aea0335c257d0a58c119378791d04e2e3b54cb190309f6932dff9120cd9bd2d"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/source/README.md",
+          "sha256": "18758ae6b403e7674009b3c902bce5d5ce59066a679cac5d9db7490ede661edd"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/source/entry.tsx",
+          "sha256": "846fa317a527316a44bbb4208d75999e6fc759fa02ef6ec978759f6bc75e880f"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/source/original-production.md",
+          "sha256": "3bbdc8b00c02d6b4459237dac07f80eb32ea2fa5f4da24d9927a50309ab5d087"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/source/timing.json",
+          "sha256": "959487f1b60074df01a2da98b8df452567b895c61bae182681950ec5e968735f"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/validation.md",
+          "sha256": "1231e4f1a42d52588727d688fe1163fbe003dfdba74d7af636905f712180afa8"
+        },
+        {
+          "path": "references/visual/cases/area/versions/v3/walkthrough.md",
+          "sha256": "10099d616906bc9fbe33d57f0ed0773a22f0a293c16970ec40a451a9a1d66bcc"
+        }
+      ],
+      "manifest": "references/visual/cases/area/versions/v3/case.json",
+      "manifest_sha256": "13161ddc0ba39f24824e9cb4f6c9046d667a9b0a0bd51faf88013b0251bcd3d3"
+    },
+    {
+      "id": "quote",
+      "title": "원문에서 핵심 구절만 강조하기",
+      "seconds": 7.2,
+      "goal": "공식 발표의 이상 발생 설명을 핵심 구절과 함께 읽는다.",
+      "transfer": [
+        "인용의 맥락·출처를 남기고 이해에 필요한 구절만 강조한다.",
+        "발화와 강조 진행을 연결하고 불필요한 번역·상단 설명을 중복하지 않는다."
+      ],
+      "specific": [
+        "종이·세리프·파란 마커는 이 인용에 선택한 미술이며 공식 웹페이지 캡처가 아니다."
+      ],
+      "beats": [
+        {
+          "time": 0.34,
+          "note": "공식 인용과 출처를 함께 읽는다."
+        },
+        {
+          "time": 1.3,
+          "note": "hotfire test 강조가 시작된다."
+        },
+        {
+          "time": 2.63,
+          "note": "핵심 구절 강조가 정착한다."
+        },
+        {
+          "time": 6.2,
+          "note": "발화 종료 뒤 짧게 관찰한다."
+        }
+      ],
+      "composition": "ReferenceQuote",
+      "gain": 0,
+      "version": "v2",
+      "original_file": "05-hotfire-quote-v2.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "4783043aa410eae406f374a47aca455c1c9b4652801eddd4dcababddae630205",
+      "files": {
+        "src": "references/visual/cases/quote/versions/v2/final.mp4",
+        "poster": "references/visual/cases/quote/versions/v2/poster.jpg",
+        "walkthrough": "references/visual/cases/quote/versions/v2/walkthrough.md",
+        "credits": "references/visual/cases/quote/versions/v2/credits.md",
+        "sourceGuide": "references/visual/cases/quote/versions/v2/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/quote/versions/v2/assets/5-narration.wav",
+          "sha256": "9925a956ab3c005f18dcef45f2d8c83ef84191d725e2bfd2fe0c11cb7c28cbff"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/assets/Times.ttf",
+          "sha256": "f3b4ffff71c2a0c7227d37497683b2498fb2d0a4e8beae26f022e3ccfcaabfa3"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/assets/paper.png",
+          "sha256": "5a0b43248b35999499bae084f6d466a2e3fcf9c383b9dc5fa746bcaf8947da26"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/credits.md",
+          "sha256": "b8f3796b5af6ddf6e3d275059960bee4633ba1af7b323780e5c9dfb41a74b322"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/final.mp4",
+          "sha256": "4783043aa410eae406f374a47aca455c1c9b4652801eddd4dcababddae630205"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/poster.jpg",
+          "sha256": "dfa6bc421661f6945aa92332325db4cadb266fea020007d089e2a84f78b0e755"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/source/Quote.tsx",
+          "sha256": "c4513a2ea26eeb996de28c6f336145f2ee1ed16b38a56199310a950787924a3e"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/source/README.md",
+          "sha256": "19fbe38c036aac4cc9b122b7cd306da35c200b962892d951646800af6cd8404b"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/source/entry.tsx",
+          "sha256": "411a55674dbd8cc6e72f79e5a66f392284378c4f2fd2c9eb47804e7114f4e21d"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/source/timing.json",
+          "sha256": "73f34d3608ea7d5cce92e2389c047034bbcdedf2a1220e4b1a77a57a311fffc0"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/validation.md",
+          "sha256": "07052320709813ae5d73609ddd2dc0311d2f9e84dbcffe90cbb2212cb0c59724"
+        },
+        {
+          "path": "references/visual/cases/quote/versions/v2/walkthrough.md",
+          "sha256": "933a902e7547a91bb242447c5536e1de4b3e92362ae78ff96fbe523f2c29d0d4"
+        }
+      ],
+      "manifest": "references/visual/cases/quote/versions/v2/case.json",
+      "manifest_sha256": "c6b258c3a7f9fc900d13634ac183749588bde8cf7a17179d8f25b39de3c4fee5"
+    },
+    {
+      "id": "route",
+      "title": "경로와 목적지를 한 장면에서 연결하기",
+      "seconds": 8.733333333333333,
+      "goal": "지구 저궤도 비행 뒤 태평양으로 돌아오는 계획의 공간 관계를 설명한다.",
+      "transfer": [
+        "이동 대상·경로·목적지의 관계를 발화와 연결한다.",
+        "장면 내부 카메라 이동으로 공간 맥락을 드러내며 화면 가장자리를 채운다."
+      ],
+      "specific": [
+        "통합 생성된 계획 개념도이며 정확한 1.5회 궤도와 실측 좌표는 검증되지 않았다.",
+        "영상 평면을 확대·축소하지 않으며 생성 원본 내부 카메라 동작을 사용한다."
+      ],
+      "beats": [
+        {
+          "time": 0.64,
+          "note": "계획임을 나레이션으로 밝힌다."
+        },
+        {
+          "time": 1.56,
+          "note": "궤도와 이동점을 따라간다."
+        },
+        {
+          "time": 4.25,
+          "note": "태평양 발화에서 해당 해역을 본다."
+        },
+        {
+          "time": 6.35,
+          "note": "귀환 표시와 주변 지형을 관찰한다."
+        }
+      ],
+      "composition": "ReferenceRoute",
+      "gain": 0,
+      "version": "v4",
+      "original_file": "06-starfall-route-generated-v4.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "dd07804d82b15fe5a99b34f5e1ed3b22cb36e84240904ee195043a6988c8bfac",
+      "files": {
+        "src": "references/visual/cases/route/versions/v4/final.mp4",
+        "poster": "references/visual/cases/route/versions/v4/poster.jpg",
+        "walkthrough": "references/visual/cases/route/versions/v4/walkthrough.md",
+        "credits": "references/visual/cases/route/versions/v4/credits.md",
+        "sourceGuide": "references/visual/cases/route/versions/v4/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/route/versions/v4/assets/06-generated-unified-v3.mp4",
+          "sha256": "b4cc35f02f2d549e56fbf4808490f59f76db1838f9a20ce6756f387a11310d07"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/assets/6-narration-polish-v2.wav",
+          "sha256": "df4f05cb5e5eb4befae80ce8b854033355ca3025613fcc396853f0da2e955e5c"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/credits.md",
+          "sha256": "db5489ffc7731e9f88f62a2faa960580acc13afcf8ca2a0e41490e0d6063ecb9"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/final.mp4",
+          "sha256": "dd07804d82b15fe5a99b34f5e1ed3b22cb36e84240904ee195043a6988c8bfac"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/poster.jpg",
+          "sha256": "eddbece8deeba44a58c5fd127980e673e5c09878fe68a0684df35a1e7235ac68"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/source/README.md",
+          "sha256": "24fc2efef6d40f0136cb7e1978d552901abf8bff5f1961822274f65a923245e4"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/source/entry.tsx",
+          "sha256": "09232ad401f7d9814679c42dd1e0b24337ad26d427d9c086a2a6f85e561ea505"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/source/generation-prompt.txt",
+          "sha256": "45d4a54de1b60d88ef99e465f9a9081f41ff34d537ab8f8f3056e6307884727b"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/source/timing.json",
+          "sha256": "06f26d300879e06334e93a6f080e08c317f3a55aa6571077c2f6fec39771848b"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/validation.md",
+          "sha256": "18dc4f1199865a7810dc37cfc8b0e78a086bbef8e0f7e783716162436184c241"
+        },
+        {
+          "path": "references/visual/cases/route/versions/v4/walkthrough.md",
+          "sha256": "b6ac2885e3972152f4c5efa6bc61cb77cd8adc8bdcbca0ce02d19126c6334c29"
+        }
+      ],
+      "manifest": "references/visual/cases/route/versions/v4/case.json",
+      "manifest_sha256": "4d85e232403db0d3cc7e37df03d1608adc167e5808d2977ea16f0a605ac703e8"
+    },
+    {
+      "id": "structure",
+      "title": "부분 연결에서 전체 구조로 보기",
+      "seconds": 6.6,
+      "goal": "탄소 원자 60개가 이루는 속이 빈 C60 구조를 이해한다.",
+      "transfer": [
+        "부분의 연결을 먼저 읽고 전체 형태로 시야를 넓힌다.",
+        "구조를 말하는 순간 전체 형상을 보여주고 작은 시점 이동으로 입체성을 전달한다."
+      ],
+      "specific": [
+        "60개 꼭짓점·90개 결합·각 꼭짓점 차수 3의 잘린 정이십면체 모형이다.",
+        "원자 크기·결합 굵기는 연결 설명용이며 실측 원자 크기가 아니다."
+      ],
+      "beats": [
+        {
+          "time": 0.64,
+          "note": "근접 화면에서 원자와 결합을 본다."
+        },
+        {
+          "time": 3.2,
+          "note": "속이 빈 공 발화에 전체 구조가 보인다."
+        },
+        {
+          "time": 5.5,
+          "note": "작은 시점 이동을 마치고 형태를 관찰한다."
+        }
+      ],
+      "composition": "ReferenceStructure",
+      "gain": 0,
+      "version": "v2",
+      "original_file": "07-c60-structure-v2.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "7c35eb5575c591d1276181ef8e82293f23559d4dde2efe0f51846bfe83511bd6",
+      "files": {
+        "src": "references/visual/cases/structure/versions/v2/final.mp4",
+        "poster": "references/visual/cases/structure/versions/v2/poster.jpg",
+        "walkthrough": "references/visual/cases/structure/versions/v2/walkthrough.md",
+        "credits": "references/visual/cases/structure/versions/v2/credits.md",
+        "sourceGuide": "references/visual/cases/structure/versions/v2/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/structure/versions/v2/assets/7-narration.wav",
+          "sha256": "581165025870624ea244920337663d47320348c94e879e1ddf22235b91478081"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/credits.md",
+          "sha256": "05e94df8a63b4963d66c3b774debaffce766fdf99063859f6e3b8c225b19ba35"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/final.mp4",
+          "sha256": "7c35eb5575c591d1276181ef8e82293f23559d4dde2efe0f51846bfe83511bd6"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/poster.jpg",
+          "sha256": "e95b1497a2d323de2b4c7f295f223914ee6eae13093f7d14f92c944ca06c6e02"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/source/C60.tsx",
+          "sha256": "631d96ae37fa7f65e1e2bbcfbf6b759cb9ac4b8b6342eda62fc6db7473ef12af"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/source/README.md",
+          "sha256": "34479e1a64d6b4d0f4273f9284390cb67e7b046f2cc96803644e7f80a6dd9b1f"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/source/entry.tsx",
+          "sha256": "017157f5e69e80408f24136e522a466dd5e02567d311345fff805c517c638295"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/source/timing.json",
+          "sha256": "8813bfa46792770ba50e5a1235f122138a0cb281b9d9d853d2c6b5fb40528265"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/validation.md",
+          "sha256": "91f62f9da8f80100bb40b22726fc14ba18e1dba3506ee453df3307fa8dba25f1"
+        },
+        {
+          "path": "references/visual/cases/structure/versions/v2/walkthrough.md",
+          "sha256": "7b7ac85b10b14097ff0e1177a224bd38029f6c122188a1fa747c34bd8a293bdf"
+        }
+      ],
+      "manifest": "references/visual/cases/structure/versions/v2/case.json",
+      "manifest_sha256": "64bd7d54ccfbf69b90fd6dd2ec9305c6aca68e65e291fb1e9f4ef03d144626ae"
+    },
+    {
+      "id": "match-cut",
+      "title": "익숙한 움직임에서 실제 관측으로 연결하기",
+      "seconds": 8.066666666666666,
+      "goal": "커피 속 흐름을 비유로 태양 표면의 소용돌이 관측에 진입한다.",
+      "transfer": [
+        "친숙한 비유에서 실제 증거로 전환하는 시점을 발화에 맞춘다.",
+        "유사한 움직임을 연결하되 실제 관측과 비유의 역할을 구별한다."
+      ],
+      "specific": [
+        "커피와 태양은 같은 물리 현상의 증명으로 제시하지 않는다.",
+        "태양은 착색된 실제 관측 영상이며 생성·모핑하지 않았다. 원본 클립 재생속도 1배이고 실제 현상의 시간 축척은 주장하지 않는다."
+      ],
+      "beats": [
+        {
+          "time": 0.58,
+          "note": "커피에 섞이는 크림을 본다."
+        },
+        {
+          "time": 1.87,
+          "note": "태양 발화에 실제 관측 영상으로 하드 컷한다."
+        },
+        {
+          "time": 5.1,
+          "note": "발화가 끝난 뒤에도 관측 움직임을 본다."
+        }
+      ],
+      "composition": "ReferenceMatchCut",
+      "gain": 0,
+      "version": "v2",
+      "original_file": "08-coffee-solar-v2.mp4",
+      "approval": "user-accepted",
+      "video_sha256": "add71e6d8b76867d1fc12843b9241470b05e9720d9c476747cc7c2b1d04e971d",
+      "files": {
+        "src": "references/visual/cases/match-cut/versions/v2/final.mp4",
+        "poster": "references/visual/cases/match-cut/versions/v2/poster.jpg",
+        "walkthrough": "references/visual/cases/match-cut/versions/v2/walkthrough.md",
+        "credits": "references/visual/cases/match-cut/versions/v2/credits.md",
+        "sourceGuide": "references/visual/cases/match-cut/versions/v2/source/README.md"
+      },
+      "inventory": [
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/assets/8-narration.wav",
+          "sha256": "404a5d2588b64fb5ad69255d32f2cd609df2a4206a79d00e2ca3ffcfde0ae85e"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/assets/coffee.mp4",
+          "sha256": "0c669c9004378e0b623453062bf8ef0575ddff52c454f0dad8d900981a7193da"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/assets/solar.mp4",
+          "sha256": "1af5ad81036882a78da70abd1dee4317ff68091004df82596da808e50d874eae"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/credits.md",
+          "sha256": "9117a07821b124ef784d4adee6f3c5fd53f1254b3810a6a3f75207c04ec5ee9a"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/final.mp4",
+          "sha256": "add71e6d8b76867d1fc12843b9241470b05e9720d9c476747cc7c2b1d04e971d"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/poster.jpg",
+          "sha256": "ac5218bc021d2fac29eaced6655ddba87d932ece082c1ed94cd258e5b4e7bad1"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/source/README.md",
+          "sha256": "cb2de3dd00c7ae4ec5f8b9784078fa7b13d5046f53917e1a3f33374c7ff74d83"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/source/entry.tsx",
+          "sha256": "9450076d0d738c7c46db348f74ec18167702f40a39d90a39dde54690d12c1103"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/source/timing.json",
+          "sha256": "a8b9b5378d8ba1022e3b901193725bf7b3707f249e8f1b2fcf734fb0a0fa8907"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/validation.md",
+          "sha256": "56b1d03ab0cd886a902efafde3a8cc4c6a1a810d498813aab3cf3c2c23189f15"
+        },
+        {
+          "path": "references/visual/cases/match-cut/versions/v2/walkthrough.md",
+          "sha256": "d6ac8957c620fd3193861927097a851e6ab2bb9ad3d2a3475abb81cea8669f2a"
+        }
+      ],
+      "manifest": "references/visual/cases/match-cut/versions/v2/case.json",
+      "manifest_sha256": "37626fd9a9d9db099aa46ad975375fe5c55bc09afb5bee981d6cf64489d0660b"
+    }
+  ],
+  "inspection": "not_performed"
+}

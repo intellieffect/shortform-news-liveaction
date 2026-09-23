@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0",
+  "preset": "editorial-concept-v1",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "caption": {
+    "preset": "betelgeuse-v1"
+  },
+  "text": {
+    "persistent_top_text": false,
+    "explanatory_notes": false,
+    "allowed_roles": [
+      "necessary-label",
+      "condition",
+      "provenance"
+    ]
+  },
+  "media": {
+    "full_bleed_default": true,
+    "assets": [
+      {
+        "id": "project_logo",
+        "source": "02_production/brand/logo.png",
+        "file": "editorial/brand-logo.png"
+      },
+      {
+        "id": "planet_leak",
+        "source": "02_production/media/planet_leak.mp4",
+        "file": "editorial/planet_leak.mp4",
+        "generation_job": "gen_planet_leak_v2"
+      },
+      {
+        "id": "planet_leak_last",
+        "source": "02_production/media/planet_leak_last.png",
+        "file": "editorial/planet_leak_last.png",
+        "generation_job": "gen_planet_leak_v2"
+      },
+      {
+        "id": "planet_still",
+        "source": "02_production/media/planet_hero.png",
+        "file": "editorial/planet_hero.png",
+        "generation_job": "gen_planet_still"
+      },
+      {
+        "id": "planet_limb",
+        "source": "02_production/media/planet_limb.png",
+        "file": "editorial/planet_limb.png",
+        "generation_job": "gen_planet_limb"
+      },
+      {
+        "id": "reddwarf_pair",
+        "source": "02_production/media/reddwarf_pair.png",
+        "file": "editorial/reddwarf_pair.png",
+        "generation_job": "gen_reddwarf_pair"
+      },
+      {
+        "id": "star_transit",
+        "source": "02_production/media/reddwarf_disk.png",
+        "file": "editorial/reddwarf_disk.png",
+        "generation_job": "gen_star_transit"
+      },
+      {
+        "id": "magellan_photo",
+        "source": "02_production/media/magellan.jpg",
+        "file": "editorial/magellan.jpg"
+      }
+    ]
+  },
+  "mobile": {
+    "max_simultaneous_labels": 3,
+    "review_scale": 0.3333333333
+  },
+  "motion": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in",
+    "quantitative_overshoot": false
+  },
+  "production_profile": {
+    "id": "hani-shortform",
+    "version": "1.2.0"
+  },
+  "visual_contract": "visual-explanation@1",
+  "generation_jobs": [
+    {
+      "id": "gen_planet_still",
+      "kind": "image",
+      "purpose": "leak/conditions/meaning 공통 행성 외형(9:16 상상도)",
+      "status": "accepted",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "gpt_image_2_5",
+      "prompt_path": "02_production/generated/prompts/planet_hero.txt",
+      "job_id": "a8c587c6-7cd7-4ade-a14f-60161d589cb5",
+      "output": "02_production/generated/raw/planet_hero.png",
+      "observation": "행성 좌하단, 작은 붉은 별 우상단, 얇은 푸른 대기 림. 752×1344. 2k 업스케일 job 46edebc3 → media/planet_hero.png"
+    },
+    {
+      "id": "gen_planet_limb",
+      "kind": "image",
+      "purpose": "model 개념의 림 배경",
+      "status": "accepted",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "gpt_image_2_5",
+      "prompt_path": "02_production/generated/prompts/planet_limb.txt",
+      "job_id": "9c2a5e36-6de5-47af-9921-3a8e274b270a",
+      "output": "02_production/generated/raw/planet_limb.png",
+      "observation": "하단 40% 표면 호, 상단 검은 우주. 업스케일 job 03c869a6"
+    },
+    {
+      "id": "gen_reddwarf_pair",
+      "kind": "image",
+      "purpose": "threat 영상의 시작 프레임",
+      "status": "accepted",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "gpt_image_2_5",
+      "prompt_path": "02_production/generated/prompts/reddwarf_planet.txt",
+      "job_id": "73c6b48f-3e3c-46ac-84f4-ce9238370e72",
+      "output": "02_production/generated/raw/reddwarf_planet.png",
+      "observation": "상단 붉은 별·하단 행성. 2k 업스케일 job 237872a6 → media/reddwarf_pair.png. threat 코드 도해의 배경"
+    },
+    {
+      "id": "gen_star_transit",
+      "kind": "image",
+      "purpose": "observation 통과 장면의 별 원반",
+      "status": "accepted",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "gpt_image_2_5",
+      "prompt_path": "02_production/generated/prompts/reddwarf_disk.txt",
+      "job_id": "72b1de4e-17b3-4342-bd18-a0ef15ea87bc",
+      "output": "02_production/generated/raw/reddwarf_disk.png",
+      "observation": "중앙 큰 붉은 원반. 업스케일 job 9bb9442d"
+    },
+    {
+      "id": "gen_planet_leak",
+      "kind": "video",
+      "purpose": "leak/meaning: 림에서 기체가 바깥으로 흘러나가는 동작",
+      "status": "rejected",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "kling3_0 pro 10s 9:16 (start_image=gen_planet_still)",
+      "prompt_path": "02_production/generated/prompts/video_leak.txt",
+      "job_id": "d97d3034-ad4a-4582-8c12-a431a545466d",
+      "output": "02_production/generated/raw/planet_leak.mp4",
+      "observation": "(정정) 실물: 명암 경계 근처 지표 한 점에서 불투명한 청백색 덩어리가 솟아 지표를 따라 쓸리다 7초 이후 위로 오름 → 표면 분출로 읽힘(F3 위반, editorial-judge). 기각. 최초 기록 \"림 상단에서 옅은 기체가 흘러나감\"은 프레임 표본 오판이었음"
+    },
+    {
+      "id": "gen_reddwarf_strip",
+      "kind": "video",
+      "purpose": "threat: 별 복사가 행성 대기를 반대편으로 밀어냄",
+      "status": "rejected",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "kling3_0 pro 10s 9:16 (start_image=gen_reddwarf_pair)",
+      "prompt_path": "02_production/generated/prompts/video_strip.txt",
+      "job_id": "4e63419e-2edc-4272-ad5f-4009a5a7afbe",
+      "output": "02_production/generated/raw/reddwarf_strip.mp4",
+      "observation": "v1: 복사가 가는 레이저 빔처럼 행성을 타격 → \"별이 행성을 쏜다\"로 오독 위험. 기각. media/reddwarf_strip_v1.mp4 보존"
+    },
+    {
+      "id": "gen_planet_wide",
+      "kind": "video",
+      "purpose": "close: 행성이 멀어지는 풀백",
+      "status": "rejected",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "kling3_0 pro 10s 9:16 (start_image=gen_planet_still)",
+      "prompt_path": "02_production/generated/prompts/video_wide.txt",
+      "job_id": "5fb93ea3-d7e9-42cf-a873-d5757f47213f",
+      "output": "02_production/generated/raw/planet_wide.mp4",
+      "observation": "기체 줄기 없음, s17 발화와 불일치. 기각. close는 leak 장면 스케일 다운으로 대체"
+    },
+    {
+      "id": "gen_reddwarf_strip_v2",
+      "kind": "video",
+      "purpose": "threat: 별 복사가 넓은 바람처럼 퍼져 행성 대기를 밀어냄(빔 아님)",
+      "status": "rejected",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "kling3_0 pro 10s 9:16 (start_image=gen_reddwarf_pair)",
+      "prompt_path": "02_production/generated/prompts/video_strip_v2.txt",
+      "job_id": "5505dec3-e8cd-48a4-a54f-629a75362b28",
+      "output": "02_production/generated/raw/reddwarf_strip_v2.mp4",
+      "observation": "(정정) 붉은 구름이 화면 전체를 덮고 마지막에 행성 halo가 옆으로 부풀어 오름 → \"별 폭발/대기 커짐\" 오독, 결과 상태(얇아짐) 없음(editorial-judge). 기각. threat는 reddwarf_pair 스틸 + 코드 도해로 전환"
+    },
+    {
+      "id": "gen_planet_leak_v2",
+      "kind": "video",
+      "purpose": "leak/meaning/close: 림 전체에서 옅은 기체가 고르게 떠올라 흩어짐(표면 분출 아님)",
+      "status": "accepted",
+      "provider": "Higgsfield MCP (claude.ai higgsfield)",
+      "model": "kling3_0 pro 10s 9:16 (start_image=gen_planet_still)",
+      "prompt_path": "02_production/generated/prompts/video_leak_v2.txt",
+      "job_id": "21c353ec-caf3-4f4a-b3c7-8358c45bbeef",
+      "output": "02_production/generated/raw/planet_leak_v2.mp4",
+      "observation": "프레임 표본(1.5s 간격) 확인 결과 아래 기록. media/planet_leak.mp4, 마지막 프레임 media/planet_leak_last.png"
+    }
+  ],
+  "project_logo": {
+    "version": "2.0.0",
+    "sha256": "9aff17473fe98ac7d59b21c97a754f753c2ddb32f70f26abefb708444308483a",
+    "file": "editorial/brand-logo.png",
+    "x": 860,
+    "y": 100,
+    "width": 140,
+    "height": 140
+  }
+}

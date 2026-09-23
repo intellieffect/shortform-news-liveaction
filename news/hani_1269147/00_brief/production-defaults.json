@@ -1,0 +1,20 @@
+{
+  "schema_version": "restored-production-defaults@1",
+  "baseline_commit": "59a2af79",
+  "guide": "config/production-defaults.md",
+  "logo_package": "presets/hani/brand-assets/v2/manifest.json",
+  "production_prompt": {
+    "version": "v2-original@1",
+    "path": "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"
+  },
+  "guide_sha256": "56315f878ec832d6fa65848a8399abd3c2d68cfa19da09584168e3f90cff1210",
+  "logo": {
+    "version": "2.0.0",
+    "sha256": "9aff17473fe98ac7d59b21c97a754f753c2ddb32f70f26abefb708444308483a",
+    "file": "editorial/brand-logo.png",
+    "x": 860,
+    "y": 100,
+    "width": 140,
+    "height": 140
+  }
+}

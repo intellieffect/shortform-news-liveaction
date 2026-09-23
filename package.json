@@ -70,6 +70,10 @@
     "worktree:remove": "node scripts/worktree-safe-remove.mjs",
     "fetch:article": "node scripts/fetch-article.mjs",
     "fetch:assets": "node scripts/fetch-assets.mjs",
+    "narration:assemble": "node scripts/assemble-narration.mjs",
+    "motion:rebase": "node scripts/motion-rebase.mjs",
+    "review:packet": "node scripts/review-packet.mjs",
+    "production:workflow:test": "node --test tests/test-logged-command.mjs tests/test-narration-assembly.mjs tests/test-motion-rebase.mjs tests/test-review-packet.mjs tests/test-production-preflight.mjs tests/test-fetch-assets.mjs tests/test-proof-sheet.mjs tests/test-fact-coverage-carry.mjs",
     "check:symlinks": "node scripts/check-symlinks.mjs",
     "check:deliver": "node scripts/check-deliver.mjs",
     "time:session": "node scripts/session-time.mjs",
@@ -105,7 +109,7 @@
     "references:prepare": "node scripts/prepare-references.mjs",
     "references:render": "node scripts/render-reference.mjs",
     "references:test": "node --test tests/test-visual-references.mjs",
-    "visual-production:test": "node --test tests/test-visual-production.mjs",
+    "visual-production:test": "node --test tests/test-visual-production.mjs tests/test-screen-text-policy.mjs",
     "scene:proof": "node scripts/scene-proof.mjs"
   },
   "sideEffects": [

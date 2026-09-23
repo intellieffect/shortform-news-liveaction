@@ -1,4 +1,5 @@
 import {sceneReviewCandidate} from './scene-review.mjs';
+import {optionalSceneTrials} from '../scene-proof-contract.mjs';
 import {firstSceneReadiness} from './first-scene.mjs';
 import {validateSceneProof} from './visual-work.mjs';
 import { episodePrompt } from './prompt.mjs';
@@ -64,6 +65,7 @@ const inspect = (w, state) => {
     } else if (state.impacts[action]) reasons.push({ kind: "manual-impact", reason: state.impacts[action].reason });
     const status = pending ? "unfinished" : !receipt ? "unrecorded" : reasons.length ? "stale" : "current";
     result[action] = {
+      ...(action === 'scene_proof' && optionalSceneTrials(w, state) ? {optional: true} : {}),
       status, reasons, receipt_id: receipt?.id ?? null, provenance: receipt?.provenance ?? null,
       outputs: receipt?.outputs ?? {}, pending: pending ? { token: pending.id, started_at: pending.started_at, outputs: pending.outputs, log: pending.log } : null,
       runnable: !pending && spec.deps.every((dep) => result[dep].status === "current") && !spec.required.some((file) => current.files[file] === null),
@@ -83,7 +85,7 @@ export const productionStatus = (id, { repo, includeContext = false } = {}) => {
   const completion = productionCompletion(w, state, actions);
   return {
     schema_version: state.schema_version, pilot: id, managed: existsSync(w.runFile), state_file: w.rel(w.runFile),
-    actions, next: ACTIONS.filter((action) => actions[action].status !== "current" && actions[action].runnable),
+    actions, next: ACTIONS.filter((action) => actions[action].status !== "current" && actions[action].runnable && !(action === 'scene_proof' && optionalSceneTrials(w, state))),
     impacts: state.impacts,
     attempts: state.attempts.map(({ id, action, status, started_at, finished_at, elapsed_ms, log, error }) => ({ token: id, action, status, started_at, finished_at, elapsed_ms, log, error })),
     completion, delivery: productionDelivery(w),
@@ -172,8 +174,9 @@ export const failProductionAction = (id, token, error, { repo } = {}) => {
     if (!attempt) throw new Error("열린 작업 토큰이 없다: " + token);
     const finished = now();
     Object.assign(attempt, { status: "failed", error: String(error), finished_at: finished, elapsed_ms: Date.parse(finished) - Date.parse(attempt.started_at) });
-    // 실패 이전 산출물의 입력이 같더라도 실패 시도 결과를 최신으로 오인하지 않는다.
-    state.impacts[attempt.action] = { id: randomUUID(), reason: "실행 실패: " + error, at: finished };
+    // A failed new scene render cannot revoke an earlier submitted proof with
+    // unchanged inputs. Draft renders never create an attempt in the first place.
+    if (attempt.action !== 'scene_proof') state.impacts[attempt.action] = { id: randomUUID(), reason: "실행 실패: " + error, at: finished };
     return attempt;
   });
 };

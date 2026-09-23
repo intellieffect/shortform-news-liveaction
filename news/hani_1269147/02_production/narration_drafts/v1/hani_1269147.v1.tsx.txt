@@ -1,0 +1,423 @@
+import React from 'react';
+import {AbsoluteFill, Img, Interactive, Sequence, interpolate, useCurrentFrame} from 'remotion';
+import {Video} from '@remotion/media';
+import {eventOpacity, eventProgress} from '../../lib/editorial';
+import {EditorialScreenText} from '../ScreenText';
+import type {EditorialEpisodeProps, EditorialPilotData} from '../pilot';
+
+/*
+ * hani_1269147 — LHS 1140b 헬륨 유출.
+ * 시간은 timeline.json에서만 받는다. 좌표·색·궤적은 이 파일이 정한다.
+ * 장면: leak → conditions → threat → model → observation → meaning → close
+ */
+
+const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
+const HE = '#9fd8ff'; // 헬륨·가벼운 기체 — model 입자 → observation 테두리·흡수선 라벨까지 같은 색
+const HEAVY = '#f0b56e'; // 무거운 기체·강조
+const INK = '#e8eef5';
+const DIM = '#b9c4d1';
+const LEAK_CLIP_FRAMES = 300; // 10.04s 원본 → 30fps 타임라인 약 301프레임. 이후 마지막 프레임 유지
+
+const ev = (p: EditorialPilotData, id: string) => {
+  const e = p.timeline.events.find((x) => x.id === id);
+  if (!e) throw new Error(`missing event ${id}`);
+  return e;
+};
+const concept = (p: EditorialPilotData, id: string) => {
+  const c = p.timeline.concepts.find((x) => x.id === id);
+  if (!c) throw new Error(`missing concept ${id}`);
+  return c;
+};
+const seed = (i: number) => {
+  const n = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  return n - Math.floor(n);
+};
+
+/** 위아래를 살짝 눌러 글자 대비를 확보한다. 자막 구역(1523~1617)은 중간 정도로만 */
+const Shade: React.FC<{top?: number; bottom?: number}> = ({top = 0.12, bottom = 0.55}) => (
+  <AbsoluteFill style={{background: `linear-gradient(180deg,rgba(0,5,14,${top}) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0) 62%,rgba(0,5,14,${bottom}) 100%)`, pointerEvents: 'none'}} />
+);
+
+/** 하단 소형 출처·재구성 표기 (자막 바 아래) */
+const Note: React.FC<{text: string; color?: string}> = ({text, color = DIM}) => (
+  <div style={{position: 'absolute', left: 80, right: 80, top: 1660, fontSize: 30, lineHeight: 1.4, color, textShadow: '0 2px 6px #000', whiteSpace: 'pre-line'}}>{text}</div>
+);
+
+const Text: React.FC<{pilot: EditorialPilotData; el: string; evId: string; frame: number; style?: React.CSSProperties}> = ({pilot, el, evId, frame, style}) => (
+  <EditorialScreenText pilot={pilot} elementId={el} eventId={evId} globalFrame={frame} style={{fontFamily: 'Pretendard', color: INK, textShadow: '0 2px 10px rgba(0,0,0,.8)', ...style}} />
+);
+
+/** 행성 장면(생성 클립 + 마지막 프레임 유지 + 코드 상승 안개). scale은 close에서 물러날 때 쓴다 */
+const PlanetScene: React.FC<{pilot: EditorialPilotData; from: number; scale?: number; hazeGain?: number}> = ({pilot, from, scale = 1, hazeGain = 1}) => {
+  const f = useCurrentFrame();
+  const local = f - from;
+  const clipEnd = from + LEAK_CLIP_FRAMES;
+  // 림 위 옅은 상승 안개: 림 곡선을 따라 고르게 떠올라 위로 흩어진다 (한 점 분출 아님)
+  const rimPts = Array.from({length: 130}, (_, i) => {
+    const x = (i / 129) * 1080; // planet_leak 클립 림 실측(열별 첫 밝은 픽셀): 정점 (360,≈500), x=990에서 ≈930
+    const y = 500 + 0.00108 * (x - 360) * (x - 360);
+    return {x, y};
+  });
+  return (
+    <AbsoluteFill style={{scale: String(scale), transformOrigin: '50% 60%'}}>
+      <Sequence from={from} layout="none">
+        <Video src={pilot.file('editorial/planet_leak.mp4')} muted objectFit="cover" style={{width: '100%', height: '100%', objectPosition: '50% 50%'}} />
+      </Sequence>
+      <AbsoluteFill style={{opacity: f >= clipEnd - 6 ? interpolate(f, [clipEnd - 6, clipEnd], [0, 1], clamp) : 0}}>
+        <Img src={pilot.file('editorial/planet_leak_last.png')} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 50%'}} />
+      </AbsoluteFill>
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute'}}>
+        <defs>
+          <radialGradient id="hz1269147"><stop offset="0" stopColor="#dff3ff" stopOpacity=".8" /><stop offset=".5" stopColor={HE} stopOpacity=".35" /><stop offset="1" stopColor={HE} stopOpacity="0" /></radialGradient>
+        </defs>
+        {/* 림을 따라 옅게 빛나는 대기 띠 — 새는 기체의 출발선 */}
+        <path d={`M ${rimPts.map((q) => `${q.x} ${q.y - 10}`).join(' L ')}`} fill="none" stroke={HE} strokeWidth="26" strokeLinecap="round" opacity={hazeGain * 0.18 * interpolate(local, [0, 40], [0, 1], clamp)} style={{filter: 'blur(14px)'}} />
+        {rimPts.map((p, i) => {
+          const period = 150 + seed(i + 7) * 100;
+          const phase = ((local + seed(i + 31) * period) % period) / period; // 0→1 반복 상승
+          const rise = phase * (260 + seed(i + 53) * 220);
+          const op = hazeGain * 0.7 * Math.sin(phase * Math.PI) * interpolate(local, [0, 40], [0, 1], clamp);
+          return <circle key={i} cx={p.x + Math.sin(phase * 5 + i) * 18} cy={p.y - rise} r={14 + seed(i + 91) * 14} fill="url(#hz1269147)" opacity={op} />;
+        })}
+      </svg>
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- leak ---------------- */
+const Leak: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const c = concept(pilot, 'leak');
+  const name = ev(pilot, 'name_reveal');
+  const rise = interpolate(f, [name.from, name.settled], [24, 0], clamp);
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <PlanetScene pilot={pilot} from={c.from} />
+      <Shade />
+      <Interactive.Div style={{position: 'absolute', left: 80, top: 250, opacity: eventOpacity(f, name), translate: `0 ${rise}px`}}>
+        <div style={{fontSize: 108, fontWeight: 800, letterSpacing: 1, color: INK, textShadow: '0 2px 12px rgba(0,0,0,.8)'}}>LHS 1140b</div>
+        <div style={{fontSize: 44, marginTop: 10, color: DIM, textShadow: '0 2px 8px #000'}}>49광년 · 암석형</div>
+      </Interactive.Div>
+      <Text pilot={pilot} el="recon_note" evId="recon_note_show" frame={f} style={{left: 80, top: 1660, fontSize: 30, color: DIM}} />
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- conditions: 세 조건 + 골디락스 + 확인 표시 ---------------- */
+const Conditions: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const cond = ev(pilot, 'cond_reveal');
+  const gold = ev(pilot, 'goldilocks');
+  const check = ev(pilot, 'cond_check');
+  const condIn = eventProgress(f, cond, 'enter');
+  const goldIn = eventProgress(f, gold, 'enter');
+  const goldOp = eventOpacity(f, gold);
+  const chk = eventProgress(f, check, 'move');
+  const items = ['단단한 땅', '액체 물이 남을 온도', '대기'];
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <Img src={pilot.file('editorial/planet_hero.png')} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 50%', opacity: 0.45 - 0.3 * goldOp}} />
+      <Shade top={0.35} />
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 260, opacity: eventOpacity(f, cond)}}>
+        {items.map((t, i) => {
+          const p = interpolate(condIn, [i / 3, (i + 1) / 3], [0, 1], clamp);
+          const ok = i < 2 ? interpolate(chk, [i * 0.5, i * 0.5 + 0.5], [0, 1], clamp) : 0;
+          return (
+            <div key={t} style={{display: 'flex', alignItems: 'center', gap: 22, marginBottom: 30, opacity: p, translate: `${(1 - p) * -24}px 0`}}>
+              <div style={{width: 64, height: 64, borderRadius: 32, border: `3px solid ${i < 2 ? HEAVY : HE}`, display: 'flex', alignItems: 'center', justifyContent: 'center', background: i < 2 ? `rgba(240,181,110,${0.85 * ok})` : 'rgba(0,0,0,.3)'}}>
+                <div style={{fontSize: 40, fontWeight: 800, color: '#1a0f05', opacity: ok, scale: String(0.6 + 0.4 * ok)}}>✓</div>
+              </div>
+              <div style={{fontSize: 62, fontWeight: 700, color: i === 2 && chk > 0.9 ? HE : INK, textShadow: '0 2px 10px rgba(0,0,0,.85)'}}>{t}</div>
+            </div>
+          );
+        })}
+      </Interactive.Div>
+      {/* 골디락스: 별 주위 띠와 행성 위치 */}
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute', opacity: goldOp}}>
+        <defs>
+          <radialGradient id="gz1269147"><stop offset="0.42" stopColor="#3a86c8" stopOpacity="0" /><stop offset="0.5" stopColor="#3a86c8" stopOpacity=".3" /><stop offset="0.62" stopColor="#3a86c8" stopOpacity=".3" /><stop offset="0.7" stopColor="#3a86c8" stopOpacity="0" /></radialGradient>
+          <radialGradient id="rs1269147"><stop offset="0" stopColor="#ffd9b0" /><stop offset=".35" stopColor="#ff5a1f" /><stop offset="1" stopColor="#ff5a1f" stopOpacity="0" /></radialGradient>
+        </defs>
+        <g transform="translate(540 1080)">
+          <circle r={520 * goldIn} fill="url(#gz1269147)" />
+          <circle r="30" fill="url(#rs1269147)" />
+          <circle r="18" fill="#ff6a2a" />
+          <circle r={290 * goldIn} fill="none" stroke={HE} strokeWidth="2" strokeDasharray="6 10" opacity=".7" />
+          <circle cx={290 * goldIn * Math.cos(-0.7)} cy={290 * goldIn * Math.sin(-0.7)} r="16" fill="#c9d6e2" opacity={goldIn} />
+          <text x="0" y="-345" textAnchor="middle" fontSize="44" fill={HE} fontFamily="Pretendard" fontWeight="700" opacity={goldIn}>골디락스 영역</text>
+          <text x="0" y="-296" textAnchor="middle" fontSize="30" fill={DIM} fontFamily="Pretendard" opacity={goldIn}>너무 덥지도 춥지도 않은 거리</text>
+        </g>
+      </svg>
+      <Note text="상상도 · AI 재구성 · 궤도 개념도" />
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- threat: 복사가 halo를 밀어냄 → TRAPPIST-1 개념도 ---------------- */
+const Threat: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const star = ev(pilot, 'star_label');
+  const push = ev(pilot, 'strip_push');
+  const trap = ev(pilot, 'trappist_show');
+  const p = eventProgress(f, push, 'move');
+  const pushOp = eventOpacity(f, push);
+  const trapIn = eventProgress(f, trap, 'enter');
+  const trapOp = f >= trap.settled ? 1 : eventProgress(f, trap, 'enter');
+  // reddwarf_pair.png: 별 (540,340) r≈165, 행성 (540,1480) r≈215
+  const sx = 540, sy = 340, px = 540, py = 1480, pr = 215;
+  const front = interpolate(p, [0, 0.45], [sy + 180, py - pr - 40], clamp); // 복사 전선이 내려온다
+  const tail = interpolate(p, [0.4, 1], [0, 1], clamp); // halo가 아래로 끌려 나간다
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <Img src={pilot.file('editorial/reddwarf_pair.png')} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute', opacity: pushOp}}>
+        <defs>
+          <radialGradient id="radg1269147" cx="0.5" cy="0" r="0.75"><stop offset="0" stopColor="#ff6a2a" stopOpacity=".7" /><stop offset=".45" stopColor="#ff7a3a" stopOpacity=".28" /><stop offset=".85" stopColor="#ff7a3a" stopOpacity="0" /></radialGradient>
+          <linearGradient id="rad1269147" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ff5a1f" stopOpacity=".85" /><stop offset=".7" stopColor="#ff7a3a" stopOpacity=".4" /><stop offset="1" stopColor="#ff7a3a" stopOpacity="0" /></linearGradient>
+          <radialGradient id="halo1269147"><stop offset=".86" stopColor={HE} stopOpacity="0" /><stop offset=".93" stopColor={HE} stopOpacity=".85" /><stop offset="1" stopColor={HE} stopOpacity="0" /></radialGradient>
+          <linearGradient id="tail1269147" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={HE} stopOpacity=".85" /><stop offset="1" stopColor={HE} stopOpacity="0" /></linearGradient>
+          <radialGradient id="hz1269147b"><stop offset="0" stopColor="#dff3ff" stopOpacity=".8" /><stop offset=".5" stopColor={HE} stopOpacity=".35" /><stop offset="1" stopColor={HE} stopOpacity="0" /></radialGradient>
+        </defs>
+        {/* 넓은 복사: 별 아래로 화면 폭 전체에 부드럽게 퍼져 내려오는 글로우 (경계 없음) */}
+        <ellipse cx={sx} cy={sy + 40} rx={interpolate(front, [sy + 180, py - pr - 40], [420, 1300], clamp)} ry={Math.max(1, (front - sy - 40) * 1.35)} fill="url(#radg1269147)" opacity={p > 0 ? 0.8 : 0} />
+        {Array.from({length: 46}, (_, i) => {
+          const x = seed(i + 3) * 1080;
+          const y0 = sy + 160 + seed(i + 17) * 200;
+          const y = y0 + ((f * (3 + seed(i + 29) * 4) + seed(i + 41) * 600) % Math.max(1, front - y0 + 1));
+          return <line key={i} x1={x} y1={y} x2={x + (seed(i + 71) - 0.5) * 6} y2={y + 28 + seed(i + 61) * 30} stroke="#ffc2a0" strokeWidth={2 + seed(i + 61) * 2} strokeLinecap="round" opacity={0.7 * Math.min(1, p * 3)} />;
+        })}
+        {/* 대기 halo: 별을 향한 위쪽부터 얇아지고, 아래쪽은 남는다 */}
+        <path d={`M ${px - pr * 1.16} ${py} A ${pr * 1.16} ${pr * 1.16} 0 0 1 ${px + pr * 1.16} ${py}`} fill="none" stroke={HE} strokeWidth={22 - tail * 18} strokeLinecap="round" opacity={0.85 * (1 - tail * 0.95)} style={{filter: 'blur(6px)'}} />
+        <path d={`M ${px - pr * 1.16} ${py} A ${pr * 1.16} ${pr * 1.16} 0 0 0 ${px + pr * 1.16} ${py}`} fill="none" stroke={HE} strokeWidth={22 - tail * 6} strokeLinecap="round" opacity={0.85 * (1 - tail * 0.35)} style={{filter: 'blur(6px)'}} />
+        {/* 벗겨진 대기: 별 반대편(아래)으로 흩어져 내려가는 옅은 입자 꼬리 */}
+        {Array.from({length: 90}, (_, i) => {
+          const a = Math.PI * (0.15 + seed(i + 11) * 0.7); // 행성 아래 반원
+          const lag = seed(i + 23) * 0.5;
+          const t = interpolate(tail, [lag, 1], [0, 1], clamp);
+          const x0 = px + Math.cos(a) * pr * 1.16, y0 = py + Math.sin(a) * pr * 1.16;
+          const x = x0 + (seed(i + 37) - 0.5) * 160 * t;
+          const y = y0 + t * (380 + seed(i + 47) * 260);
+          return <circle key={`t${i}`} cx={x} cy={y} r={14 + seed(i + 59) * 16} fill="url(#hz1269147b)" opacity={0.95 * Math.min(1, t * 2) * (1 - t * 0.6)} />;
+        })}
+        {/* 행성 몸체는 그대로 (배경 이미지). 별 쪽 halo가 얇아진 자리 */}
+      </svg>
+      <Interactive.Div style={{position: 'absolute', left: 80, top: 560, opacity: eventOpacity(f, star)}}>
+        <div style={{fontSize: 74, fontWeight: 800, color: '#ff8a5b', textShadow: '0 2px 12px rgba(0,0,0,.85)'}}>적색왜성</div>
+        <div style={{fontSize: 40, color: DIM, marginTop: 6, textShadow: '0 2px 8px #000'}}>강한 복사 ↓</div>
+      </Interactive.Div>
+      {/* TRAPPIST-1 개념도: 작은 별과 일곱 개의 어두운 점 */}
+      <AbsoluteFill style={{opacity: trapOp, background: '#020509'}}>
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute'}}>
+          <defs><radialGradient id="ts1269147"><stop offset="0" stopColor="#ffd0a8" /><stop offset=".4" stopColor="#ff5a1f" /><stop offset="1" stopColor="#ff5a1f" stopOpacity="0" /></radialGradient></defs>
+          {Array.from({length: 120}, (_, i) => <circle key={i} cx={seed(i + 501) * 1080} cy={seed(i + 601) * 1920} r={seed(i + 701) > 0.9 ? 1.8 : 0.9} fill="white" opacity={0.25 + seed(i + 801) * 0.4} />)}
+          <g transform="translate(150 960)">
+            <circle r={70} fill="url(#ts1269147)" />
+            <circle r={34} fill="#ff6a2a" />
+            {Array.from({length: 7}, (_, i) => {
+              const x = 150 + i * 118;
+              const r = 16 + (i % 3) * 4;
+              const a = interpolate(trapIn, [0.2 + i * 0.1, 0.5 + i * 0.1], [0, 1], clamp);
+              return <g key={i} opacity={a}><circle cx={x} cy={0} r={r} fill="#3a3f47" stroke="#6b737d" strokeWidth="2" /></g>;
+            })}
+          </g>
+        </svg>
+        <Text pilot={pilot} el="trappist_label" evId="trappist_label" frame={f} style={{left: 80, right: 80, top: 640, fontSize: 44, lineHeight: 1.45, color: INK}} />
+        <div style={{position: 'absolute', left: 80, right: 80, top: 1100, fontSize: 64, fontWeight: 800, color: HEAVY, opacity: eventOpacity(f, ev(pilot, 'trappist_label')), textShadow: '0 2px 12px rgba(0,0,0,.85)'}}>대기 흔적 찾지 못함</div>
+      </AbsoluteFill>
+      <Text pilot={pilot} el="recon_note2" evId="recon_note2_show" frame={f} style={{left: 80, top: 1660, fontSize: 30, color: DIM}} />
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- model: 가벼운 기체 상승(일부 잔류)·무거운 기체 침강 ---------------- */
+const N_LIGHT = 80;
+const N_HEAVY = 70;
+const Model: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const rise = ev(pilot, 'light_rise');
+  const sink = ev(pilot, 'heavy_sink');
+  const lightLabel = ev(pilot, 'light_label');
+  const heavyLabel = ev(pilot, 'heavy_label');
+  const r = eventProgress(f, rise, 'move');
+  const s = eventProgress(f, sink, 'move');
+  const pre = interpolate(f, [rise.from - 20, rise.from], [0, 1], clamp);
+  // planet_limb.png 지평선 y≈1000(좌)~1100(우). 대기 빛띠 960~1060
+  const horizon = 1010;
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <Img src={pilot.file('editorial/planet_limb.png')} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+      <Shade top={0.2} />
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute'}}>
+        <defs>
+          <radialGradient id="lg1269147"><stop offset="0" stopColor="#ffffff" /><stop offset=".4" stopColor={HE} stopOpacity=".9" /><stop offset="1" stopColor={HE} stopOpacity="0" /></radialGradient>
+          <linearGradient id="hband1269147" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={HEAVY} stopOpacity="0" /><stop offset=".6" stopColor={HEAVY} stopOpacity=".3" /><stop offset="1" stopColor={HEAVY} stopOpacity="0" /></linearGradient>
+          <linearGradient id="lband1269147" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={HE} stopOpacity="0" /><stop offset=".5" stopColor={HE} stopOpacity=".14" /><stop offset="1" stopColor={HE} stopOpacity="0" /></linearGradient>
+          <radialGradient id="hg1269147"><stop offset="0" stopColor="#ffe2b8" /><stop offset=".5" stopColor={HEAVY} stopOpacity=".85" /><stop offset="1" stopColor={HEAVY} stopOpacity="0" /></radialGradient>
+        </defs>
+        {/* 가벼운 입자: 섞인 층(780~990)에서 위로. 약 40%만 림 밖으로 흩어져 사라지고, 나머지는 위쪽 옅은 층(600~780)에 머문다 */}
+        {Array.from({length: N_LIGHT}, (_, i) => {
+          const x0 = 60 + seed(i + 1) * 960;
+          const y0 = 780 + seed(i + 101) * 210;
+          const lag = seed(i + 201) * 0.45;
+          const t = interpolate(r, [lag, 1], [0, 1], clamp);
+          const escapes = seed(i + 251) < 0.4;
+          const y = escapes ? y0 - t * (700 + seed(i + 301) * 500) : y0 - t * (140 + seed(i + 301) * 120);
+          const x = x0 + Math.sin(t * 6 + i) * 18 * t;
+          const op = pre * (escapes ? 1 - t * 0.9 : 0.85 - t * 0.25);
+          return <circle key={`l${i}`} cx={x} cy={y} r={7 + seed(i + 401) * 5} fill="url(#lg1269147)" opacity={op} />;
+        })}
+        {/* 무거운 입자: 같은 층에서 아래로 내려가 표면 근처(900~990)에 모인다 */}
+        {Array.from({length: N_HEAVY}, (_, i) => {
+          const x0 = 60 + seed(i + 501) * 960;
+          const y0 = 780 + seed(i + 601) * 210;
+          const lag = seed(i + 701) * 0.4;
+          const t = interpolate(s, [lag, 1], [0, 1], clamp);
+          const yEnd = horizon - 20 - seed(i + 801) * 80;
+          const y = y0 + (yEnd - y0) * t;
+          return <circle key={`h${i}`} cx={x0} cy={y} r={11 + seed(i + 901) * 6} fill="url(#hg1269147)" opacity={pre * (0.75 + 0.25 * t)} />;
+        })}
+        <rect x="0" y={horizon - 120} width="1080" height="130" fill="url(#hband1269147)" opacity={0.5 * s} />
+        <rect x="0" y="560" width="1080" height="260" fill="url(#lband1269147)" opacity={0.45 * r} />
+      </svg>
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 330, opacity: eventOpacity(f, lightLabel)}}>
+        <div style={{fontSize: 56, fontWeight: 800, color: HE, textShadow: '0 2px 10px rgba(0,0,0,.85)'}}>수소·헬륨 <span style={{fontSize: 42, fontWeight: 500}}>↑ 조금씩 우주로</span></div>
+      </Interactive.Div>
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 1130, opacity: eventOpacity(f, heavyLabel)}}>
+        <div style={{fontSize: 56, fontWeight: 800, color: HEAVY, textShadow: '0 2px 10px rgba(0,0,0,.85)'}}>질소 <span style={{fontSize: 42, fontWeight: 500}}>↓ 아래에 남음</span></div>
+      </Interactive.Div>
+      <Note text="컴퓨터 모델 예측 · 관측 아님" />
+      <Text pilot={pilot} el="model_note" evId="model_note_show" frame={f} style={{left: 80, top: 1660, fontSize: 30, color: DIM}} />
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- observation: 망원경 실사 → 통과·스펙트럼·흡수선 ---------------- */
+const Observation: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const tel = ev(pilot, 'telescope_show');
+  const telLabel = ev(pilot, 'telescope_label');
+  const transit = ev(pilot, 'transit_move');
+  const spec = ev(pilot, 'spectrum_show');
+  const dip = ev(pilot, 'helium_dip');
+  const tIn = eventProgress(f, transit, 'enter');
+  const tMove = eventProgress(f, transit, 'move');
+  const sIn = eventProgress(f, spec, 'enter');
+  const d = eventProgress(f, dip, 'move');
+  // reddwarf_disk.png 별 원반: 중심 (540, 905) r≈410
+  const starX = 540, starY = 905, starR = 410;
+  const px = starX - 620 + tMove * 620 + interpolate(f, [transit.settled, transit.to], [0, 180], clamp); // 왼쪽 밖에서 들어와 별 앞을 천천히 계속 지난다
+  const pr = 62;
+  const inFront = Math.abs(px - starX) < starR + pr;
+  const specY = 1350, specX = 120, specW = 840, specH = 70;
+  const lineX = specX + specW * 0.94; // 띠의 붉은 끝(긴 파장 쪽)
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <AbsoluteFill style={{opacity: eventOpacity(f, tel)}}>
+        <Img src={pilot.file('editorial/magellan.jpg')} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 40%', scale: String(1 + 0.04 * eventProgress(f, tel, 'move'))}} />
+        <Shade />
+        <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 250, padding: '22px 26px', borderRadius: 8, background: 'rgba(2,5,9,.62)', opacity: eventOpacity(f, telLabel)}}>
+          <div style={{fontSize: 44, color: HEAVY, fontWeight: 600, textShadow: '0 2px 8px #000'}}>2024년</div>
+          <div style={{fontSize: 68, fontWeight: 800, color: INK, lineHeight: 1.25, textShadow: '0 2px 12px rgba(0,0,0,.85)'}}>마젤란 망원경</div>
+          <div style={{fontSize: 40, color: DIM, marginTop: 6, textShadow: '0 2px 8px #000'}}>칠레 라스캄파나스 천문대</div>
+        </Interactive.Div>
+        <Note text="사진: Denys / Wikimedia Commons · CC BY 3.0" />
+      </AbsoluteFill>
+      <AbsoluteFill style={{opacity: tIn}}>
+        <Img src={pilot.file('editorial/reddwarf_disk.png')} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+        <Shade top={0.25} />
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute'}}>
+          <defs>
+            <radialGradient id="pa1269147"><stop offset=".78" stopColor="#0b0f14" /><stop offset=".86" stopColor="#0b0f14" /><stop offset=".9" stopColor={HE} stopOpacity=".95" /><stop offset="1" stopColor={HE} stopOpacity="0" /></radialGradient>
+            <linearGradient id="sp1269147" x1="0" x2="1"><stop offset="0" stopColor="#4a3bd6" /><stop offset=".25" stopColor="#3fa0ff" /><stop offset=".5" stopColor="#5ee08a" /><stop offset=".72" stopColor="#ffd35a" /><stop offset=".86" stopColor="#ff7a3a" /><stop offset="1" stopColor="#c8321f" /></linearGradient>
+          </defs>
+          <circle cx={px} cy={starY} r={pr * 1.3} fill="url(#pa1269147)" opacity={inFront ? 1 : 0.4} />
+          <circle cx={px} cy={starY} r={pr * 1.12} fill="none" stroke={HE} strokeWidth={inFront ? 8 : 3} opacity={inFront ? 0.95 : 0.5} style={{filter: 'blur(1.5px)'}} />
+          <circle cx={px} cy={starY} r={pr} fill="#0b0f14" />
+          <g opacity={sIn}>
+            <rect x={specX} y={specY} width={specW} height={specH} rx="8" fill="url(#sp1269147)" />
+            <rect x={lineX - 6} y={specY - 6} width="12" height={specH + 12} fill="#050608" opacity={d} />
+            <rect x={lineX - 7} y={specY - 8} width="14" height={specH + 16} fill="none" stroke={HE} strokeWidth="2" opacity={d} />
+            <line x1={px} y1={starY + pr * 1.3} x2={lineX} y2={specY - 14} stroke={HE} strokeWidth="3" strokeDasharray="8 8" opacity={inFront ? 0.85 * sIn * d : 0} />
+          </g>
+        </svg>
+        <Text pilot={pilot} el="spectrum_label" evId="spectrum_label" frame={f} style={{left: specX, top: specY + specH + 18, fontSize: 32, color: DIM}} />
+        <Interactive.Div style={{position: 'absolute', left: lineX - 220, width: 440, top: 1250, textAlign: 'center', opacity: eventOpacity(f, dip) * d}}>
+          <div style={{fontSize: 50, fontWeight: 800, color: HE, textShadow: '0 2px 10px rgba(0,0,0,.85)'}}>헬륨 흡수선</div>
+        </Interactive.Div>
+        <Text pilot={pilot} el="obs_note" evId="obs_note_show" frame={f} style={{left: 80, top: 1660, fontSize: 30, color: DIM}} />
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- meaning ---------------- */
+const Meaning: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const c = concept(pilot, 'meaning');
+  const first = ev(pilot, 'first_label');
+  const layer = ev(pilot, 'heavy_layer');
+  const age = ev(pilot, 'age_label');
+  const firstIn = eventProgress(f, first, 'enter');
+  const layerIn = eventProgress(f, layer, 'enter');
+  const layerOp = eventOpacity(f, layer);
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <PlanetScene pilot={pilot} from={c.from} hazeGain={0.8} />
+      <Shade />
+      {/* 아래 남은 무거운 기체층: 림 곡선 안쪽을 따라가는 띠 (새는 위층과 구분) */}
+      <svg width="1080" height="1920" viewBox="0 0 1080 1920" style={{position: 'absolute', opacity: layerOp}}>
+        <path d={`M ${Array.from({length: 130}, (_, i) => { const x = (i / 129) * 1080; return `${x} ${500 + 0.00108 * (x - 360) * (x - 360) + 40}`; }).join(' L ')}`} fill="none" stroke={HEAVY} strokeWidth={50 * layerIn} strokeLinecap="round" opacity={0.55} style={{filter: 'blur(10px)'}} />
+        <path d={`M ${Array.from({length: 130}, (_, i) => { const x = (i / 129) * 1080; return `${x} ${500 + 0.00108 * (x - 360) * (x - 360) + 40}`; }).join(' L ')}`} fill="none" stroke="#ffd9a8" strokeWidth={5 * layerIn} strokeLinecap="round" opacity={0.6} />
+      </svg>
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 210, opacity: eventOpacity(f, first), translate: `0 ${(1 - firstIn) * 20}px`}}>
+        <div style={{fontSize: 40, color: HE, fontWeight: 600, textShadow: '0 2px 8px #000'}}>골디락스 영역 암석형 행성</div>
+        <div style={{fontSize: 72, fontWeight: 800, color: INK, lineHeight: 1.3, textShadow: '0 2px 12px rgba(0,0,0,.85)'}}>대기 확인 · <span style={{color: HEAVY}}>처음</span></div>
+      </Interactive.Div>
+      <Text pilot={pilot} el="model_note2" evId="model_note2" frame={f} style={{left: 80, top: 1040, padding: '8px 16px', border: `2px solid ${HE}`, borderRadius: 6, fontSize: 34, color: HE, fontWeight: 600, background: 'rgba(0,0,0,.4)'}} />
+      <Text pilot={pilot} el="cond_recall" evId="cond_recall" frame={f} style={{left: 80, right: 80, top: 440, fontSize: 40, color: HEAVY, fontWeight: 600}} />
+      <Text pilot={pilot} el="ocean_condition_text" evId="ocean_condition" frame={f} style={{left: 80, top: 1120, padding: '10px 18px', border: `2px solid ${HEAVY}`, borderRadius: 6, fontSize: 36, color: HEAVY, fontWeight: 600, background: 'rgba(0,0,0,.4)'}} />
+      <Text pilot={pilot} el="ocean_value" evId="ocean_value" frame={f} style={{left: 80, right: 80, top: 1215, fontSize: 60, fontWeight: 700, color: INK}} />
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 1150, opacity: eventOpacity(f, age)}}>
+        <div style={{fontSize: 40, color: DIM, textShadow: '0 2px 8px #000'}}>이 대기</div>
+        <div style={{fontSize: 64, fontWeight: 800, color: INK, lineHeight: 1.3, textShadow: '0 2px 12px rgba(0,0,0,.85)'}}><span style={{color: HEAVY}}>30억 년</span> 넘게 유지돼 왔을</div>
+        <div style={{fontSize: 36, color: DIM, marginTop: 4}}>가능성 높음 · 연구진 추산</div>
+      </Interactive.Div>
+      <Note text="상상도 · AI 재구성" />
+    </AbsoluteFill>
+  );
+};
+
+/* ---------------- close ---------------- */
+const Close: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const c = concept(pilot, 'close');
+  const varn = ev(pilot, 'variability_note');
+  const scale = interpolate(f, [c.from, c.end], [1.1, 1.0], clamp);
+  return (
+    <AbsoluteFill style={{background: '#020509'}}>
+      <PlanetScene pilot={pilot} from={c.from} scale={scale} hazeGain={0.6} />
+      <Shade bottom={0.75} />
+      <Interactive.Div style={{position: 'absolute', left: 80, right: 80, top: 250, opacity: eventOpacity(f, varn)}}>
+        <div style={{fontSize: 40, color: DIM, textShadow: '0 2px 8px #000'}}>2025년 관측</div>
+        <div style={{fontSize: 64, fontWeight: 800, color: INK, lineHeight: 1.3, textShadow: '0 2px 12px rgba(0,0,0,.85)'}}>헬륨 신호 없음</div>
+        <div style={{fontSize: 40, color: HEAVY, marginTop: 8, textShadow: '0 2px 8px #000'}}>방출량 변동 가능성으로 해석</div>
+      </Interactive.Div>
+      <Note text="상상도 · AI 재구성" />
+      <Text pilot={pilot} el="credits" evId="credits_show" frame={f} style={{left: 80, right: 80, top: 1700, fontSize: 21, lineHeight: 1.45, color: DIM}} />
+    </AbsoluteFill>
+  );
+};
+
+export const EditorialEpisode: React.FC<EditorialEpisodeProps> = ({pilot}) => {
+  const f = useCurrentFrame();
+  const c = pilot.timeline.concepts.find((x) => f >= x.from && f < x.end) ?? pilot.timeline.concepts[0];
+  const scene =
+    c.id === 'leak' ? <Leak pilot={pilot} /> :
+    c.id === 'conditions' ? <Conditions pilot={pilot} /> :
+    c.id === 'threat' ? <Threat pilot={pilot} /> :
+    c.id === 'model' ? <Model pilot={pilot} /> :
+    c.id === 'observation' ? <Observation pilot={pilot} /> :
+    c.id === 'meaning' ? <Meaning pilot={pilot} /> :
+    <Close pilot={pilot} />;
+  return <AbsoluteFill style={{fontFamily: 'Pretendard', background: '#020509'}}>{scene}</AbsoluteFill>;
+};

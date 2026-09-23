@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "preset": "editorial-concept-v1",
+  "canvas": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "caption": {
+    "preset": "betelgeuse-v1"
+  },
+  "text": {
+    "persistent_top_text": false,
+    "explanatory_notes": false,
+    "allowed_roles": [
+      "necessary-label",
+      "condition",
+      "provenance"
+    ]
+  },
+  "media": {
+    "full_bleed_default": true,
+    "assets": [
+      {
+        "id": "project_logo",
+        "source": "02_production/brand/logo.png",
+        "file": "editorial/brand-logo.png"
+      },
+      {
+        "id": "phases_v",
+        "source": "02_production/external_assets/video/phases_2026_plain_v_1920p30.mp4",
+        "file": "editorial/phases_fq.mp4",
+        "trim": {
+          "from_sec": 204.6,
+          "duration_sec": 4.13
+        }
+      },
+      {
+        "id": "fq_still",
+        "source": "02_production/external_assets/photo/svs5587_firstquarter_vplain_1080x1920.jpg",
+        "file": "editorial/fq.jpg"
+      },
+      {
+        "id": "full_still",
+        "source": "02_production/external_assets/photo/svs5587_fullmoon_vplain_1080x1920.jpg",
+        "file": "editorial/full.jpg"
+      },
+      {
+        "id": "crater_real",
+        "source": "02_production/external_assets/photo/nasa_art002e009281_orig.jpg",
+        "file": "editorial/crater_real.jpg"
+      },
+      {
+        "id": "crater_model_v",
+        "source": "02_production/generated/crater_light_sweep.mp4",
+        "file": "editorial/crater_model.mp4",
+        "generation_job": "gen_crater_v"
+      },
+      {
+        "id": "twilight_v",
+        "source": "02_production/external_assets/video/c_twilight_pexels_34177427.mp4",
+        "file": "editorial/twilight.mp4",
+        "trim": {
+          "from_sec": 10,
+          "duration_sec": 9.9
+        }
+      },
+      {
+        "id": "mw_photo",
+        "source": "02_production/external_assets/photo/eso0934a_large.jpg",
+        "file": "editorial/mw.jpg"
+      },
+      {
+        "id": "crater_start_img",
+        "source": "02_production/generated/crater_overhead_A.png",
+        "file": "editorial/crater_start.png",
+        "generation_job": "gen_crater_a"
+      },
+      {
+        "id": "crater_end_img",
+        "source": "02_production/generated/crater_low_sun_B.png",
+        "file": "editorial/crater_end.png",
+        "generation_job": "gen_crater_b"
+      }
+    ]
+  },
+  "mobile": {
+    "max_simultaneous_labels": 4,
+    "review_scale": 0.3333333333
+  },
+  "motion": {
+    "enter": "ease-out",
+    "move": "ease-in-out",
+    "exit": "ease-in",
+    "quantitative_overshoot": false
+  },
+  "production_profile": {
+    "id": "hani-shortform",
+    "version": "1.2.0"
+  },
+  "visual_contract": "visual-explanation@1",
+  "generation_jobs": [
+    {
+      "id": "gen_crater_b",
+      "kind": "image",
+      "purpose": "terminator 재구성 — 저각 조명 충돌구 지형(끝 프레임)",
+      "status": "accepted",
+      "provider": "Higgsfield MCP",
+      "model": "gpt_image_2_5 (flare, high, 2k)",
+      "prompt_path": "02_production/generated/crater_low_sun_B.prompt.txt",
+      "job_id": "1478869b-771b-407e-b382-25d3fb4b2c5a",
+      "output": "02_production/generated/crater_low_sun_B.png",
+      "credits": 3,
+      "observation": "오른쪽에서 낮은 햇빛, 중앙 큰 충돌구·작은 충돌구 2개, 왼쪽으로 긴 그림자. 요청한 구도·조명 일치. 실물 확인(540px 축소본)."
+    },
+    {
+      "id": "gen_crater_a",
+      "kind": "image",
+      "purpose": "같은 지형의 정면광(보름 조명) 시작 프레임",
+      "status": "accepted",
+      "provider": "Higgsfield MCP",
+      "model": "gpt_image_2_5 (flare, high, 2k) image_references=gen_crater_B",
+      "prompt_path": "02_production/generated/crater_overhead_A.prompt.txt",
+      "job_id": "08428878-31d6-4c21-837b-5f7ee970b4e0",
+      "output": "02_production/generated/crater_overhead_A.png",
+      "credits": 3,
+      "observation": "지형·구도 동일, 그림자 거의 없음, 평평한 인상. B와 나란히 비교 확인."
+    },
+    {
+      "id": "gen_crater_v",
+      "kind": "video",
+      "purpose": "햇빛 각도 하강→그림자 신장 동작 전체(A→B)",
+      "status": "accepted",
+      "provider": "Higgsfield MCP",
+      "model": "minimax_h3 2K 6s 9:16 start_image=gen_crater_A end_image=gen_crater_B",
+      "prompt_path": "02_production/generated/crater_light_sweep.prompt.txt",
+      "job_id": "82dce3ac-0546-42f2-a764-166e948dff5d",
+      "credits": 12,
+      "output": "02_production/generated/crater_light_sweep.mp4",
+      "observation": "6.58초 1440×2560 24fps. 12프레임 균등 표본을 실제로 확인: 지형·구도는 고정된 채 그림자가 없던 상태에서 왼쪽으로 점점 길어지고 충돌구 테두리 대비가 커진다. 요청한 인과(빛 각도 하강→그림자 신장)와 방향이 일치. 프레임 사이의 연속 움직임은 미확인. → 재채택(2026-09-23): 3D 대체가 실패해 오버레이 없이 원 클립만 사용."
+    },
+    {
+      "id": "gen_crater_3d",
+      "kind": "video",
+      "purpose": "충돌구 지형에 실제 태양광 고도 변화(78°→7°)를 적용해 그림자 신장을 물리적으로 렌더한 6초 클립",
+      "status": "failed",
+      "provider": "Higgsfield 3D Jutsu (Blender 5.2 EEVEE)",
+      "model": "scene_builder_3d",
+      "prompt_path": "02_production/generated/crater_3d.build.py",
+      "job_id": "9f6bed45-6842-4ad0-b2ce-f58f3d174ddf",
+      "observation": "3D 장면(지형·태양 고도 애니메이션)은 구성됐고 정지 미리보기 3장(540×960)은 나왔으나, 영상 렌더는 원격 워커 5분 한도로 48프레임·6프레임 모두 실패. 사용자 지시로 Higgsfield 3D 도구 사용 중단."
+    }
+  ],
+  "project_logo": {
+    "version": "2.0.0",
+    "sha256": "9aff17473fe98ac7d59b21c97a754f753c2ddb32f70f26abefb708444308483a",
+    "file": "editorial/brand-logo.png",
+    "x": 860,
+    "y": 100,
+    "width": 140,
+    "height": 140
+  }
+}

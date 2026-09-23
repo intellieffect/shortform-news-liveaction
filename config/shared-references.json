@@ -67,6 +67,96 @@
         "references/visual/cases/scattering/versions/v1/validation.md",
         "references/visual/cases/scattering/versions/v1/walkthrough.md"
       ]
+    },
+    {
+      "id": "area",
+      "version": "v3",
+      "files": [
+        "references/visual/cases/area/versions/v3/assets/galaxy-clean.png",
+        "references/visual/cases/area/versions/v3/assets/original-audio.m4a",
+        "references/visual/cases/area/versions/v3/case.json",
+        "references/visual/cases/area/versions/v3/credits.md",
+        "references/visual/cases/area/versions/v3/final.mp4",
+        "references/visual/cases/area/versions/v3/poster.jpg",
+        "references/visual/cases/area/versions/v3/source/README.md",
+        "references/visual/cases/area/versions/v3/source/entry.tsx",
+        "references/visual/cases/area/versions/v3/source/original-production.md",
+        "references/visual/cases/area/versions/v3/source/timing.json",
+        "references/visual/cases/area/versions/v3/validation.md",
+        "references/visual/cases/area/versions/v3/walkthrough.md"
+      ]
+    },
+    {
+      "id": "quote",
+      "version": "v2",
+      "files": [
+        "references/visual/cases/quote/versions/v2/assets/5-narration.wav",
+        "references/visual/cases/quote/versions/v2/assets/Times.ttf",
+        "references/visual/cases/quote/versions/v2/assets/paper.png",
+        "references/visual/cases/quote/versions/v2/case.json",
+        "references/visual/cases/quote/versions/v2/credits.md",
+        "references/visual/cases/quote/versions/v2/final.mp4",
+        "references/visual/cases/quote/versions/v2/poster.jpg",
+        "references/visual/cases/quote/versions/v2/source/Quote.tsx",
+        "references/visual/cases/quote/versions/v2/source/README.md",
+        "references/visual/cases/quote/versions/v2/source/entry.tsx",
+        "references/visual/cases/quote/versions/v2/source/timing.json",
+        "references/visual/cases/quote/versions/v2/validation.md",
+        "references/visual/cases/quote/versions/v2/walkthrough.md"
+      ]
+    },
+    {
+      "id": "route",
+      "version": "v4",
+      "files": [
+        "references/visual/cases/route/versions/v4/assets/06-generated-unified-v3.mp4",
+        "references/visual/cases/route/versions/v4/assets/6-narration-polish-v2.wav",
+        "references/visual/cases/route/versions/v4/case.json",
+        "references/visual/cases/route/versions/v4/credits.md",
+        "references/visual/cases/route/versions/v4/final.mp4",
+        "references/visual/cases/route/versions/v4/poster.jpg",
+        "references/visual/cases/route/versions/v4/source/README.md",
+        "references/visual/cases/route/versions/v4/source/entry.tsx",
+        "references/visual/cases/route/versions/v4/source/generation-prompt.txt",
+        "references/visual/cases/route/versions/v4/source/timing.json",
+        "references/visual/cases/route/versions/v4/validation.md",
+        "references/visual/cases/route/versions/v4/walkthrough.md"
+      ]
+    },
+    {
+      "id": "structure",
+      "version": "v2",
+      "files": [
+        "references/visual/cases/structure/versions/v2/assets/7-narration.wav",
+        "references/visual/cases/structure/versions/v2/case.json",
+        "references/visual/cases/structure/versions/v2/credits.md",
+        "references/visual/cases/structure/versions/v2/final.mp4",
+        "references/visual/cases/structure/versions/v2/poster.jpg",
+        "references/visual/cases/structure/versions/v2/source/C60.tsx",
+        "references/visual/cases/structure/versions/v2/source/README.md",
+        "references/visual/cases/structure/versions/v2/source/entry.tsx",
+        "references/visual/cases/structure/versions/v2/source/timing.json",
+        "references/visual/cases/structure/versions/v2/validation.md",
+        "references/visual/cases/structure/versions/v2/walkthrough.md"
+      ]
+    },
+    {
+      "id": "match-cut",
+      "version": "v2",
+      "files": [
+        "references/visual/cases/match-cut/versions/v2/assets/8-narration.wav",
+        "references/visual/cases/match-cut/versions/v2/assets/coffee.mp4",
+        "references/visual/cases/match-cut/versions/v2/assets/solar.mp4",
+        "references/visual/cases/match-cut/versions/v2/case.json",
+        "references/visual/cases/match-cut/versions/v2/credits.md",
+        "references/visual/cases/match-cut/versions/v2/final.mp4",
+        "references/visual/cases/match-cut/versions/v2/poster.jpg",
+        "references/visual/cases/match-cut/versions/v2/source/README.md",
+        "references/visual/cases/match-cut/versions/v2/source/entry.tsx",
+        "references/visual/cases/match-cut/versions/v2/source/timing.json",
+        "references/visual/cases/match-cut/versions/v2/validation.md",
+        "references/visual/cases/match-cut/versions/v2/walkthrough.md"
+      ]
     }
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "pilot": "hani_1269147",
+  "assets": [
+    {
+      "id": "bgm_on_the_shore",
+      "path": "02_production/sourcing/music/raw/on_the_shore.mp3",
+      "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/On%20the%20Shore.mp3",
+      "credit": "On the Shore Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0\nhttps://creativecommons.org/licenses/by/4.0/",
+      "license": "CC BY 4.0"
+    },
+    {
+      "id": "bgm_promising_relationship",
+      "path": "02_production/sourcing/music/raw/promising_relationship.mp3",
+      "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Promising%20Relationship.mp3",
+      "credit": "Promising Relationship Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0\nhttps://creativecommons.org/licenses/by/4.0/",
+      "license": "CC BY 4.0"
+    }
+  ]
+}
