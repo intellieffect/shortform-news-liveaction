@@ -5,6 +5,7 @@ import { startProduction } from "./lib/production/start.mjs";
 import { assertExecution, productionEnvironment } from "./lib/production/environment.mjs";
 import { runProductionAction } from "./lib/production/actions.mjs";
 import { productionPreflight, productionSpecification } from "./lib/production/preflight.mjs";
+import { deliverEpisode } from "./lib/production/finalize.mjs";
 
 const [command, id, ...args] = process.argv.slice(2);
 const flags = command === "doctor" || (command === "start" && id?.startsWith("--")) ? [id, ...args].filter(Boolean) : args;
@@ -25,7 +26,8 @@ const usage = [
   "produce review-input <id> --source scene|preview|render --phase experience|intent",
   "produce review-template <id> review_visual|review_audio|review_facts",
   "produce resolve <id> <issue-key> --reason <수정 설명> --from <시작 프레임> --end <끝 프레임>",
-  "produce complete <id>",
+  "produce complete <id>  # 자동 검수 완료 → 새 버전 확정·자동 커밋",
+  "produce deliver <id> [--basis user] [--from vK] [--note <메모>]  # 사용자 확정 또는 이전 판 복원을 새 버전으로 확정·자동 커밋",
 ].join("\n");
 
 try {
@@ -67,7 +69,14 @@ try {
   else if (command === "review-input") result = productionReviewInput(id, { source: value("--source"), phase: value("--phase") });
   else if (command === "review-template") result = reviewTemplate(id, args[0]);
   else if (command === "resolve") result = resolveProductionIssue(id, args[0], value("--reason"), [Number(value("--from")), Number(value("--end"))]);
-  else if (command === "complete") result = completeProduction(id);
+  else if (command === "complete") {
+    const completion = completeProduction(id);
+    result = { completion, delivery: deliverEpisode(id, { basis: "completion" }) };
+  } else if (command === "deliver") {
+    const basis = value("--basis") ?? "user";
+    if (!["user", "completion"].includes(basis)) throw new Error("--basis는 user 또는 completion");
+    result = deliverEpisode(id, { basis, from: value("--from"), note: value("--note") ?? null });
+  }
   else if (command === "run") result = await runProductionAction(id, args[0], { output: value("--output"), frame: value("--frame") === undefined ? 30 : Number(value("--frame")), ...(value("--timeout-ms") === undefined ? {} : { timeoutMs: Number(value("--timeout-ms")) }) });
   else throw new Error(usage);
   console.log(JSON.stringify(result, null, 2));

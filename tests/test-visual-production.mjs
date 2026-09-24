@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, symlinkSync} from 'node:fs';
+import {mkdtempSync, realpathSync, mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, symlinkSync, existsSync} from 'node:fs';
 import {join, dirname} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
@@ -209,6 +209,8 @@ test('final explanation pass requires observation and actual motion coverage, no
  report.explanations=[];assert.throws(()=>validateExplanationReview(f.w,report,timeline),/핵심 설명/);
 });
 test('full editorial bundle enforces new intake contract even if visual flag is removed', async t=>{
+ // 예시 편은 제작사 로컬에만 있다. 편이 없는 체크아웃(한겨레)에서는 건너뛴다.
+ if(!existsSync(join(project,'news/hani_superbubble_n44_restored_v2/02_production/story.json')))return t.skip('로컬 전용 예시 편 없음');
  const {loadEditorialBundle,validateEditorialData}=await import('../scripts/lib/editorial.mjs');
  const legacy=loadEditorialBundle(join(project,'news/hani_superbubble_n44_restored_v2'));
  const original=validateEditorialData(legacy);assert.equal(original.errors.length,0);

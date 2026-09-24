@@ -1,8 +1,0 @@
-== 통합 (out/pilots/hani_1269147/qa/production-182ca8fa-b685-4e2a-8e6a-802e093326f6.mp4, 86.058667s)
-    I:         -15.0 LUFS
-    LRA:         2.0 LU
-    Peak:       -3.8 dBFS
-== 구간 RMS (volumedetect mean)
-첫 0.4s(BGM 단독)            -19.4 dB   (0s +0.4s)
-첫 1초                        -17.4 dB   (0s +1.0s)
-마지막 1초                  -77.1 dB   (85.058667s +1.0s)

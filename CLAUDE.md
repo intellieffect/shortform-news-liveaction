@@ -1,10 +1,11 @@
 # 한겨레 숏폼 제작
 
-기사 URL과 짧은 제작 요청을 받으면 아래 첫 진입 규칙을 따른다. 예시·검수 범위는 [고객 예시 안내](docs/CUSTOMER-EXAMPLE.md), 설치와 실행은 [README](README.md)를 읽는다.
+기사 URL과 짧은 제작 요청을 받으면 아래 첫 진입 규칙을 따른다. 요청·수정·확정본 흐름은 [사용 안내](docs/HANI-GUIDE.md), 설치와 실행은 [README](README.md)를 읽는다.
 
 ## Rules that are expensive to break
 
-- **Work in a worktree on its own branch. Never commit to `main` directly.**
+- **Episode production happens directly on `main`; never create a worktree or branch for an episode.** Same article URL = same episode: `start` refuses a known URL and names the episode to `resume`. Confirmation is automatic: `produce complete` (reviews passed) or `produce deliver <id> --basis user` (user confirmed) adds the next version, repoints `deliver/LATEST`, rebuilds `out/videos.html`, and commits only that episode's text files. Do not hand-commit, branch, or push episode work. The newest version is the 확정본. Flow: [사용 안내](docs/HANI-GUIDE.md).
+- **Code and guideline development (scripts, src, plugin, docs) goes in a worktree on its own branch.** Never commit that kind of change to `main` directly.
 - **Remove worktrees with `npm run worktree:remove -- <path>`, never `git worktree remove`.** The git command only counts *tracked* changes, so gitignored files are treated as absent and deleted silently. On 2026-09-03 that erased three delivered cuts, 1.1GB of clips, and `narration.wav` in one call .
 - **원문 보존 — never edit source material.** Articles and collected assets stay exactly as received in `news/<id>/01_input/`; every summary or adaptation goes in `02_production/`. This also applies to what the user says: copy directives verbatim, do not paraphrase them into rules.
 - **Render only when the user asks.** Review with `npm run still` / `npm run slides` first — a full render is for the 납품본 only.
@@ -92,10 +93,11 @@ npm run lint                   # eslint + tsc
 npm run check:all              # full regression across active episodes — required after touching any guard
 npm run sync -- news/<id>      # episode data → pilots/<id>/ + public/pilots/<id>/
 npm run still -- <id>          # single frame  ·  npm run slides -- <id> = beat-by-beat review page
-npm run videos                 # out/videos.html — 완성 영상 검색·재생·다운로드 (gallery 명령도 같은 화면 생성)
+npm run videos                 # out/videos.html — 확정본 검색·재생·다운로드 (확정 때 자동 갱신)
+npm run produce -- deliver <id> --basis user   # 사용자 확정 → 새 버전·자동 커밋 (--from vK = 이전 판 복원)
 ```
 
 
-## 수록 편과 새 편
+## 편이 쌓이는 방식
 
-기존 자료는 위치를 바꾸지 않는다. `config/shared-episodes.json`은 저장소에 수록된 편만 담는다. 새 편의 sync는 로컬 목록만 갱신하고, 로컬 테스트할 편은 `npm run episodes -- local add <id>`로 등록한다. 생성 인덱스·로컬 대장은 Git에 넣지 않는다. 환경별로 코드·지침 사본을 따로 만들지 않는다. 절차는 [편 목록과 로컬 테스트](docs/LOCAL-AND-SHARED.md).
+편 경로(`news/`·`pilots/`·`src/editorial/episodes/`)는 `.gitignore` 대상이고, 확정 커밋이 편의 텍스트 파일만 명시해 올린다([commit-scope](scripts/lib/production/commit-scope.mjs)). 미디어·완성 영상은 커밋하지 않는다. 제작사가 만든 기존 편은 제작사 로컬에만 있고 이 저장소에 수록하지 않는다. 사용자가 이전 판을 원하면 `produce deliver <id> --from vK`로 새 버전으로 다시 확정한다.

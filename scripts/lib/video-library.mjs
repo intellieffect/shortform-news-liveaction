@@ -146,8 +146,14 @@ export function collectVideos({
     }
   }
   const videos = [];
+  const drafts = [];
   for (const p of pilots.values()) {
-    if (p.status !== "delivered") continue;
+    // 제작 중인 편 — 확정본이 아직 없다. 목록 하단에 "제작 중"으로만 알린다.
+    if (p.status !== "delivered") {
+      if (p.status === "drafting" || p.status === "review")
+        drafts.push({ id: p.id, title: p.title || p.id, started: dateOnly(p.started), articleUrl: httpUrl(p.article?.url) });
+      continue;
+    }
     // 같은 기사의 최근본으로 대체된 편은 목록에 싣지 않는다. 파일과 기록은 그대로 남는다.
     if (p.superseded_by) {
       warnings.push(
@@ -231,7 +237,7 @@ export function collectVideos({
       outDir,
       warnings,
     );
-    const completed = dateOnly(version.completed_at) ?? dateOnly(p.delivered);
+    const completed = dateOnly(version.completed_at ?? version.confirmed_at) ?? dateOnly(p.delivered);
     const episodeTitle = p.title || p.id;
     // 표시 제목은 기사 제목을 우선한다. 편 제목은 부제로 함께 싣는다.
     const sourceTitle = article.title || p.article?.title || "";
@@ -262,6 +268,20 @@ export function collectVideos({
       thumbnails,
       poster,
       filename: video.split("/").at(-1),
+      // 가장 마지막 판이 확정본이다. 이전 판은 파일이 남아 있는 것만 내려받기로 싣는다.
+      version: version.version ?? null,
+      previous: versions
+        .filter((v) => v !== version)
+        .map((v) => ({ v, file: homes.map((home) => join(home, v.file)).find(regularFile) }))
+        .filter((x) => x.file)
+        .map(({ v, file }) => ({
+          version: v.version ?? null,
+          completed: dateOnly(v.completed_at ?? v.confirmed_at),
+          src: urlPath(relative(outDir, file)),
+          filename: file.split("/").at(-1),
+          sizeMB: +(statSync(file).size / 1024 / 1024).toFixed(1),
+        }))
+        .reverse(),
     });
   }
   videos.sort(
@@ -269,7 +289,8 @@ export function collectVideos({
       (b.completed ?? "").localeCompare(a.completed ?? "") ||
       a.title.localeCompare(b.title, "ko"),
   );
-  return { videos, warnings };
+  drafts.sort((a, b) => (b.started ?? "").localeCompare(a.started ?? ""));
+  return { videos, drafts, warnings };
 }
 
 // 제작 요청 프롬프트는 docs/PRODUCTION_PROMPT_V2_RESTORED.txt 가 정본이다. 여기서는 읽기만 한다.
@@ -303,7 +324,7 @@ export function buildVideoLibrary({
   roots = checkoutRoots(root),
   localTools = false,
 } = {}) {
-  const { videos, warnings } = collectVideos({ root, outDir, roots });
+  const { videos, drafts, warnings } = collectVideos({ root, outDir, roots });
   const referenceLibrary = collectReferences(root, outDir);
   if(referenceLibrary.status === "invalid") warnings.push(...referenceLibrary.warnings);
   const prompt = readProductionPrompt(root, roots);
@@ -323,6 +344,7 @@ export function buildVideoLibrary({
   );
   const data = JSON.stringify({
     videos,
+    drafts,
     referenceLibrary,
     prompt,
     generatedAt,
@@ -343,5 +365,5 @@ export function buildVideoLibrary({
     join(outDir, "gallery.html"),
     '<!doctype html><html lang="ko"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=videos.html"><title>제작 영상</title><a href="videos.html">제작 영상 목록 열기</a></html>\n',
   );
-  return { videos, referenceLibrary, warnings, file: join(outDir, "videos.html") };
+  return { videos, drafts, referenceLibrary, warnings, file: join(outDir, "videos.html") };
 }

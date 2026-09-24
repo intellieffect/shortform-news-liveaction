@@ -1,6 +1,6 @@
 # 명령·토글·QA
 
-새 기사 시작·도구·플러그인 연결은 [production-entry.md](production-entry.md)의 `start`와 `doctor`를 사용한다. 현재 작업·재개·변경 영향은 `npm run produce -- resume <id>`에서 확인한다. 명령과 상태의 계약은 [production-state.md](production-state.md)에 있다. 실물 검수 템플릿·이슈 수정·최종 완료는 [review-loop.md](review-loop.md)의 `review-template`, `resolve`, `complete`를 사용한다.
+새 기사 시작·도구·플러그인 연결은 [production-entry.md](production-entry.md)의 `start`와 `doctor`를 사용한다. 현재 작업·재개·변경 영향은 `npm run produce -- resume <id>`에서 확인한다. 명령과 상태의 계약은 [production-state.md](production-state.md)에 있다. 실물 검수 템플릿·이슈 수정·최종 완료는 [review-loop.md](review-loop.md)의 `review-template`, `resolve`, `complete`를 사용한다. 사용자 확정·이전 판 복원은 `npm run produce -- deliver <id> --basis user [--from v<K>]`다 — 새 판·LATEST·완성 영상 목록·자동 커밋을 한 번에 처리한다.
 
 검수 입력은 `node scripts/produce.mjs review-input <id> --source preview|render --phase experience|intent`로 구성한다. 현재 시안·입력 버전을 조회하는 명령이며, 실제 검수 호출과 관찰 기록은 [review-loop.md](review-loop.md)를 따른다.
 

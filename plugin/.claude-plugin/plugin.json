@@ -1,7 +1,7 @@
 {
   "name": "shortform-news",
   "displayName": "숏폼 뉴스 제작",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "description": "기사 → 9:16 쇼츠/릴스 뉴스 영상 파이프라인. 제공 대본을 따르는 script-faithful 경로와 여러 문장에 걸쳐 개념·자료·도해·모션·음향을 함께 설계하는 editorial-concept 후보 경로를 제공한다. 원문·사실·권리 보존, 발화 앵커 컴파일, 독립 화면·사실·설명 검수와 렌더 전 가드를 포함한다. 쇼츠·릴스 커버는 문구·장면을 함께 설계해 전체 이미지를 생성하고 검수·기록한다.",
   "author": {
     "name": "Intellieffect"
