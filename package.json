@@ -94,7 +94,7 @@
     "videos:test": "node --test scripts/test-video-library.mjs",
     "zip:test": "node --test tests/test-zip-stream.mjs",
     "videos:serve": "node scripts/serve-video-library.mjs",
-    "prepare": "node scripts/pilots-index.mjs",
+    "prepare": "node scripts/pilots-index.mjs && node scripts/pilots-ledger.mjs",
     "prestudio": "node scripts/pilots-index.mjs",
     "predev": "node scripts/pilots-index.mjs",
     "prebuild": "node scripts/pilots-index.mjs",
