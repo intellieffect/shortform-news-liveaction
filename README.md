@@ -4,7 +4,9 @@
 
 ## 처음 준비
 
-Windows·macOS·Linux가 같은 절차를 쓴다. 자동 설치 프로그램은 제공하지 않으며 아래를 차례로 실행한다.
+Windows·macOS·Linux가 같은 절차를 쓴다. 아래를 차례로 실행한다.
+
+**Windows 빠른 설치**: 저장소 폴더에서 `설치 시작.cmd` 를 더블클릭하면 1·2·3·4·6단계를 한 번에 한다 — 빠진 프로그램은 물어본 뒤 winget으로 설치하고, API 키는 가려진 입력으로 받아 `.env` 에 적는다. 키만 다시 넣을 때는 `API 키 등록.cmd`, 상태만 볼 때는 `환경 점검.cmd`. 5단계(Higgsfield 연결)는 직접 한다. 스크립트는 `installer/windows/setup.ps1` 이고, 이전 한겨레 설치본(hani-shortform-desktop)의 Windows 설치 스크립트를 이 저장소 구조에 맞게 옮긴 것이다.
 
 > 실측 상태: 이 절차는 macOS에서 끝까지 확인했다. Windows는 코드에서 운영체제 의존을 걷어냈고 검사를 `.github/workflows/portable-install.yml` 에 넣었지만, **아직 Windows에서 실제로 돌려보지 못했다.** 막히는 곳이 있으면 어느 단계에서 어떤 메시지가 났는지 알려주면 된다.
 
@@ -13,7 +15,7 @@ Windows·macOS·Linux가 같은 절차를 쓴다. 자동 설치 프로그램은 
 | 프로그램 | 쓰는 곳 | Windows 설치 예 |
 |---|---|---|
 | Node.js 20 이상 + npm | 렌더·검사 전체 | `winget install OpenJS.NodeJS.LTS` |
-| Git + Git LFS | 저장소·미디어 실물 | `winget install Git.Git Git.GitLFS` |
+| Git + Git LFS | 저장소·미디어 실물 | `winget install Git.Git GitHub.GitLFS` |
 | FFmpeg (ffmpeg·ffprobe 둘 다) | 오디오 측정·길이 확인 | `winget install Gyan.FFmpeg` |
 | Python 3 | 자료 검색·내레이션·컷아웃 스크립트 | `winget install Python.Python.3.12` |
 | Claude Code CLI | 제작 진행과 플러그인 | 설치 안내는 Anthropic 문서 |

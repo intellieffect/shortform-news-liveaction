@@ -39,6 +39,13 @@ jobs:
         run: |
           ffmpeg -version
           ffprobe -version
+      - name: Windows 설치 스크립트 문법 확인
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\installer\windows\setup.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) { $errors; exit 1 }
       - run: npm ci
       - name: 스크립트 문법 확인
         run: python -m compileall -q plugin/skills/shortform-news-input/scripts
@@ -46,5 +53,12 @@ jobs:
       - run: npm run zip:test
       - run: npm run videos:test
       - run: npm run references:test
+      - name: Windows 환경 점검 스크립트가 끝까지 돈다
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File installer\windows\setup.ps1 -Action Check
+          if ($LASTEXITCODE -gt 1) { exit $LASTEXITCODE }
+          exit 0
       - name: 환경 점검이 키 누락을 이름으로 알린다
         run: node scripts/produce.mjs doctor
