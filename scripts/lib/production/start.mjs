@@ -11,6 +11,7 @@ import { hash, json, repositoryPath } from "./contracts.mjs";
 import { initializeProduction, productionStatus } from "./state.mjs";
 import { assertExecution } from "./environment.mjs";
 import { productionProfileErrors } from "../production-profile.mjs";
+import { defaultEpisodeId, findEpisodesByUrl } from "./episode-lookup.mjs";
 
 // 설명·원고·장면을 미리 결정하지 않는 기사 위임 진입점. 네트워크·생성 호출은 제작자가 선택한다.
 export const startProduction = ({ id, url, duration, request, repo = REPO } = {}) => {
@@ -21,7 +22,9 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   if (!["https:", "http:"].includes(source.protocol) || source.username || source.password) throw new Error("인증정보 없는 HTTP(S) 기사 URL이 필요하다");
   if (!Array.isArray(duration) || duration.length !== 2 || duration.some((x) => !Number.isFinite(x) || x <= 0) || duration[1] < duration[0]) throw new Error("분량은 양수 범위 min:max 초로 입력한다");
   if (typeof request !== "string" || !request.trim()) throw new Error("사용자 요청 원문이 필요하다");
-  id ??= "article_" + hash(source.href).slice(0, 10);
+  const existing = findEpisodesByUrl(repo, source.href);
+  if (existing.length) throw new Error("이 기사의 편이 이미 있다: " + existing.join(", ") + " — 수정 요청이면 새 편을 만들지 않고 npm run produce -- resume " + existing[0] + " 로 이어서 고친다" + (existing.length > 1 ? ". 편이 여럿이면 어느 편인지 사용자에게 묻는다" : ""));
+  id ??= defaultEpisodeId(source.href, "article_" + hash(source.href).slice(0, 10));
   assertPilotId(id);
   const profilePath = "config/production-profile.json", profileBytes = readFileSync(join(repo, profilePath));
   const profile = JSON.parse(profileBytes);

@@ -153,6 +153,6 @@ resolve는 **현재 렌더에 대한 제작자의 수정 설명**이다. 해결 
 
 마감 기록은 `schema_version: "1.0"`, `pilot`, `status: "closed"`, `basis: "user-confirmed"`, `recorded_at`, `raw_request: {path, sha256}`, `artifacts: [{path, sha256}]`를 사용한다. 경로는 저장소 상대 경로다. `status/resume`의 `delivery`가 기록과 파일 해시를 대조한다. `closed`는 사용자 마감, `changed`는 확정 원문·파일의 유실/변경, `invalid`는 기록 오류다. `completion`은 기존 자동 검수 계약이며 사용자 마감과 별개다. 자동 검수 미완료만 보고 사용자 마감 자체를 취소하거나 재시청·재제작을 요구하지 않는다.
 
-마감 때 `pilots/<id>/pilot.json`에 완성본 `versions[]`·해시·제작 완료일·사용자 확인 근거를 등록하고 상태를 `delivered`로 맞춘다. 이 저장소의 `delivered`는 파일럿 완성본 확정이며 외부 게시·고객 승인으로 확대하지 않는다. `out:deliver`로 정해진 이름의 파일·부속물·MANIFEST·LATEST와 주 작업트리 보관본을 만들고 `pilots`로 대장을 갱신한다. 기존 `deliver/v<N>`에 변경할 기록이 있으면 새 판에 동일한 영상·썸네일을 복사해 묶고 원래 판은 보존한다.
+마감 기록 뒤 `npm run produce -- deliver <id> --basis user`로 확정한다. 자동 검수 통과로 끝낸 편은 `produce complete`가 같은 확정을 자동으로 수행한다. 확정은 현재 렌더를 `out/pilots/<id>/deliver/v<N>/`에 복사하고 해시를 대조한 뒤 `pilot.json`의 `versions[]`·`status: delivered`·완료일을 기록한다. `deliver/LATEST`를 새 판으로 옮기고 `out/videos.html`을 다시 만든 다음, 이 편의 텍스트 파일만 `main`에 커밋한다. 가장 마지막 판이 확정본이며 이전 판은 지우지 않는다. 사용자가 이전 판으로 돌려 달라고 하면 `--from v<K>`로 그 영상을 새 판으로 다시 확정한다. `pilot.json`의 버전·상태를 손으로 적거나 워크트리·브랜치를 만들지 않는다. 이 저장소의 `delivered`는 편 확정이며 외부 게시·고객 승인으로 확대하지 않는다.
 
 수집 원본은 `01_input/`, 선택·가공·검수 자료는 `02_production/`에 둔다. 이미 검수 근거로 해시가 고정된 문서·실행 이력은 변경하지 않고, 정리할 때의 경로 대응과 보존 사유를 남긴다. 공통 지침 수정은 버전 갱신·검증 후 저장소와 설치본 반영 여부를 기록한다.

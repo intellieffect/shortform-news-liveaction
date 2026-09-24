@@ -78,6 +78,14 @@ if (!wantJson) {
   if (editorialErr) for (const line of editorialRun.out.split("\n")) if (line.startsWith("ERROR ")) console.log(`  ${line}`);
 }
 
+// ⓪-5 확정 = 새 버전 + 자동 커밋 — 확정 뒤 작업트리가 깨끗하고 미디어가 커밋되지 않는지.
+const deliverCommitRun = run("test-deliver-commit.mjs", [], "tests");
+const deliverCommitErr = deliverCommitRun.code ? 1 : 0;
+if (!wantJson) {
+  console.log(deliverCommitRun.out.trim().split("\n").find((l) => /^ℹ fail/.test(l))?.replace("ℹ fail", "확정·자동 커밋 테스트 실패") ?? deliverCommitRun.out.trim().split("\n").at(-1));
+  if (deliverCommitErr) for (const line of deliverCommitRun.out.split("\n")) if (line.startsWith("✖")) console.log(`  ${line}`);
+}
+
 const linksRun = run("check-links.mjs", []);
 const linksErr = linksRun.code ? (linksRun.out.match(/^(ESCAPE|MISSING|SPACE) /gm) ?? []).length || 1 : 0;
 const ledgerRun = run("pilots-ledger.mjs", ["--check"]);
@@ -166,7 +174,7 @@ for (const id of pilots) {
   rows.push(row);
 }
 
-if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || symErr || delErr || dfErr || editorialErr || rows.some((r) => r.err) ? 1 : 0); }
+if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || symErr || delErr || dfErr || editorialErr || deliverCommitErr || rows.some((r) => r.err) ? 1 : 0); }
 
 const w = Math.max(...rows.map((r) => r.id.length), 4);
 console.log(`${"편".padEnd(w)}  shots         layout43     mc     자막      sync    가드세대`);
@@ -175,7 +183,7 @@ for (const r of rows) {
   console.log(`${r.id.padEnd(w)}  w${String(r.warn).padEnd(3)} e${String(r.err).padEnd(3)} ${String(r.skip ? `s${r.skip}` : "").padEnd(4)} ${r.layout.padEnd(12)} ${r.mc.padEnd(6)} ${(r.captions ?? "—").padEnd(9)} ${r.sync.padEnd(7)} ${g}`);
   for (const n of r.notes) console.log(`${" ".repeat(w)}  · ${n}`);
 }
-const err = rows.reduce((a, r) => a + r.err, 0) + regErr + linksErr + ledgerErr + symErr + delErr + dfErr + editorialErr;
+const err = rows.reduce((a, r) => a + r.err, 0) + regErr + linksErr + ledgerErr + symErr + delErr + dfErr + editorialErr + deliverCommitErr;
 const skip = rows.reduce((a, r) => a + r.skip, 0);
 console.log(`\nERROR ${err} / ${rows.length}편 + registry·links·ledger·editorial${skip ? ` · SKIP ${skip}(미디어 없음)` : ""}`);
 process.exit(err ? 1 : 0);

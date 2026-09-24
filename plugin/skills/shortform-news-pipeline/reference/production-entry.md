@@ -42,7 +42,7 @@ doctor는 소스 버전·해시, 명령을 실행한 플러그인 버전·해시
 node <플러그인 루트>/scripts/produce.mjs --project <제작 저장소> start <id> --url <기사 URL> --duration 60:90 --request-file <요청 원문 파일>
 ```
 
-직접 실행은 같은 인자를 `node scripts/produce.mjs`에 전달한다. id를 생략하면 URL에서 식별자를 만든다. 이미 있는 편은 새로 덮어쓰지 않고 resume한다.
+직접 실행은 같은 인자를 `node scripts/produce.mjs`에 전달한다. id를 생략하면 URL에서 식별자를 만든다(한겨레 기사는 `hani_<기사번호>`). 같은 기사 URL의 편이 이미 있으면 start가 거절하고 그 편 id를 알려 준다. 수정 요청은 새 편을 만들지 않고 그 편을 resume해서 고친다. URL 없는 수정 요청이 어느 편인지 불분명하면 사용자에게 한 번 묻는다. 편 제작은 `main`에서 바로 하며 워크트리·브랜치를 만들지 않는다. 확정 커밋은 `complete`/`deliver`가 자동으로 한다([review-loop](review-loop.md#사용자-확인-후-마감과-보관)).
 
 start는 config가 지정한 실제 V2 전문을 읽고 기사 URL 치환본과 원문을 편별 00_brief에 자동 보존한다. 버전·해시는 request.json에 기록하며, 반환되는 context.production_prompt를 전문으로 읽어 적용한다. 누락/치환 불가 프롬프트는 편 생성 전에 거절한다. resume은 전역 프롬프트가 아니라 저장본과 무결성 상태를 제공한다. invalid는 수정 전 진행하지 않고 legacy-unrecorded는 소급 적용을 주장하지 않는다.
 

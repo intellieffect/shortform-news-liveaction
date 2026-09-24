@@ -1,5 +1,5 @@
 (() => {
-  const { videos, prompt, generatedAt, icons, localTools, referenceLibrary } =
+  const { videos, drafts = [], prompt, generatedAt, icons, localTools, referenceLibrary } =
     JSON.parse(document.getElementById("library-data").textContent);
   const $ = (id) => document.getElementById(id);
   const esc = (s) =>
@@ -111,13 +111,17 @@
               ) => `<article class="video-row${v.id === selectedId ? " is-selected" : ""}" data-id="${esc(v.id)}">
       <button class="thumb" data-play="${esc(v.id)}" aria-label="${esc(v.title)} 재생">${v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy">` : `<video class="thumb-preview" src="${esc(v.src)}#t=0.1" muted playsinline preload="metadata" aria-hidden="true"></video>`}<span class="thumb-play">${icon("play-fill")}</span>${v.seconds != null ? `<span class="duration">${duration(v.seconds)}</span>` : ""}</button>
       <div class="video-copy"><h3><button class="video-title" data-play="${esc(v.id)}">${esc(v.title)}</button></h3><div class="article-line"><span class="article-link"><span class="article-label">편</span><span>${esc(v.episodeTitle ?? v.title)}</span></span>${v.articleUrl ? `<a class="article-link" href="${esc(v.articleUrl)}" target="_blank" rel="noopener noreferrer"><span class="article-label">원문</span><span>한겨레 기사 열기</span>${icon("arrow-square-out")}</a>` : ""}</div><p class="article-byline">${esc([v.author && `${v.author} 기자`, v.articleDate && `기사 발행 ${day(v.articleDate)}`].filter(Boolean).join(" · ") || "원문 정보 미등록")}</p></div>
-      <p class="completed"><span class="mobile-label">제작 완료 </span>${v.completed ? `<time datetime="${esc(v.completed)}">${day(v.completed)}</time>` : "날짜 미등록"}</p>
+      <p class="completed"><span class="mobile-label">제작 완료 </span>${v.completed ? `<time datetime="${esc(v.completed)}">${day(v.completed)}</time>` : "날짜 미등록"}${v.version ? `<span class="version-badge" title="가장 마지막 판이 확정본입니다">확정본 ${esc(v.version)}</span>` : ""}</p>
       <div class="actions"><button class="icon-button play-action" data-play="${esc(v.id)}" aria-label="${esc(v.title)} 재생" title="영상 재생">${icon("play-fill")}</button><button class="icon-button download-action" data-download="${esc(v.id)}" aria-expanded="false" aria-controls="download-menu" aria-label="${esc(v.title)} 다운로드 옵션" title="다운로드">${icon("download-simple")}</button></div>
     </article>`,
             )
             .join("")}</section>`,
       )
       .join("");
+    $("drafts").hidden = !drafts.length;
+    $("drafts").innerHTML = drafts.length
+      ? `<h2 class="group-date">제작 중 · 아직 확정본 없음</h2><ul>${drafts.map((d) => `<li><span>${esc(d.title)}</span>${d.started ? `<small>착수 ${day(d.started)}</small>` : ""}${d.articleUrl ? `<a href="${esc(d.articleUrl)}" target="_blank" rel="noopener noreferrer">원문</a>` : ""}</li>`).join("")}</ul>`
+      : "";
     $("empty").hidden = Boolean(visible.length);
     $("empty-title").textContent = videos.length
       ? "검색 결과가 없습니다"
@@ -246,7 +250,7 @@
     $("previous").disabled = position === 0;
     $("next").disabled = position === visible.length - 1;
     $("player-title").textContent = video.title;
-    $("player-date").textContent = day(video.completed);
+    $("player-date").textContent = day(video.completed) + (video.version ? ` · 확정본 ${video.version}` : "");
     $("player-duration").textContent = duration(video.seconds);
     $("player-size").textContent = `MP4 · ${video.sizeMB} MB`;
     $("player-article").innerHTML =
@@ -375,6 +379,13 @@
                 )
                 .join("")
             : '<div class="download-unavailable">썸네일만 받기<small>등록된 이미지가 없습니다.</small></div>');
+    // 이전 판은 확정본이 아니다. 필요할 때만 받을 수 있게 아래에 따로 둔다.
+    if (video.previous?.length)
+      menu.innerHTML +=
+        `<p class="download-heading">이전 판</p>` +
+        video.previous
+          .map((p) => link(downloadUrl(p.src), p.filename, `${esc(p.version ?? "이전 판")} 받기`, `${p.completed ? day(p.completed) + " · " : ""}MP4 · ${p.sizeMB} MB`))
+          .join("");
     (trigger.closest("dialog") || document.body).append(menu);
     menu.showPopover();
     const r = trigger.getBoundingClientRect(),

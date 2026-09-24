@@ -24,7 +24,7 @@ test('짧은 요청은 원문 그대로, 실제 V2 원본과 URL 적용본은 �
  const again=productionStatus(request.id,{repo,includeContext:true});assert.equal(again.context.production_prompt.text,s.context.production_prompt.text);
  rmSync(join(repo,'docs/PRODUCTION_PROMPT_V2_RESTORED.txt'));
  assert.equal(productionStatus(request.id,{repo,includeContext:true}).context.production_prompt.status,'preserved');
- assert.throws(()=>startProduction({...request,id:'missing',repo}),/ENOENT/);assert.equal(existsSync(join(repo,'news/missing')),false);
+ assert.throws(()=>startProduction({...request,id:'missing',url:'https://example.invalid/missing',repo}),/ENOENT/);assert.equal(existsSync(join(repo,'news/missing')),false);
 });
 test('V2 치환 불가·저장본 변조·누락을 탐지하고 구형 편에 소급하지 않음',t=>{
  const repo=fixture(t);startProduction({...request,repo});
@@ -34,7 +34,7 @@ test('V2 치환 불가·저장본 변조·누락을 탐지하고 구형 편에 �
  rmSync(applied);assert.equal(productionStatus(request.id,{repo,includeContext:true}).context.production_prompt.status,'invalid');
  const path=join(repo,'news/short_request/00_brief/request.json');const raw=JSON.parse(readFileSync(path));delete raw.production_prompt;put(path,raw);
  assert.equal(productionStatus(request.id,{repo,includeContext:true}).context.production_prompt.status,'legacy-unrecorded');
- put(join(repo,'docs/PRODUCTION_PROMPT_V2_RESTORED.txt'),'URL 없음');assert.throws(()=>startProduction({...request,id:'invalid',repo}),/치환/);assert.equal(existsSync(join(repo,'news/invalid')),false);
+ put(join(repo,'docs/PRODUCTION_PROMPT_V2_RESTORED.txt'),'URL 없음');assert.throws(()=>startProduction({...request,id:'invalid',url:'https://example.invalid/invalid',repo}),/치환/);assert.equal(existsSync(join(repo,'news/invalid')),false);
 });
 test('로컬 편 등록과 생성 인덱스는 공유 목록을 바꾸지 않고 clean 환경은 공유 편만 사용',t=>{
  const repo=fixture(t);const config=join(repo,'config/shared-episodes.json');put(config,{schema:'shared-episodes@1',episodes:[{id:'shared',files:[]}]});const original=readFileSync(config,'utf8');
@@ -61,8 +61,9 @@ test('공유 검사는 실제 staged 트리를 검사하며 미선정 편·로�
  assert.deepEqual(sharingErrors(entries,read),[]);
  assert.ok(sharingErrors([...entries,{path:'news/private_episode/02_production/story.json',mode:'100644'}],read).some(x=>x.includes('미선정')));
  assert.ok(sharingErrors([...entries,{path:'pilots/local.json',mode:'100644'}],read).some(x=>x.includes('로컬 전용')));
- const media='news/hani_superbubble_n44_restored_v2/02_production/media/pan-silent.mp4';
- assert.ok(sharingErrors(entries.filter(x=>x.path!==media),read).some(x=>x.includes(media)));
+ // 누락 자산 거절은 공유 편이 있을 때만 확인한다. 한겨레 체크아웃은 공유 편 없이 시작한다.
+ const media=selection.episodes.flatMap(ep=>ep.files).find(p=>/\.(mp4|wav|png|jpg)$/.test(p));
+ if(media)assert.ok(sharingErrors(entries.filter(x=>x.path!==media),read).some(x=>x.includes(media)));
 
  // 개발자 한 사람의 컴퓨터에서만 되는 것이 다시 들어오면 끝 트리에서 걸린다.
  // 찾는 문자열을 이어붙여 쓰는 이유: 이 파일도 같은 검사를 받으므로, 통째로 적으면

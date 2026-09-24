@@ -107,7 +107,7 @@ try {
   check("반복 시작·다른 층의 이전 결과를 덮어쓰지 않음", () => {
     assert.throws(() => startProduction(params), /이미 있다/);
     put(join(repo, "out/pilots/collision/deliver/v1/original.mp4"), "보존할 이전 결과");
-    assert.throws(() => startProduction({ ...params, id: "collision" }), /이미 있다/);
+    assert.throws(() => startProduction({ ...params, id: "collision", url: "https://example.invalid/collision" }), /이미 있다/);
     assert.equal(existsSync(join(repo, "news/collision")), false);
   });
   check("자유롭게 작성한 설명·새 도해 선택으로 작업 문맥 전환", () => {
@@ -144,7 +144,7 @@ try {
   });
   check("다른 설치 경로의 실제 플러그인 입구로 새 편 시작", () => {
     const raw = join(fixtureRoot, "request.txt"); put(raw, params.request);
-    const s = JSON.parse(cli(["start", "bridge_started", "--url", params.url, "--duration", "60:90", "--request-file", raw], { bridge: true }).stdout);
+    const s = JSON.parse(cli(["start", "bridge_started", "--url", "https://example.invalid/bridge-article", "--duration", "60:90", "--request-file", raw], { bridge: true }).stdout);
     assert.equal(s.pilot, "bridge_started");
     assert.equal(json(join(repo, "news/bridge_started/02_production/run.json")).initial_execution.plugin.path, installed);
     assert.equal(existsSync(join(other, "news")), false);
