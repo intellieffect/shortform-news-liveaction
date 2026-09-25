@@ -84,7 +84,7 @@
     "qa:crops": "node scripts/qa-crops.mjs",
     "qa:clip": "node scripts/clip-strip.mjs",
     "gallery": "node scripts/build-gallery.mjs",
-    "sticker:cut": "python3 scripts/sticker_cut.py",
+    "sticker:cut": "node scripts/run-python.mjs scripts/sticker_cut.py",
     "editorial:check": "node scripts/check-editorial-plan.mjs",
     "editorial:compile": "node scripts/compile-editorial-timeline.mjs",
     "produce": "node scripts/produce.mjs",

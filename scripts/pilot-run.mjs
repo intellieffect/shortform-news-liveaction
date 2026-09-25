@@ -8,7 +8,7 @@
 //       npm run still:beat -- --props='{"beatId":"b07","guides":true}'
 import { fileURLToPath } from "node:url";
 import { mkdirSync, rmSync } from "node:fs";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { spawnSync } from "node:child_process";
 import { REPO, compId, dirs, resolvePilotId } from "./lib/pilot.mjs";
 import { editorialPreflight } from "./lib/editorial-preflight.mjs";
@@ -41,13 +41,15 @@ const k = rest.findIndex((a) => !a.startsWith("-") && /\.(mp4|mov|webm|png|jpe?g
 const outArg = k >= 0 ? resolve(rest[k]) : null;
 if (k >= 0) rest.splice(k, 1);
 
-const remotion = join(REPO, "node_modules", ".bin", "remotion");
+// .bin/remotion 은 sh 스크립트라 Windows 에서 spawn 이 ENOENT 로 조용히 실패했다 — CLI 의 JS 진입점을 node 로 직접 부른다
+const remotion = join(REPO, "node_modules", "@remotion", "cli", "remotion-cli.js");
 const run = (args) => {
-  const r = spawnSync(remotion, args, { stdio: "inherit", cwd: REPO });
+  const r = spawnSync(process.execPath, [remotion, ...args], { stdio: "inherit", cwd: REPO });
+  if (r.error) console.error(r.error);
   if (r.status !== 0) process.exit(r.status ?? 1);
 };
 // Remotion CLI 는 경로의 첫 "." 뒤를 확장자로 보므로(.claude/worktrees/… 에서 이미지 시퀀스 출력 실패) 저장소 상대경로로 넘긴다
-const rel = (p) => (p.startsWith(REPO + "/") ? relative(REPO, p) : p);
+const rel = (p) => (p.startsWith(REPO + sep) ? relative(REPO, p) : p);
 const ensure = (p) => (mkdirSync(dirname(p), { recursive: true }), rel(p));
 const hasFrame = rest.some((a) => a.startsWith("--frame"));
 

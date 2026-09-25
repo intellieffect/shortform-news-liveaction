@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { join, posix } from "node:path";
 import { hash, json, repositoryPath } from "./contracts.mjs";
 
 // 현재 통합 저장소의 선택만 읽는다. 편을 만들기 전에 모든 입력을 검증한다.
@@ -12,7 +12,7 @@ export const readProjectDefaults = (repo, profile) => {
   const manifestPath = repositoryPath(repo, settings.logo_package);
   const manifest = json(manifestPath), logo = manifest.logo;
   if (logo?.state !== "ready") throw new Error("새 편에 연결할 수령 로고가 없다");
-  const source = repositoryPath(repo, join(dirname(settings.logo_package), logo.source));
+  const source = repositoryPath(repo, posix.join(posix.dirname(settings.logo_package), logo.source));
   const bytes = readFileSync(source);
   if (hash(bytes) !== logo.sha256) throw new Error("로고 해시가 수령 패키지와 다르다");
   if (bytes.length < 24 || bytes.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a") throw new Error("로고는 PNG여야 한다");

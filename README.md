@@ -6,6 +6,8 @@
 
 Windows·macOS·Linux가 같은 절차를 쓴다. 아래를 차례로 실행한다.
 
+**시작 전**: 저장소는 비공개다. 접근 권한이 있는 GitHub 계정으로 로그인해야 clone된다 — Windows에서는 첫 `git clone` 때 Git Credential Manager 로그인 창이 뜬다(권한 없으면 `could not read Username`). clone은 Git LFS로 약 280MB를 받아 몇 분 걸린다; 멈춘 것처럼 보여도 기다린다.
+
 **Windows 빠른 설치**: 저장소 폴더에서 `설치 시작.cmd` 를 더블클릭하면 1·2·3·4·6단계를 한 번에 한다 — 빠진 프로그램은 물어본 뒤 winget으로 설치하고, API 키는 가려진 입력으로 받아 `.env` 에 적는다. 키만 다시 넣을 때는 `API 키 등록.cmd`, 상태만 볼 때는 `환경 점검.cmd`. 5단계(Higgsfield 연결)는 직접 한다. 스크립트는 `installer/windows/setup.ps1` 이고, 이전 한겨레 설치본(hani-shortform-desktop)의 Windows 설치 스크립트를 이 저장소 구조에 맞게 옮긴 것이다.
 
 > 실측 상태: 이 절차는 macOS에서 끝까지 확인했다. Windows는 코드에서 운영체제 의존을 걷어냈고 검사를 `.github/workflows/portable-install.yml` 에 넣었지만, **아직 Windows에서 실제로 돌려보지 못했다.** 막히는 곳이 있으면 어느 단계에서 어떤 메시지가 났는지 알려주면 된다.
@@ -18,7 +20,9 @@ Windows·macOS·Linux가 같은 절차를 쓴다. 아래를 차례로 실행한�
 | Git + Git LFS | 저장소·미디어 실물 | `winget install Git.Git GitHub.GitLFS` |
 | FFmpeg (ffmpeg·ffprobe 둘 다) | 오디오 측정·길이 확인 | `winget install Gyan.FFmpeg` |
 | Python 3 | 자료 검색·내레이션·컷아웃 스크립트 | `winget install Python.Python.3.12` |
-| Claude Code CLI | 제작 진행과 플러그인 | 설치 안내는 Anthropic 문서 |
+| Claude Code CLI | 제작 진행과 플러그인 | `npm install -g @anthropic-ai/claude-code --allow-scripts=@anthropic-ai/claude-code` |
+
+winget 설치는 관리자 권한 확인(UAC) 창을 눌러야 진행된다 — 창이 작업 표시줄 뒤에 숨어 멈춘 것처럼 보일 수 있다. 설치 직후 **이미 열려 있던 터미널은 새 프로그램을 못 찾으므로** 새 창을 열어 다음 단계를 한다(`설치 시작.cmd` 는 알아서 다시 읽는다).
 
 Python 쪽은 `pip install pillow numpy` 를 한 번 실행한다(스티커 컷아웃과 표현 레퍼런스 준비가 쓴다). Windows에서 명령 이름은 `python3` 이 아니라 `py` 또는 `python` 이다 — 스크립트가 알아서 찾으므로 그대로 두면 되고, 여러 벌이 깔려 있으면 `PYTHON_PATH` 로 고른다. 마찬가지로 FFmpeg가 여러 벌이면 `FFMPEG_PATH`·`FFPROBE_PATH` 로 고른다.
 
@@ -39,7 +43,8 @@ npm run setup:hooks
 플러그인은 저장소 `plugin/` 에 들어 있다. 따로 내려받지 않고 루트에서 설치한다.
 
 ```console
-claude plugin marketplace add .
+claude plugin marketplace add ./
+claude plugin marketplace update shortform-news-workflow
 claude plugin install shortform-news@shortform-news-workflow
 ```
 

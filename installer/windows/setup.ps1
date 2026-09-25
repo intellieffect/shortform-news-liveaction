@@ -18,11 +18,17 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Setup', 'Check', 'Keys')][string]$Action = 'Check',
-    [string]$Project = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path,
+    [string]$Project,
     [switch]$InstallPrerequisites
 )
 $ErrorActionPreference = 'Stop'
 if ($env:OS -ne 'Windows_NT') { throw 'Windows only' }
+# Computed here, not as a param default: Windows PowerShell 5.1 can leave $PSScriptRoot empty
+# while param defaults are evaluated (seen with `powershell -File installer\windows\setup.ps1`).
+if (-not $Project) {
+    $scriptDir = $(if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path })
+    $Project = (Resolve-Path (Join-Path $scriptDir '..\..')).Path
+}
 
 # Node and the Python scripts emit UTF-8. Without this, Korean output is mojibake on cp949.
 [Console]::OutputEncoding = New-Object Text.UTF8Encoding($false)
@@ -198,7 +204,9 @@ try {
     $claude = Find-Tool 'claude'
     if ($claude) {
         # Adding a marketplace that is already present fails harmlessly; the install below is what counts.
-        & $claude.Source plugin marketplace add . *> $null
+        # './' not '.': the CLI rejects a bare '.' as a source. Update so a stale catalog finds the plugin.
+        & $claude.Source plugin marketplace add ./ *> $null
+        & $claude.Source plugin marketplace update shortform-news-workflow *> $null
         Invoke-Checked $claude.Source @('plugin', 'install', 'shortform-news@shortform-news-workflow') 'Installing the Claude plugin'
     } else {
         $remaining.Add('Claude Code CLI is missing: install it, then run Setup again for the plugin')

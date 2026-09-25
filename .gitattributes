@@ -15,3 +15,9 @@
 # Windows 실행 파일은 CRLF여야 cmd.exe가 제대로 읽는다.
 *.cmd text eol=crlf
 *.ps1 text eol=crlf
+
+# 레퍼런스 case.json 이 텍스트 파일 sha256 을 LF 기준으로 기록한다 — Windows autocrlf 로 바뀌면 해시가 어긋난다.
+references/**/*.md text eol=lf
+references/**/*.json text eol=lf
+references/**/*.tsx text eol=lf
+references/**/*.ts text eol=lf

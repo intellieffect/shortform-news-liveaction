@@ -3,6 +3,7 @@ import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { hash, json } from "./contracts.mjs";
+import { PYTHON } from "../tools.mjs";
 import { REPO } from "../pilot.mjs";
 
 export const ENTRY_API = "production-entry@2";
@@ -98,7 +99,7 @@ export const productionEnvironment = ({ repo = REPO, pluginRoot, capabilities, i
   const execution = executionIdentity(repo, pluginRoot);
   const source = pluginInfo(join(repo, "plugin"));
   const tools = { node: { status: "detected", version: process.version }, ffmpeg: command("ffmpeg", ["-version"]), ffprobe: command("ffprobe", ["-version"]),
-    python: command(process.platform === "win32" ? "py" : "python3", ["--version"]) };
+    python: command(PYTHON, ["--version"]) };
   const require = createRequire(join(repo, "package.json"));
   for (const name of ["remotion", "@remotion/renderer"]) {
     try { tools[name] = { status: "detected", version: require(name + "/package.json").version }; }
