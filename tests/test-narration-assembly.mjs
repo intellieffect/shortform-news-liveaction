@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { assembleNarration } from "../scripts/lib/narration-assembly.mjs";
 import { importNarration } from "../scripts/assemble-narration.mjs";
-import { validateOutput, workspace } from "../scripts/lib/production/contracts.mjs";
+import { validateOutput, workspace, recipe } from "../scripts/lib/production/contracts.mjs";
 import { readProductionProfile } from "../scripts/lib/production-profile.mjs";
 
 const profile = readProductionProfile();
@@ -53,7 +53,15 @@ test("CLI assembly measures a real WAV, writes only derived JSON, and preserves 
     wav.write("RIFF"); wav.writeUInt32LE(wav.length - 8, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22); wav.writeUInt32LE(8000, 24); wav.writeUInt32LE(16000, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(samples * 2, 40);
     put("audio/narration.wav", wav);
     const args = { repo, alignment: "02_production/audio/alignment.json" };
+    assert.ok(!recipe(workspace('test',repo),'narration').inputs.some(p=>p.endsWith('/caption-segmentation.json')), 'legacy absent hints must not invalidate voice receipts');
+    const hints = {schema_version:"1.0",lines:{s01:{break_before:[{token:1,text:"입니다."}]}}};
+    put("caption-segmentation.json",hints);
+    assert.ok(recipe(workspace('test',repo),'narration').inputs.some(p=>p.endsWith('/caption-segmentation.json')));
     const result = await importNarration("test", args);
+    const assembled=JSON.parse(readFileSync(join(production,"narration.json")));
+    assert.deepEqual(assembled.sentences[0].caption_segmentation,hints.lines.s01);
+    assert.deepEqual(assembled.captions.slice(0,2).map(c=>c.text),["솜사탕","입니다."]);
+    assert.equal(assembled.source.caption_segmentation.path,"02_production/caption-segmentation.json");
     assert.equal(result.duration, 2.5);
     assert.match(validateOutput(workspace("test", repo), "narration"), /실제 청취 판정 아님/);
     const before = readFileSync(join(production, "narration.json"));

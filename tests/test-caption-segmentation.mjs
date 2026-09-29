@@ -5,11 +5,14 @@ import { captionTextWidth, measureCaptionText, captionFont } from "../scripts/li
 import { splitCaptionWords, boundaryPenalty } from "../scripts/lib/caption-segmentation.mjs";
 import { readProductionProfile } from "../scripts/lib/production-profile.mjs";
 
-const profile = readProductionProfile();
+// Pinned to the archived 1.4 profile (font-semantic@1). Current-profile
+// behaviour (font-semantic@2) is covered by test-caption-semantics.mjs.
+const profile = readProductionProfile({ id: "hani-shortform", version: "1.4.0" });
 const archived = (version) => JSON.parse(readFileSync(new URL(`../config/production-profiles/hani-shortform-${version}.json`, import.meta.url)));
 
 // Profile geometry: 1.4 box780/text756, archived 1.3 keeps box672/text648.
 assert.equal(profile.version, "1.4.0");
+assert.equal(profile.caption.segmentation, "font-semantic@1");
 assert.equal(profile.canvas.width - 2 * profile.caption.side_inset, 780);
 assert.equal(captionTextWidth(profile), 756);
 assert.equal(profile.caption.font_size, 70);

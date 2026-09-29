@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {validateEditorialData, narrationWordHash, normalizeNarration} from '../scripts/lib/editorial.mjs';
-import {HOOK_POLICY, HOOK_POLICY_V2, HOOK_POLICY_V1} from '../scripts/lib/hook-overlay.mjs';
+import {HOOK_POLICY_V3 as HOOK_POLICY, HOOK_POLICY_V2, HOOK_POLICY_V1} from '../scripts/lib/hook-overlay.mjs';
 import {measureHookRun, hookRowWidthIssues, loadHookFont} from '../scripts/lib/hook-typography.mjs';
 
 // hook-overlay@3 작성 줄(rows). 최소 편: 첫 줄 s01(후킹)과 s02, fps 30.
@@ -211,4 +211,49 @@ test('an early phrase window cannot disguise rows that all appear after the firs
   phrase(b).rows[0].text_event_id = 'hook_row1_late';
   phrase(b).rows[1].text_event_id = 'hook_row2_text';
   assert.ok(hookCodes(check(b)).includes('hook-first-anchor'));
+});
+
+test('@4 preserves one approved composition and rejects a second hook while @3 remains compatible', () => {
+  const b=bundle();
+  const old=check(b, 'hook-overlay@3'), current=check(b, 'hook-overlay@4');
+  assert.deepEqual(current.errors,[]);
+  assert.deepEqual(current.timeline.hook_overlay,old.timeline.hook_overlay);
+  b.story.hook.phrases.push(structuredClone(phrase(b)));
+  assert.ok(hookCodes(check(b,'hook-overlay@4')).includes('hook-once'));
+  assert.ok(!hookCodes(check(b,'hook-overlay@3')).includes('hook-once'));
+});
+
+test('@4 permits sequential overlapping rows but rejects disappear/reappear gaps', () => {
+  const b=bundle();
+  phrase(b).rows[1].text_event_id='hook_row2_text';
+  assert.deepEqual(check(b,'hook-overlay@4').errors,[]);
+  phrase(b).rows[0].text_event_id='hook_row1_text';
+  b.motion.events.push(ev('hook_row1_text','label','hook_main',{
+    from:at('s01',0,'달이','start',-3),settled:at('s01',0,'달이'),to:at('s01',0,'달이','end',-2),end:at('s01',0,'달이','end')
+  }));
+  assert.ok(hookCodes(check(b,'hook-overlay@4')).includes('hook-once'));
+  assert.ok(!hookCodes(check(b,'hook-overlay@3')).includes('hook-once'));
+});
+
+test('editorial compiler enforces the request attribution policy and includes 3s end pages', () => {
+  const b=bundle();
+  b.visualSystem.attribution={sources:[],pages:[{duration:3,categories:[{title:'자료',lines:['Higgsfield']}]}]};
+  const valid=validateEditorialData({...b,attributionPolicy:'attribution@2'});
+  assert.deepEqual(valid.errors,[]);
+  assert.equal(valid.timeline.total_frames,b.motion.total_frames+90);
+  b.visualSystem.attribution.pages[0].duration=8;
+  assert.ok(validateEditorialData({...b,attributionPolicy:'attribution@2'}).errors.some(e=>e.code==='attribution'));
+  assert.deepEqual(validateEditorialData(b).errors,[]);
+});
+
+test('new production profile wires caption preservation checks into the editorial compiler', async () => {
+  const {readProductionProfile}=await import('../scripts/lib/production-profile.mjs');
+  const {splitCaptionWords}=await import('../scripts/lib/caption-segmentation.mjs');
+  const profile=readProductionProfile(),b=bundle();
+  b.visualSystem.production_profile={id:profile.id,version:profile.version};
+  b.visualSystem.canvas=profile.canvas;
+  b.narration.captions=b.narration.sentences.flatMap(line=>splitCaptionWords(line.words,profile));
+  assert.deepEqual(validateEditorialData(b).errors,[]);
+  b.narration.captions[0].text='축약';
+  assert.ok(validateEditorialData(b).errors.some(e=>e.code==='caption-semantic'));
 });

@@ -90,7 +90,7 @@
     "editorial:compile": "node scripts/compile-editorial-timeline.mjs",
     "produce": "node scripts/produce.mjs",
     "production:entry:test": "node tests/test-production-entry.mjs",
-    "production:captions:test": "node tests/test-caption-segmentation.mjs && node tests/test-single-line-captions.mjs",
+    "production:captions:test": "npm run production:captions:unit && node tests/test-single-line-captions.mjs",
     "videos": "node scripts/build-video-library.mjs",
     "videos:test": "node --test scripts/test-video-library.mjs",
     "zip:test": "node --test tests/test-zip-stream.mjs",
@@ -112,7 +112,9 @@
     "references:test": "node --test tests/test-visual-references.mjs",
     "hook:test": "node --test tests/test-hook-overlay.mjs tests/test-hook-composition.mjs tests/test-hook-rendering.mjs",
     "visual-production:test": "node --test tests/test-render-duration-basis.mjs tests/test-visual-production.mjs tests/test-screen-text-policy.mjs tests/test-hani-layout-policy.mjs",
-    "scene:proof": "node scripts/scene-proof.mjs"
+    "scene:proof": "node scripts/scene-proof.mjs",
+    "production:editorial-rules:test": "node --test tests/test-attribution-policy.mjs tests/test-hook-overlay.mjs tests/test-hook-composition.mjs",
+    "production:captions:unit": "node tests/test-caption-segmentation.mjs && node tests/test-caption-semantics.mjs && node --test tests/test-caption-policy.mjs tests/test-narration-assembly.mjs"
   },
   "sideEffects": [
     "*.css"

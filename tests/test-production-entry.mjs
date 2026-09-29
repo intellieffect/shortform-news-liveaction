@@ -61,12 +61,14 @@ try {
     assert.equal(s.context.question, null);
     assert.equal(s.context.production_defaults.snapshot.baseline_commit, "59a2af79");
     const newVisual = json(join(repo, "news", id, "02_production/visual-system.json"));
-    assert.equal(newVisual.production_profile.version, "1.4.0");
+    assert.equal(newVisual.production_profile.version, "1.5.0");
+    assert.equal(newVisual.attribution.pages[0].duration, 3);
     assert.equal(newVisual.project_logo.width, 140);
     assert.equal(newVisual.project_logo.y, 320);
     assert.equal(newVisual.attribution.pages[0].categories[0].lines[0], params.url);
     assert.equal(s.context.request.screen_text, "screen-text@2");
-    assert.equal(s.context.request.hook_overlay, "hook-overlay@3");
+    assert.equal(s.context.request.hook_overlay, "hook-overlay@4");
+    assert.equal(s.context.request.attribution_policy, "attribution@2");
     assert.equal(s.context.hook_reference.status, "available");
     assert.equal(s.context.hook_reference.font_identity, "unverified");
     assert.equal(s.context.hook_reference.frames.length, 3);

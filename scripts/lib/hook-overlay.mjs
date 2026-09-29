@@ -1,11 +1,12 @@
 import {HOOK_STYLE_V2, HOOK_STYLE_V3, LEGACY_HOOK_STYLE, hookLayoutIssues, hookRunsIssues, compileHookRuns, hookTargetWidthIssues, hookRowsLayoutIssues, hookRowsIssues, compileHookRows} from "./hook-layout.mjs";
 import {hookRowWidthIssues} from "./hook-typography.mjs";
-// 공통 후킹 오버레이 계약 (hook-overlay@3 작성 줄 rows, 기존 @1·@2 호환). 문서: plugin/skills/shortform-news-pipeline/reference/hook-overlay.md
+// 공통 후킹 오버레이 계약 (hook-overlay@4 1회 연속 표시, 기존 @1·@2·@3 호환). 문서: plugin/skills/shortform-news-pipeline/reference/hook-overlay.md
 // 구조만 검사한다 — 문구의 의미·매력·읽기 시간은 원고·실물 검수 몫이다. 시간 수치를 고정하지 않는다.
-export const HOOK_POLICY = "hook-overlay@3";
+export const HOOK_POLICY = "hook-overlay@4";
+export const HOOK_POLICY_V3 = "hook-overlay@3";
 export const HOOK_POLICY_V2 = "hook-overlay@2";
 export const HOOK_POLICY_V1 = "hook-overlay@1";
-const POLICIES = [HOOK_POLICY, HOOK_POLICY_V2, HOOK_POLICY_V1];
+const POLICIES = [HOOK_POLICY, HOOK_POLICY_V3, HOOK_POLICY_V2, HOOK_POLICY_V1];
 export const HOOK_ROLE = "hook";
 
 const object = (value) => value && typeof value === "object" && !Array.isArray(value);
@@ -59,6 +60,9 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
     return { errors, overlay: null, exemptElementIds: new Set() };
   }
 
+  if (policy === HOOK_POLICY && phrases.length !== 1)
+    issue('hook-once', 'story.json hook.phrases', '후킹은 한 문구의 rows로 한 번만 표시한다. 줄별 순차 등장은 허용한다');
+
   const eventById = new Map((events ?? []).map((event) => [event.id, event]));
   const seenElements = new Set(), seenEvents = new Set();
   const compiled = [];
@@ -78,8 +82,8 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
     const found = findElement(concepts, elementId);
     if (!found) { issue("hook-element-missing", where, `element ${elementId}가 없다`); continue; }
     const { concept, element } = found;
-    // @3는 rows 필수, @1·@2는 rows를 명시하면 이행한다. rows와 옛 runs는 섞지 않는다.
-    const authored = phrase.rows !== undefined || policy === HOOK_POLICY;
+    // @3·@4는 rows 필수, @1·@2는 rows를 명시하면 이행한다. rows와 옛 runs는 섞지 않는다.
+    const authored = phrase.rows !== undefined || [HOOK_POLICY, HOOK_POLICY_V3].includes(policy);
     let runs = null, rowsValid = false;
     if (phrase.rows !== undefined && phrase.runs !== undefined) issue("hook-rows", where, "rows와 runs를 함께 쓸 수 없다. rows가 runs를 대체한다");
     else if (authored) {
@@ -138,6 +142,14 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
       rowEvents.set(id, event);
       if (row.runs.some((run) => run.underline === true)) underlineHost = event;
     });
+    if (policy === HOOK_POLICY && rowsValid && pair.text) {
+      const windows = phrase.rows.map(row => rowEvents.get(row.text_event_id) ?? pair.text).sort((a,b) => a.from - b.from);
+      let end = windows[0]?.end;
+      for (const window of windows.slice(1)) {
+        if (window.from >= end) issue('hook-once', where, '후킹 줄 사이에 빈 구간이 있어 사라졌다 재등장한다');
+        end = Math.max(end, window.end);
+      }
+    }
     if (underlineHost && pair.underline && (pair.underline.from < underlineHost.from || pair.underline.end > underlineHost.end))
       issue("hook-underline-outside", where, `밑줄 ${pair.underline.from}..${pair.underline.end}가 글자 ${underlineHost.from}..${underlineHost.end} 밖이다`);
     if (index === 0 && pair.text && first && Number.isFinite(fps)) {
@@ -154,7 +166,7 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
       issue("hook-phrase-order", where, "문구는 등장 순서대로 적는다");
     if (pair.text && pair.underline) compiled.push({ id: elementId, text: element.text, text_event: pair.text, underline_event: pair.underline, ...(phrase.layout ? {layout: {...phrase.layout}} : {}), ...(runs ? {runs} : {}), ...(rowsValid ? {rows: compileHookRows(phrase.rows, rowEvents)} : {}) });
   }
-  const rowsMode = phrases.some((phrase) => object(phrase) && phrase.rows !== undefined) || policy === HOOK_POLICY;
+  const rowsMode = phrases.some((phrase) => object(phrase) && phrase.rows !== undefined) || [HOOK_POLICY, HOOK_POLICY_V3].includes(policy);
   if (rowsMode && phrases.some((phrase) => object(phrase) && phrase.rows === undefined))
     issue("hook-rows", "story.json hook.phrases", "rows를 쓰는 편은 모든 문구를 rows로 작성한다");
   // 옛 runs 경로만 크기·색 위계를 기계 검사한다. rows는 밑줄 대상만 요구하고 시각 품질은 실물 검수 몫이다.

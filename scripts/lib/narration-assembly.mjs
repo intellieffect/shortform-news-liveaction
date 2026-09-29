@@ -126,7 +126,19 @@ const consume = (expected, words, cursor, where) => {
 
 const CAPTION_WIDTH = "measured with GmarketSans TTF advance widths (opentype.js); still render and listening review required";
 
-export const assembleNarration = ({ pilot, narrationText, alignment, audio, profile, captionText, substitutions = { pairs: [] }, voice = null, forceAlign = false, minMatch, allowEstimated = false }) => {
+// Authored caption segmentation hints, keyed by narration line id. Token indices
+// refer to that line's caption tokens (caption_words). Contract:
+// caption-segmentation.mjs (font-semantic@2).
+const segmentationHints = (captionSegmentation, ids) => {
+  if (captionSegmentation == null) return new Map();
+  const { schema_version: version, lines, ...rest } = captionSegmentation;
+  if (version !== "1.0" || !lines || typeof lines !== "object" || Array.isArray(lines) || Object.keys(rest).length) throw new Error("caption_segmentation: schema_version \"1.0\"과 lines 객체만 허용한다");
+  const unknown = Object.keys(lines).filter(id => !ids.includes(id));
+  if (unknown.length) throw new Error(`caption_segmentation: 원고에 없는 줄 ${unknown.join(", ")}`);
+  return new Map(Object.entries(lines));
+};
+
+export const assembleNarration = ({ pilot, narrationText, alignment, audio, profile, captionText, substitutions = { pairs: [] }, voice = null, forceAlign = false, minMatch, allowEstimated = false, captionSegmentation }) => {
   if (!Number.isFinite(audio.duration) || audio.duration <= 0) throw new Error("실제 음성 길이가 필요하다");
   const lines = narrationText.split(/\r?\n/).filter(line => line.trim()).map(line => line.trim());
   if (!lines.length) throw new Error("원고가 비어 있다");
@@ -138,6 +150,7 @@ export const assembleNarration = ({ pilot, narrationText, alignment, audio, prof
     if (typeof pair.text !== "string" || typeof pair.spoken !== "string" || !pair.spoken.trim() || replacements.has(pair.text)) throw new Error("유효하고 중복 없는 치환표가 필요하다");
     replacements.set(pair.text, pair.spoken);
   }
+  const hints = segmentationHints(captionSegmentation, lines.map((_, index) => `s${String(index + 1).padStart(2, "0")}`));
   if (allowEstimated && !forceAlign) throw new Error("--allow-estimated는 --force-align과 함께만 쓴다");
   const forced = forceAlign ? forceAlignTokens(lines, alignment, audio.duration, { substitutions: substitutions.pairs, allowEstimated, ...(minMatch === undefined ? {} : { minMatch }) }) : null;
   const words = forced ? [] : timedWords(alignment, audio.duration);
@@ -156,10 +169,10 @@ export const assembleNarration = ({ pilot, narrationText, alignment, audio, prof
       return { ...match.word, text };
     });
     if (captionCursor !== aligned.length) throw new Error(`${id}: 자막 치환 뒤 남은 낭독 단어가 있다`);
-    return { id, index, text: displayLines[index], spoken_text: line, start: aligned[0].start, end: aligned.at(-1).end, words: aligned, caption_words: display };
+    return { id, index, text: displayLines[index], spoken_text: line, start: aligned[0].start, end: aligned.at(-1).end, words: aligned, caption_words: display, ...(hints.has(id) ? { caption_segmentation: hints.get(id) } : {}) };
   });
   if (cursor !== words.length) throw new Error(`원고 뒤에 정렬 단어 ${words.length - cursor}개가 남았다`);
-  const captions = sentences.flatMap(line => splitCaptionWords(line.caption_words, profile)).map((caption, i) => ({ id: `c${String(i + 1).padStart(2, "0")}`, ...caption }));
+  const captions = sentences.flatMap(line => splitCaptionWords(line.caption_words, profile, { hints: line.caption_segmentation, where: `${line.id} 자막` })).map((caption, i) => ({ id: `c${String(i + 1).padStart(2, "0")}`, ...caption }));
   return {
     schema_version: "1.1", pilot, root: `news/${pilot}`,
     source: { narration_txt: "02_production/narration.txt", narration_sha256: sha256(Buffer.from(narrationText)) },

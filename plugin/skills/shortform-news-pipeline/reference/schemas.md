@@ -52,7 +52,7 @@
 **`rules` 는 표준(템플릿에서 파생·수정 금지) · `pilot_rules` 는 이 편의 결정** — 한 배열에 섞으면 편별 복제본을 통해 앞 편 규칙이 따라온다. 실측 2026-09-02: **5편 15줄 중 4줄이 4편(«우주택배») 것**이었다. `[plan-rules-standard]`(표준 대조) · `[plan-rules-foreign]`(다른 편 제목이 든 줄) 이 본다.
 **style**(overlays.json): `font_family colors{bg text muted accent quote} sizes{headline caption card attribution credit cta endcard_question} safe{x y} caption{anchor_y max_chars_per_line min_chars_per_line max_lines line_height backdrop} card{center_y line_height} headline{top_y frame0} cta{center_y keep_on_endcard comment_prompt} onscreen{center_y size sub_size weight scrim scrim_span rise_px in_frames line_height}`
 **audio**: `master_mix:true`면 narration.file 하나가 내레이션·BGM·SFX가 합쳐진 확정 믹스이며 중앙 런타임은 cue를 중복 재생하지 않는다. 분리 믹스의 **audio.bgm** 추가: `duck_ranges[{from to gain_db attack_sec release_sec why}] source_lufs intro_silence_sec note` · **measured** 추가: `segments{speech_* gap_* endcard_lufs} lra_lu pass`
-**visual-system.media.assets[]**: `{id source file trim?{from_sec duration_sec}}`. `source`는 편 루트 안, `file`은 `editorial/` 아래. sync가 복사·트림하고 preflight가 실물을 확인한다.
+**visual-system.media.assets[]**: `{id source file trim?{from_sec duration_sec}}`. `attribution@2` 편에서 컷 출처가 연결하는 자산은 `attribution_kind:"institution"`과 공식 출처 URL `attribution_evidence`를 추가로 가진다([공통 배치](../../../../config/layout-rules.md#attribution2--컷-출처와-끝-크레딧-2026-09-30)). `source`는 편 루트 안, `file`은 `editorial/` 아래. sync가 복사·트림하고 preflight가 실물을 확인한다.
 **timeline.proof_frames[]**: `{id frame labels[]}`. 개념 경계와 모든 motion `from/settled/to/end`를 컴파일러가 중복 제거해 만든다.
 **온스크린 부품 id**(graphics[].id, 텍스트층): `hook_title@1 stat_block@1 quote_slab@1 cta_bar@1 timeline_axis@1 threshold@1 icon_strip@1` (폐기 `arrow_step@1 equation_block@1 bullet_list@1`) · 그래픽 추가: `veil@1 reveal@1 erase@1(미적용)`. props는 `docs/specs/primitives.props.schema.v1.2.json`, 낱말 시각은 `*_in`(초, 비트 시작 기준)
 **audio_assets[]**(assets.json, input): `id role rank path duration lufs_integrated lra bpm_est drum_strength bright_hz fit_score intro_silence_sec intro_rms_db_0_5s intro_note credit license license_url`
@@ -87,3 +87,5 @@
 - `review`는 `status`(`draft`·`needs_revision`·`reviewed`·`approved`), 실제 확인 내용 `checked[]`, 남은 결함 `issues[]`다. `approved`는 사용자 채택 때만 쓴다.
 - `credits[]`는 `{text, placement}`다. 출처·개념도·재구성 표기의 실제 문구와 위치를 기록한다. 필요 없으면 빈 배열이다.
 - `pilot.json.thumbnails.candidates[].status`는 해당 시안의 `review.status`를 따르고, 상세 내용은 `manifest`에서 읽는다. 새 작업으로 포인터를 바꿀 때 기존 `history[]`는 유지하고, 직전 `thumbnails`에서 `history`를 제외한 기록을 한 항목으로 추가한다.
+
+`font-semantic@2` 자막의 명시적 보호·분할 입력은 [caption-segmentation.md](caption-segmentation.md)를 따른다.
