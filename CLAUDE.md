@@ -75,6 +75,10 @@ Anywhere else, ask first. Issue parallel calls in a single message.
 
 Call them as `@agent-shortform-news:<name>`. They judge and never edit; do not re-judge what they report — pass their wording to the user unchanged.
 
+## 공통 후킹
+
+첫 나레이션 문장을 후킹으로 작성하고, 큰 중앙 부근 별도 오버레이와 노란 밑줄을 현재 editorial 공통 화면에 연결한다. 문형·문구 개수·시간·속도를 예시 영상에서 복제하지 않는다. 데이터·변경·검증은 [후킹 계약](plugin/skills/shortform-news-pipeline/reference/hook-overlay.md)을 따른다.
+
 ## Remotion constraints
 
 - Animate with `useCurrentFrame()` + `interpolate()` only. CSS `transition`/`animation` and Tailwind `animate-*`/`transition-*` do not appear in renders.

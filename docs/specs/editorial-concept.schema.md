@@ -30,7 +30,7 @@
 - `why`: 이 표현이 관계나 현상을 가장 정확히 전달하는 이유
 - 영상·이미지가 포함되면 `full_bleed:true`. 예외는 `layout_exception`에 핵심 피사체와 자막을 위해 필요한 이유를 적는다.
 
-`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`만 허용한다. `screen-text@1` 편은 `provenance`를 쓰지 않고, 출처·재구성 표기와 나레이션을 다시 적는 설명 문구를 넣지 않는다([화면 글자](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md#화면-글자)). 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
+`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`, `hook`을 허용한다. `hook`은 유효한 story.hook에 연결되어 공통 트랙에서 표시되는 도입 문구에만 사용한다([후킹 계약](../../plugin/skills/shortform-news-pipeline/reference/hook-overlay.md)). `screen-text@1` 편은 `provenance`를 쓰지 않고, 출처·재구성 표기와 나레이션을 다시 적는 설명 문구를 넣지 않는다([화면 글자](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md#화면-글자)). 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
 
 개념 경계에 정확한 전환 시점이 필요하면 `range.from/end`를 motion과 같은 발화 앵커 형식으로 적는다. 없으면 인접 내레이션의 무음 중간점으로 컴파일한다. 경계에도 절대 프레임을 적지 않는다.
 

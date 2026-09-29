@@ -1,6 +1,7 @@
 import {compileAttribution} from "./attribution.mjs";
 import {validateVisualPlan} from './visual-plan.mjs';
 import {SCREEN_TEXT_POLICY, screenTextPolicyIssues} from './screen-text-policy.mjs';
+import {HOOK_POLICY, HOOK_ROLE, validateHookOverlay} from './hook-overlay.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -17,7 +18,7 @@ const EASING = new Set(["ease-out", "ease-in-out", "ease-in", "linear", "cubic-i
 export const editorialContract = () => ({
   script_policies: [...SCRIPT_POLICIES], creative_scope: [...SCOPE_VALUES],
   representation_kinds: [...MEDIA], representation_roles: [...ROLES],
-  text_roles: [...TEXT_ROLES], easing: [...EASING],
+  text_roles: [...TEXT_ROLES, HOOK_ROLE], easing: [...EASING], hook_policy: HOOK_POLICY, hook_role: HOOK_ROLE,
 });
 const validEasing = (value) => EASING.has(value) || (
   Array.isArray(value) && value.length === 4 && value.every(Number.isFinite) &&
@@ -87,14 +88,9 @@ const noAbsoluteFrames = (value, errors, path = "motion") => {
   }
 };
 
-export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null }) => {
+export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null, hookPolicy = null }) => {
   const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
   const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
-  // screen-text@1 편만 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
-  if (["screen-text@1", SCREEN_TEXT_POLICY].includes(screenTextPolicy)) {
-    const policy = screenTextPolicyIssues({ concepts, narration, policy: screenTextPolicy });
-    errors.push(...policy.errors); warnings.push(...policy.warnings);
-  }
   let lines = [];
   try { lines = normalizeNarration(narration); }
   catch (error) { issue(errors, "narration-shape", "narration.json", error.message); }
@@ -206,7 +202,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     for (const element of elements) {
       if (!ID.test(element?.id ?? "") || elementOwner.has(element?.id)) issue(errors, "element-id", where, `element id가 잘못됐거나 중복된다: ${element?.id}`);
       elementOwner.set(element?.id, concept.id);
-      if (element?.kind === "text" && !TEXT_ROLES.has(element?.role)) issue(errors, "screen-text-role", `${where}.${element?.id}`, "화면 텍스트는 necessary-label/condition/provenance만 허용한다");
+      if (element?.kind === "text" && !TEXT_ROLES.has(element?.role) && element?.role !== HOOK_ROLE) issue(errors, "screen-text-role", `${where}.${element?.id}`, "화면 텍스트는 necessary-label/condition/provenance(연결된 후킹은 hook)만 허용한다");
     }
     for (const id of concept?.mobile?.focal_priority ?? []) if (!elements.some((element) => element.id === id))
       issue(errors, "mobile-focal-element", where, `focal_priority의 ${id}가 elements에 없다`);
@@ -315,6 +311,14 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     else if (!Number.isInteger(offset) || event[point] + offset < 0 || event[point] + offset >= motion.total_frames) issue(errors, "audio-event-range", `motion.audio_cues.${cue?.id}`, "SFX 시점은 영상 안의 정수 프레임이어야 한다");
     else audioCues.push({ ...cue, frame: event[point] + offset });
   }
+  // 후킹 구조가 전부 유효할 때만 연결된 요소를 설명문구 제한에서 뺀다. 출처 표기 금지는 그대로다.
+  const hook = validateHookOverlay({ story, concepts, lines, events: compiledEvents, fps, totalFrames: motion?.total_frames, policy: hookPolicy });
+  errors.push(...hook.errors);
+  // 기록된 screen-text@1/@2 편에 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
+  if (["screen-text@1", SCREEN_TEXT_POLICY].includes(screenTextPolicy)) {
+    const policy = screenTextPolicyIssues({ concepts, narration, policy: screenTextPolicy, hookElementIds: hook.exemptElementIds });
+    errors.push(...policy.errors); warnings.push(...policy.warnings);
+  }
   const proofMap = new Map();
   const addProof = (frame, label) => {
     if (!Number.isFinite(frame) || !Number.isFinite(motion?.total_frames)) return;
@@ -348,6 +352,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     events: compiledEvents,
     audio_cues: audioCues,
     proof_frames: proofFrames,
+    ...(hook.overlay ? { hook_overlay: hook.overlay } : {}),
   };
   const credits = compileAttribution(visualSystem?.attribution, {fps, contentFrames:motion?.total_frames, assets:visualSystem?.media?.assets ?? [], required:screenTextPolicy === "screen-text@2"});
   errors.push(...credits.errors);
@@ -370,6 +375,7 @@ export const loadEditorialBundle = (root) => {
   const request = existsSync(join(root, "00_brief/request.json")) ? readJson(join(root, "00_brief/request.json")) : null;
   return {
     screenTextPolicy: request?.screen_text ?? null,
+    hookPolicy: request?.hook_overlay ?? null,
     visualContractRequired: (existsSync(join(root, "00_brief/request.json")) && Boolean(readJson(join(root, "00_brief/request.json")).visual_contract)) || (existsSync(join(production, "run.json")) && Boolean(readJson(join(production, "run.json")).visual_contract)),
     story: readJson(join(production, "story.json")),
     concepts: readJson(join(production, "concepts.json")),

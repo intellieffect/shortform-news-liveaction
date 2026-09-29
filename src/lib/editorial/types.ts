@@ -42,6 +42,10 @@ export type EditorialTimeline = {
   audio_cues: CompiledAudioCue[];
   proof_frames: EditorialProofFrame[];
   production_profile?: ProductionProfile;
+  hook_overlay?: {
+    style: typeof import("../../../config/hook-style.json");
+    phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
+  };
   attribution?: {
     style: typeof import("../../../config/attribution-style.json");
     sources: {asset_id?:string; asset_ids?:string[]; text:string; from:number; end:number}[];

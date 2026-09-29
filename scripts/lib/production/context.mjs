@@ -27,6 +27,7 @@ export const productionContext = (w, state, actions, completion) => {
   const visual = visualWork(w, state);
   const reviewInputs = availableReviewInputs(w, state, actions);
   const referencesForStage = [...references[stage]];
+  if (w.request?.hook_overlay || story.hook) referencesForStage.push("shortform-news-pipeline/reference/hook-overlay.md");
   if (Object.values(reviewInputs).some((input) => input.reviewable)) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
   return {
     production_prompt: episodePrompt(w),

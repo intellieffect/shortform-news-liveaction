@@ -66,7 +66,8 @@ try {
     assert.equal(newVisual.project_logo.y, 320);
     assert.equal(newVisual.attribution.pages[0].categories[0].lines[0], params.url);
     assert.equal(s.context.request.screen_text, "screen-text@2");
-    assert.equal(s.context.request.production_prompt.version, "v2-original@2");
+    assert.equal(s.context.request.hook_overlay, "hook-overlay@1");
+    assert.equal(s.context.request.production_prompt.version, "v2-original@3");
     assert.match(s.context.production_prompt.text, /내레이션은 Typecast를 기본/);
     assert.equal(newVisual.media.assets.find(a => a.id === "project_logo").file, "editorial/brand-logo.png");
     assert.equal(createHash("sha256").update(readFileSync(join(repo, "news", id, "02_production/brand/logo.png"))).digest("hex"), newVisual.project_logo.sha256);

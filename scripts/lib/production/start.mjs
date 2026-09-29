@@ -1,5 +1,6 @@
 import {OPTIONAL_SCENE_GATE} from '../scene-proof-contract.mjs';
 import {SCREEN_TEXT_POLICY} from '../screen-text-policy.mjs';
+import {HOOK_POLICY} from '../hook-overlay.mjs';
 import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
@@ -56,7 +57,7 @@ export const startProduction = ({ id, url, duration, durationBasis = "total", re
   put("01_input/assets.json", { schema_version: "1.0", pilot: id, assets: [] });
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
-    visual_contract: VISUAL_CONTRACT, scene_gate: OPTIONAL_SCENE_GATE, screen_text: SCREEN_TEXT_POLICY,
+    visual_contract: VISUAL_CONTRACT, scene_gate: OPTIONAL_SCENE_GATE, screen_text: SCREEN_TEXT_POLICY, hook_overlay: HOOK_POLICY,
     source_url: url, duration_sec: { min: duration[0], max: duration[1], basis: durationBasis }, raw_request: "00_brief/user-request.txt",
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },

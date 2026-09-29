@@ -1,3 +1,4 @@
+import {shiftEditorialTimeline} from "../lib/editorial/proof-time";
 import { AbsoluteFill, Interactive, useCurrentFrame } from "remotion";
 import { EditorialFrame } from "./Composition";
 import { getEditorialPilot } from "./registry";
@@ -38,23 +39,7 @@ const shiftPilotToProofFrame = (
     narration,
     totalFrames: pilot.totalFrames + delta,
     speech: narration.lines.map((line) => [Math.round(line.start * pilot.fps), Math.round(line.end * pilot.fps)] as const),
-    timeline: {
-      ...pilot.timeline,
-      total_frames: pilot.timeline.total_frames + delta,
-      concepts: pilot.timeline.concepts.map((concept) => ({
-        ...concept,
-        from: concept.from + delta,
-        end: concept.end + delta,
-      })),
-      events: pilot.timeline.events.map((event) => ({
-        ...event,
-        from: event.from + delta,
-        settled: event.settled + delta,
-        to: event.to + delta,
-        end: event.end + delta,
-      })),
-      audio_cues: pilot.timeline.audio_cues.map((cue) => ({ ...cue, frame: cue.frame + delta })),
-    },
+    timeline: shiftEditorialTimeline(pilot.timeline, delta),
   };
 };
 

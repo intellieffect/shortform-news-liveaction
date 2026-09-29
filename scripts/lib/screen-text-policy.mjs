@@ -16,7 +16,8 @@ const spokenCorpus = (narration) => [
 // 어미·조사 차이는 앞부분이 같으면 같은 말로 본다 (남습니다/남음은 구분하지 못한다 — 실물 검수 몫)
 const spoken = (corpus, word) => corpus.includes(word) || (word.length >= 3 && corpus.includes(word.slice(0, -1)));
 
-export const screenTextPolicyIssues = ({ concepts, narration, policy = "screen-text@1" }) => {
+// hookElementIds: 구조 검증을 통과한 hook-overlay@1 연결 요소. 표기 금지만 적용하고 설명문구 판정은 뺀다.
+export const screenTextPolicyIssues = ({ concepts, narration, policy = "screen-text@1", hookElementIds = new Set() }) => {
   const errors = [], warnings = [];
   const corpus = spokenCorpus(narration);
   for (const concept of concepts?.concepts ?? []) for (const element of concept?.elements ?? []) {
@@ -25,6 +26,7 @@ export const screenTextPolicyIssues = ({ concepts, narration, policy = "screen-t
     const text = String(element.text ?? "");
     if ((element.role === "provenance" || PROVENANCE.test(text)) && !(policy === "screen-text@2" && element.role === "provenance" && !/상상도|재구성|관측\s*아님|측정\s*아님|모델\s*예측/.test(text)))
       errors.push({ code: "screen-text-provenance", where, message: `화면에 출처·상상도·재구성·모델/관측 여부 표기를 넣지 않는다: "${text}". 출처는 CREDITS.md와 게시 설명란, 예측·조건은 나레이션 문장이나 화면의 형태 차이로 전달한다` });
+    if (element.role === "hook" && hookElementIds.has(element.id)) continue;
     const ws = words(text);
     const restated = ws.filter((w) => spoken(corpus, w));
     if (ws.length >= 3 && restated.length / ws.length >= 0.5)
