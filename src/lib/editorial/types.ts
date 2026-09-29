@@ -43,8 +43,8 @@ export type EditorialTimeline = {
   proof_frames: EditorialProofFrame[];
   production_profile?: ProductionProfile;
   hook_overlay?: {
-    style: typeof import("../../../config/hook-style.json");
-    phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
+    style: Omit<typeof import("../../../config/hook-style.json"), "support_font_size" | "support_text_color"> & {support_font_size?: number; support_text_color?: string};
+    phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; runs?: {text: string; role: "support" | "emphasis"; underline?: boolean; font_size: number; text_color: string}[]; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
   };
   attribution?: {
     style: typeof import("../../../config/attribution-style.json");

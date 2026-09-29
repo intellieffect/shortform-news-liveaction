@@ -1,4 +1,7 @@
 import { sha256 } from "./editorial.mjs";
+import { splitCaptionWords } from "./caption-segmentation.mjs";
+
+export { splitCaptionWords };
 
 const key = (text) => text.normalize("NFC").replace(/[^\p{L}\p{N}]/gu, "");
 const tokens = (text) => text.trim().split(/\s+/).filter(Boolean);
@@ -121,28 +124,7 @@ const consume = (expected, words, cursor, where) => {
   return { word: { text: expected, start: words[cursor].start, end: words[end - 1].end }, next: end };
 };
 
-// Conservative width estimate for draft segmentation only. Actual GmarketSans
-// width and mobile readability remain checked by the renderer/review.
-const estimatedWidth = (text, fontSize) => [...text].reduce((sum, char) => sum + (/\s/u.test(char) ? 0.35 : /[\x20-\x7e]/.test(char) ? 0.7 : 1), 0) * fontSize;
-
-export const splitCaptionWords = (words, profile) => {
-  const maxWidth = profile.canvas.width - 2 * (profile.caption.side_inset + profile.caption.padding_x);
-  const fontSize = profile.caption.font_size;
-  if (!(maxWidth > 0 && fontSize > 0)) throw new Error("유효한 자막 프로필이 필요하다");
-  const chunks = [];
-  let chunk = [];
-  const flush = () => { if (chunk.length) chunks.push(chunk); chunk = []; };
-  for (const word of words) {
-    if (/(?:[^0-9][,，、]|[,，、][^0-9\s”’"')])/.test(word.text.replace(/[,，、][”’"')]*$/, ""))) throw new Error(`쉼표 앞뒤 발화의 개별 단어 시각이 필요하다: ${word.text}`);
-    if (estimatedWidth(word.text, fontSize) > maxWidth) throw new Error(`자막 토큰이 한 줄보다 길다: ${word.text}`);
-    const candidate = [...chunk, word].map(w => w.text).join(" ");
-    if (chunk.length && (estimatedWidth(candidate, fontSize) > maxWidth || word.start - chunk.at(-1).end > 0.8)) flush();
-    chunk.push(word);
-    if (/[,.!?。！？，、][”’"')]*$/.test(word.text)) flush();
-  }
-  flush();
-  return chunks.map(chunk => ({ text: chunk.map(w => w.text).join(" "), start: chunk[0].start, end: chunk.at(-1).end, words: chunk }));
-};
+const CAPTION_WIDTH = "measured with GmarketSans TTF advance widths (opentype.js); still render and listening review required";
 
 export const assembleNarration = ({ pilot, narrationText, alignment, audio, profile, captionText, substitutions = { pairs: [] }, voice = null, forceAlign = false, minMatch, allowEstimated = false }) => {
   if (!Number.isFinite(audio.duration) || audio.duration <= 0) throw new Error("실제 음성 길이가 필요하다");
@@ -183,8 +165,8 @@ export const assembleNarration = ({ pilot, narrationText, alignment, audio, prof
     source: { narration_txt: "02_production/narration.txt", narration_sha256: sha256(Buffer.from(narrationText)) },
     audio: { ...audio, ...(voice ? { tts: voice } : {}) },
     alignment: forced
-      ? { method: "forced-char-lcs-to-script", unit: "word", ...forced.report, caption_width: "estimated; render and listening review required" }
-      : { method: "imported-word-timestamps-exact-text", unit: "word", caption_width: "estimated; render and listening review required" },
+      ? { method: "forced-char-lcs-to-script", unit: "word", ...forced.report, caption_width: profile.caption.segmentation ? CAPTION_WIDTH : "estimated (archived profile); render and listening review required" }
+      : { method: "imported-word-timestamps-exact-text", unit: "word", caption_width: profile.caption.segmentation ? CAPTION_WIDTH : "estimated (archived profile); render and listening review required" },
     sentences, captions,
   };
 };

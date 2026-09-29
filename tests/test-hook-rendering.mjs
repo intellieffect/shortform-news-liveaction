@@ -90,3 +90,16 @@ test('runtime uses compiled style snapshot rather than live global defaults',()=
  const html=r.at(30,HookOverlayTrack,{hook:{style:{...style,font_size:112},phrases:[phrase]}});
  assert.match(html,/font-size:112px/);
 });
+
+
+test('hierarchy renders distinct sizes/colors and underline belongs only to shrink-wrapped target',()=>{
+  const r=renderer(),{HookOverlayTrack}=r.load(resolve(root,'src/lib/editorial/HookOverlayTrack.tsx'));
+  const runs=[{text:'별이\n',role:'support',font_size:64,text_color:'#FFD43B'},{text:'사라진다고요?',role:'emphasis',underline:true,font_size:104,text_color:'#FFFFFF'}];
+  const html=r.at(40,HookOverlayTrack,{hook:{style,phrases:[{...phrase,runs}]}});
+  assert.match(html,/data-hook-role="support" style="font-size:64px;color:#FFD43B"/);
+  assert.match(html,/data-hook-role="emphasis" style="font-size:104px;color:#FFFFFF"/);
+  assert.match(html,/data-hook-underline-target="true" style="display:inline-block;position:relative;white-space:pre/);
+  assert.match(html,/data-hook-underline="true" style="position:absolute;left:0;right:0/);
+  assert.equal((html.match(/data-hook-underline="true"/g)||[]).length,1);
+  assert.match(html,/scale:1 1/);
+});

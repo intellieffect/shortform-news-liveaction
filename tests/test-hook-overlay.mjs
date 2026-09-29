@@ -36,7 +36,7 @@ const bundle = ({step = 0.5, phrases = 1} = {}) => {
     story: {schema_version: '1.0', pilot: 'hooky', mode: 'editorial-concept', script_policy: 'editorial-owned',
       creative_scope: {script: 'delegated', assets: 'delegated', diagrams: 'delegated', audio: 'delegated'},
       question: '달은 왜 멀어지나', takeaway: '아주 느리게 멀어진다', concept_order: ['moon', 'nail'],
-      hook: {narration_line: 's01', phrases: hookElements.map((e) => ({element_id: e.id, text_event_id: `${e.id}_text`, underline_event_id: `${e.id}_line`}))}},
+      hook: {narration_line: 's01', phrases: hookElements.map((e) => ({element_id: e.id, text_event_id: `${e.id}_text`, underline_event_id: `${e.id}_line`, runs: [{text:e.text.slice(0,e.text.indexOf(" ")+1),role:"support"},{text:e.text.slice(e.text.indexOf(" ")+1),role:"emphasis",underline:true}]}))}},
     concepts: {schema_version: '1.0', pilot: 'hooky', concepts: [
       {id: 'moon', question: '멀어지나', takeaway: '멀어진다', narration_lines: ['s01'], representation: {kind: 'diagram', role: 'evidence', why: '거리 변화'},
         state: {keep: [], add: hookElements.map((e) => e.id), remove: []}, mobile: {max_simultaneous_labels: 2}, elements: hookElements},
@@ -56,7 +56,7 @@ test('기준 fixture는 후킹 계약 없이도 통과하고 계약 적용 시 h
   const r = validateEditorialData({...b, hookPolicy: HOOK_POLICY});
   assert.deepEqual(r.errors, []);
   const [phrase] = r.timeline.hook_overlay.phrases;
-  assert.equal(r.timeline.hook_overlay.style.version, 'hook-style@1');
+  assert.equal(r.timeline.hook_overlay.style.version, 'hook-style@2');
   assert.equal(r.timeline.hook_overlay.style.underline_color, '#FFD43B');
   assert.equal(phrase.id, 'hook_main');
   assert.equal(phrase.text, '달이 도망간다');
@@ -143,7 +143,7 @@ test('문구 수·발화 속도가 달라도 고정 수치 없이 통과한다',
 test('화면 문구 예외는 유효하게 연결된 후킹에만, 출처 금지는 유지', () => {
   // 나레이션을 거의 그대로 옮긴 문구: 일반 라벨이면 restates 오류
   const restating = '달이 매년 조금씩 멀어진다';
-  let b = bundle(); b.concepts.concepts[0].elements[0].text = restating;
+  let b = bundle(); b.concepts.concepts[0].elements[0].text = restating; b.story.hook.phrases[0].runs = [{text:'달이 매년 조금씩 ',role:'support'},{text:'멀어진다',role:'emphasis',underline:true}];
   assert.deepEqual(codes(validateEditorialData({...b, screenTextPolicy: 'screen-text@1', hookPolicy: HOOK_POLICY})), []);
   // 같은 문구가 필요 라벨이면 기존 규칙 그대로
   b = bundle(); delete b.story.hook; Object.assign(b.concepts.concepts[0].elements[0], {role: 'necessary-label', text: restating});
@@ -184,4 +184,56 @@ test('후킹 사건은 본문 밖이나 후반 설명 앵커로 옮겨질 수 �
   const r = validateEditorialData({...b,hookPolicy:HOOK_POLICY});
   assert.ok(codes(r).includes('hook-frame-range'));
   assert.ok(codes(r).includes('hook-opening-anchor'));
+});
+
+
+test('new contract requires genuine hierarchy and one exact underline target; legacy stays unchanged', () => {
+  const b = bundle();
+  delete b.story.hook.phrases[0].runs;
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-runs'));
+  const old = validateEditorialData({...b,hookPolicy:'hook-overlay@1'});
+  assert.deepEqual(old.errors, []);
+  assert.equal(old.timeline.hook_overlay.style.version,'hook-style@1');
+  b.story.hook.phrases[0].runs = [{text:'달이 ',role:'support',font_size:104,text_color:'#FFFFFF'},{text:'도망간다',role:'emphasis',underline:true}];
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-hierarchy'));
+  b.story.hook.phrases[0].runs[0].font_size = 64;
+  assert.deepEqual(validateEditorialData({...b,hookPolicy:HOOK_POLICY}).errors,[]);
+  b.story.hook.phrases[0].runs[1].text = '다른 말';
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-runs'));
+});
+
+test('underline target cannot silently span lines or include padding text',()=>{
+  for (const text of ['큰\n문구',' 큰 문구','큰 문구 ']) {
+    const b=bundle();b.concepts.concepts[0].elements[0].text='보조 '+text;
+    b.story.hook.phrases[0].runs=[{text:'보조 ',role:'support'},{text,role:'emphasis',underline:true}];
+    assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-runs'));
+  }
+});
+
+
+test('malformed runs report validation errors instead of throwing',()=>{
+  for (const runs of [null,{},'text',[null],[{text:'달이 도망간다',role:'emphasis',underline:true,text_color:3}]]) {
+    const b=bundle();b.story.hook.phrases[0].runs=runs;
+    assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-runs'));
+  }
+});
+
+
+test('compiled run styles are resolved snapshots and explicit legacy migration checks hierarchy',()=>{
+  const b=bundle();
+  const r=validateEditorialData({...b,hookPolicy:HOOK_POLICY});
+  assert.equal(r.timeline.hook_overlay.phrases[0].runs[0].font_size,64);
+  assert.equal(r.timeline.hook_overlay.phrases[0].runs[1].font_size,104);
+  assert.equal(r.timeline.hook_overlay.phrases[0].runs[1].text_color,'#FFFFFF');
+  b.story.hook.phrases[0].runs=[{text:'달이 도망간다',role:'emphasis',underline:true}];
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:'hook-overlay@1'})).includes('hook-hierarchy'));
+});
+
+
+test('underline target width is checked with the actual font before rendering',()=>{
+  const b=bundle();
+  b.story.hook.phrases[0].layout={width:200};
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-width'));
+  b.story.hook.phrases[0].layout=null;
+  assert.ok(hookCodes(validateEditorialData({...b,hookPolicy:HOOK_POLICY})).includes('hook-layout'));
 });

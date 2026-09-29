@@ -90,4 +90,4 @@ node scripts/produce.mjs finish <id> <token>
 
 분량을 본문 기준으로 요청한 경우 `start --duration-basis content`를 사용한다. 전체 영상 분량이면 기본값 `total`을 유지한다. 본문 뒤 자료 크레딧은 본문 분량에 포함하지 않으며 실제 렌더 전체 길이는 별도로 검사한다.
 
-새 편은 `hook-overlay@1`을 request에 기록한다. 원고 첫 문장과 화면용 후킹 연결·모션 작성은 [후킹 공통 경로](hook-overlay.md)를 따른다. start는 예시 후킹 문구나 타이밍을 복사하지 않는다.
+새 편은 `hook-overlay@2`을 request에 기록한다. 원고 첫 문장과 화면용 후킹 연결·모션 작성은 [후킹 공통 경로](hook-overlay.md)를 따른다. start는 예시 후킹 문구나 타이밍을 복사하지 않는다.

@@ -74,3 +74,5 @@ resume과 intent의 screen_text는 선언 문구·동시 자막·시점 누락�
 전체 시안에서 실제 발화·앞뒤 흐름과 함께 이월 사항을 확인하고 [전체 검수·수정](review-loop.md)을 수행한다. 최종 visual 검수의 explanations에는 concept_id/moment_id, 실제 observed_subject/action/result, text_dependency, evidence, basis(observed/code_inference/unverified), verdict(pass/changes_requested/unverified)를 기록한다. 핵심 설명 실패는 blocking, 확인 수단 부재는 incomplete로 구분한다. 코드 계산·정지 표본·초기 시험만으로 최종 동작 설명을 통과시키지 않는다. 최종 동작 설명의 pass에는 해당 개념의 실제 연속 확인 범위가 필요하며, 전체 이야기·호흡·음향은 별도로 검수한다.
 
 최종 text_review는 실제 추가 문구와 고정 자막의 읽기 부담을 observation·evidence에 연결한다. JSX·중복 경고는 개수로 판정하지 않는다. 수정 뒤에는 원래 문제가 어떻게 달라졌는지 실제로 재확인하며 바뀌지 않은 부분까지 무조건 다시 검수하지 않는다.
+
+후킹의 보조·강조 구절은 크기/색 위계를 갖추고 `story.hook.phrases[].runs`에 지정한다. 정확한 구조와 밑줄 대상은 후킹 계약을 따른다. 밑줄 완성 폭은 선택한 강조 구절과 일치해야 한다. 말자막은 실제 폰트 폭과 의미 단위를 함께 고려하며 수식어·명사구를 불필요하게 끊지 않는다. 문장 쉼표는 다음 시점 자막으로 분할하고 숫자 내부 쉼표는 보존한다. 코드 검증 이후 실제 발화·읽힘·모바일 UI 가림을 확인한다.

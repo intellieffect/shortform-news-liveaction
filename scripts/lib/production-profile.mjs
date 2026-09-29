@@ -19,6 +19,7 @@ export const productionProfileErrors = (profile) => {
     if (!Number.isInteger(profile?.canvas?.[key]) || profile.canvas[key] <= 0) errors.push(`canvas.${key}는 양의 정수여야 한다`);
   }
   const caption = profile?.caption;
+  if (caption?.segmentation != null && caption.segmentation !== "font-semantic@1") errors.push("알 수 없는 caption.segmentation 계약");
   if (caption?.max_lines != null && caption.max_lines !== 1) errors.push("caption.max_lines는 1이어야 한다");
   for (const key of ["preset", "font_family", "color", "accent", "backdrop"]) {
     if (typeof caption?.[key] !== "string" || !caption[key].trim()) errors.push(`caption.${key} 문자열이 필요하다`);

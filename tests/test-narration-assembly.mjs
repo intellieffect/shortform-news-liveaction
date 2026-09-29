@@ -23,6 +23,8 @@ test("reuses actual alignment, maps explicit caption substitutions, and keeps so
   assert.equal(result.sentences[1].caption_words[0].text, "10배입니다.");
   assert.equal(result.captions.at(-1).start, 1.1);
   assert.equal(result.captions.at(-1).end, 2);
+  assert.match(result.alignment.caption_width, /^measured with GmarketSans TTF advance widths/);
+  assert.match(result.alignment.caption_width, /still render and listening review required/);
   assert.match(result.source.narration_sha256, /^[0-9a-f]{64}$/);
   const merged = assembleNarration({ ...options, narrationText: "솜사탕입니다.\n열 배입니다.\n" });
   assert.deepEqual(merged.sentences[0].words, [{ text: "솜사탕입니다.", start: 0.1, end: 1 }]);

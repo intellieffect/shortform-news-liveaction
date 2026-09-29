@@ -1,7 +1,7 @@
-import {HOOK_STYLE, hookLayoutIssues} from "./hook-layout.mjs";
-// 공통 후킹 오버레이 계약 (hook-overlay@1). 문서: plugin/skills/shortform-news-pipeline/reference/hook-overlay.md
+import {HOOK_STYLE, LEGACY_HOOK_STYLE, hookLayoutIssues, hookRunsIssues, compileHookRuns, hookTargetWidthIssues} from "./hook-layout.mjs";
+// 공통 후킹 오버레이 계약 (hook-overlay@2, 기존 @1 호환). 문서: plugin/skills/shortform-news-pipeline/reference/hook-overlay.md
 // 구조만 검사한다 — 문구의 의미·매력·읽기 시간은 원고·실물 검수 몫이다. 시간 수치를 고정하지 않는다.
-export const HOOK_POLICY = "hook-overlay@1";
+export const HOOK_POLICY = "hook-overlay@2";
 export const HOOK_ROLE = "hook";
 
 const object = (value) => value && typeof value === "object" && !Array.isArray(value);
@@ -28,8 +28,8 @@ export const linkedHookElementIds = ({ story, concepts }) => new Set(
 export const validateHookOverlay = ({ story, concepts, lines, events, fps, totalFrames, policy = null }) => {
   const errors = [];
   const issue = (code, where, message) => errors.push({ code, where, message });
-  if (policy != null && policy !== HOOK_POLICY) issue("hook-policy", "request.json hook_overlay", `알 수 없는 후킹 계약: ${policy}`);
-  const required = policy === HOOK_POLICY;
+  if (policy != null && ![HOOK_POLICY, "hook-overlay@1"].includes(policy)) issue("hook-policy", "request.json hook_overlay", `알 수 없는 후킹 계약: ${policy}`);
+  const required = policy === HOOK_POLICY || policy === "hook-overlay@1";
   const hook = story?.hook;
   const linked = linkedHookElementIds({ story, concepts });
 
@@ -75,6 +75,10 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
     if (!found) { issue("hook-element-missing", where, `element ${elementId}가 없다`); continue; }
     const { concept, element } = found;
     errors.push(...hookLayoutIssues(phrase.layout, where + '.layout'));
+    const runErrors = hookRunsIssues(phrase.runs, element.text, where + '.runs', policy === HOOK_POLICY);
+    errors.push(...runErrors);
+    const runs = Array.isArray(phrase.runs) && !runErrors.length ? compileHookRuns(phrase.runs, phrase.layout) : null;
+    if (runs) errors.push(...hookTargetWidthIssues(runs, phrase.layout, where));
     if (concept.id !== openingConcept?.id) issue("hook-opening-concept", where, "후킹 문구는 첫 발화를 포함한 같은 도입 개념에 둔다");
     if (element.kind !== "text" || element.role !== HOOK_ROLE) issue("hook-element-role", where, `${elementId}는 kind:"text", role:"hook"이어야 한다`);
     if (!hasText(element.text)) issue("hook-element-text", where, `${elementId}에 표시할 text가 없다`);
@@ -110,8 +114,18 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
     const previous = compiled.at(-1);
     if (pair.text && previous && pair.text.from < previous.text_event.from)
       issue("hook-phrase-order", where, "문구는 등장 순서대로 적는다");
-    if (pair.text && pair.underline) compiled.push({ id: elementId, text: element.text, text_event: pair.text, underline_event: pair.underline, ...(phrase.layout ? {layout: {...phrase.layout}} : {}) });
+    if (pair.text && pair.underline) compiled.push({ id: elementId, text: element.text, text_event: pair.text, underline_event: pair.underline, ...(phrase.layout ? {layout: {...phrase.layout}} : {}), ...(runs ? {runs} : {}) });
+  }
+  if ((policy === HOOK_POLICY || compiled.some(p => p.runs)) && !errors.length) {
+    const styled = compiled.flatMap(phrase => (phrase.runs ?? []).map(run => ({
+      role: run.role,
+      size: run.font_size,
+      color: run.text_color,
+    })));
+    const support = styled.filter(run => run.role === 'support'), emphasis = styled.filter(run => run.role === 'emphasis');
+    if (!support.length || !emphasis.length || !support.some(a => emphasis.some(b => a.size !== b.size || a.color.toLowerCase() !== b.color.toLowerCase())))
+      issue('hook-hierarchy', 'story.json hook.phrases', '보조·강조 구절 사이에 실제 크기 또는 색의 위계가 필요하다. 문구 개수나 두 단계 동작은 강제하지 않는다');
   }
   const valid = !errors.length;
-  return { errors, overlay: valid ? { style: structuredClone(HOOK_STYLE), phrases: compiled } : null, exemptElementIds: valid ? linked : new Set() };
+  return { errors, overlay: valid ? { style: structuredClone(policy === HOOK_POLICY || compiled.some(p => p.runs) ? HOOK_STYLE : LEGACY_HOOK_STYLE), phrases: compiled } : null, exemptElementIds: valid ? linked : new Set() };
 };

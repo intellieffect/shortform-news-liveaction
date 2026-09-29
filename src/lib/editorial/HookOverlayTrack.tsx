@@ -23,7 +23,7 @@ const HookPhrase: React.FC<{phrase: Phrase; frame: number; hookStyle: HookStyle}
       } else continueRender(handle);
     });
     return () => {active = false; continueRender(handle);};
-  }, [visible, phrase.id, s.width, s.font_size, s.center_y, phrase.text, delayRender, continueRender, cancelRender]);
+  }, [visible, phrase.id, s.width, s.font_size, s.center_y, phrase.text, phrase.runs, delayRender, continueRender, cancelRender]);
   if (!visible) return null;
   return <Interactive.Div ref={ref} name={`hook ${phrase.id}`} data-hook-overlay={phrase.id} style={{
     position: 'absolute', left: hookStyle.center_x - s.width / 2, top: s.center_y,
@@ -32,7 +32,19 @@ const HookPhrase: React.FC<{phrase: Phrase; frame: number; hookStyle: HookStyle}
     fontSize: s.font_size, lineHeight: hookStyle.line_height, whiteSpace: 'pre-line', wordBreak: 'keep-all',
     textShadow: s.shadow, opacity: eventOpacity(frame, phrase.text_event),
   }}>
-    <span style={{display: 'inline-block', maxWidth: '100%'}}>
+    {phrase.runs ? phrase.runs.map((run, index) => {
+      return <span key={index} data-hook-role={run.role} style={{fontSize: run.font_size, color: run.text_color}}>
+        {run.underline ? <span data-hook-underline-target style={{display: 'inline-block', position: 'relative', whiteSpace: 'pre', marginBottom: hookStyle.underline_gap + hookStyle.underline_height}}>
+          {run.text}
+          <Interactive.Div name={`hook underline ${phrase.id}`} data-hook-underline style={{
+            position: 'absolute', left: 0, right: 0, bottom: -hookStyle.underline_gap - hookStyle.underline_height,
+            height: hookStyle.underline_height, backgroundColor: hookStyle.underline_color, boxShadow: s.shadow,
+            scale: `${eventProgress(frame, phrase.underline_event)} 1`, transformOrigin: 'center',
+            opacity: eventOpacity(frame, phrase.underline_event),
+          }} />
+        </span> : run.text}
+      </span>;
+    }) : <span style={{display: 'inline-block', maxWidth: '100%'}}>
       {phrase.text}
       <Interactive.Div name={`hook underline ${phrase.id}`} style={{
         height: hookStyle.underline_height, marginTop: hookStyle.underline_gap,
@@ -40,7 +52,7 @@ const HookPhrase: React.FC<{phrase: Phrase; frame: number; hookStyle: HookStyle}
         scale: `${eventProgress(frame, phrase.underline_event)} 1`, transformOrigin: 'center',
         opacity: eventOpacity(frame, phrase.underline_event),
       }} />
-    </span>
+    </span>}
   </Interactive.Div>;
 };
 

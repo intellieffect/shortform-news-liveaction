@@ -7,7 +7,7 @@ import {productionProfileErrors,readProductionProfile} from '../scripts/lib/prod
 const p=JSON.parse(readFileSync(new URL('../config/production-profile.json',import.meta.url)));
 const words=t=>t.split(' ').map((text,i)=>({text,start:i,end:i+.8}));
 test('승인 좌표와 한줄 제약, 과거 프로필 보존',()=>{
- assert.deepEqual([p.caption.top,p.caption.side_inset,p.caption.max_lines,p.caption.box_height],[1400,204,1,94]);
+ assert.deepEqual([p.caption.top,p.caption.side_inset,p.caption.max_lines,p.caption.box_height],[1400,150,1,94]);
  assert.deepEqual(productionProfileErrors(p),[]);
  assert.ok(productionProfileErrors({...p,caption:{...p.caption,max_lines:2}}).length);
  assert.equal(readProductionProfile({id:p.id,version:'1.2.0'}).caption.top,1523);

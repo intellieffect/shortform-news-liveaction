@@ -4,7 +4,7 @@
   "guide": "config/production-defaults.md",
   "logo_package": "presets/hani/brand-assets/v3/manifest.json",
   "production_prompt": {
-    "version": "v2-original@3",
+    "version": "v2-original@4",
     "path": "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"
   }
 }
