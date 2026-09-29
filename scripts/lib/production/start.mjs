@@ -40,6 +40,7 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   visual.production_profile = { id: profile.id, version: profile.version };
   visual.canvas = profile.canvas;
   visual.caption = { preset: profile.caption.preset };
+  visual.attribution = {sources:[], pages:[{duration:5, categories:[{title:"참조 기사", lines:[url]}]}]};
   const defaults = readProjectDefaults(repo, profile);
   const prompt = prepareProductionPrompt(repo, url);
   const referenceSet = captureReferences(repo);

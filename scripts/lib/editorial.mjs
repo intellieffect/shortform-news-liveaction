@@ -1,3 +1,4 @@
+import {compileAttribution} from "./attribution.mjs";
 import {validateVisualPlan} from './visual-plan.mjs';
 import {SCREEN_TEXT_POLICY, screenTextPolicyIssues} from './screen-text-policy.mjs';
 import { createHash } from "node:crypto";
@@ -90,8 +91,8 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
   const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
   const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
   // screen-text@1 편만 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
-  if (screenTextPolicy === SCREEN_TEXT_POLICY) {
-    const policy = screenTextPolicyIssues({ concepts, narration });
+  if (["screen-text@1", SCREEN_TEXT_POLICY].includes(screenTextPolicy)) {
+    const policy = screenTextPolicyIssues({ concepts, narration, policy: screenTextPolicy });
     errors.push(...policy.errors); warnings.push(...policy.warnings);
   }
   let lines = [];
@@ -348,6 +349,14 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     audio_cues: audioCues,
     proof_frames: proofFrames,
   };
+  const credits = compileAttribution(visualSystem?.attribution, {fps, contentFrames:motion?.total_frames, assets:visualSystem?.media?.assets ?? [], required:screenTextPolicy === "screen-text@2"});
+  errors.push(...credits.errors);
+  if (credits.attribution) {
+    timeline.attribution = credits.attribution;
+    timeline.total_frames = credits.totalFrames;
+    for (const [i, cue] of credits.attribution.sources.entries()) timeline.proof_frames.push({id:`source${i+1}`, frame:cue.from, labels:["자료 출처"]});
+    for (const [i, page] of credits.attribution.pages.entries()) timeline.proof_frames.push({id:`credit${i+1}`, frame:page.from, labels:["끝 크레딧"]});
+  }
   if (profile) {
     timeline.production_profile = structuredClone(profile);
     timeline.source.production_profile_sha256 = sha256(JSON.stringify(profile));

@@ -1,3 +1,4 @@
+import {AttributionTrack} from "../lib/editorial/AttributionTrack";
 import { AbsoluteFill, Composition, Img, Sequence } from "remotion";
 import { Audio } from "@remotion/media";
 import { EditorialCaptionTrack } from "../lib/editorial";
@@ -57,6 +58,7 @@ export const EditorialFrame: React.FC<{ pilot: EditorialPilotData }> = ({ pilot 
       <Episode pilot={pilot} />
       {logo ? <Img src={pilot.file(logo.file)} style={{ position: "absolute", left: logo.x, top: logo.y, width: logo.width, height: logo.height, objectFit: "contain" }} /> : null}
       <EditorialCaptionTrack lines={pilot.narration.captions ?? pilot.narration.lines} fps={pilot.fps} profile={pilot.profile} />
+      <AttributionTrack attribution={pilot.timeline.attribution} />
     </AbsoluteFill>
   );
 };

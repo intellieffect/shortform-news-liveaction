@@ -42,6 +42,11 @@ export type EditorialTimeline = {
   audio_cues: CompiledAudioCue[];
   proof_frames: EditorialProofFrame[];
   production_profile?: ProductionProfile;
+  attribution?: {
+    style: typeof import("../../../config/attribution-style.json");
+    sources: {asset_id:string; text:string; from:number; end:number}[];
+    pages: {from:number; end:number; categories:{title:string; lines:string[]}[]}[];
+  };
   source: {
     narration_word_sha256: string;
     story_sha256: string;

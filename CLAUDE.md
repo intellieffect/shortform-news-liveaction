@@ -79,7 +79,7 @@ Call them as `@agent-shortform-news:<name>`. They judge and never edit; do not r
 
 - Animate with `useCurrentFrame()` + `interpolate()` only. CSS `transition`/`animation` and Tailwind `animate-*`/`transition-*` do not appear in renders.
 - Put `interpolate()` inline in `style`; prefer `scale`/`translate`/`rotate` over `transform`; use `Interactive.Div` so Studio can write edits back to code.
-- Safe area at 1080 wide: 80px sides, 100px top/bottom. Headline ≥84px, secondary text ≥44px.
+- 1080×1920 배치는 [공통 배치](config/layout-rules.md)의 수치를 사용한다. 중앙 x540 유지, 고정 UI와 각 정보 요소의 겹침만 회피하며 Google 광고 사각형을 강제 경계로 사용하지 않는다. Headline ≥84px, secondary text ≥44px; 자료 출처는 별도 승인값32px.
 - Media handling (trim, crop, metadata) goes through `@remotion/media` + Mediabunny. Never pin `mediabunny` by hand — `npx remotion upgrade` matches it.
 - Node + npm only. Do not switch to pnpm or bun; one lockfile.
 - Upgrade with `npx remotion upgrade` (packages and vendored skills together). The `.claude/skills/remotion-*` skills are vendored by that command — never move them into `plugin/`.

@@ -16,6 +16,7 @@ writeFileSync(entry, `
 import React from "react";
 import { AbsoluteFill, Composition, registerRoot, staticFile } from "remotion";
 import { loadFont } from "@remotion/fonts";
+import {AttributionTrack} from "../../../src/lib/editorial/AttributionTrack";
 import { EditorialCaptionTrack, type EditorialCaptionLine } from "../../../src/lib/editorial/visual";
 import { DEFAULT_PRODUCTION_PROFILE, type ProductionProfile } from "../../../src/lib/editorial/profile";
 void loadFont({ family: "GmarketSans", url: staticFile("fonts/GmarketSansTTFMedium.ttf"), weight: "500" });
@@ -23,9 +24,10 @@ void loadFont({ family: "GmarketSans", url: staticFile("fonts/GmarketSansTTFBold
 void loadFont({ family: "Pretendard", url: staticFile("fonts/Pretendard-Regular.otf"), weight: "400" });
 void loadFont({ family: "Pretendard", url: staticFile("fonts/Pretendard-Bold.otf"), weight: "700" });
 void loadFont({ family: "Pretendard", url: staticFile("fonts/Pretendard-ExtraBold.otf"), weight: "800" });
-const Page: React.FC<{ lines: EditorialCaptionLine[]; profile: ProductionProfile }> = ({ lines, profile }) => (
+const Page: React.FC<{ lines: EditorialCaptionLine[]; profile: ProductionProfile; attribution?: any }> = ({ lines, profile, attribution }) => (
   <AbsoluteFill style={{ backgroundColor: "#071622", color: "white" }}>
     <EditorialCaptionTrack lines={lines} profile={profile} fps={30} />
+    <AttributionTrack attribution={attribution} />
   </AbsoluteFill>
 );
 const Root = () => <Composition id="CaptionCheck" component={Page} width={1080} height={1920} fps={30} durationInFrames={300} defaultProps={{ lines: [], profile: DEFAULT_PRODUCTION_PROFILE }} />;
@@ -35,11 +37,12 @@ const profile = JSON.parse(readFileSync(join(repo, "config/production-profile.js
 const legacy = JSON.parse(readFileSync(join(repo, "config/production-profiles/hani-shortform-1.0.0.json")));
 const lines = [
   { id: "first", text: "한 줄 자막입니다.", start: 0, end: 1.4, emphasis: ["자막"] },
-  { id: "next", text: "600km로 상승합니다.", start: 1.4, end: 3, emphasis: ["600km로"] },
+  { id: "next", text: "600km로", start: 1.4, end: 2, emphasis: ["600km로"] },
+  { id: "last", text: "상승합니다.", start: 2, end: 3 },
 ];
 const serveUrl = await bundle({ entryPoint: entry, publicDir: join(repo, "public"), symlinkPublicDir: true });
-const render = async (name, captions, config = profile, frame = 18, scale = 1) => {
-  const inputProps = { lines: captions, profile: config };
+const render = async (name, captions, config = profile, frame = 18, scale = 1, attribution) => {
+  const inputProps = { lines: captions, profile: config, attribution };
   const composition = await selectComposition({ serveUrl, id: "CaptionCheck", inputProps });
   return renderStill({ serveUrl, composition, inputProps, frame, scale,
     output: join(output, `${name}.png`), imageFormat: "png", logLevel: "error" });
@@ -52,3 +55,10 @@ await assert.rejects(render("newline-must-fail", [{ ...lines[0], text: "첫째\n
 await render("legacy-two-lines", [{ ...lines[0], text: "이전 편의\n두 줄 자막" }], legacy);
 console.log("caption runtime: PASS — 원해상/모바일 한 줄, 화면 밖의 후속 구간 폭 초과·줄바꿈 거절, 이전 프로필 두 줄 보존");
 console.log("검사 이미지: " + output);
+
+const creditStyle=JSON.parse(readFileSync(join(repo,"config/attribution-style.json")));
+const attribution={style:creditStyle,sources:[{asset_id:"moon",text:"자료: NASA Scientific\nVisualization Studio",from:0,end:90}],pages:[{from:90,end:240,categories:[{title:"참조 기사",lines:["한겨레 · 달 관측의 날"]},{title:"이미지·영상",lines:["NASA Scientific Visualization Studio"]}]}]};
+await render("source-credit",lines,profile,18,1,attribution);
+await render("end-credits",lines,profile,100,1,attribution);
+await assert.rejects(render("source-overflow",lines,profile,18,1,{...attribution,sources:[{...attribution.sources[0],text:"긴 출처 ".repeat(120)}]}),/attribution-overflow/);
+console.log("attribution runtime: PASS — 공통 출처·카테고리별 크레딧, 넘침 거절");

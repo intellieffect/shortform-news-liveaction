@@ -15,7 +15,7 @@ Higgsfield의 생성·편집 기능을 적극적으로 활용해 이해와 몰�
 
 기사 본문과 필요한 1차 근거·고유 대상의 형태를 확인하고 그 범위에서 외부 검색과 자료 확보를 진행해줘. 계획·예측·가정·조건·불확실성을 이미 실현된 사실처럼 바꾸지 마. 영상 상단 고정 제목·장면명·설명이나 불필요한 제작 주석은 넣지 마. 필요한 이름·수치·단위·귀속·조건은 관련 대상·수치 곁이나 자막에 필요한 순간 붙이고, 제목·자막·주석으로 같은 설명을 겹치지 마.
 
-이미지·영상 생성은 실제 호스트의 Higgsfield MCP generate_image/generate_video를, 내레이션은 Higgsfield generate_audio를 사용해줘. 이 프롬프트에서는 내레이션 제공자 기본값보다 이 지시를 우선하고, 제공자 선택과 실제 사용한 음성·정렬·속도 조절을 제작 노트에 기록해. 실제 호출 가능한 기능을 확인하고, 실행할 수 없는 기능은 실행한 것처럼 기록하지 말고 제약을 밝혀줘. 생성은 visual-system.generation_jobs와 media.assets[].generation_job에 실제 호출·입력·출력을 연결해줘. 음성은 narration begin이 성공한 뒤 생성하고 finish로 기록해줘. 최종 조립은 `npm run produce -- run <id> render`로 narration.json → timeline → sync를 연결하고, 수정 시 낭독 원문·실제 음성·자막·화면 편집 시간을 함께 갱신해줘. 세부 절차는 체크아웃의 pipeline reference/visual-production.md와 reference/production-state.md를 따라줘.
+이미지·영상 생성은 실제 호스트의 Higgsfield MCP generate_image/generate_video를 사용해줘. 내레이션은 Typecast를 기본으로 사용하고, Typecast를 사용할 수 없으면 Higgsfield 오디오로 대체해줘. 제공자 선택과 실제 사용한 음성·정렬·속도 조절을 제작 노트에 기록해. 실제 호출 가능한 기능을 확인하고, 실행할 수 없는 기능은 실행한 것처럼 기록하지 말고 제약을 밝혀줘. 생성은 visual-system.generation_jobs와 media.assets[].generation_job에 실제 호출·입력·출력을 연결해줘. 음성은 narration begin이 성공한 뒤 생성하고 finish로 기록해줘. 최종 조립은 `npm run produce -- run <id> render`로 narration.json → timeline → sync를 연결하고, 수정 시 낭독 원문·실제 음성·자막·화면 편집 시간을 함께 갱신해줘. 세부 절차는 체크아웃의 pipeline reference/visual-production.md와 reference/production-state.md를 따라줘.
 
 화면 편집은 src/editorial/episodes/<id>.tsx에서 이번 편에 맞게 작성해줘. 자막은 config/production-profile.json의 동결 프리셋을 적용하고 주요 행동이 자막 구역에 가리지 않게 설계해줘. 수령 로고는 start와 공통 화면의 연결·배치를 사용하고 생성물이나 장면 코드에 중복 삽입하지 마.
 

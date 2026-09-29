@@ -1,0 +1,5 @@
+{
+  "version": "1.0.0",
+  "source": {"left":80,"top":320,"width":620,"font_size":32,"line_height":42,"color":"#B8BEC5","shadow":"0 1px 3px rgba(0,0,0,.65)"},
+  "end": {"left":80,"top":320,"width":780,"height":1220,"font_size":32,"line_height":44,"category_gap":20,"color":"#EEEEEE","background":"#000000"}
+}
