@@ -1,8 +1,9 @@
 import {useLayoutEffect, useRef} from 'react';
 import {Interactive, useCurrentFrame, useDelayRender} from 'remotion';
-import type {EditorialTimeline} from './types';
+import type {EditorialTimeline, LegacyHookStyle} from './types';
+import {AuthoredHookPhrase} from './HookComposition';
 import {eventOpacity, eventProgress} from './timing';
-type HookStyle = NonNullable<EditorialTimeline['hook_overlay']>['style'];
+type HookStyle = LegacyHookStyle;
 
 type Phrase = NonNullable<EditorialTimeline['hook_overlay']>['phrases'][number];
 
@@ -59,5 +60,5 @@ const HookPhrase: React.FC<{phrase: Phrase; frame: number; hookStyle: HookStyle}
 /** A separate shared layer; never suppresses the spoken caption track. */
 export const HookOverlayTrack: React.FC<{hook: EditorialTimeline['hook_overlay']}> = ({hook}) => {
   const frame = useCurrentFrame();
-  return <>{hook?.phrases.map(phrase => <HookPhrase key={phrase.id} phrase={phrase} frame={frame} hookStyle={hook.style} />)}</>;
+  return <>{hook?.phrases.map(phrase => phrase.rows ? <AuthoredHookPhrase key={phrase.id} phrase={phrase} frame={frame} hookStyle={hook.style} /> : <HookPhrase key={phrase.id} phrase={phrase} frame={frame} hookStyle={hook.style as LegacyHookStyle} />)}</>;
 };

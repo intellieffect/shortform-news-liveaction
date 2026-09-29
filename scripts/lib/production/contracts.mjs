@@ -89,7 +89,7 @@ export const recipe = (w, action) => {
     timeline: {
       deps: ["narration"],
       inputs: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p).concat(
-        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/attribution.mjs", "scripts/lib/hook-overlay.mjs", "scripts/lib/hook-layout.mjs", "config/hook-style.json", "config/hook-styles/hook-style-v1.json", "scripts/lib/caption-metrics.mjs", "package-lock.json", "config/attribution-style.json", "scripts/lib/screen-text-policy.mjs", "scripts/lib/visual-plan.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles")), walk(join(w.repo, "public/fonts"))),
+        ["config/production-profile.json", "scripts/lib/editorial.mjs", "scripts/lib/attribution.mjs", "scripts/lib/hook-overlay.mjs", "scripts/lib/hook-layout.mjs", "scripts/lib/hook-typography.mjs", "config/hook-styles/hook-style-v2.json", "config/hook-style.json", "config/hook-styles/hook-style-v1.json", "scripts/lib/caption-metrics.mjs", "package-lock.json", "config/attribution-style.json", "scripts/lib/screen-text-policy.mjs", "scripts/lib/visual-plan.mjs", "scripts/lib/production-profile.mjs", "scripts/compile-editorial-timeline.mjs"].map((x) => join(w.repo, x)), walk(join(w.repo, "config/production-profiles")), walk(join(w.repo, "public/fonts"))),
       required: ["story.json", "concepts.json", "motion.json", "visual-system.json"].map(p),
       outputs: [p("timeline.json")],
     },

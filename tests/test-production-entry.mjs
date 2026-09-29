@@ -66,8 +66,13 @@ try {
     assert.equal(newVisual.project_logo.y, 320);
     assert.equal(newVisual.attribution.pages[0].categories[0].lines[0], params.url);
     assert.equal(s.context.request.screen_text, "screen-text@2");
-    assert.equal(s.context.request.hook_overlay, "hook-overlay@2");
-    assert.equal(s.context.request.production_prompt.version, "v2-original@4");
+    assert.equal(s.context.request.hook_overlay, "hook-overlay@3");
+    assert.equal(s.context.hook_reference.status, "available");
+    assert.equal(s.context.hook_reference.font_identity, "unverified");
+    assert.equal(s.context.hook_reference.frames.length, 3);
+    assert.ok(s.context.hook_reference.frames.every(f => f.status === "verified" && existsSync(f.path)));
+    assert.match(s.context.hook_reference.guide.text, /원본 서체명/);
+    assert.equal(s.context.request.production_prompt.version, "v2-original@5");
     assert.match(s.context.production_prompt.text, /내레이션은 Typecast를 기본/);
     assert.equal(newVisual.media.assets.find(a => a.id === "project_logo").file, "editorial/brand-logo.png");
     assert.equal(createHash("sha256").update(readFileSync(join(repo, "news", id, "02_production/brand/logo.png"))).digest("hex"), newVisual.project_logo.sha256);
@@ -109,6 +114,19 @@ try {
     assert.equal(s.context.stage, "research");
     assert.equal(s.execution.engine.path, repo);
     assert.ok(s.context.instructions.every((file) => existsSync(file)));
+  });
+  check("resume도 실제 후킹 참고를 전달하며 손상·누락을 확인했다고 하지 않음", () => {
+    const ctx = productionStatus(id, {repo, includeContext:true}).context;
+    assert.equal(ctx.hook_reference.status, "available");
+    const frame = ctx.hook_reference.frames[0].path, bytes = readFileSync(frame);
+    writeFileSync(frame, "broken");
+    let reference = productionStatus(id, {repo, includeContext:true}).context.hook_reference;
+    assert.equal(reference.status, "unavailable");
+    assert.equal(reference.frames[0].status, "hash-mismatch");
+    rmSync(frame);
+    reference = productionStatus(id, {repo, includeContext:true}).context.hook_reference;
+    assert.equal(reference.frames[0].status, "missing");
+    writeFileSync(frame, bytes);
   });
   check("반복 시작·다른 층의 이전 결과를 덮어쓰지 않음", () => {
     assert.throws(() => startProduction(params), /이미 있다/);

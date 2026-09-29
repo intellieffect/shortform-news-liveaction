@@ -110,7 +110,7 @@
     "references:prepare": "node scripts/prepare-references.mjs",
     "references:render": "node scripts/render-reference.mjs",
     "references:test": "node --test tests/test-visual-references.mjs",
-    "hook:test": "node --test tests/test-hook-overlay.mjs tests/test-hook-rendering.mjs",
+    "hook:test": "node --test tests/test-hook-overlay.mjs tests/test-hook-composition.mjs tests/test-hook-rendering.mjs",
     "visual-production:test": "node --test tests/test-render-duration-basis.mjs tests/test-visual-production.mjs tests/test-screen-text-policy.mjs tests/test-hani-layout-policy.mjs",
     "scene:proof": "node scripts/scene-proof.mjs"
   },

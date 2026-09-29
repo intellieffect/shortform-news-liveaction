@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateEditorialData, narrationWordHash, normalizeNarration} from '../scripts/lib/editorial.mjs';
-import {HOOK_POLICY} from '../scripts/lib/hook-overlay.mjs';
+// runs 경로(@2) 회귀 — 작성 줄 rows(@3)는 test-hook-composition.mjs.
+import {HOOK_POLICY_V2 as HOOK_POLICY} from '../scripts/lib/hook-overlay.mjs';
 
 // 최소 editorial 편: 첫 줄 s01(후킹)과 이어지는 s02. 단어 시각은 초 단위, fps 30.
 const say = (text, start, step) => text.split(' ').map((w, i) => ({text: w, start: +(start + i * step).toFixed(3), end: +(start + i * step + step * 0.9).toFixed(3)}));

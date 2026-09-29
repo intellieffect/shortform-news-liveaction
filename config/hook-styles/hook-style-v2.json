@@ -1,0 +1,17 @@
+{
+  "version": "hook-style@2",
+  "center_x": 540,
+  "center_y": 900,
+  "width": 800,
+  "font_family": "GmarketSans",
+  "font_size": 104,
+  "min_font_size": 84,
+  "line_height": 1.18,
+  "text_color": "#FFFFFF",
+  "shadow": "0 3px 12px rgba(0,0,0,0.9)",
+  "underline_color": "#FFD43B",
+  "underline_height": 6,
+  "underline_gap": 14,
+  "support_font_size": 64,
+  "support_text_color": "#FFD43B"
+}

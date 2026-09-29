@@ -1,52 +1,49 @@
-# 첫 문장과 공통 후킹 — hook-overlay@2
+# 첫 문장과 공통 후킹 — hook-overlay@3
 
-나레이션 첫 문장부터 기사 사실에 근거해 관심과 계속 볼 이유를 만든다. 질문·대비·의외의 사실 등을 선택하되 문형·문장 길이·첫 몇 초를 고정하지 않는다. 음성 생성 전 editorial-judge가 첫 문장과 화면용 문구의 의미·조건·불확실성을 대조한다. 구조 검사만으로 후킹의 매력을 판정하지 않는다.
+첫 나레이션 문장 자체가 기사 사실에 근거해 관심과 계속 볼 이유를 만들어야 한다. 화면에는 **일반 말자막과 별개인 큰 중앙 부근 오버레이 + 노란 밑줄**을 사용한다. 문형·문구 수·두 단계 구조·절대 시간은 고정하지 않는다. 첫 문장과 화면용 구절은 같은 핵심과 사실·조건·불확실성을 보존한다.
 
-공통 표현은 **일반 말자막과 별개인 큰 중앙 부근 오버레이 자막 + 노란 밑줄**이다. 작은 선행 문구는 필수가 아니며 문구 수·구절 분할·줄바꿈은 편별 선택이다. 화면용 문구는 첫 문장을 그대로 복사할 필요는 없지만 그 핵심을 전달해야 한다. 도입의 후속 문장까지 관심을 확장할 수 있으나 후킹의 시작은 첫 발화에 연결한다.
+도입 조판 전 [실제 위성공해 참고 화면과 관측](hook-design-reference.md)을 읽고 프레임을 연다. `context.hook_reference`가 경로와 해시 확인 상태를 제공한다. 크기/색 두 가지를 다르게 했다는 사실만으로 참고 영상의 서체·위계·밀도·구도가 구현된 것은 아니다.
 
-## 작성·수정 경로
+## 단일 작성 경로
 
-1. 편별 원고의 첫 문장을 후킹으로 작성한다. `story.json.hook.narration_line`은 `narration.json` 첫 줄의 id다.
-2. `concepts.json`의 해당 개념에 `kind:"text", role:"hook", text:"실제 표시할 문구"` 요소를 작성한다. 이것이 화면 문구의 단일 원본이다. 문구를 바꾸려면 이 text를 수정한다.
-3. `story.json.hook.phrases`에 순서대로 `{element_id,text_event_id,underline_event_id,runs}`를 적는다. 작은 문구+큰 문구 두 칸을 강제하지 않는다. 문구가 한 개면 한 항목이다. `runs`로 그 안의 보조·강조 구절을 지정한다.
-4. `motion.json.events`에서 text 사건은 `kind:"label"`, underline 사건은 `kind:"motion"`으로 동일한 element_id와 concept_id를 참조한다. 각 사건의 `timing.from/settled/to/end`는 기존 `line + token_index + word + edge + offset_frames` 발화 앵커다. 등장 속도는 from→settled, 유지 시간은 settled→to, 퇴장은 to→end와 easing으로 정한다. 밑줄도 독립 사건으로 속도를 조절하되 글자의 생명주기 안에 둔다. 모든 구절은 첫 발화를 포함하는 같은 도입 개념에 두고 해당 개념의 발화 앵커를 사용한다.
-5. `editorial:check` → `editorial:compile` → `sync`로 반영한다. 관리 중인 편에서는 `produce run` 경로를 사용한다. 음성 수정 뒤 단어 정렬과 앵커를 갱신하고 다시 컴파일한다. timeline을 직접 수정하지 않는다.
+1. `story.hook.narration_line`은 `narration.json` 첫 줄 id다. `concepts.json` 첫 발화 개념의 `kind:"text", role:"hook", text`가 표시 문구의 원본이다.
+2. `story.hook.phrases[]`에 `{element_id,text_event_id,underline_event_id,layout,rows}`를 작성한다. `layout`은 `{width,center_y}`를 명시한다. 중심 x540은 공통이며 내부 줄 정렬과 구별한다.
+3. `rows[]`는 `{align,line_height,gap_after,runs,text_event_id?}`다. `line_height`·`gap_after`는 px다. `runs[]`는 `{text,role,underline?,font_family,font_weight,font_size,text_color,letter_spacing}`를 **모두 명시**한다(underline만 선택). role이 폰트·크기·색을 자동 결정하지 않는다. 줄의 runs.text를 이어 붙이고 줄 사이에 `\n`을 넣으면 concepts.text와 정확히 같아야 한다.
+4. `motion.json.events`에서 글자는 `kind:"label"`, 밑줄은 `kind:"motion"`으로 같은 element와 concept를 참조한다. 각 `from/settled/to/end`는 `line + token_index + word + edge + offset_frames` 발화 앵커다. 문구 전체 사건 안에서 줄별 `text_event_id`를 선택적으로 지정할 수 있다. 생략하면 문구 사건을 따른다. 밑줄은 대상 줄의 노출 범위 안에 둔다. 전체 도입은 첫 발화를 포함하는 개념과 그 발화 앵커를 사용한다.
+5. `editorial:check` → `editorial:compile` → `sync`. 관리 중인 편은 `produce run` 경로를 사용한다. 컴파일 timeline을 직접 수정하지 않는다. 음성을 바꾸었을 때만 정렬과 앵커를 재산출한다. 후킹만 수정하는 작업에서 승인된 음성·말자막을 재작성하지 않는다.
 
-새 start는 request에 `hook_overlay:"hook-overlay@2"`을 기록하지만 예시 문구·절대 시간·문장 구조를 복사하지 않는다. 이 계약의 편에서 hook 누락은 오류다. 기존 `@1` 편은 runs 없는 구조와 `config/hook-styles/hook-style-v1.json`을 유지한다. 원래 request/원문을 덮어써 계약을 소급 변경하지 않는다. runs를 명시적으로 추가하는 경우에만 새 조판을 선택하며 같은 위계·밑줄 검사를 적용한다. 제공된 완성 대본은 원문을 덮어쓰지 않으며 편집 권한 밖의 문장 변경을 자동 수행하지 않는다.
+등록 서체는 GmarketSans 500/700, Pretendard 400/700/800이다. support≥44px, emphasis≥84px이며 원본의 래스터 글자 높이와 font-size를 혼동하지 않는다. `line_height`는 줄 최대 font-size 이상, `letter_spacing`은 px다. 보조/강조 두 역할 사용을 강제하지 않는다. 시각적 위계의 적합성은 실제 화면에서 검수한다.
 
-## 화면 합성
+각 문구에는 앞뒤 공백·줄바꿈 없는 `emphasis` run 하나를 `underline:true`로 지정한다. 밑줄은 로드된 서체와 CSS 자간을 포함한 그 run의 조판 폭을 사용한다(래스터 잉크의 외곽 픽셀 폭과는 구별한다). 한 줄에 여러 run을 놓을 수 있으며 자동 줄바꿈·자동 글자 축소는 하지 않는다. 대상이나 독립 문구가 바뀌면 phrases를 나눈다.
 
-현재 `editorial-concept`의 `EditorialFrame`이 편별 화면 위에 HookOverlayTrack을 합성한다. 말자막 트랙은 숨기거나 대체하지 않는다. `role:hook`의 prose 예외는 유효하게 연결된 후킹 요소에만 적용하며 다른 설명 문구의 제한을 해제하지 않는다.
-
-`config/hook-style.json`은 현재 조판의 출발값이며 버전과 함께 timeline.hook_overlay.style에 보존한다. 렌더는 이 스냅숏을 사용한다. 중심 x540, 큰 글자, 노란 밑줄이 공통이다. 시간 관련 수치는 이 스타일에 두지 않는다. 글자 크기·폭·높이 위치·대비는 `story.hook.phrases[].layout`의 `font_size`(84px 이상), `width`, `center_y`, `text_color`(#RRGGBB), `shadow`로 조절할 수 있다. 글자 크기104px·폭800px·중심y900은 조판 출발값이며 고정 고객 수치가 아니다. 배경과 길이에 따라 줄바꿈·문구 구성·배치를 수정하며 자동 글자 축소를 하지 않는다. 말자막의 한 줄 규칙은 후킹에는 적용하지 않는다. 실제 UI 가림은 [공통 배치](../../../../config/layout-rules.md)의 요소별 판정을 따른다. 모든 내용을 광고 safe-zone 사각형 안에 모으지 않는다.
-
-동일 요소를 EditorialScreenText로 다시 요청해도 공통 후킹과 중복 표시하지 않는다. 과거 장면에 직접 작성한 JSX/legacy hook_title은 자동 제거할 수 없으므로 기존 편 이행 때 해당 후킹을 제거하거나 공통 경로로 바꾼다. 두 구현을 함께 유지하지 않는다.
-
-## 검증
-
-코드는 첫 줄 연결, 문구·사건 존재와 소유 개념, 중복 참조, 시간 순서, 글자·밑줄의 노출 범위와 음성 정렬 변경을 확인한다. 의미 일치·관심·사실 보존·읽기 시간·배경 대비·실제 모바일 UI는 원고/실물 검수 대상이다.
-
-문구 길이·발화 속도·구절 수가 다른 짧은 사례로 확인한다. still은 배치·가독성, 짧은 재생은 등장·밑줄·유지·퇴장과 발화 동기를 확인한다. 위성공해의 0.2초/0.6초/1초를 합격 조건으로 사용하지 않는다. 새 기사 전체 한 편 제작이나 매번 사용자 중간 승인 단계를 추가하지 않는다. 단계1~5 코드 검증과 단계6 실제 샘플 검증은 구분해 기록한다.
-
-## 시각적 위계와 밑줄 대상
-
-새 계약은 전체 후킹 안에 `support`·`emphasis`를 구분하고 실제 크기 또는 색의 차이를 요구한다. 이는 선행 문구→제목 두 단계나 두 문구를 강제하는 규칙이 아니다. 한 문구 안의 부분 강조, 여러 문구의 순차 등장 모두 가능하다. 위성공해의 문장 단위·속도·길이를 복사하지 않는다.
-
-`runs`는 `{text,role,underline?,font_size?,text_color?}` 목록이다. 순서대로 text를 합치면 concepts 요소의 text와 공백·줄바꿈까지 정확히 같아야 한다. 문구 원본과 스타일 지정이 불일치하면 오류다. 보조 기본64px/노란색, 강조 기본104px/흰색이며 보조44px·강조84px 이상에서 편별 조정할 수 있다. 크기·색을 모두 같게 만들어 위계를 없애면 새 계약 검사에서 막는다.
-
-각 문구는 `underline:true`인 강조 구절 하나를 지정한다. 이 구절에는 앞뒤 공백과 줄바꿈을 넣지 않는다. 밑줄은 해당 구절의 실제 조판 폭을 가진 inline-block에 붙으며 전체800px 박스나 여러 줄의 최대폭을 사용하지 않는다. 성장 도중 짧은 것은 모션이고, settled에서 대상 폭100%가 된다. 대상 구절의 Bold TTF 폭을 컴파일에서 확인하고 렌더에서 실제 넘침도 확인한다. 대상 구절이 폭을 넘으면 의미 단위·배치를 다시 작성하며 자동 축소/강제 줄바꿈하지 않는다. 다른 강조 대상이나 독립 타이밍이 필요하면 phrases로 나눈다.
-
-예시는 형식만 설명한다. 매번 이 문구나 두 줄 구성을 쓰지 않는다.
+형식 예시이며 문구·두 줄 구성·수치의 기본 템플릿이 아니다:
 ```json
 {
-  "element_id": "opening_hook",
-  "text_event_id": "hook_text",
-  "underline_event_id": "hook_line",
-  "runs": [
-    {"text": "익숙한 상식이\n", "role": "support"},
-    {"text": "뒤집혔다", "role": "emphasis", "underline": true}
+  "element_id":"opening_hook", "text_event_id":"hook_text", "underline_event_id":"hook_line",
+  "layout":{"width":800,"center_y":790},
+  "rows":[
+    {"align":"center","line_height":56,"gap_after":14,"runs":[
+      {"text":"작은 단서","role":"support","font_family":"Pretendard","font_weight":700,"font_size":48,"text_color":"#FFD16A","letter_spacing":0}
+    ]},
+    {"align":"center","line_height":136,"gap_after":0,"text_event_id":"hook_core_text","runs":[
+      {"text":"큰 질문","role":"emphasis","underline":true,"font_family":"Pretendard","font_weight":800,"font_size":128,"text_color":"#FFFFFF","letter_spacing":-1}
+    ]}
   ]
 }
 ```
 
-검수에서는 첫눈에 강조 구절이 구별되는지, 밑줄 완성 길이가 그 구절과 맞는지, 줄바꿈 후 다른 줄까지 밑줄이 넓어지지 않는지 확인한다. 코드 통과는 실제 배경 대비·모바일 읽힘·동작 검수의 대체가 아니다.
+## 합성·이전 편 보존
+
+`EditorialFrame` → `HookOverlayTrack` → `AuthoredHookPhrase`가 공용 합성한다. 장면 TSX에 별도 후킹을 중복 작성하지 않는다. 일반 말자막은 독립 유지한다. `role:hook` 예외는 유효한 후킹 연결에만 적용한다.
+
+`config/hook-style.json`은 중심선·그림자·노란 밑줄의 공통값만 담는다. 글꼴·문구 크기·행간·높이 위치 기본값은 두지 않는다. 컴파일 시 style과 rows를 timeline에 스냅숏으로 보존한다. 줄이 아직 나타나지 않아도 공간을 예약하므로 순차 등장으로 조판이 재배치되지 않는다. 밑줄은 settled에서 대상 폭100%, 성장 중에는 의도적으로 짧다.
+
+새 start는 `hook-overlay@3`을 기록하고 rows를 요구한다. `@1`·`@2` 기존 편은 각각 `config/hook-styles/hook-style-v1.json`·`hook-style-v2.json`과 종전 경로를 유지한다. 기존 편 수정 시 승인된 범위에서 rows를 명시적으로 작성하면 현재 조판을 선택한다. request·보존 프롬프트·원문을 덮어써 계약을 소급 변경하지 않는다. 한 후킹 안의 rows/runs 혼용은 거절한다. 레거시 JSX 후킹은 이행 시 중복되지 않도록 교체한다.
+
+## 검증과 완료의 구분
+
+자동 검사는 첫 줄 연결·텍스트 일치·사건 소유/앵커/생명주기·등록 폰트/누락 글리프·각 줄 실측 폭을 확인한다. 렌더에서는 로드된 폰트의 실제 DOM 경계를 검사한다. 말자막의 한 줄 규칙은 후킹 rows에 적용하지 않는다.
+
+실물 검수는 핵심의 우선순위, 서체/굵기/크기 비율, 줄 간격·여백, 배경과 피사체, 말자막과의 구분, 밑줄 완성 폭, 실제 모바일 UI 충돌을 확인한다. [공통 배치](../../../../config/layout-rules.md)의 요소별 UI 회피를 사용하며 광고 safe rectangle 안에 모두 몰아넣지 않는다. 실제 발화에 맞는 등장·유지·퇴장과 읽기 시간은 짧은 재생에서 확인한다. 정지 표본만으로 동작을 통과시키지 않는다.
+
+코드 fixture 통과와 실제 편 적용·디자인 승인은 따로 기록한다. 전체 한 편 재제작이나 새 사용자 승인 단계를 자동 추가하지 않는다.

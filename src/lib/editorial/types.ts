@@ -32,6 +32,27 @@ export type CompiledAudioCue = {
 
 export type EditorialProofFrame = { id: string; frame: number; labels: string[] };
 
+export type HookRun = {
+  text: string;
+  role: "support" | "emphasis";
+  underline?: boolean;
+  font_family: "GmarketSans" | "Pretendard";
+  font_weight: number;
+  font_size: number;
+  text_color: string;
+  letter_spacing: number;
+};
+export type HookRow = {
+  align: "left" | "center" | "right";
+  line_height: number;
+  gap_after: number;
+  runs: HookRun[];
+  text_event?: CompiledEvent;
+};
+
+export type LegacyHookStyle = Omit<typeof import("../../../config/hook-styles/hook-style-v2.json"), "support_font_size" | "support_text_color"> & {support_font_size?: number; support_text_color?: string};
+export type AuthoredHookStyle = typeof import("../../../config/hook-style.json");
+
 export type EditorialTimeline = {
   schema_version: "1.0";
   pilot: string;
@@ -43,8 +64,8 @@ export type EditorialTimeline = {
   proof_frames: EditorialProofFrame[];
   production_profile?: ProductionProfile;
   hook_overlay?: {
-    style: Omit<typeof import("../../../config/hook-style.json"), "support_font_size" | "support_text_color"> & {support_font_size?: number; support_text_color?: string};
-    phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; runs?: {text: string; role: "support" | "emphasis"; underline?: boolean; font_size: number; text_color: string}[]; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
+    style: LegacyHookStyle | AuthoredHookStyle;
+    phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; rows?: HookRow[]; runs?: {text: string; role: "support" | "emphasis"; underline?: boolean; font_size: number; text_color: string}[]; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
   };
   attribution?: {
     style: typeof import("../../../config/attribution-style.json");

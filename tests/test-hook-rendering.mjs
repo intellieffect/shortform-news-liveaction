@@ -10,7 +10,7 @@ import {hookLayoutIssues} from '../scripts/lib/hook-layout.mjs';
 
 const req = createRequire(import.meta.url);
 const root = new URL('../', import.meta.url).pathname;
-const style = req('../config/hook-style.json');
+const style = req('../config/hook-styles/hook-style-v2.json');
 // Execute the actual React tree without a browser/media render. Only frame and delay hooks are substituted.
 const renderer = () => {
   let frame = 0;
@@ -102,4 +102,31 @@ test('hierarchy renders distinct sizes/colors and underline belongs only to shri
   assert.match(html,/data-hook-underline="true" style="position:absolute;left:0;right:0/);
   assert.equal((html.match(/data-hook-underline="true"/g)||[]).length,1);
   assert.match(html,/scale:1 1/);
+});
+
+
+const authoredRun=(text,extra={})=>({text,role:'support',font_family:'Pretendard',font_weight:700,font_size:48,text_color:'#F5C04A',letter_spacing:0,...extra});
+const authoredPhrase={...phrase,text:'짧은 단서\n별이 사라진다',layout:{width:800,center_y:820},rows:[
+  {align:'left',line_height:56,gap_after:12,runs:[authoredRun('짧은 단서')]},
+  {align:'center',line_height:128,gap_after:0,text_event:event('row-main',20,30,70,80),runs:[authoredRun('별이 사라진다',{role:'emphasis',font_size:112,font_weight:800,text_color:'#FFFFFF',letter_spacing:-2,underline:true})]},
+]};
+test('authored rows use exact family/weight/tracking/gaps and independent timing without moving the group',()=>{
+  const r=renderer(),{HookOverlayTrack}=r.load(resolve(root,'src/lib/editorial/HookOverlayTrack.tsx'));
+  const html=r.at(15,HookOverlayTrack,{hook:{style,phrases:[authoredPhrase]}});
+  assert.match(html,/data-hook-composition="true"/);
+  assert.match(html,/left:140px;top:820px;width:800px/);
+  assert.match(html,/justify-content:flex-start;align-items:baseline;height:56px;margin-bottom:12px/);
+  assert.match(html,/font-family:Pretendard;font-weight:800;font-size:112px;letter-spacing:-2px/);
+  assert.match(html,/data-hook-row="1"[^>]*opacity:0/);
+  // Its text stays mounted (invisible), so later arrival doesn't jump the earlier row.
+  assert.match(html,/별이 사라진다/);
+  const full=r.at(40,HookOverlayTrack,{hook:{style,phrases:[authoredPhrase]}});
+  assert.match(full,/data-hook-row="1"[^>]*opacity:1/);
+  assert.equal(r.at(81,HookOverlayTrack,{hook:{style,phrases:[authoredPhrase]}}),'');
+});
+test('proof shift includes independent authored-row events',()=>{
+  const r=renderer(),{shiftEditorialTimeline}=r.load(resolve(root,'src/lib/editorial/proof-time.ts'));
+  const t={total_frames:100,concepts:[],events:[],audio_cues:[],hook_overlay:{style,phrases:[authoredPhrase]}};
+  assert.equal(shiftEditorialTimeline(t,-10).hook_overlay.phrases[0].rows[1].text_event.from,10);
+  assert.equal(t.hook_overlay.phrases[0].rows[1].text_event.from,20);
 });

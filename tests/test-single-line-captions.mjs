@@ -35,6 +35,11 @@ const HookWidthCheck: React.FC<{hook: any}> = ({hook}) => {
       const target=document.querySelector('[data-hook-underline-target]');
       const underline=document.querySelector('[data-hook-underline]');
       if(!target?.firstChild || !underline) {cancelRender(new Error('missing hook target'));return;}
+      const group=document.querySelector('[data-hook-composition]');
+      if(group) {
+        const expected=hook.phrases[0].rows.reduce((height,row)=>height+row.line_height+row.gap_after+(row.runs.some(run=>run.underline)?hook.style.underline_gap+hook.style.underline_height:0),0);
+        if(Math.abs(group.offsetHeight-expected)>1) {cancelRender(new Error('authored row gaps changed group height'));return;}
+      }
       const range=document.createRange();range.selectNode(target.firstChild);
       const width=range.getBoundingClientRect().width;
       if(Math.abs(width-underline.getBoundingClientRect().width)>1) cancelRender(new Error('underline differs from text width'));
@@ -91,7 +96,7 @@ console.log("attribution runtime: PASS — 공통 출처·카테고리별 크레
 
 
 // Real DOM/loaded-font measurement, not just a CSS string assertion.
-const hookStyle=JSON.parse(readFileSync(join(repo,"config/hook-style.json")));
+const hookStyle=JSON.parse(readFileSync(join(repo,"config/hook-styles/hook-style-v2.json")));
 const hookEvent={id:"test",element_id:"hook",concept_id:"opening",kind:"label",from:0,settled:5,to:60,end:70,easing:{enter:"linear",move:"linear",exit:"linear"}};
 const hook={style:hookStyle,phrases:[{id:"hook",text:"익숙한 상식이\n뒤집혔다",text_event:hookEvent,underline_event:{...hookEvent,kind:"motion"},runs:[
   {text:"익숙한 상식이\n",role:"support",font_size:64,text_color:"#FFD43B"},
@@ -99,3 +104,28 @@ const hook={style:hookStyle,phrases:[{id:"hook",text:"익숙한 상식이\n뒤�
 ]}]};
 await render("hook-measured-underline",lines,profile,30,1,undefined,hook);
 console.log("hook runtime: PASS — actual loaded-font text width equals settled underline width");
+
+
+const composedHook={style:JSON.parse(readFileSync(join(repo,"config/hook-style.json"))),phrases:[{
+  id:"authored",text:"짧은 단서\n별이 사라진다",layout:{center_y:820,width:800},text_event:hookEvent,underline_event:{...hookEvent,kind:"motion"},rows:[
+    {align:"left",line_height:56,gap_after:12,runs:[{text:"짧은 단서",role:"support",font_family:"Pretendard",font_weight:700,font_size:48,text_color:"#F5C04A",letter_spacing:0}]},
+    {align:"center",line_height:128,gap_after:0,runs:[{text:"별이 사라진다",role:"emphasis",font_family:"Pretendard",font_weight:800,font_size:112,text_color:"#FFFFFF",letter_spacing:-2,underline:true}]},
+  ],
+}]};
+await render("hook-authored-typography",lines,profile,30,1,undefined,composedHook);
+// Different registered font, positive tracking and internal right alignment.
+const alternate=structuredClone(composedHook);
+alternate.phrases[0].rows[1].align="right";
+Object.assign(alternate.phrases[0].rows[1].runs[0],{font_family:"GmarketSans",font_weight:700,font_size:100,letter_spacing:1.5});
+await render("hook-authored-tracking",lines,profile,30,1,undefined,alternate);
+const invalid=structuredClone(composedHook);invalid.phrases[0].layout.width=160;
+await assert.rejects(render("hook-authored-overflow",lines,profile,30,1,undefined,invalid),/hook-overflow/);
+console.log("authored hook runtime: PASS — fonts/weights/tracking underline bounds and overflow");
+
+// Every allowed font weight is exercised, with a nonzero final gap retained in group geometry.
+const lighter=structuredClone(composedHook);
+Object.assign(lighter.phrases[0].rows[0].runs[0],{font_family:"Pretendard",font_weight:400});
+Object.assign(lighter.phrases[0].rows[1].runs[0],{font_family:"GmarketSans",font_weight:500});
+lighter.phrases[0].rows[1].gap_after=24;
+await render("hook-authored-lighter-weights",lines,profile,30,1,undefined,lighter);
+console.log("authored geometry runtime: PASS — all registered weights and final-row gap");
