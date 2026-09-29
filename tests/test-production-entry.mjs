@@ -32,7 +32,7 @@ try {
   put(join(repo, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"), readFileSync(join(project, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt")));
   cpSync(join(project, "plugin"), installed, { recursive: true });
   check("잘못된 시작 입력은 편을 만들기 전에 거절", () => {
-    for (const change of [{ id: "../escape" }, { url: "file:///tmp/article" }, { url: "https://user:pass@example.invalid" }, { duration: [90, 60] }, { duration: [0, 90] }, { request: "" }]) assert.throws(() => startProduction({ ...params, id: "invalid", ...change }));
+    for (const change of [{ id: "../escape" }, { url: "file:///tmp/article" }, { url: "https://user:pass@example.invalid" }, { duration: [90, 60] }, { duration: [0, 90] }, { request: "" }, { durationBasis: "invalid" }]) assert.throws(() => startProduction({ ...params, id: "invalid", ...change }));
     assert.equal(existsSync(join(repo, "news/invalid")), false);
   });
   check("손상된 로고는 편 생성 전에 거절", () => {
@@ -56,7 +56,7 @@ try {
     assert.equal(s.managed, true);
     assert.equal(s.context.raw_request, params.request);
     assert.equal(s.context.request_preserved, true);
-    assert.deepEqual(s.context.request.duration_sec, { min: 60, max: 90 });
+    assert.deepEqual(s.context.request.duration_sec, { min: 60, max: 90, basis: "total" });
     assert.equal(s.context.creative_scope.diagrams, "delegated");
     assert.equal(s.context.question, null);
     assert.equal(s.context.production_defaults.snapshot.baseline_commit, "59a2af79");

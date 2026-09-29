@@ -44,7 +44,7 @@ export type EditorialTimeline = {
   production_profile?: ProductionProfile;
   attribution?: {
     style: typeof import("../../../config/attribution-style.json");
-    sources: {asset_id:string; text:string; from:number; end:number}[];
+    sources: {asset_id?:string; asset_ids?:string[]; text:string; from:number; end:number}[];
     pages: {from:number; end:number; categories:{title:string; lines:string[]}[]}[];
   };
   source: {

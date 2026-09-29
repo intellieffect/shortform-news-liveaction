@@ -32,3 +32,9 @@ test('출처 누락·자산오류·시간겹침·끝페이지 누락 거절',()=
  for (const changes of [{pages:[]},{sources:[{...input.sources[0],asset_id:'missing'}]},{sources:[...input.sources,...input.sources]}]) assert.ok(compileAttribution({...input,...changes},opts).errors.length);
  assert.equal(compileAttribution(null,{...opts,required:false}).attribution,null);
 });
+
+test("동시 출처는 연결한 모든 자산을 검증",()=>{
+ const cue={asset_ids:["moon","sky"],text:"Moon credit\nSky credit",start:0,end:2};
+ assert.deepEqual(compileAttribution({...input,sources:[cue]},{...opts,assets:[{id:"moon"},{id:"sky"}]}).errors,[]);
+ assert.ok(compileAttribution({...input,sources:[cue]},opts).errors.length);
+});

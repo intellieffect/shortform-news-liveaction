@@ -11,7 +11,8 @@ export const compileAttribution = (input, {fps, contentFrames, assets = [], requ
   const ids = new Set(assets.map(a=>a.id));
   const sources = input.sources.map(raw => {
     const cue = raw ?? {};
-    if (!ids.has(cue.asset_id) || !text(cue.text)) fail('출처는 실제 asset_id와 지정 크레딧 문구가 필요하다');
+    const linkedIds = cue.asset_ids ?? [cue.asset_id];
+    if (!Array.isArray(linkedIds) || !linkedIds.length || linkedIds.some(id=>!ids.has(id)) || !text(cue.text)) fail('출처는 실제 asset_id와 지정 크레딧 문구가 필요하다');
     if (!Number.isFinite(cue.start) || !Number.isFinite(cue.end) || cue.start < 0 || cue.end <= cue.start || cue.end * fps > contentFrames + .01) fail('출처 노출 시각이 본편 범위 밖이다');
     if (String(cue.text ?? '').split('\n').length > 2) fail('화면 출처는 최대 두 줄; 누락 대신 노출 계획을 나눠 작성한다');
     return {...cue, from:Math.round(cue.start*fps), end:Math.round(cue.end*fps)};

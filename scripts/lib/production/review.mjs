@@ -63,6 +63,15 @@ export const productionIssues = (state) => reviews(state).flatMap((a) => a.valid
   reviewer: a.validation.report.reviewer, report: a.validation.report_path,
 })));
 
+// 요청 길이의 기준: total(기본)은 전체, content는 끝 크레딧 앞 본문. 크레딧 페이지는 끝까지 빈틈없이 이어져야 한다.
+export const requestedLength = (t, basis = "total") => {
+  requireValue(basis === "total" || basis === "content", "duration_sec.basis는 content 또는 total이어야 한다");
+  const total = t.total_frames, pages = t.attribution?.pages;
+  if (basis === "total" || pages === undefined) return { basis, seconds: total / t.fps };
+  requireValue(Array.isArray(pages) && pages.length > 0 && pages.every((p, i) => Number.isInteger(p?.from) && Number.isInteger(p?.end) && p.from < p.end && (i === 0 ? p.from > 0 : p.from === pages[i - 1].end)) && pages.at(-1).end === total, "끝 크레딧 페이지 범위가 시간축과 맞지 않는다");
+  return { basis, seconds: pages[0].from / t.fps };
+};
+
 export const validateRender = (w, outputs) => {
   const files = Object.keys(outputs);
   requireValue(files.length === 1 && files[0].endsWith(".mp4"), "렌더 결과는 새 MP4 한 개여야 한다");
@@ -72,14 +81,15 @@ export const validateRender = (w, outputs) => {
   const videos = data.streams?.filter((s) => s.codec_type === "video") ?? [];
   const audios = data.streams?.filter((s) => s.codec_type === "audio") ?? [];
   const video = videos[0], audio = audios[0], duration = t.total_frames / t.fps;
-  if (w.request && (duration < w.request.duration_sec.min || duration > w.request.duration_sec.max)) throw new Error("영상 길이가 이번 편의 요청 범위를 벗어났다");
+  const { basis, seconds: contentDuration } = requestedLength(t, w.request?.duration_sec?.basis);
+  if (w.request && (contentDuration < w.request.duration_sec.min || contentDuration > w.request.duration_sec.max)) throw new Error("영상 길이가 이번 편의 요청 범위를 벗어났다");
   requireValue(videos.length === 1 && audios.length === 1, "영상·최종 음향 스트림이 각각 하나 필요하다");
   requireValue(video.width === canvas.width && video.height === canvas.height && t.fps === canvas.fps && Math.abs(rate(video.avg_frame_rate) - t.fps) < 0.001, "렌더 해상도·FPS가 현재 프로필/시간축과 다르다");
   requireValue(Number(video.nb_frames) === t.total_frames && Math.abs(Number(video.duration) - duration) <= 1 / t.fps, "렌더 프레임 수·길이가 현재 시간축과 다르다");
   requireValue(Number.isFinite(Number(audio.duration)) && Math.abs(Number(audio.duration) - duration) <= 0.15 && Math.abs(Number(data.format?.duration) - duration) <= 0.15, "최종 음향·컨테이너 길이가 영상과 다르다");
   execFileSync("ffmpeg", ["-v", "error", "-xerror", "-i", file, "-map", "0:v:0", "-map", "0:a:0", "-f", "null", "-"], { stdio: ["ignore", "ignore", "pipe"] });
   requireValue(fileSnapshot(w, [path])[path] === outputs[path], "검증 도중 MP4가 바뀌었다");
-  return { contract: CONTRACT, kind: "render", artifact: { path, sha256: outputs[path] }, media: { width: video.width, height: video.height, fps: t.fps, total_frames: t.total_frames, duration, audio_duration: Number(audio.duration) }, full_decode: true, limitation: "스트림·전체 디코드 검사. 실제 시청·청취와 내용 일치는 독립 검수 대상" };
+  return { contract: CONTRACT, kind: "render", artifact: { path, sha256: outputs[path] }, media: { width: video.width, height: video.height, fps: t.fps, total_frames: t.total_frames, duration, content_duration: contentDuration, duration_basis: basis, audio_duration: Number(audio.duration) }, full_decode: true, limitation: "스트림·전체 디코드 검사. 실제 시청·청취와 내용 일치는 독립 검수 대상" };
 };
 
 // 기본값은 전부 미검수다. 도구를 실행하지 않고 시청·청취 기록을 채우지 않는다.
