@@ -49,7 +49,7 @@ curl -s -H "Authorization: Client-ID $UK" "https://api.unsplash.com/search/photo
 Pixabay Content License · Unsplash License(상업·수정 허용, 크레딧 불요·권장)지만 **작가명은 원문 그대로 옮긴다**.
 
 **Openverse 에는 video 미디어 타입이 없다**(`/v1/videos/` → 404). 영상은 Openverse 단계를 건너뛴다.
-음악은 **제작 저장소의 공용 음원 폴더를 먼저 조회한다** — `npm run music -- list --json`(라이선스·사용 범위·크레딧 포함, [공용 음원 폴더](../skills/shortform-news-input/reference/music-library.md)). 요청 목적에 맞는 곡이 있으면 `library/music/files/<파일>`을 청취해 후보표 첫 줄에 `library:<id>`로 올린다. 공용 폴더에 파일을 추가하거나 편에 연결(`add`·`use`)하지 않는다 — 그건 제작자가 한다. 맞는 곡이 없거나 비어 있으면 그 사실을 한 줄 적고 외부로 간다. 외부 음악은 API 가 아니라 **Incompetech(CC BY 4.0) · Free Music Archive · ccMixter · Musopen** 직행이다.
+음악은 **제작 저장소의 공용 음원 폴더를 먼저 조회한다** — `npm run music -- list --json`(출처·추가일·라이선스(선택 기록) 포함, 끝 크레딧 음악 줄은 파일 이름, [공용 음원 폴더](../skills/shortform-news-input/reference/music-library.md)). 요청 목적에 맞는 곡이 있으면 `library/music/files/<파일>`을 청취해 후보표 첫 줄에 `library:<id>`로 올린다. 공용 폴더에 파일을 추가하거나 편에 연결(`add`·`use`)하지 않는다 — 그건 제작자가 한다. 맞는 곡이 없거나 비어 있으면 그 사실을 한 줄 적고 외부로 간다. 외부 음악은 API 가 아니라 **Incompetech(CC BY 4.0) · Free Music Archive · ccMixter · Musopen** 직행이다.
 
 ## 반드시 지킬 것
 

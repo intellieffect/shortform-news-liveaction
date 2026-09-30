@@ -47,10 +47,14 @@ const writeCatalog = (repo, catalog) => {
   renameSync(tmp, path);
 };
 
-// 목록 항목의 필수 기록. 라이선스가 없는 음원은 받지 않는다.
+// 끝 크레딧 "음악" 줄은 공용 폴더의 파일 이름(확장자 제외)을 그대로 쓴다.
+// 사용자는 원하는 표기로 파일 이름을 정해 넣는다 — 크레딧 문구를 따로 묻지 않는다.
+export const creditLine = (track) => nfc(track.file).replace(/\.[^.]+$/, "");
+
+// 목록 항목의 필수 기록. 출처·해시·추가일은 자동 기록이고, 라이선스·사용 범위는 선택이다(권리 확인은 넣는 쪽 책임).
 export const trackErrors = (track) => {
   const errors = [];
-  for (const key of ["id", "title", "file", "source", "license", "sha256", "added_at"]) if (!text(track?.[key])) errors.push(`${track?.id ?? "?"}: ${key}가 필요하다`);
+  for (const key of ["id", "title", "file", "source", "sha256", "added_at"]) if (!text(track?.[key])) errors.push(`${track?.id ?? "?"}: ${key}가 필요하다`);
   if (track?.file && (track.file !== basename(track.file) || track.file !== safeFileName(track.file))) errors.push(`${track.id}: file은 files/ 안의 파일 이름 하나다`);
   if (track?.source && track.source !== OWNED && !/^https?:\/\//.test(track.source)) errors.push(`${track.id}: source는 원 출처 URL 또는 "${OWNED}"다`);
   if (track?.sha256 && !/^[0-9a-f]{64}$/.test(track.sha256)) errors.push(`${track.id}: sha256 형식 오류`);
@@ -77,11 +81,11 @@ const downloadTo = async (url, dest) => {
 
 /**
  * URL 또는 로컬 파일을 공용 폴더에 복사하고 목록에 기록한다.
- * @param {{ repo: string, input: string, license?: string, title?: string, artist?: string, credit?: string, usage?: string, sourceUrl?: string, id?: string }} options
+ * 라이선스·사용 범위는 선택이다 — 없어도 되묻지 않고 넣는다.
+ * @param {{ repo: string, input: string, license?: string, title?: string, artist?: string, usage?: string, sourceUrl?: string, id?: string }} options
  */
-export const addTrack = async ({ repo, input, license, title, artist, credit, usage, sourceUrl, id }) => {
+export const addTrack = async ({ repo, input, license, title, artist, usage, sourceUrl, id }) => {
   if (!text(input)) throw new Error("추가할 음원 URL 또는 파일 경로가 필요하다");
-  if (!text(license)) throw new Error("라이선스가 적혀 있지 않아 공용 폴더에 넣지 않았다 — 사용자에게 라이선스(예: \"한겨레 보유\", \"CC BY 4.0\")를 확인해 --license 로 다시 실행한다");
   const catalog = readCatalog(repo);
   const dir = filesDir(repo);
   mkdirSync(dir, { recursive: true });
@@ -112,7 +116,7 @@ export const addTrack = async ({ repo, input, license, title, artist, credit, us
     const source = text(sourceUrl) ?? (isUrl ? new URL(input.trim()).href : OWNED);
     const track = {
       id: trackId, title: text(title) ?? nfc(file).replace(/\.[^.]+$/, ""), artist: text(artist), file,
-      source, license: license.trim(), usage_scope: text(usage), credit: text(credit),
+      source, license: text(license), usage_scope: text(usage),
       sha256: digest, bytes: bytes.length, added_at: localDate(), added_from: isUrl ? "url" : nfc(original),
     };
     const errors = trackErrors(track);
@@ -120,10 +124,7 @@ export const addTrack = async ({ repo, input, license, title, artist, credit, us
     renameSync(tmp, dest);
     catalog.tracks.push(track);
     writeCatalog(repo, catalog);
-    const warnings = [];
-    if (!track.credit) warnings.push("크레딧 문구가 없다 — 끝 크레딧에 넣을 문구가 필요하면 사용자에게 확인한다");
-    if (!track.usage_scope) warnings.push("사용 범위가 기록되지 않았다");
-    return { added: true, track, path: dest, warnings, changed: [CATALOG] };
+    return { added: true, track, path: dest, credit: creditLine(track), changed: [CATALOG] };
   } finally {
     if (existsSync(tmp)) unlinkSync(tmp);
   }
@@ -160,9 +161,9 @@ const DEFAULT_AUDIO = {
 const rightsSection = (t, dest) => [
   "", `<!-- library-music:${t.id} -->`, `## 공용 음원 — ${t.title}`, "",
   "| 항목 | 기록 |", "|---|---|",
-  `| 공용 목록 id | ${t.id} |`, `| 편 파일 | ${dest} |`, `| 원 출처 | ${t.source} |`, `| 라이선스 | ${t.license} |`,
-  `| 사용 범위 | ${t.usage_scope ?? "미기재"} |`, `| 크레딧 문구 | ${t.credit ?? "없음"} |`, `| sha256 | ${t.sha256} |`,
-  `| 공용 폴더 추가일 | ${t.added_at} |`, "", "공용 음원 목록(library/music/catalog.json)의 기록을 그대로 옮겼다. 판정은 목록의 라이선스 기록에 따른다.", "",
+  `| 공용 목록 id | ${t.id} |`, `| 편 파일 | ${dest} |`, `| 원 출처 | ${t.source} |`, `| 라이선스 | ${t.license ?? "미기재"} |`,
+  `| 사용 범위 | ${t.usage_scope ?? "미기재"} |`, `| 끝 크레딧 음악 줄 | ${creditLine(t)} (파일 이름) |`, `| sha256 | ${t.sha256} |`,
+  `| 공용 폴더 추가일 | ${t.added_at} |`, "", "공용 음원 목록(library/music/catalog.json)의 기록을 그대로 옮겼다. 공용 폴더 음원의 라이선스 확인은 음원을 넣은 쪽(한겨레)이 맡는다 — 미기재는 오류가 아니다.", "",
 ].join("\n");
 
 /**
@@ -187,7 +188,8 @@ export const useTrack = ({ repo, track: query, episode }) => {
   const audioPath = join(root, "02_production", "audio.json");
   const audio = existsSync(audioPath) ? JSON.parse(readFileSync(audioPath, "utf8")) : structuredClone(DEFAULT_AUDIO);
   const previous = audio.bgm?.file ?? null;
-  audio.bgm = { ...DEFAULT_AUDIO.bgm, ...(audio.bgm ?? {}), asset: "library:" + track.id, file: "audio/" + track.file, credit: track.credit ?? null };
+  const line = creditLine(track);
+  audio.bgm = { ...DEFAULT_AUDIO.bgm, ...(audio.bgm ?? {}), asset: "library:" + track.id, file: "audio/" + track.file, credit: line };
   writeFileSync(audioPath, JSON.stringify(audio, null, 2) + "\n");
   changed.push("02_production/audio.json");
 
@@ -200,22 +202,22 @@ export const useTrack = ({ repo, track: query, episode }) => {
     changed.push("01_input/05_참고자료/RIGHTS.md");
   }
 
-  let credit = "크레딧 문구 없음 — 끝 크레딧에 넣지 않았다";
+  let credit = "visual-system.json이 아직 없어 끝 크레딧에 넣지 않았다 — 화면 설계 뒤 다시 실행한다";
   const visualPath = join(root, "02_production", "visual-system.json");
-  if (track.credit && existsSync(visualPath)) {
+  if (existsSync(visualPath)) {
     const visual = JSON.parse(readFileSync(visualPath, "utf8"));
     const pages = visual.attribution?.pages;
     if (Array.isArray(pages) && pages.length) {
       const all = pages.flatMap((p) => p.categories ?? []);
-      if (all.some((c) => (c.lines ?? []).includes(track.credit))) credit = "끝 크레딧에 이미 있다";
+      if (all.some((c) => (c.lines ?? []).includes(line))) credit = "끝 크레딧에 이미 있다";
       else {
         const last = pages.at(-1);
         last.categories ??= [];
         const music = last.categories.find((c) => c.title === "음악");
-        if (music) music.lines.push(track.credit); else last.categories.push({ title: "음악", lines: [track.credit] });
+        if (music) music.lines.push(line); else last.categories.push({ title: "음악", lines: [line] });
         writeFileSync(visualPath, JSON.stringify(visual, null, 2) + "\n");
         changed.push("02_production/visual-system.json");
-        credit = "끝 크레딧 마지막 장 \"음악\"에 추가했다 — 장 구성은 editorial:check로 다시 확인한다";
+        credit = `끝 크레딧 마지막 장 "음악"에 "${line}" 추가 — 장 구성은 editorial:check로 다시 확인한다`;
       }
     } else credit = "visual-system.json에 끝 크레딧 장이 없어 넣지 않았다";
   }

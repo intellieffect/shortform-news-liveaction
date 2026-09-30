@@ -95,7 +95,7 @@ npm run fetch:assets -- news/<id>     # 수집 자산 복구·병렬 다운로�
 #   URL 해소 5갈래: _search/nasaimg_assets(NASA) · _search/svs_item_*(SVS) · *.article.json(한겨레 게재) ·
 #   파일명 mixkit-<곡>-<id>.mp3 → assets.mixkit.co/music/<id>/<id>.mp3 · asset.derive(ffmpeg 파생)
 #   원장이 없어도 파일명만으로 되찾는 갈래가 있다 — 7편 BGM 4곡이 그렇게 복구됐다(사용 곡 570 md5 동일)
-npm run music -- add "<URL|파일>" --license "…" [--credit "…"] [--usage "…"] [--title …] [--artist …] [--source-url …]   # 공용 음원 추가 — 라이선스 없으면 거절 (music-library.md)
+npm run music -- add "<URL|파일>" [--license "…"] [--usage "…"] [--title …] [--artist …] [--source-url …]   # 공용 음원 추가 — 라이선스·사용 범위는 선택, 끝 크레딧 음악 줄 = 파일 이름 (music-library.md)
 npm run music -- list [--json] [--verify]     # 공용 음원 목록 · use "<곡>" <id> 편 배경음악 연결 · check 파일·해시 대조
 npm run defaults [-- --json]          # 새 편 전역 기본값 표 (global-defaults.md)
 npm run defaults -- voice --voice-id tc_… [--voice-name …] [--tempo …]   # 기본 보이스 — .env TYPECAST_VOICE_ID가 있으면 경고
