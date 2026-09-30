@@ -6,7 +6,8 @@ import {HOOK_POLICY, HOOK_ROLE, validateHookOverlay} from './hook-overlay.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { readProductionProfile, productionProfileErrors } from "./production-profile.mjs";
+import { readProductionProfile, productionProfileErrors, profileOverrideIssues } from "./production-profile.mjs";
+import { resolveDesignStyle } from "./design-styles.mjs";
 
 const ID = /^[a-z][a-z0-9_-]*$/;
 const SCRIPT_POLICIES = new Set(["editorial-owned", "script-faithful"]);
@@ -125,6 +126,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     const profileErrors = productionProfileErrors(profile);
     for (const message of profileErrors) issue(errors, "production-profile-invalid", "config/production-profile.json", message);
     const reference = visualSystem.production_profile;
+    for (const message of reference.override === undefined ? [] : profileOverrideIssues(readProductionProfile({ id: reference.id, version: reference.version }), reference.override)) issue(errors, "production-profile-override", "visual-system.json", message);
     if (reference.id !== profile?.id || reference.version !== profile?.version) issue(errors, "production-profile-version", "visual-system.json", "사용 가능한 제작 프로필의 id/version과 다르다");
     if (!profileErrors.length) {
       for (const key of ["width", "height", "fps"]) if (visualSystem.canvas?.[key] !== profile.canvas[key]) issue(errors, "production-profile-canvas", `visual-system.json canvas.${key}`, "적용 제작 프로필과 출력 규격이 다르다");
@@ -314,7 +316,11 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     else audioCues.push({ ...cue, frame: event[point] + offset });
   }
   // 후킹 구조가 전부 유효할 때만 연결된 요소를 설명문구 제한에서 뺀다. 출처 표기 금지는 그대로다.
-  const hook = validateHookOverlay({ story, concepts, lines, events: compiledEvents, fps, totalFrames: motion?.total_frames, policy: hookPolicy });
+  // 후킹·크레딧 디자인은 편이 start 때 기록한 버전의 보관본을 읽는다. 기록이 없는 기존 편은 기록 이전 값(legacy)이다.
+  const hookStyle = resolveDesignStyle("hook-style", visualSystem?.hook_style);
+  const attributionStyle = resolveDesignStyle("attribution-style", visualSystem?.attribution_style);
+  for (const message of [...hookStyle.errors, ...attributionStyle.errors]) issue(errors, "design-style", "visual-system.json", message);
+  const hook = validateHookOverlay({ story, concepts, lines, events: compiledEvents, fps, totalFrames: motion?.total_frames, policy: hookPolicy, ...(hookStyle.style ? { rowsStyle: hookStyle.style } : {}) });
   errors.push(...hook.errors);
   // 기록된 screen-text@1/@2 편에 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
   if (["screen-text@1", SCREEN_TEXT_POLICY].includes(screenTextPolicy)) {
@@ -356,7 +362,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     proof_frames: proofFrames,
     ...(hook.overlay ? { hook_overlay: hook.overlay } : {}),
   };
-  const credits = compileAttribution(visualSystem?.attribution, {fps, contentFrames:motion?.total_frames, assets:visualSystem?.media?.assets ?? [], required:screenTextPolicy === "screen-text@2", policy:attributionPolicy});
+  const credits = compileAttribution(visualSystem?.attribution, {fps, contentFrames:motion?.total_frames, assets:visualSystem?.media?.assets ?? [], required:screenTextPolicy === "screen-text@2", policy:attributionPolicy, ...(attributionStyle.style ? {style: attributionStyle.style} : {})});
   errors.push(...credits.errors);
   if (credits.attribution) {
     timeline.attribution = credits.attribution;

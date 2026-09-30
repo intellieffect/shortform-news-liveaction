@@ -16,7 +16,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 - 기사 기반이거나 설명·자료·도해·모션·음향 판단을 위임받으면 [표현 선택 권한](reference/creative-authority.md)과 [editorial-concept 후보 경로](reference/editorial-concept-track.md)를 읽는다. 한 줄 자막은 공통 제작 프로필을 자동 적용하며 사용자 프롬프트에 스타일 설명이나 과거 편 참조를 요구하지 않는다.
 - 제공 완성 대본과 컷을 그대로 구현해야 하면 [script-faithful 경로](reference/script-faithful-track.md)를 읽는다.
 - 요청 원문에 "음성 만들기 전에 구성안·원고·후킹 문구를 보여주고 멈춰줘" 같은 조건이 있으면 음성 생성 직전에 멈추고 확인받는다([멈춤 조건](reference/production-entry.md#요청문의-멈춤-조건--음성-전-구성안-확인)). 조건이 없으면 기본값대로 중간 승인 없이 진행한다.
-- "앞으로 모든 새 영상에 ○○"·"기본 보이스 바꿔줘"·"지금 기본값 보여줘"는 한 편이 아니라 전역 기본값 요청이다. [전역 기본값](reference/global-defaults.md) 절차로 장치를 고르고 버전을 올리며, 기존 편에는 소급하지 않음을 알린다.
+- 설정(보이스·기본 제작 지시·자막·후킹 디자인·크레딧 디자인)은 한 흐름이다: "이 편 ○○를 ~게 고쳐줘"는 그 편에만, "앞으로 계속 쓰게 반영해줘"는 그 편에서 고친 값을 `npm run defaults -- adopt <id>`로 새 버전 기본값에 올린다. "앞으로 모든 새 영상에 ○○"·"지금 기본값 보여줘"도 같은 [전역 기본값](reference/global-defaults.md) 절차로 장치를 고르고 버전을 올리며, 기존 편에는 소급하지 않음을 알린다.
 - 공용 배경음악 추가·목록·편 연결은 [공용 음원 폴더](../shortform-news-input/reference/music-library.md)를 따른다.
 - 사용자가 이번 편의 모드와 범위를 정했다면 그대로 적용한다. 후보 기능을 프로젝트의 전역 기본값으로 승격하는 결정은 별도로 검증한다.
 
@@ -51,7 +51,7 @@ description: 기사와 분량 또는 제공 대본으로 숏폼 뉴스 영상을
 | 검수·수정·완성 시안 제출 | [review-loop.md](reference/review-loop.md) |
 | 역할과 지정 호출 시점 | [agents.md](reference/agents.md) |
 | 명령과 출력 경로 | [commands.md](reference/commands.md) |
-| 전역 기본값 보기·변경(프롬프트·보이스·자막 프로필) | [global-defaults.md](reference/global-defaults.md) |
+| 전역 기본값 보기·변경(프롬프트·보이스·자막 프로필·후킹 디자인·크레딧 디자인), 편에서 고친 값 반영(adopt) | [global-defaults.md](reference/global-defaults.md) |
 | 공용 음원 추가·목록·편 연결 | [music-library.md](../shortform-news-input/reference/music-library.md) |
 | 규칙·가드·배포 수정 | [maintenance.md](reference/maintenance.md) |
 

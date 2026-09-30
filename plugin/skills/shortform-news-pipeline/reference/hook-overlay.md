@@ -46,7 +46,7 @@
 
 `EditorialFrame` → `HookOverlayTrack` → `AuthoredHookPhrase`가 공용 합성한다. 장면 TSX에 별도 후킹을 중복 작성하지 않는다. 일반 말자막은 독립 유지한다. `role:hook` 예외는 유효한 후킹 연결에만 적용한다.
 
-`config/hook-style.json`은 중심선·그림자·노란 밑줄의 공통값만 담는다. 글꼴·문구 크기·행간·높이 위치 기본값은 두지 않는다. 컴파일 시 style과 rows를 timeline에 스냅숏으로 보존한다. 줄이 아직 나타나지 않아도 공간을 예약하므로 순차 등장으로 조판이 재배치되지 않는다. 밑줄은 settled에서 대상 폭100%, 성장 중에는 의도적으로 짧다.
+`config/hook-style.json`은 중심선·그림자·노란 밑줄의 공통값만 담는다(후킹 디자인, 버전 `hook-style@N`·보관본 `config/hook-styles/`). 편은 start 때 `visual-system.json` `hook_style.version`을 기록하고 컴파일은 그 보관본을 읽는다. 기록이 없는 기존 rows 편은 `hook-style@3`이다. 편에서만 바꿔 볼 값은 `hook_style.override`, 새 편 기본값으로 올리는 절차는 [전역 기본값](global-defaults.md)이다. 글꼴·문구 크기·행간·높이 위치 기본값은 두지 않는다. 컴파일 시 style과 rows를 timeline에 스냅숏으로 보존한다. 줄이 아직 나타나지 않아도 공간을 예약하므로 순차 등장으로 조판이 재배치되지 않는다. 밑줄은 settled에서 대상 폭100%, 성장 중에는 의도적으로 짧다.
 
 새 start는 `hook-overlay@4`를 기록하고 rows와 단일 문구를 요구한다. `@3` 편은 여러 phrases를 포함한 종전 계약을 유지한다. `@1`·`@2` 기존 편은 각각 `config/hook-styles/hook-style-v1.json`·`hook-style-v2.json`과 종전 경로를 유지한다. 기존 편 수정 시 승인된 범위에서 rows를 명시적으로 작성하면 현재 조판을 선택한다. request·보존 프롬프트·원문을 덮어써 계약을 소급 변경하지 않는다. 한 후킹 안의 rows/runs 혼용은 거절한다. 레거시 JSX 후킹은 이행 시 중복되지 않도록 교체한다.
 

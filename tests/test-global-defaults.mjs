@@ -6,8 +6,9 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { REPO } from '../scripts/lib/pilot.mjs';
 import { prepareProductionPrompt, promptStatus } from '../scripts/lib/production/prompt.mjs';
-import { archiveProfile, bumpProfile, bumpPrompt, defaultsIntegrity, setVoice, showDefaults } from '../scripts/lib/production/global-defaults.mjs';
-import { readProductionProfile } from '../scripts/lib/production-profile.mjs';
+import { adoptEpisode, archiveProfile, bumpDesignStyle, bumpProfile, bumpPrompt, defaultsIntegrity, setVoice, showDefaults } from '../scripts/lib/production/global-defaults.mjs';
+import { profileOverrideIssues, readProductionProfile } from '../scripts/lib/production-profile.mjs';
+import { currentDesignStyle, resolveDesignStyle } from '../scripts/lib/design-styles.mjs';
 
 const PROMPT = 'docs/PRODUCTION_PROMPT_V2_RESTORED.txt';
 const read = (repo, rel) => JSON.parse(readFileSync(join(repo, rel), 'utf8'));
@@ -34,7 +35,8 @@ test('지금 기본값 보기: 프롬프트·프로필·보이스·후킹·출�
   assert.equal(d.profile.id, 'hani-shortform');
   assert.equal(d.narration.config.voice_name, 'Sanghyun');
   assert.equal(d.narration.env_override, null);
-  assert.equal(d.hook_style.change_flow, '개발');
+  assert.equal(d.hook_style.change_flow, '설정값');
+  assert.equal(d.attribution_style.change_flow, '설정값');
   assert.equal(d.music_library.tracks, 0);
 });
 
@@ -198,4 +200,103 @@ test('다른 staged 변경이 있으면 자동 커밋을 멈추고 파일 변경
   assert.equal(git(repo, 'log', '--format=%s').stdout.trim(), 'init');
   const skip = cliIn(repo, 'voice', '--tempo', '1.2', '--no-commit');
   assert.match(skip.stdout, /커밋하지 않음: --no-commit/);
+});
+
+const writeJson = (repo, rel, value) => { mkdirSync(join(repo, rel, '..'), { recursive: true }); writeFileSync(join(repo, rel), JSON.stringify(value, null, 2) + '\n'); };
+
+test('후킹·크레딧 디자인: 값 수정 → bump로 새 버전·보관본, 이전 버전 편은 보관본으로 그대로 읽힌다', (t) => {
+  const repo = fixture(t);
+  const hook = read(repo, 'config/hook-style.json'), credit = read(repo, 'config/attribution-style.json');
+  assert.deepEqual(bumpDesignStyle(repo, 'hook-style').changed, []);
+  writeJson(repo, 'config/hook-style.json', { ...hook, underline_color: '#FF3B30' });
+  assert.ok(defaultsIntegrity(repo).some((e) => /hook-style-bump/.test(e)));
+  assert.throws(() => currentDesignStyle('hook-style', repo), /hook-style-bump/);
+  const r = bumpDesignStyle(repo, 'hook-style');
+  assert.deepEqual([r.from, r.version], ['hook-style@3', 'hook-style@4']);
+  assert.deepEqual(r.changed, ['config/hook-style.json', 'config/hook-styles/hook-style-v4.json']);
+  assert.deepEqual(defaultsIntegrity(repo), []);
+  assert.equal(currentDesignStyle('hook-style', repo).version, 'hook-style@4');
+  assert.equal(resolveDesignStyle('hook-style', null, repo).style.underline_color, hook.underline_color);
+  assert.equal(resolveDesignStyle('hook-style', { version: 'hook-style@4' }, repo).style.underline_color, '#FF3B30');
+  const c = bumpDesignStyle(repo, 'attribution-style', { override: { end: { font_size: 36 } } });
+  assert.deepEqual([c.from, c.version], ['1.0.0', '1.1.0']);
+  assert.equal(resolveDesignStyle('attribution-style', { version: '1.1.0' }, repo).style.end.font_size, 36);
+  assert.equal(resolveDesignStyle('attribution-style', undefined, repo).style.end.font_size, credit.end.font_size);
+  assert.throws(() => bumpDesignStyle(repo, 'attribution-style', { override: { version: '9.9.9' } }), /바꿀 수 없는/);
+});
+
+test('자막 값도 편에서만 고쳐 볼 수 있다 (production_profile.override.caption)', (t) => {
+  const repo = fixture(t);
+  const profile = read(repo, 'config/production-profile.json');
+  const ref = { id: profile.id, version: profile.version, override: { caption: { font_size: 76, top: 1380 } } };
+  const p = readProductionProfile(ref, repo);
+  assert.deepEqual([p.caption.font_size, p.caption.top, p.version], [76, 1380, profile.version]);
+  assert.deepEqual(profileOverrideIssues(profile, ref.override), []);
+  for (const bad of [{ canvas: { fps: 60 } }, { caption: { segmentation: 'font-semantic@1' } }, { caption: { font_size: '76' } }]) {
+    assert.ok(profileOverrideIssues(profile, bad).length, JSON.stringify(bad));
+    assert.equal(readProductionProfile({ ...ref, override: bad }, repo).caption.font_size, profile.caption.font_size);
+  }
+});
+
+const episodeFixture = (repo, id = 'hani_try') => {
+  const profile = read(repo, 'config/production-profile.json');
+  writeJson(repo, `news/${id}/02_production/visual-system.json`, {
+    schema_version: '1.0', production_profile: { id: profile.id, version: profile.version, override: { caption: { font_size: 76 } } },
+    hook_style: { version: 'hook-style@3', override: { underline_color: '#FF3B30' } },
+    attribution_style: { version: '1.0.0', override: { source: { font_size: 34 } } },
+  });
+  writeJson(repo, `news/${id}/02_production/voice.json`, { provider: 'typecast', voice_id: 'tc_episode9', voice_name: '편 보이스', audio_tempo: 1.1 });
+  return { id, profile };
+};
+
+test('"앞으로 계속 쓰게 반영해줘": adopt가 편에서 고친 보이스·자막·후킹·크레딧 디자인을 새 버전으로 올린다', (t) => {
+  const repo = fixture(t);
+  const { id, profile } = episodeFixture(repo);
+  const dry = adoptEpisode(repo, id, { dryRun: true, env: noEnv });
+  assert.deepEqual(dry.plan.map((x) => x.setting), ['보이스', '자막', '후킹 디자인', '크레딧 디자인']);
+  assert.deepEqual(dry.changed, []);
+  assert.equal(read(repo, 'config/hook-style.json').version, 'hook-style@3');
+  const r = adoptEpisode(repo, id, { env: noEnv });
+  assert.equal(read(repo, 'config/production-defaults.json').narration.voice.voice_id, 'tc_episode9');
+  const nextProfile = read(repo, 'config/production-profile.json');
+  assert.equal(nextProfile.caption.font_size, 76);
+  assert.notEqual(nextProfile.version, profile.version);
+  assert.equal(readProductionProfile({ id: profile.id, version: profile.version }, repo).caption.font_size, profile.caption.font_size);
+  assert.equal(read(repo, 'config/hook-style.json').version, 'hook-style@4');
+  assert.equal(read(repo, 'config/attribution-style.json').source.font_size, 34);
+  assert.deepEqual(defaultsIntegrity(repo), []);
+  // 경로는 git에 그대로 넘길 수 있는 저장소 상대 POSIX 경로다(Windows에서도 같은 문자열).
+  for (const rel of r.changed) assert.ok(!rel.includes('\\') && !rel.startsWith('/') && existsSync(join(repo, rel)), rel);
+  assert.deepEqual(adoptEpisode(repo, id, { env: noEnv }).changed.filter((x) => !x.includes('production-defaults')), []);
+  assert.throws(() => adoptEpisode(repo, 'missing_episode'), /visual-system\.json이 없다/);
+});
+
+test('Windows CRLF 체크아웃의 디자인 보관본도 같은 값으로 본다', (t) => {
+  const repo = fixture(t);
+  for (const rel of ['config/hook-style.json', 'config/hook-styles/hook-style-v3.json', 'config/attribution-style.json', 'config/attribution-styles/attribution-style-1.0.0.json'])
+    writeFileSync(join(repo, rel), readFileSync(join(repo, rel), 'utf8').replace(/\n/g, '\r\n'));
+  assert.deepEqual(defaultsIntegrity(repo), []);
+  assert.equal(resolveDesignStyle('hook-style', { version: 'hook-style@3' }, repo).style.underline_color, read(REPO, 'config/hook-styles/hook-style-v3.json').underline_color);
+});
+
+test('설정 변경 자동 커밋: 후킹·크레딧 디자인 bump와 adopt는 설정 파일만 커밋하고 편 파일은 건드리지 않는다', (t) => {
+  const repo = gitFixture(t);
+  const hook = read(repo, 'config/hook-style.json');
+  writeJson(repo, 'config/hook-style.json', { ...hook, underline_height: 8 });
+  const hb = cliIn(repo, 'hook-style-bump');
+  assert.equal(hb.status, 0, hb.stderr);
+  assert.match(hb.stdout, /hook-style@3 → hook-style@4/);
+  assert.match(hb.stdout, /소급되지 않는다/);
+  assert.match(git(repo, 'log', '-1', '--format=%s').stdout, /기본값: 후킹 디자인 hook-style@4/);
+  assert.deepEqual(git(repo, 'show', '--name-only', '--format=', 'HEAD').stdout.trim().split('\n').sort(), ['config/hook-style.json', 'config/hook-styles/hook-style-v4.json']);
+  const { id } = episodeFixture(repo);
+  const ad = cliIn(repo, 'adopt', id);
+  assert.equal(ad.status, 0, ad.stderr);
+  assert.match(ad.stdout, /후킹 디자인: underline_color/);
+  const files = git(repo, 'show', '--name-only', '--format=', 'HEAD').stdout.trim().split('\n');
+  assert.ok(files.every((f) => f.startsWith('config/')), files.join());
+  assert.ok(files.includes('config/hook-styles/hook-style-v5.json') && files.includes('config/attribution-styles/attribution-style-1.1.0.json'));
+  assert.match(git(repo, 'log', '-1', '--format=%s').stdout, new RegExp(`기본값: ${id} 편 설정`));
+  assert.equal(git(repo, 'status', '--short', '--', 'config').stdout, '');
+  assert.equal(cliIn(repo, 'check').status, 0);
 });

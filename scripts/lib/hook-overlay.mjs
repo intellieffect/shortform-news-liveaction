@@ -30,7 +30,8 @@ export const linkedHookElementIds = ({ story, concepts }) => new Set(
 );
 
 // events는 컴파일된 motion 사건(from/settled/to/end 프레임). lines는 정규화된 내레이션 줄.
-export const validateHookOverlay = ({ story, concepts, lines, events, fps, totalFrames, policy = null }) => {
+// rowsStyle: 편에 기록된 후킹 디자인 버전의 스타일(design-styles.mjs). 없으면 기록 이전 편의 hook-style@3.
+export const validateHookOverlay = ({ story, concepts, lines, events, fps, totalFrames, policy = null, rowsStyle = HOOK_STYLE_V3 }) => {
   const errors = [];
   const issue = (code, where, message) => errors.push({ code, where, message });
   if (policy != null && !POLICIES.includes(policy)) issue("hook-policy", "request.json hook_overlay", `알 수 없는 후킹 계약: ${policy}`);
@@ -181,5 +182,5 @@ export const validateHookOverlay = ({ story, concepts, lines, events, fps, total
       issue('hook-hierarchy', 'story.json hook.phrases', '보조·강조 구절 사이에 실제 크기 또는 색의 위계가 필요하다. 문구 개수나 두 단계 동작은 강제하지 않는다');
   }
   const valid = !errors.length;
-  return { errors, overlay: valid ? { style: structuredClone(rowsMode ? HOOK_STYLE_V3 : policy === HOOK_POLICY_V2 || compiled.some(p => p.runs) ? HOOK_STYLE_V2 : LEGACY_HOOK_STYLE), phrases: compiled } : null, exemptElementIds: valid ? linked : new Set() };
+  return { errors, overlay: valid ? { style: structuredClone(rowsMode ? rowsStyle : policy === HOOK_POLICY_V2 || compiled.some(p => p.runs) ? HOOK_STYLE_V2 : LEGACY_HOOK_STYLE), phrases: compiled } : null, exemptElementIds: valid ? linked : new Set() };
 };

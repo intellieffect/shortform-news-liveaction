@@ -50,6 +50,13 @@ try {
     assert.equal(existsSync(join(repo, "news/missing_defaults")), false);
     writeFileSync(path, original);
   });
+  check("후킹·크레딧 디자인 값을 고치고 버전을 안 올리면 편 생성 전에 거절", () => {
+    const path = join(repo, "config/hook-style.json"), original = readFileSync(path);
+    writeFileSync(path, JSON.stringify({ ...JSON.parse(original), underline_color: "#FF0000" }, null, 2) + "\n");
+    assert.throws(() => startProduction({ ...params, id: "unbumped_style" }), /hook-style-bump/);
+    assert.equal(existsSync(join(repo, "news/unbumped_style")), false);
+    writeFileSync(path, original);
+  });
   let id;
   check("URL·분량·원문만으로 시작, 설명·장면은 미작성", () => {
     const s = startProduction(params); id = s.pilot;
@@ -62,6 +69,11 @@ try {
     assert.equal(s.context.production_defaults.snapshot.baseline_commit, "59a2af79");
     const newVisual = json(join(repo, "news", id, "02_production/visual-system.json"));
     assert.equal(newVisual.production_profile.version, "1.5.0");
+    // 후킹·크레딧 디자인도 편에 버전을 고정한다.
+    assert.deepEqual(newVisual.hook_style, { version: "hook-style@3" });
+    assert.deepEqual(newVisual.attribution_style, { version: "1.0.0" });
+    assert.equal(s.context.request.design_styles.hook_style.version, "hook-style@3");
+    assert.match(s.context.request.design_styles.attribution_style.sha256, /^[0-9a-f]{64}$/);
     assert.equal(newVisual.attribution.pages[0].duration, 3);
     assert.equal(newVisual.project_logo.width, 140);
     assert.equal(newVisual.project_logo.y, 320);

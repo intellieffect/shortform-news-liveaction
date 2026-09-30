@@ -1,9 +1,10 @@
 import {readFileSync} from 'node:fs';
 import {measureCaptionText} from './caption-metrics.mjs';
 import {hookFontSupported} from './hook-typography.mjs';
-// hook-overlay@2 runs keep the archived style@2; authored rows (@3 or explicit opt-in) use the current config.
+// hook-overlay@2 runs keep the archived style@2. Authored rows (@3+) use the version the episode recorded (design-styles.mjs);
+// HOOK_STYLE_V3 is the frozen hook-style@3 that episodes without a record were compiled with.
 export const HOOK_STYLE_V2 = JSON.parse(readFileSync(new URL('../../config/hook-styles/hook-style-v2.json', import.meta.url), 'utf8'));
-export const HOOK_STYLE_V3 = JSON.parse(readFileSync(new URL('../../config/hook-style.json', import.meta.url), 'utf8'));
+export const HOOK_STYLE_V3 = JSON.parse(readFileSync(new URL('../../config/hook-styles/hook-style-v3.json', import.meta.url), 'utf8'));
 
 // Art direction is adjustable, but never a route to hiding the hook or changing its yellow underline.
 export const hookLayoutIssues = (layout, where) => {

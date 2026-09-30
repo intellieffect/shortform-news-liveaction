@@ -2,7 +2,8 @@ import { copyFileSync, existsSync, readdirSync, readFileSync, writeFileSync } fr
 import { join } from "node:path";
 import { hash, json } from "./contracts.mjs";
 import { PROMPT_REGISTRY, PROMPT_VERSION, promptStatus, readPromptRegistry } from "./prompt.mjs";
-import { productionProfileErrors } from "../production-profile.mjs";
+import { productionProfileErrors, profileOverrideIssues } from "../production-profile.mjs";
+import { DESIGN_STYLES, applyStyleOverride, designStyleIntegrity, styleOverrideIssues } from "../design-styles.mjs";
 import { listTracks } from "../music-library.mjs";
 
 // "앞으로 모든 새 영상에 ○○" 요청이 바꾸는 전역 장치. 편은 start 때 버전·사본을 고정하므로 기존 편에는 소급되지 않는다.
@@ -48,7 +49,7 @@ export const showDefaults = (repo, { env = process.env } = {}) => {
   const prompt = promptStatus(repo);
   const profile = read(repo, PROFILE_FILE);
   const archives = readdirSync(join(repo, "config/production-profiles")).filter((f) => f.startsWith(profile.id + "-")).map((f) => f.slice(profile.id.length + 1, -5)).sort((a, b) => (newer(a, b) ? 1 : -1));
-  const hook = read(repo, "config/hook-style.json"), attribution = read(repo, "config/attribution-style.json");
+  const hook = read(repo, DESIGN_STYLES["hook-style"].file), attribution = read(repo, DESIGN_STYLES["attribution-style"].file);
   const voice = defaults.narration?.voice ?? null;
   const envVoice = envValue(repo, "TYPECAST_VOICE_ID", env);
   let music = null;
@@ -61,8 +62,8 @@ export const showDefaults = (repo, { env = process.env } = {}) => {
       effective_for_new_episode: envVoice ? { ...(voice ?? {}), voice_id: envVoice.value, voice_name: envValue(repo, "TYPECAST_VOICE_NAME", env)?.value ?? null } : voice,
       note: "음성을 이미 만든 편은 그 편의 02_production/voice.json을 따른다.",
     },
-    hook_style: { version: hook.version, file: "config/hook-style.json", change_flow: "개발" },
-    attribution_style: { version: attribution.version, file: "config/attribution-style.json", change_flow: "개발" },
+    hook_style: { version: hook.version, file: DESIGN_STYLES["hook-style"].file, underline_color: hook.underline_color, change_flow: "설정값" },
+    attribution_style: { version: attribution.version, file: DESIGN_STYLES["attribution-style"].file, font_size: attribution.source?.font_size, change_flow: "설정값" },
     logo_package: defaults.logo_package,
     music_library: music,
   };
@@ -138,6 +139,73 @@ export const bumpProfile = (repo, version) => {
   return { from: profile.version, version, changed: [PROFILE_FILE, rel] };
 };
 
+/** 후킹·크레딧 디자인: 작업본(config/<kind>.json)을 고친 뒤, 또는 편의 override를 얹어 새 버전을 만든다. 이전 버전 보관본은 그대로 남아 기존 편이 계속 같은 디자인으로 컴파일된다. */
+export const bumpDesignStyle = (repo, kind, { override } = {}) => {
+  const spec = DESIGN_STYLES[kind];
+  if (!spec) throw new Error("알 수 없는 디자인 설정: " + kind);
+  const current = read(repo, spec.file);
+  const archived = spec.valid(current.version) && existsSync(join(repo, spec.archive(current.version)));
+  if (!archived) throw new Error(`${spec.label} ${current.version} 보관본이 없다 — 보관본 없이 올리면 ${current.version} 편 컴파일이 깨진다`);
+  if (override !== undefined) {
+    const errors = styleOverrideIssues(current, override, `${spec.key}.override`);
+    if (errors.length) throw new Error(errors.join("\n"));
+  }
+  const next = applyStyleOverride(current, override);
+  if (sameJson(read(repo, spec.archive(current.version)), next)) return { changed: [], version: current.version, reason: `${spec.label} 값이 ${current.version} 보관본과 같다 — 버전을 올리지 않았다` };
+  const version = spec.next(current.version), archive = spec.archive(version);
+  if (existsSync(join(repo, archive))) throw new Error("보관본이 이미 있다: " + archive);
+  const value = { ...next, version };
+  write(repo, spec.file, value);
+  write(repo, archive, value);
+  return { from: current.version, version, changed: [spec.file, archive] };
+};
+
+const nextMinor = (v) => { const [a, b] = semver(v); return `${a}.${b + 1}.0`; };
+const diffKeys = (before, after, prefix = "") => Object.keys(after ?? {}).flatMap((key) => after[key] && typeof after[key] === "object" && !Array.isArray(after[key]) ? diffKeys(before?.[key], after[key], `${prefix}${key}.`) : sameJson(before?.[key], after[key]) ? [] : [`${prefix}${key}: ${JSON.stringify(before?.[key])} → ${JSON.stringify(after[key])}`]);
+
+/** "앞으로 계속 쓰게 반영해줘": 한 편에서 고쳐 본 설정(보이스·자막·후킹 디자인·크레딧 디자인)을 새 편 기본값의 새 버전으로 올린다. */
+export const adoptEpisode = (repo, id, { dryRun = false, env = process.env } = {}) => {
+  if (!/^[a-z0-9_-]+$/i.test(id ?? "")) throw new Error("편 id가 필요하다 — npm run defaults -- adopt <편 id>");
+  const production = join(repo, "news", id, "02_production");
+  const visualPath = join(production, "visual-system.json");
+  if (!existsSync(visualPath)) throw new Error(`news/${id}/02_production/visual-system.json이 없다`);
+  const visual = json(visualPath);
+  const steps = [];
+  // 보이스: 편 voice.json의 값 중 기본값과 다른 것.
+  const voicePath = join(production, "voice.json");
+  if (existsSync(voicePath)) {
+    const episodeVoice = json(voicePath), current = read(repo, DEFAULTS_FILE).narration?.voice ?? {};
+    const patch = Object.fromEntries(VOICE_KEYS.filter((k) => k !== "provider" && episodeVoice[k] !== undefined && episodeVoice[k] !== null && !sameJson(episodeVoice[k], current[k])).map((k) => [k, episodeVoice[k]]));
+    if (episodeVoice.voice_id && Object.keys(patch).length) steps.push({ setting: "보이스", diff: diffKeys(current, patch), run: () => setVoice(repo, patch, { env }) });
+  }
+  const profileOverride = visual.production_profile?.override;
+  if (profileOverride !== undefined) {
+    const profile = read(repo, PROFILE_FILE);
+    const errors = profileOverrideIssues(profile, profileOverride);
+    if (errors.length) throw new Error(errors.join("\n"));
+    const next = applyStyleOverride(profile, profileOverride);
+    if (!sameJson(next, profile)) steps.push({ setting: "자막", diff: diffKeys(profile, next), run: () => {
+      const archived = archiveProfile(repo);
+      write(repo, PROFILE_FILE, next);
+      const bumped = bumpProfile(repo, nextMinor(profile.version));
+      return { ...bumped, changed: [...new Set([...archived.changed, ...bumped.changed])] };
+    } });
+  }
+  for (const kind of Object.keys(DESIGN_STYLES)) {
+    const spec = DESIGN_STYLES[kind], override = visual[spec.key]?.override;
+    if (override === undefined) continue;
+    const current = read(repo, spec.file);
+    const errors = styleOverrideIssues(current, override, `${spec.key}.override`);
+    if (errors.length) throw new Error(errors.join("\n"));
+    const next = applyStyleOverride(current, override);
+    if (!sameJson(next, current)) steps.push({ setting: spec.label, diff: diffKeys(current, next), run: () => bumpDesignStyle(repo, kind, { override }) });
+  }
+  const plan = steps.map(({ setting, diff }) => ({ setting, diff }));
+  if (dryRun || !steps.length) return { changed: [], plan, reason: steps.length ? "--dry-run: 바꾸지 않았다" : `${id} 편에 기본값과 다른 보이스·자막·후킹 디자인·크레딧 디자인 값이 없다` };
+  const results = steps.map((step) => ({ setting: step.setting, ...step.run() }));
+  return { plan, results, changed: [...new Set(results.flatMap((r) => r.changed))], warnings: [...new Set(results.flatMap((r) => r.warnings ?? []))] };
+};
+
 /** 같은 라벨에 다른 내용이 붙는 빈틈을 찾는다. */
 export const defaultsIntegrity = (repo) => {
   const errors = [];
@@ -152,5 +220,6 @@ export const defaultsIntegrity = (repo) => {
   const rel = PROFILE_ARCHIVE(profile.id, profile.version);
   if (existsSync(join(repo, rel)) && !sameJson(read(repo, rel), profile)) errors.push(`프로필 ${profile.version} 보관본과 현재 값이 다르다 — 값을 고쳤다면 profile-bump로 새 버전을 올린다`);
   errors.push(...productionProfileErrors(profile));
+  for (const kind of Object.keys(DESIGN_STYLES)) errors.push(...designStyleIntegrity(kind, repo));
   return errors;
 };

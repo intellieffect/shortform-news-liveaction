@@ -56,7 +56,7 @@ test('@3 rows compile to an explicit snapshot with the current style', () => {
   const r = check(bundle());
   assert.deepEqual(r.errors, []);
   const overlay = r.timeline.hook_overlay;
-  assert.deepEqual(overlay.style, json('../config/hook-style.json'));
+  assert.deepEqual(overlay.style, json('../config/hook-styles/hook-style-v3.json'));
   const [compiled] = overlay.phrases;
   assert.equal(compiled.runs, undefined);
   assert.deepEqual(compiled.layout, {width: 800, center_y: 900});
@@ -73,7 +73,7 @@ test('legacy @1/@2 styles stay the archived snapshots; rows opt in without chang
   for (const policy of [HOOK_POLICY_V1, HOOK_POLICY_V2, null]) {
     const r = check(bundle(), policy);
     assert.deepEqual(r.errors, [], String(policy));
-    assert.deepEqual(r.timeline.hook_overlay.style, json('../config/hook-style.json'));
+    assert.deepEqual(r.timeline.hook_overlay.style, json('../config/hook-styles/hook-style-v3.json'));
   }
 });
 
@@ -256,4 +256,35 @@ test('new production profile wires caption preservation checks into the editoria
   assert.deepEqual(validateEditorialData(b).errors,[]);
   b.narration.captions[0].text='축약';
   assert.ok(validateEditorialData(b).errors.some(e=>e.code==='caption-semantic'));
+});
+
+test('디자인 버전: 기록 없는 편 = hook-style@3·크레딧 1.0.0 기록 편과 바이트 동일, override 편만 달라진다', () => {
+  const credit = {sources: [], pages: [{duration: 3, categories: [{title: '참조 기사', lines: ['https://example.invalid/a']}]}]};
+  const legacy = bundle(); legacy.visualSystem.attribution = credit;
+  const recorded = bundle(); recorded.visualSystem.attribution = credit;
+  recorded.visualSystem.hook_style = {version: 'hook-style@3'}; recorded.visualSystem.attribution_style = {version: '1.0.0'};
+  const a = check(legacy), b = check(recorded);
+  assert.deepEqual(a.errors, []); assert.deepEqual(b.errors, []);
+  const strip = (t) => JSON.stringify({...t, source: {...t.source, visual_system_sha256: null}}, null, 2);
+  assert.equal(strip(a.timeline), strip(b.timeline));
+  assert.equal(JSON.stringify(a.timeline.attribution.style), JSON.stringify(json('../config/attribution-styles/attribution-style-1.0.0.json')));
+  const tweaked = bundle(); tweaked.visualSystem.attribution = credit;
+  tweaked.visualSystem.hook_style = {version: 'hook-style@3', override: {underline_color: '#FF3B30'}};
+  tweaked.visualSystem.attribution_style = {version: '1.0.0', override: {end: {font_size: 36}}};
+  const c = check(tweaked);
+  assert.deepEqual(c.errors, []);
+  assert.equal(c.timeline.hook_overlay.style.underline_color, '#FF3B30');
+  assert.deepEqual(Object.keys(c.timeline.hook_overlay.style), Object.keys(a.timeline.hook_overlay.style));
+  assert.equal(c.timeline.attribution.style.end.font_size, 36);
+  assert.equal(c.timeline.attribution.style.source.font_size, a.timeline.attribution.style.source.font_size);
+  assert.deepEqual({...c.timeline.hook_overlay, style: null}, {...a.timeline.hook_overlay, style: null});
+  for (const [key, value, pattern] of [
+    ['hook_style', {version: 'hook-style@99'}, /보관본/], ['hook_style', {version: 'hook-style@1'}, /형식/],
+    ['hook_style', {version: 'hook-style@3', override: {font_family: 'X'}}, /바꿀 수 없는/], ['hook_style', {version: 'hook-style@3', override: {underline_height: '6'}}, /number/],
+    ['attribution_style', {version: '1.0.0', override: {source: {nope: 1}}}, /바꿀 수 없는/],
+  ]) {
+    const x = bundle(); x.visualSystem[key] = value;
+    const r = check(x);
+    assert.ok(r.errors.some((e) => e.code === 'design-style' && pattern.test(e.message)), JSON.stringify(value));
+  }
 });

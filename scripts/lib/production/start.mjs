@@ -13,6 +13,7 @@ import { hash, json, repositoryPath } from "./contracts.mjs";
 import { initializeProduction, productionStatus } from "./state.mjs";
 import { assertExecution } from "./environment.mjs";
 import { productionProfileErrors } from "../production-profile.mjs";
+import { currentDesignStyle } from "../design-styles.mjs";
 import { defaultEpisodeId, findEpisodesByUrl } from "./episode-lookup.mjs";
 
 // 설명·원고·장면을 미리 결정하지 않는 기사 위임 진입점. 네트워크·생성 호출은 제작자가 선택한다.
@@ -33,6 +34,8 @@ export const startProduction = ({ id, url, duration, durationBasis = "total", re
   const profile = JSON.parse(profileBytes);
   const errors = productionProfileErrors(profile);
   if (errors.length) throw new Error(errors.join("\n"));
+  // 후킹·크레딧 디자인도 자막 프로필처럼 지금 버전을 편에 고정한다. 값만 고치고 버전을 안 올렸으면 여기서 거절한다.
+  const hookStyle = currentDesignStyle("hook-style", repo), attributionStyle = currentDesignStyle("attribution-style", repo);
   for (const path of ["news/" + id, "pilots/" + id, "public/pilots/" + id, "out/pilots/" + id, "src/editorial/episodes/" + id, "src/editorial/episodes/" + id + ".tsx"]) {
     repositoryPath(repo, path);
     if (existsSync(join(repo, path))) throw new Error("이 편의 경로가 이미 있다. resume하거나 다른 id를 사용한다: " + path);
@@ -41,6 +44,8 @@ export const startProduction = ({ id, url, duration, durationBasis = "total", re
   visual.visual_contract = VISUAL_CONTRACT;
   visual.generation_jobs = [];
   visual.production_profile = { id: profile.id, version: profile.version };
+  visual.hook_style = { version: hookStyle.version };
+  visual.attribution_style = { version: attributionStyle.version };
   visual.canvas = profile.canvas;
   visual.caption = { preset: profile.caption.preset };
   visual.attribution = {sources:[], pages:[{duration:3, categories:[{title:"참조 기사", lines:[url]}]}]};
@@ -63,6 +68,7 @@ export const startProduction = ({ id, url, duration, durationBasis = "total", re
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },
     profile: { path: profilePath, id: profile.id, version: profile.version, sha256: hash(profileBytes) },
+    design_styles: { hook_style: { version: hookStyle.version, sha256: hash(JSON.stringify(hookStyle.style)) }, attribution_style: { version: attributionStyle.version, sha256: hash(JSON.stringify(attributionStyle.style)) } },
   });
   if (referenceText) put(REFERENCE_SNAPSHOT, referenceText);
   put(prompt.record.template, prompt.template);

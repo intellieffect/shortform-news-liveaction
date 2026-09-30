@@ -1,11 +1,12 @@
 import {readFileSync} from 'node:fs';
-const style = JSON.parse(readFileSync(new URL('../../config/attribution-style.json', import.meta.url), 'utf8'));
+// 크레딧 디자인 1.0.0 보관본 — 버전 기록이 없는 편의 값. 기록이 있는 편은 editorial.mjs가 그 버전의 style을 넘긴다.
+const LEGACY_STYLE = JSON.parse(readFileSync(new URL('../../config/attribution-styles/attribution-style-1.0.0.json', import.meta.url), 'utf8'));
 export const ATTRIBUTION_POLICY = 'attribution@2';
 const officialUrl = value => { try { const u = new URL(value); return ['https:', 'http:'].includes(u.protocol) && !u.username && !u.password && !/(^|\.)(pexels\.com|higgsfield\.ai)$/.test(u.hostname); } catch { return false; } };
 const providerLabel = /\b(?:higgsfield|pexels?)\b|힉스필드|펙셀/iu;
 const text = value => typeof value === 'string' && value.trim();
 // Times are seconds on the actual source timeline. End pages append after narration.
-export const compileAttribution = (input, {fps, contentFrames, assets = [], required = false, policy = null}) => {
+export const compileAttribution = (input, {fps, contentFrames, assets = [], required = false, policy = null, style = LEGACY_STYLE}) => {
   const errors = [];
   const fail = message => errors.push({code:'attribution', where:'visual-system.attribution', message});
   if (policy != null && policy !== ATTRIBUTION_POLICY) fail(`알 수 없는 출처 계약: ${policy}`);
