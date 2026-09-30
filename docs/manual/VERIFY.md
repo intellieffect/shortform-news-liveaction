@@ -2,7 +2,7 @@
 
 | 항목 | 값 |
 |---|---|
-| 대상 문서 | `docs/manual/HANI-MANUAL.md` v0.12 (html·pdf는 이 md에서 생성). v0.11 압축 내역은 §8, v0.12 9장 통일은 §9, 고객 전달본 v1.0(버전2 기반)은 §10 |
+| 대상 문서 | 확정본 `docs/manual/한겨레_숏폼_활용매뉴얼_v1.1.{md,html}` (PDF는 미커밋). 이전 판(v0.12 `docs/manual/HANI-MANUAL.*`, 버전2 `docs/manual/v2/HANI-MANUAL-v2.*`, v1.0 `docs/manual/v2/한겨레_숏폼_활용매뉴얼_v1.0.*`)은 2026-09-30 삭제 — git 이력에만 있다. v0.11 압축 내역은 §8, v0.12 9장 통일은 §9, 고객 전달본 v1.0(버전2 기반)은 §10 |
 | 기준 코드 | 브랜치 `yubeeeen/shortform-news-liveaction-int5833`, v0.9 기준 3e7d18f9 → v0.10은 공용 음원 단순화 커밋 포함, plugin 1.5.1 → v0.12는 후킹·크레딧 디자인 버전 보관·`defaults adopt` 커밋 포함, plugin 1.6.0 |
 | 작성일 | 2026-09-30 |
 | 근거 | 각 프롬프트가 실제로 처리되는 스킬·문서 위치(파일:줄). 경로 약어 `P/` = `plugin/skills/shortform-news-pipeline/`, `I/` = `plugin/skills/shortform-news-input/` |
@@ -94,7 +94,7 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 
 ## 5. 산출물 생성 방법
 
-- HTML: `docs/manual/HANI-MANUAL.md`에서 단일 HTML로 변환(v0.9와 같은 인라인 CSS·복사 버튼·A4 인쇄 스타일, 장 번호 배지·단계 칩). 변환 스크립트는 작업 세션 임시 폴더에 있었고 저장소에 넣지 않았다 — md를 고치면 HTML도 같이 고친다.
+- HTML: `docs/manual/HANI-MANUAL.md`(삭제됨, git 이력)에서 단일 HTML로 변환(v0.9와 같은 인라인 CSS·복사 버튼·A4 인쇄 스타일, 장 번호 배지·단계 칩). 변환 스크립트는 작업 세션 임시 폴더에 있었고 저장소에 넣지 않았다 — md를 고치면 HTML도 같이 고친다.
 - PDF: HTML을 로컬 headless Chrome `--print-to-pdf --no-pdf-header-footer`로 인쇄(v0.10: A4 15쪽 → v0.11: A4 8쪽 → v0.12: A4 8쪽, 인쇄 CSS의 강제 쪽나눔으로 장이 쪽 중간에서 잘리지 않음). 영상 렌더 아님. 저장소 관례(추적 PDF 없음·LFS 규칙 없음)에 따라 **커밋하지 않고** 전달용으로만 둔다.
 
 ## 6. v0.10 변경 내역 (2026-09-30)
@@ -261,8 +261,8 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 
 | 항목 | 값 |
 |---|---|
-| 원본 | `docs/manual/v2/HANI-MANUAL-v2.{md,html}` (커밋 fa12dd61, 수정 안 함) |
-| 전달본 | `docs/manual/v2/한겨레_숏폼_활용매뉴얼_v1.0.{md,html,pdf}` — PDF는 관례대로 미커밋 |
+| 원본 | `docs/manual/v2/HANI-MANUAL-v2.{md,html}` (커밋 fa12dd61, 수정 안 함 — 2026-09-30 삭제, git 이력) |
+| 전달본 | `docs/manual/v2/한겨레_숏폼_활용매뉴얼_v1.0.{md,html,pdf}` — PDF는 관례대로 미커밋 (2026-09-30 삭제, git 이력). 이후 확정본 v1.1은 `docs/manual/한겨레_숏폼_활용매뉴얼_v1.1.{md,html}` |
 | PDF | A4 8쪽, 글꼴(Pretendard) 전부 임베드, 목차 내부 링크 13개, 바닥글 쪽 번호. 8쪽 전부 이미지로 확인 — 잘림·빈 쪽·깨진 글자 없음, 목차 쪽 번호 일치 |
 | 원칙 | 기능·약속 추가 없음. 프롬프트 23개 문장 불변 |
 
