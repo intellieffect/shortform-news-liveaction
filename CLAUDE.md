@@ -5,7 +5,7 @@
 ## Rules that are expensive to break
 
 - **Episode production happens directly on `main`; never create a worktree or branch for an episode.** Same article URL = same episode: `start` refuses a known URL and names the episode to `resume`. Confirmation is automatic: `produce complete` (reviews passed) or `produce deliver <id> --basis user` (user confirmed) adds the next version, repoints `deliver/LATEST`, rebuilds `out/videos.html`, and commits only that episode's text files. Do not hand-commit, branch, or push episode work. The newest version is the 확정본. Flow: [사용 안내](docs/HANI-GUIDE.md).
-- **Code and guideline development (scripts, src, plugin, docs) goes in a worktree on its own branch.** Never commit that kind of change to `main` directly.
+- **Code and guideline development (scripts, src, plugin, docs) goes in a worktree on its own branch.** Never commit that kind of change to `main` directly. Exception — customer setting values (`narration.voice` in `config/production-defaults.json`, the default prompt text + its version registry, `config/production-profile.json` values + archive, `config/hook-style.json` + `config/hook-styles/`, `config/attribution-style.json` + `config/attribution-styles/`, `library/music/catalog.json`) change on `main` only through `npm run defaults` / `npm run music`, which auto-commit just those files: [전역 기본값](plugin/skills/shortform-news-pipeline/reference/global-defaults.md).
 - **Remove worktrees with `npm run worktree:remove -- <path>`, never `git worktree remove`.** The git command only counts *tracked* changes, so gitignored files are treated as absent and deleted silently. On 2026-09-03 that erased three delivered cuts, 1.1GB of clips, and `narration.wav` in one call .
 - **원문 보존 — never edit source material.** Articles and collected assets stay exactly as received in `news/<id>/01_input/`; every summary or adaptation goes in `02_production/`. This also applies to what the user says: copy directives verbatim, do not paraphrase them into rules.
 - **Render only when the user asks.** Review with `npm run still` / `npm run slides` first — a full render is for the 납품본 only.
@@ -75,11 +75,15 @@ Anywhere else, ask first. Issue parallel calls in a single message.
 
 Call them as `@agent-shortform-news:<name>`. They judge and never edit; do not re-judge what they report — pass their wording to the user unchanged.
 
+## 공통 후킹
+
+첫 나레이션 문장을 후킹으로 작성하고, 큰 중앙 부근 별도 오버레이와 노란 밑줄을 현재 editorial 공통 화면에 연결한다. 새 편의 후킹 오버레이는 초반에 한 번만 등장한다(`hook-overlay@4`). 문형·줄 구성·시간·속도를 예시 영상에서 복제하지 않는다. 도입 조판 전 context.hook_reference의 [실제 참고 화면](plugin/skills/shortform-news-pipeline/reference/hook-design-reference.md)을 열어 서체·크기 비율·간격·여백을 확인하고 줄별 조판값을 작성한다. 데이터·변경·검증은 [후킹 계약](plugin/skills/shortform-news-pipeline/reference/hook-overlay.md)을 따른다.
+
 ## Remotion constraints
 
 - Animate with `useCurrentFrame()` + `interpolate()` only. CSS `transition`/`animation` and Tailwind `animate-*`/`transition-*` do not appear in renders.
 - Put `interpolate()` inline in `style`; prefer `scale`/`translate`/`rotate` over `transform`; use `Interactive.Div` so Studio can write edits back to code.
-- Safe area at 1080 wide: 80px sides, 100px top/bottom. Headline ≥84px, secondary text ≥44px.
+- 1080×1920 배치는 [공통 배치](config/layout-rules.md)의 수치를 사용한다. 중앙 x540 유지, 고정 UI와 각 정보 요소의 겹침만 회피하며 Google 광고 사각형을 강제 경계로 사용하지 않는다. Headline ≥84px, secondary text ≥44px; 자료 출처는 별도 승인값32px. 컷 출처 자격·끝 크레딧 장당 시간·자막 분절 규칙도 같은 문서가 정본이다.
 - Media handling (trim, crop, metadata) goes through `@remotion/media` + Mediabunny. Never pin `mediabunny` by hand — `npx remotion upgrade` matches it.
 - Node + npm only. Do not switch to pnpm or bun; one lockfile.
 - Upgrade with `npx remotion upgrade` (packages and vendored skills together). The `.claude/skills/remotion-*` skills are vendored by that command — never move them into `plugin/`.

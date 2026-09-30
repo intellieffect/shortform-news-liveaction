@@ -1,0 +1,8 @@
+{
+  "version": "hook-style@3",
+  "center_x": 540,
+  "shadow": "0 3px 12px rgba(0,0,0,0.9)",
+  "underline_color": "#FFD16A",
+  "underline_height": 6,
+  "underline_gap": 14
+}

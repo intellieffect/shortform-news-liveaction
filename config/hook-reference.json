@@ -1,0 +1,31 @@
+{
+  "schema_version": "hook-reference@1",
+  "id": "satellite-delivered-opening",
+  "guide": "plugin/skills/shortform-news-pipeline/reference/hook-design-reference.md",
+  "source": {
+    "filename": "인공위성만 보인다, ‘진짜 별’은 못 찾는다…“10만기 넘으면 천문학 연구 불가능”_파일럿.mp4",
+    "sha256": "0b4f7d9f15b7f8aa748d3bbafab76ee322c924cb77032d5e8f6d8d9342f989c3",
+    "width": 1080,
+    "height": 1920,
+    "duration_seconds": 91.114667
+  },
+  "frames": [
+    {
+      "time_seconds": 4,
+      "path": "plugin/skills/shortform-news-pipeline/reference/assets/hook-satellite/04-00.jpg",
+      "sha256": "de5c540d865ef0c9647929aeaaf723f8f37951a0ac87c9586f8cbe9475d16238"
+    },
+    {
+      "time_seconds": 5.5,
+      "path": "plugin/skills/shortform-news-pipeline/reference/assets/hook-satellite/05-50.jpg",
+      "sha256": "fbc295506c95ed9b3abad1b066be765607b9fcf67298e08d097a74981ea12985"
+    },
+    {
+      "time_seconds": 6.2,
+      "path": "plugin/skills/shortform-news-pipeline/reference/assets/hook-satellite/06-20.jpg",
+      "sha256": "a0e2227e708c738c468a3e7a5cea63813c1a93703df5be93bdb85acb46419e53"
+    }
+  ],
+  "font_identity": "unverified",
+  "note": "실제 전달본 추출 프레임. 로컬 satellite_v3(약74초)와 다름. 실측 픽셀은 래스터 잉크 경계이며 CSS 폰트 크기가 아니다."
+}

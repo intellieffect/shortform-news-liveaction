@@ -2,9 +2,21 @@
   "schema_version": "restored-production-defaults@1",
   "baseline_commit": "59a2af79",
   "guide": "config/production-defaults.md",
-  "logo_package": "presets/hani/brand-assets/v2/manifest.json",
+  "logo_package": "presets/hani/brand-assets/v3/manifest.json",
   "production_prompt": {
-    "version": "v2-original@1",
+    "version": "v2-original@5",
     "path": "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"
+  },
+  "narration": {
+    "voice": {
+      "provider": "typecast",
+      "voice_id": "tc_69fc0cff784968297fb45daa",
+      "voice_name": "Sanghyun",
+      "model": "ssfm-v30",
+      "language": "kor",
+      "audio_tempo": 1.0,
+      "audio_pitch": 0,
+      "emotion_preset": "normal"
+    }
   }
 }

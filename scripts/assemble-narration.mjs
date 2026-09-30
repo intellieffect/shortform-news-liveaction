@@ -21,7 +21,8 @@ export const importNarration = async (id, { alignment, audio = "02_production/au
   };
   const alignmentPath = file(alignment), audioPath = file(audio), outputPath = file(output);
   const narrationPath = file("02_production/narration.txt");
-  const protectedFiles = [alignmentPath, audioPath, narrationPath, file("02_production/voice.json"), file("02_production/substitutions.json"), file("02_production/visual-system.json"), ...(captionText ? [file(captionText)] : [])];
+  const segmentationPath = file("02_production/caption-segmentation.json");
+  const protectedFiles = [segmentationPath, alignmentPath, audioPath, narrationPath, file("02_production/voice.json"), file("02_production/substitutions.json"), file("02_production/visual-system.json"), ...(captionText ? [file(captionText)] : [])];
   if (protectedFiles.includes(outputPath) || !/^narration(?:[._-][\w-]+)?\.json$/.test(basename(output))) throw new Error("입력 파일을 출력으로 덮어쓸 수 없다. narration[.이름].json 출력을 사용한다");
   if (existsSync(outputPath) && !replace) throw new Error("출력이 이미 있다. 파생 JSON 재조립은 --replace로 명시한다");
   const source = new Input({ formats: ALL_FORMATS, source: new FilePathSource(audioPath) });
@@ -39,11 +40,13 @@ export const importNarration = async (id, { alignment, audio = "02_production/au
   const doc = assembleNarration({
     pilot: id, narrationText: readFileSync(narrationPath, "utf8"), alignment: JSON.parse(alignmentBytes), audio: metadata,
     profile,
+    captionSegmentation: existsSync(segmentationPath) ? json(segmentationPath) : undefined,
     captionText: captionText ? readFileSync(file(captionText), "utf8") : undefined,
     substitutions: existsSync(substitutionsPath) ? json(substitutionsPath) : undefined,
     voice: existsSync(voicePath) ? json(voicePath) : null,
     forceAlign, minMatch, allowEstimated,
   });
+  if (existsSync(segmentationPath)) doc.source.caption_segmentation = {path:"02_production/caption-segmentation.json", sha256:hash(readFileSync(segmentationPath))};
   doc.alignment.source = { path: alignment, sha256: hash(alignmentBytes) };
   const temporary = outputPath + "." + randomUUID() + ".tmp";
   try {

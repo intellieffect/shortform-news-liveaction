@@ -16,6 +16,7 @@
     "@remotion/tailwind-v4": "4.0.518",
     "@remotion/three": "^4.0.518",
     "@types/three": "^0.185.0",
+    "opentype.js": "^2.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.518",
@@ -70,6 +71,8 @@
     "worktree:remove": "node scripts/worktree-safe-remove.mjs",
     "fetch:article": "node scripts/fetch-article.mjs",
     "fetch:assets": "node scripts/fetch-assets.mjs",
+    "music": "node scripts/music.mjs",
+    "defaults": "node scripts/defaults.mjs",
     "narration:assemble": "node scripts/assemble-narration.mjs",
     "motion:rebase": "node scripts/motion-rebase.mjs",
     "review:packet": "node scripts/review-packet.mjs",
@@ -89,7 +92,7 @@
     "editorial:compile": "node scripts/compile-editorial-timeline.mjs",
     "produce": "node scripts/produce.mjs",
     "production:entry:test": "node tests/test-production-entry.mjs",
-    "production:captions:test": "node tests/test-single-line-captions.mjs",
+    "production:captions:test": "npm run production:captions:unit && node tests/test-single-line-captions.mjs",
     "videos": "node scripts/build-video-library.mjs",
     "videos:test": "node --test scripts/test-video-library.mjs",
     "zip:test": "node --test tests/test-zip-stream.mjs",
@@ -109,8 +112,12 @@
     "references:prepare": "node scripts/prepare-references.mjs",
     "references:render": "node scripts/render-reference.mjs",
     "references:test": "node --test tests/test-visual-references.mjs",
-    "visual-production:test": "node --test tests/test-visual-production.mjs tests/test-screen-text-policy.mjs",
-    "scene:proof": "node scripts/scene-proof.mjs"
+    "hook:test": "node --test tests/test-hook-overlay.mjs tests/test-hook-composition.mjs tests/test-hook-rendering.mjs",
+    "visual-production:test": "node --test tests/test-render-duration-basis.mjs tests/test-visual-production.mjs tests/test-screen-text-policy.mjs tests/test-hani-layout-policy.mjs",
+    "scene:proof": "node scripts/scene-proof.mjs",
+    "production:editorial-rules:test": "node --test tests/test-attribution-policy.mjs tests/test-hook-overlay.mjs tests/test-hook-composition.mjs",
+    "production:captions:unit": "node tests/test-caption-segmentation.mjs && node tests/test-caption-semantics.mjs && node --test tests/test-caption-policy.mjs tests/test-narration-assembly.mjs",
+    "defaults:test": "node --test tests/test-music-library.mjs tests/test-global-defaults.mjs"
   },
   "sideEffects": [
     "*.css"

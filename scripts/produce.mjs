@@ -12,7 +12,7 @@ const flags = command === "doctor" || (command === "start" && id?.startsWith("--
 const value = (flag) => { const i = flags.indexOf(flag); return i < 0 ? undefined : flags[i + 1]; };
 const values = (flag) => args.flatMap((arg, i) => arg === flag && args[i + 1] ? [args[i + 1]] : []);
 const usage = [
-  "produce start [id] --url <기사 URL> --duration <최소초:최대초> --request-file <요청 원문 파일>",
+  "produce start [id] --url <기사 URL> --duration <최소초:최대초> [--duration-basis total|content] --request-file <요청 원문 파일>",
   "produce doctor [--installed] [--capabilities <현재 세션 도구 JSON>]",
   "produce status|resume <id> [--json]",
   "produce spec <id>  # 현재 프로필·스키마·발화 앵커를 한 번에 조회",
@@ -38,7 +38,7 @@ try {
     if (result.execution.errors.length) process.exitCode = 1;
   } else if (command === "start") {
     if (!value("--request-file")) throw new Error("--request-file로 사용자 원문을 전달한다");
-    result = startProduction({ id: id?.startsWith("--") ? undefined : id, url: value("--url"), duration: value("--duration")?.split(":").map(Number), request: readFileSync(value("--request-file"), "utf8") });
+    result = startProduction({ id: id?.startsWith("--") ? undefined : id, url: value("--url"), duration: value("--duration")?.split(":").map(Number), durationBasis: value("--duration-basis"), request: readFileSync(value("--request-file"), "utf8") });
   } else if (command === "status" || command === "resume") {
     result = productionStatus(id, { includeContext: command === "resume" });
     if (!args.includes("--json")) {

@@ -2,7 +2,7 @@
 // 엔드카드 크레딧을 shots.json 실사용 자산(배경 credit + 인셋 credit)에서 재생성해 overlays.overrides.json 의 엔드카드 비트(beats.json role=endcard, 2편 b25·3편 b23)에 쓴다.
 // 생성 비트(visual.source=generated)가 있으면 AI 고지 1줄을 붙인다(AI 고지는 엔드카드에만 — 2026-08-30 규칙). --extra "출처: …" 로 꼬리 줄 추가.
 // 파일럿 2편에서 손으로 4번 재생성하다 고아 줄(교체된 자산)·누락(새 자산)이 생겼던 것을 자동화. 실행 후 make-overlays → sync.
-// 사용: node scripts/endcard-credits.mjs <root> [--music "Music: … — Mixkit"] [--check]
+// 사용: node scripts/endcard-credits.mjs <root> [--music "<음악 줄>"] [--check]
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 
@@ -39,7 +39,10 @@ for (const s of S.shots) {
   const bg = s.credit && s.gen?.start_image ? `시작 이미지: ${s.credit.replace(/^시작 이미지:\s*/, "")}` : s.credit;
   for (const c of [bg, ...(s.insets ?? []).map((i) => i.credit)]) if (c && !seen.includes(c)) seen.push(c);
 }
-const music = opt("music", audio.bgm?.credit ? `Music: ${audio.bgm.credit.replace(/^Music:\s*/, "")}` : null);
+// 공용 음원(bgm.asset = "library:…")은 파일 이름(확장자 제외)이 곧 음악 줄 — 접두어를 붙이지 않는다(2026-09-30 사용자 결정).
+// 그 밖의 기존 편 음원은 예전대로 "Music: " 접두 — 확정본을 다시 생성해도 표기가 바뀌지 않게 한다.
+const bgm = audio.bgm;
+const music = opt("music", bgm?.credit ? (String(bgm.asset ?? "").startsWith("library:") ? bgm.credit : `Music: ${bgm.credit.replace(/^Music:\s*/, "")}`) : null);
 // AI 고지: 생성 비트가 하나라도 있으면 모델명으로 1줄 (3편 2026-08-30)
 const genModels = [...new Set(S.shots.filter((s) => s.visual?.source === "generated").map((s) => (s.gen?.model ?? "").replace(/^kling3_0.*/, "Kling 3.0").replace(/^veo.*/, "Veo") || "생성 모델"))];
 const aiLine = genModels.length ? `배경·예시 영상 AI 생성 (Higgsfield · ${genModels.join(" · ")})` : null; // 문구: 무엇이 생성인지 한정 — 사실 화면은 실사 (input 제안 2026-08-30)

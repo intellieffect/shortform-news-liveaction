@@ -1,5 +1,7 @@
 import {OPTIONAL_SCENE_GATE} from '../scene-proof-contract.mjs';
 import {SCREEN_TEXT_POLICY} from '../screen-text-policy.mjs';
+import {ATTRIBUTION_POLICY} from '../attribution.mjs';
+import {HOOK_POLICY} from '../hook-overlay.mjs';
 import {VISUAL_CONTRACT} from '../visual-plan.mjs';
 import {captureReferences,REFERENCE_SNAPSHOT} from '../visual-references.mjs';
 import { prepareProductionPrompt } from './prompt.mjs';
@@ -11,16 +13,18 @@ import { hash, json, repositoryPath } from "./contracts.mjs";
 import { initializeProduction, productionStatus } from "./state.mjs";
 import { assertExecution } from "./environment.mjs";
 import { productionProfileErrors } from "../production-profile.mjs";
+import { currentDesignStyle } from "../design-styles.mjs";
 import { defaultEpisodeId, findEpisodesByUrl } from "./episode-lookup.mjs";
 
 // 설명·원고·장면을 미리 결정하지 않는 기사 위임 진입점. 네트워크·생성 호출은 제작자가 선택한다.
-export const startProduction = ({ id, url, duration, request, repo = REPO } = {}) => {
+export const startProduction = ({ id, url, duration, durationBasis = "total", request, repo = REPO } = {}) => {
   repo = realpathSync(repo);
   assertExecution(repo);
   let source;
   try { source = new URL(url); } catch { throw new Error("유효한 기사 URL이 필요하다"); }
   if (!["https:", "http:"].includes(source.protocol) || source.username || source.password) throw new Error("인증정보 없는 HTTP(S) 기사 URL이 필요하다");
   if (!Array.isArray(duration) || duration.length !== 2 || duration.some((x) => !Number.isFinite(x) || x <= 0) || duration[1] < duration[0]) throw new Error("분량은 양수 범위 min:max 초로 입력한다");
+  if (!["total", "content"].includes(durationBasis)) throw new Error("분량 기준은 total 또는 content다");
   if (typeof request !== "string" || !request.trim()) throw new Error("사용자 요청 원문이 필요하다");
   const existing = findEpisodesByUrl(repo, source.href);
   if (existing.length) throw new Error("이 기사의 편이 이미 있다: " + existing.join(", ") + " — 수정 요청이면 새 편을 만들지 않고 npm run produce -- resume " + existing[0] + " 로 이어서 고친다" + (existing.length > 1 ? ". 편이 여럿이면 어느 편인지 사용자에게 묻는다" : ""));
@@ -30,6 +34,8 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   const profile = JSON.parse(profileBytes);
   const errors = productionProfileErrors(profile);
   if (errors.length) throw new Error(errors.join("\n"));
+  // 후킹·크레딧 디자인도 자막 프로필처럼 지금 버전을 편에 고정한다. 값만 고치고 버전을 안 올렸으면 여기서 거절한다.
+  const hookStyle = currentDesignStyle("hook-style", repo), attributionStyle = currentDesignStyle("attribution-style", repo);
   for (const path of ["news/" + id, "pilots/" + id, "public/pilots/" + id, "out/pilots/" + id, "src/editorial/episodes/" + id, "src/editorial/episodes/" + id + ".tsx"]) {
     repositoryPath(repo, path);
     if (existsSync(join(repo, path))) throw new Error("이 편의 경로가 이미 있다. resume하거나 다른 id를 사용한다: " + path);
@@ -38,8 +44,11 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   visual.visual_contract = VISUAL_CONTRACT;
   visual.generation_jobs = [];
   visual.production_profile = { id: profile.id, version: profile.version };
+  visual.hook_style = { version: hookStyle.version };
+  visual.attribution_style = { version: attributionStyle.version };
   visual.canvas = profile.canvas;
   visual.caption = { preset: profile.caption.preset };
+  visual.attribution = {sources:[], pages:[{duration:3, categories:[{title:"참조 기사", lines:[url]}]}]};
   const defaults = readProjectDefaults(repo, profile);
   const prompt = prepareProductionPrompt(repo, url);
   const referenceSet = captureReferences(repo);
@@ -54,11 +63,12 @@ export const startProduction = ({ id, url, duration, request, repo = REPO } = {}
   put("01_input/assets.json", { schema_version: "1.0", pilot: id, assets: [] });
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),
-    visual_contract: VISUAL_CONTRACT, scene_gate: OPTIONAL_SCENE_GATE, screen_text: SCREEN_TEXT_POLICY,
-    source_url: url, duration_sec: { min: duration[0], max: duration[1] }, raw_request: "00_brief/user-request.txt",
+    visual_contract: VISUAL_CONTRACT, scene_gate: OPTIONAL_SCENE_GATE, screen_text: SCREEN_TEXT_POLICY, hook_overlay: HOOK_POLICY, attribution_policy: ATTRIBUTION_POLICY,
+    source_url: url, duration_sec: { min: duration[0], max: duration[1], basis: durationBasis }, raw_request: "00_brief/user-request.txt",
     ...(referenceText ? {visual_references: {path: REFERENCE_SNAPSHOT, sha256: hash(referenceText)}} : {}),
     raw_request_sha256: hash(request), production_prompt: prompt.record, creative_scope: { script: "delegated", assets: "delegated", diagrams: "delegated", audio: "delegated" },
     profile: { path: profilePath, id: profile.id, version: profile.version, sha256: hash(profileBytes) },
+    design_styles: { hook_style: { version: hookStyle.version, sha256: hash(JSON.stringify(hookStyle.style)) }, attribution_style: { version: attributionStyle.version, sha256: hash(JSON.stringify(attributionStyle.style)) } },
   });
   if (referenceText) put(REFERENCE_SNAPSHOT, referenceText);
   put(prompt.record.template, prompt.template);

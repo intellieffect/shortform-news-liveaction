@@ -34,3 +34,11 @@ test("JSX 직접 문구 판정", () => {
   assert.ok(isProvenanceText("사진: Denys / Wikimedia Commons · CC BY 3.0"));
   assert.ok(!isProvenanceText("TRAPPIST-1"));
 });
+
+test('새 정책은 출처만 허용하고 과거 정책·설명 금지는 유지',()=>{
+ const c=concepts([{id:'credit',kind:'text',role:'provenance',text:'자료: NASA Scientific Visualization Studio'}]);
+ assert.equal(screenTextPolicyIssues({concepts:c,narration,policy:'screen-text@2'}).errors.length,0);
+ assert.equal(screenTextPolicyIssues({concepts:c,narration,policy:'screen-text@1'}).errors.length,1);
+ const bad=concepts([{id:'fake',kind:'text',role:'provenance',text:'상상도 · AI 재구성'}]);
+ assert.ok(screenTextPolicyIssues({concepts:bad,narration,policy:'screen-text@2'}).errors.length);
+});

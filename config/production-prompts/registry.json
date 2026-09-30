@@ -1,0 +1,14 @@
+{
+  "schema_version": "production-prompts@1",
+  "family": "v2-original",
+  "_comment": "기본 제작 프롬프트 버전 등록부. 버전 라벨 하나에 본문 해시 하나. 본문을 고치면 npm run defaults -- prompt-bump 로 새 버전을 등록한다(손으로 고치지 않는다). @1~@4는 등록부 도입 전 버전이라 해시가 없다 — 그 편들은 편별 00_brief 사본과 request.json 해시로 확인한다.",
+  "versions": [
+    {
+      "version": "v2-original@5",
+      "sha256": "560507751c166090c6ec14136de42eb0a34f41ad27062761b749684630325292",
+      "archive": "config/production-prompts/v2-original@5.txt",
+      "recorded_at": "2026-09-30",
+      "note": "등록부 도입 시점의 본문(b0605f3b 이후 동일)"
+    }
+  ]
+}

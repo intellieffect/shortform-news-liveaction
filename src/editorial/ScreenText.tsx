@@ -17,6 +17,8 @@ export const EditorialScreenText: React.FC<{
   const element = concepts.concepts?.flatMap(c => c.elements ?? []).find(e => e.id === elementId);
   const event = pilot.timeline.events.find(e => e.id === eventId && e.element_id === elementId);
   if (!element || element.kind !== 'text' || !element.text || !event) throw new Error(`화면 문구/사건 연결 누락: ${elementId}/${eventId}`);
+  // Shared hook owns these elements, even if an old scene still calls ScreenText.
+  if (pilot.timeline.hook_overlay?.phrases.some(phrase => phrase.id === elementId)) return null;
   const opacity = eventOpacity(globalFrame, event);
   if (opacity <= 0) return null;
   return <div data-screen-text={elementId} data-text-role={element.role}

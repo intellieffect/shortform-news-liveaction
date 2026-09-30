@@ -30,7 +30,7 @@
 - `why`: 이 표현이 관계나 현상을 가장 정확히 전달하는 이유
 - 영상·이미지가 포함되면 `full_bleed:true`. 예외는 `layout_exception`에 핵심 피사체와 자막을 위해 필요한 이유를 적는다.
 
-`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`만 허용한다. `screen-text@1` 편은 `provenance`를 쓰지 않고, 출처·재구성 표기와 나레이션을 다시 적는 설명 문구를 넣지 않는다([화면 글자](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md#화면-글자)). 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
+`state.keep/add/remove`는 문장이 바뀌어도 남을 기준과 새로 더하거나 정리할 요소를 **`elements[].id`로만** 기록한다. 이전 개념의 활성 요소는 다음 개념에서 빠짐없이 keep 또는 remove로 처리하고, 현재 개념이 정의한 요소는 add에 둔다. `elements`는 화면 요소의 전역 고유 ID를 정의한다. 텍스트 요소의 `role`은 `necessary-label`, `condition`, `provenance`, `hook`을 허용한다. `hook`은 유효한 story.hook에 연결되어 공통 트랙에서 표시되는 도입 문구에만 사용한다([후킹 계약](../../plugin/skills/shortform-news-pipeline/reference/hook-overlay.md)). `screen-text@1` 편은 `provenance`를 쓰지 않고, 출처·재구성 표기와 나레이션을 다시 적는 설명 문구를 넣지 않는다([화면 글자](../../plugin/skills/shortform-news-pipeline/reference/visual-production.md#화면-글자)). 제작 과정 설명, 장식용 상단 제목, “설명용” 같은 도해 주석은 넣지 않는다.
 
 개념 경계에 정확한 전환 시점이 필요하면 `range.from/end`를 motion과 같은 발화 앵커 형식으로 적는다. 없으면 인접 내레이션의 무음 중간점으로 컴파일한다. 경계에도 절대 프레임을 적지 않는다.
 
@@ -121,3 +121,5 @@ realization.asset_ids에 생성 자산이 있으면 그 generation_job도 job_id
 탐색 draft는 시도·관찰 JSON·검수 입력을 만들지 않으며 착수 근거가 아니다. @4로 시작한 편은 동작 설명의 제출 motion 한 편에 구도·재료·작용·결과의 독립 초견·의도 대조를 연결하고, 정적 설명은 제출 still을 검수한다. 기존 @2·@3 편의 단계별 기록과 @1 편의 계약은 소급 변경하지 않는다. 독립 검수 대상의 열린 렌더 완료 시도는 review-input --source scene으로 확인할 수 있다. 초기 검수는 핵심 이해·명백한 오독에 집중하며, 음성 전 임시 자막의 프레임 전수 측정은 요구하지 않는다. 정확한 형식은 [초기 합성 시안](../SCENE-PROOF.md)을 따른다.
 
 @4의 동작 설명은 현재 composite motion 한 편, 정적 설명은 composite still이 음성 착수 근거다. @2·@3·@4 편의 motion은 전체 연속 확인 usable 또는 시작·중간·끝의 이미지 증거와 독립 검수를 연결한 provisional을 허용한다. 사용자 지시로 미해결 문제를 안고 착수할 때는 현재 시안·독립 검수·사용자 원문·후속 문제를 해시로 묶는 `scene-admission@1`을 별도로 기록한다. 이것은 proof verdict나 최종 화면 pass를 바꾸지 않으며 열린 문제를 남긴다. 다른 explain 개념마다 초기 scene-proof를 강제하지 않으며, 전체 영상의 설명은 최종 visual 검수에서 확인한다. 공통 합성 provenance가 없는 별도 임시 그림은 이 착수 조건을 충족하지 않는다.
+
+후킹은 `story.hook.phrases[].rows`에 서체·굵기·크기·자간·색·행 높이·간격·정렬을 명시한다. 도입 조판 전에 `context.hook_reference`의 실제 프레임을 열어 보고 후킹 계약과 hook-design-reference.md를 따른다. 크기/색이 다르다는 이유만으로 위계·서체·배경과의 조판을 통과시키지 않는다. 보조 줄이나 두 단계 구성을 강제하지 않으며, 타이밍은 실제 발화에 맞춘다. 참고 파일이 없거나 확인하지 못했으면 미확인으로 기록한다. 원본 서체명은 미확인이므로 대체 후보를 원본 폰트라고 단정하지 않는다. 밑줄 완성 폭은 선택한 강조 구절과 일치해야 한다. 말자막은 실제 폰트 폭과 의미 단위를 함께 고려하며 수식어·명사구를 불필요하게 끊지 않는다. 문장 쉼표는 다음 시점 자막으로 분할하고 숫자 내부 쉼표는 보존한다. 코드 검증 이후 실제 발화·읽힘·모바일 UI 가림을 확인한다.

@@ -21,3 +21,7 @@ references/**/*.md text eol=lf
 references/**/*.json text eol=lf
 references/**/*.tsx text eol=lf
 references/**/*.ts text eol=lf
+
+# 기본 프롬프트 등록부는 본문 sha256을 LF 기준으로 기록한다 — autocrlf로 바뀌면 start가 "본문이 바뀌었다"로 거절한다.
+docs/PRODUCTION_PROMPT_V2_RESTORED.txt text eol=lf
+config/production-prompts/** text eol=lf

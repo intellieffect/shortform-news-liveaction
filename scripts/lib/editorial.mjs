@@ -1,9 +1,13 @@
+import {captionPolicyIssues} from "./caption-policy.mjs";
+import {ATTRIBUTION_POLICY, compileAttribution} from "./attribution.mjs";
 import {validateVisualPlan} from './visual-plan.mjs';
 import {SCREEN_TEXT_POLICY, screenTextPolicyIssues} from './screen-text-policy.mjs';
+import {HOOK_POLICY, HOOK_ROLE, validateHookOverlay} from './hook-overlay.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { readProductionProfile, productionProfileErrors } from "./production-profile.mjs";
+import { readProductionProfile, productionProfileErrors, profileOverrideIssues } from "./production-profile.mjs";
+import { resolveDesignStyle } from "./design-styles.mjs";
 
 const ID = /^[a-z][a-z0-9_-]*$/;
 const SCRIPT_POLICIES = new Set(["editorial-owned", "script-faithful"]);
@@ -16,7 +20,7 @@ const EASING = new Set(["ease-out", "ease-in-out", "ease-in", "linear", "cubic-i
 export const editorialContract = () => ({
   script_policies: [...SCRIPT_POLICIES], creative_scope: [...SCOPE_VALUES],
   representation_kinds: [...MEDIA], representation_roles: [...ROLES],
-  text_roles: [...TEXT_ROLES], easing: [...EASING],
+  text_roles: [...TEXT_ROLES, HOOK_ROLE], easing: [...EASING], hook_policy: HOOK_POLICY, hook_role: HOOK_ROLE, attribution_policy: ATTRIBUTION_POLICY,
 });
 const validEasing = (value) => EASING.has(value) || (
   Array.isArray(value) && value.length === 4 && value.every(Number.isFinite) &&
@@ -86,14 +90,9 @@ const noAbsoluteFrames = (value, errors, path = "motion") => {
   }
 };
 
-export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null }) => {
+export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null, hookPolicy = null, attributionPolicy = null }) => {
   const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
   const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
-  // screen-text@1 편만 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
-  if (screenTextPolicy === SCREEN_TEXT_POLICY) {
-    const policy = screenTextPolicyIssues({ concepts, narration });
-    errors.push(...policy.errors); warnings.push(...policy.warnings);
-  }
   let lines = [];
   try { lines = normalizeNarration(narration); }
   catch (error) { issue(errors, "narration-shape", "narration.json", error.message); }
@@ -127,6 +126,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     const profileErrors = productionProfileErrors(profile);
     for (const message of profileErrors) issue(errors, "production-profile-invalid", "config/production-profile.json", message);
     const reference = visualSystem.production_profile;
+    for (const message of reference.override === undefined ? [] : profileOverrideIssues(readProductionProfile({ id: reference.id, version: reference.version }), reference.override)) issue(errors, "production-profile-override", "visual-system.json", message);
     if (reference.id !== profile?.id || reference.version !== profile?.version) issue(errors, "production-profile-version", "visual-system.json", "사용 가능한 제작 프로필의 id/version과 다르다");
     if (!profileErrors.length) {
       for (const key of ["width", "height", "fps"]) if (visualSystem.canvas?.[key] !== profile.canvas[key]) issue(errors, "production-profile-canvas", `visual-system.json canvas.${key}`, "적용 제작 프로필과 출력 규격이 다르다");
@@ -150,6 +150,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
       if (index && caption?.start < captions[index - 1]?.end) issue(errors, "caption-overlap", where, "자막 구간은 시간순이며 겹치지 않아야 한다");
     }
   }
+  if (profile?.caption?.segmentation === "font-semantic@2") errors.push(...captionPolicyIssues(narration, profile));
   if (visualSystem?.text?.persistent_top_text !== false) issue(errors, "persistent-top-text", "visual-system.json", "상단 고정 설명은 끈다");
   if (visualSystem?.text?.explanatory_notes !== false) issue(errors, "explanatory-note", "visual-system.json", "제작 과정·도해 부연문구는 화면에 두지 않는다");
   if (visualSystem?.media?.full_bleed_default !== true) issue(errors, "full-bleed-default", "visual-system.json", "영상·이미지는 전체 화면을 기본값으로 둔다");
@@ -205,7 +206,7 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     for (const element of elements) {
       if (!ID.test(element?.id ?? "") || elementOwner.has(element?.id)) issue(errors, "element-id", where, `element id가 잘못됐거나 중복된다: ${element?.id}`);
       elementOwner.set(element?.id, concept.id);
-      if (element?.kind === "text" && !TEXT_ROLES.has(element?.role)) issue(errors, "screen-text-role", `${where}.${element?.id}`, "화면 텍스트는 necessary-label/condition/provenance만 허용한다");
+      if (element?.kind === "text" && !TEXT_ROLES.has(element?.role) && element?.role !== HOOK_ROLE) issue(errors, "screen-text-role", `${where}.${element?.id}`, "화면 텍스트는 necessary-label/condition/provenance(연결된 후킹은 hook)만 허용한다");
     }
     for (const id of concept?.mobile?.focal_priority ?? []) if (!elements.some((element) => element.id === id))
       issue(errors, "mobile-focal-element", where, `focal_priority의 ${id}가 elements에 없다`);
@@ -314,6 +315,18 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     else if (!Number.isInteger(offset) || event[point] + offset < 0 || event[point] + offset >= motion.total_frames) issue(errors, "audio-event-range", `motion.audio_cues.${cue?.id}`, "SFX 시점은 영상 안의 정수 프레임이어야 한다");
     else audioCues.push({ ...cue, frame: event[point] + offset });
   }
+  // 후킹 구조가 전부 유효할 때만 연결된 요소를 설명문구 제한에서 뺀다. 출처 표기 금지는 그대로다.
+  // 후킹·크레딧 디자인은 편이 start 때 기록한 버전의 보관본을 읽는다. 기록이 없는 기존 편은 기록 이전 값(legacy)이다.
+  const hookStyle = resolveDesignStyle("hook-style", visualSystem?.hook_style);
+  const attributionStyle = resolveDesignStyle("attribution-style", visualSystem?.attribution_style);
+  for (const message of [...hookStyle.errors, ...attributionStyle.errors]) issue(errors, "design-style", "visual-system.json", message);
+  const hook = validateHookOverlay({ story, concepts, lines, events: compiledEvents, fps, totalFrames: motion?.total_frames, policy: hookPolicy, ...(hookStyle.style ? { rowsStyle: hookStyle.style } : {}) });
+  errors.push(...hook.errors);
+  // 기록된 screen-text@1/@2 편에 적용한다. 이전 편의 기록된 표기는 소급해 막지 않는다.
+  if (["screen-text@1", SCREEN_TEXT_POLICY].includes(screenTextPolicy)) {
+    const policy = screenTextPolicyIssues({ concepts, narration, policy: screenTextPolicy, hookElementIds: hook.exemptElementIds });
+    errors.push(...policy.errors); warnings.push(...policy.warnings);
+  }
   const proofMap = new Map();
   const addProof = (frame, label) => {
     if (!Number.isFinite(frame) || !Number.isFinite(motion?.total_frames)) return;
@@ -347,7 +360,16 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     events: compiledEvents,
     audio_cues: audioCues,
     proof_frames: proofFrames,
+    ...(hook.overlay ? { hook_overlay: hook.overlay } : {}),
   };
+  const credits = compileAttribution(visualSystem?.attribution, {fps, contentFrames:motion?.total_frames, assets:visualSystem?.media?.assets ?? [], required:screenTextPolicy === "screen-text@2", policy:attributionPolicy, ...(attributionStyle.style ? {style: attributionStyle.style} : {})});
+  errors.push(...credits.errors);
+  if (credits.attribution) {
+    timeline.attribution = credits.attribution;
+    timeline.total_frames = credits.totalFrames;
+    for (const [i, cue] of credits.attribution.sources.entries()) timeline.proof_frames.push({id:`source${i+1}`, frame:cue.from, labels:["자료 출처"]});
+    for (const [i, page] of credits.attribution.pages.entries()) timeline.proof_frames.push({id:`credit${i+1}`, frame:page.from, labels:["끝 크레딧"]});
+  }
   if (profile) {
     timeline.production_profile = structuredClone(profile);
     timeline.source.production_profile_sha256 = sha256(JSON.stringify(profile));
@@ -361,6 +383,8 @@ export const loadEditorialBundle = (root) => {
   const request = existsSync(join(root, "00_brief/request.json")) ? readJson(join(root, "00_brief/request.json")) : null;
   return {
     screenTextPolicy: request?.screen_text ?? null,
+    hookPolicy: request?.hook_overlay ?? null,
+    attributionPolicy: request?.attribution_policy ?? null,
     visualContractRequired: (existsSync(join(root, "00_brief/request.json")) && Boolean(readJson(join(root, "00_brief/request.json")).visual_contract)) || (existsSync(join(production, "run.json")) && Boolean(readJson(join(production, "run.json")).visual_contract)),
     story: readJson(join(production, "story.json")),
     concepts: readJson(join(production, "concepts.json")),

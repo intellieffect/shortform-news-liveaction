@@ -1,3 +1,4 @@
+import {hookReferenceContext} from '../hook-reference.mjs';
 import {firstSceneReadiness} from './first-scene.mjs';
 import {visualWork} from './visual-work.mjs';
 import {referenceContext} from '../visual-references.mjs';
@@ -27,9 +28,11 @@ export const productionContext = (w, state, actions, completion) => {
   const visual = visualWork(w, state);
   const reviewInputs = availableReviewInputs(w, state, actions);
   const referencesForStage = [...references[stage]];
+  if (w.request?.hook_overlay || story.hook) referencesForStage.push("shortform-news-pipeline/reference/hook-overlay.md", "shortform-news-pipeline/reference/hook-design-reference.md");
   if (Object.values(reviewInputs).some((input) => input.reviewable)) referencesForStage.push("shortform-news-pipeline/reference/review-loop.md");
   return {
     production_prompt: episodePrompt(w),
+    hook_reference: w.request?.hook_overlay || story.hook ? hookReferenceContext(w.repo) : null,
     reference_library: referenceContext(w),
     production_defaults: existsSync(join(w.root, "00_brief/production-defaults.json")) ? {
       snapshot: json(join(w.root, "00_brief/production-defaults.json")),
@@ -40,7 +43,7 @@ export const productionContext = (w, state, actions, completion) => {
     repository: { root: w.repo, editorial_schema: join(w.repo, "docs/specs/editorial-concept.schema.md"), profile: join(w.repo, "config/production-profile.json"), entry: join(w.repo, "scripts/produce.mjs") },
     request_preserved: w.request ? hash(rawRequest) === w.request.raw_request_sha256 : null,
     profile: existsSync(join(w.repo, "config/production-profile.json")) ? { path: "config/production-profile.json", current: json(join(w.repo, "config/production-profile.json")), changed_since_start: w.request ? hash(readFileSync(join(w.repo, "config/production-profile.json"))) !== w.request.profile.sha256 : null } : null,
-    instructions: ["shortform-news-pipeline/reference/execution-efficiency.md", "shortform-news-pipeline/reference/visual-production.md", "shortform-news-pipeline/reference/creative-authority.md", "shortform-news-pipeline/reference/generation-provider.md", "shortform-news-pipeline/reference/quality-review.md", "shortform-news-pipeline/reference/visual-references.md", ...new Set(referencesForStage)].map((file) => join(pluginRoot, "skills", file)),
+    instructions: ["shortform-news-pipeline/reference/execution-efficiency.md", "shortform-news-pipeline/reference/visual-production.md", "shortform-news-pipeline/reference/creative-authority.md", "shortform-news-pipeline/reference/generation-provider.md", "shortform-news-pipeline/reference/quality-review.md", "shortform-news-pipeline/reference/caption-segmentation.md", "shortform-news-pipeline/reference/visual-references.md", ...new Set(referencesForStage)].map((file) => join(pluginRoot, "skills", file)),
     tools: {
       spec: `node scripts/produce.mjs spec ${w.id}`,
       preflight: `node scripts/produce.mjs preflight ${w.id} narration|alignment|timeline|sync`,

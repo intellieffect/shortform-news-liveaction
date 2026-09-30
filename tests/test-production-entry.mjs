@@ -32,11 +32,11 @@ try {
   put(join(repo, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt"), readFileSync(join(project, "docs/PRODUCTION_PROMPT_V2_RESTORED.txt")));
   cpSync(join(project, "plugin"), installed, { recursive: true });
   check("잘못된 시작 입력은 편을 만들기 전에 거절", () => {
-    for (const change of [{ id: "../escape" }, { url: "file:///tmp/article" }, { url: "https://user:pass@example.invalid" }, { duration: [90, 60] }, { duration: [0, 90] }, { request: "" }]) assert.throws(() => startProduction({ ...params, id: "invalid", ...change }));
+    for (const change of [{ id: "../escape" }, { url: "file:///tmp/article" }, { url: "https://user:pass@example.invalid" }, { duration: [90, 60] }, { duration: [0, 90] }, { request: "" }, { durationBasis: "invalid" }]) assert.throws(() => startProduction({ ...params, id: "invalid", ...change }));
     assert.equal(existsSync(join(repo, "news/invalid")), false);
   });
   check("손상된 로고는 편 생성 전에 거절", () => {
-    const logoPath = join(repo, "presets/hani/brand-assets/v2/assets/logo.png");
+    const logoPath = join(repo, "presets/hani/brand-assets/v3/assets/logo.png");
     const original = readFileSync(logoPath);
     writeFileSync(logoPath, "broken");
     assert.throws(() => startProduction({ ...params, id: "broken_logo" }), /로고/);
@@ -50,19 +50,44 @@ try {
     assert.equal(existsSync(join(repo, "news/missing_defaults")), false);
     writeFileSync(path, original);
   });
+  check("후킹·크레딧 디자인 값을 고치고 버전을 안 올리면 편 생성 전에 거절", () => {
+    const path = join(repo, "config/hook-style.json"), original = readFileSync(path);
+    writeFileSync(path, JSON.stringify({ ...JSON.parse(original), underline_color: "#FF0000" }, null, 2) + "\n");
+    assert.throws(() => startProduction({ ...params, id: "unbumped_style" }), /hook-style-bump/);
+    assert.equal(existsSync(join(repo, "news/unbumped_style")), false);
+    writeFileSync(path, original);
+  });
   let id;
   check("URL·분량·원문만으로 시작, 설명·장면은 미작성", () => {
     const s = startProduction(params); id = s.pilot;
     assert.equal(s.managed, true);
     assert.equal(s.context.raw_request, params.request);
     assert.equal(s.context.request_preserved, true);
-    assert.deepEqual(s.context.request.duration_sec, { min: 60, max: 90 });
+    assert.deepEqual(s.context.request.duration_sec, { min: 60, max: 90, basis: "total" });
     assert.equal(s.context.creative_scope.diagrams, "delegated");
     assert.equal(s.context.question, null);
     assert.equal(s.context.production_defaults.snapshot.baseline_commit, "59a2af79");
     const newVisual = json(join(repo, "news", id, "02_production/visual-system.json"));
-    assert.equal(newVisual.production_profile.version, "1.2.0");
+    assert.equal(newVisual.production_profile.version, "1.5.0");
+    // 후킹·크레딧 디자인도 편에 버전을 고정한다.
+    assert.deepEqual(newVisual.hook_style, { version: "hook-style@3" });
+    assert.deepEqual(newVisual.attribution_style, { version: "1.0.0" });
+    assert.equal(s.context.request.design_styles.hook_style.version, "hook-style@3");
+    assert.match(s.context.request.design_styles.attribution_style.sha256, /^[0-9a-f]{64}$/);
+    assert.equal(newVisual.attribution.pages[0].duration, 3);
     assert.equal(newVisual.project_logo.width, 140);
+    assert.equal(newVisual.project_logo.y, 320);
+    assert.equal(newVisual.attribution.pages[0].categories[0].lines[0], params.url);
+    assert.equal(s.context.request.screen_text, "screen-text@2");
+    assert.equal(s.context.request.hook_overlay, "hook-overlay@4");
+    assert.equal(s.context.request.attribution_policy, "attribution@2");
+    assert.equal(s.context.hook_reference.status, "available");
+    assert.equal(s.context.hook_reference.font_identity, "unverified");
+    assert.equal(s.context.hook_reference.frames.length, 3);
+    assert.ok(s.context.hook_reference.frames.every(f => f.status === "verified" && existsSync(f.path)));
+    assert.match(s.context.hook_reference.guide.text, /원본 서체명/);
+    assert.equal(s.context.request.production_prompt.version, "v2-original@5");
+    assert.match(s.context.production_prompt.text, /내레이션은 Typecast를 기본/);
     assert.equal(newVisual.media.assets.find(a => a.id === "project_logo").file, "editorial/brand-logo.png");
     assert.equal(createHash("sha256").update(readFileSync(join(repo, "news", id, "02_production/brand/logo.png"))).digest("hex"), newVisual.project_logo.sha256);
     const guide = join(repo, "config/production-defaults.md"), originalGuide = readFileSync(guide);
@@ -103,6 +128,19 @@ try {
     assert.equal(s.context.stage, "research");
     assert.equal(s.execution.engine.path, repo);
     assert.ok(s.context.instructions.every((file) => existsSync(file)));
+  });
+  check("resume도 실제 후킹 참고를 전달하며 손상·누락을 확인했다고 하지 않음", () => {
+    const ctx = productionStatus(id, {repo, includeContext:true}).context;
+    assert.equal(ctx.hook_reference.status, "available");
+    const frame = ctx.hook_reference.frames[0].path, bytes = readFileSync(frame);
+    writeFileSync(frame, "broken");
+    let reference = productionStatus(id, {repo, includeContext:true}).context.hook_reference;
+    assert.equal(reference.status, "unavailable");
+    assert.equal(reference.frames[0].status, "hash-mismatch");
+    rmSync(frame);
+    reference = productionStatus(id, {repo, includeContext:true}).context.hook_reference;
+    assert.equal(reference.frames[0].status, "missing");
+    writeFileSync(frame, bytes);
   });
   check("반복 시작·다른 층의 이전 결과를 덮어쓰지 않음", () => {
     assert.throws(() => startProduction(params), /이미 있다/);
