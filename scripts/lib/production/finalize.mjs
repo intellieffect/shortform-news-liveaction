@@ -36,10 +36,13 @@ const commitEpisode = (repo, id, message) => {
   const paths = episodeCommitPaths(repo, id);
   const scope = ["news/" + id, "pilots/" + id, "src/editorial/episodes/" + id, "src/editorial/episodes/" + id + ".tsx"];
   // 편 경로는 .gitignore 대상이다. 목록에 든 파일만 명시해 강제로 올리고, 사라진 추적 파일은 기록에서 뺀다.
-  for (let i = 0; i < paths.length; i += 200) git(repo, ["add", "-f", "--", ...paths.slice(i, i + 200)]);
+  // 경로는 NUL로 주고받는다 — 기본 core.quotepath에서 git은 한글 경로를 "\354..."로 인용해 내보내고,
+  // 파일명의 [ ] * ? 는 pathspec 패턴으로 읽히므로 --literal-pathspecs로 글자 그대로 맞춘다.
+  const nulPaths = (list) => ({ input: list.map((p) => p + "\0").join("") });
+  if (paths.length) git(repo, ["--literal-pathspecs", "add", "-f", "--pathspec-from-file=-", "--pathspec-file-nul"], { ...nulPaths(paths), stdio: ["pipe", "pipe", "pipe"] });
   const keep = new Set(paths);
-  const gone = git(repo, ["ls-files", "--", ...scope]).split("\n").filter((p) => p && !keep.has(p));
-  for (let i = 0; i < gone.length; i += 200) git(repo, ["rm", "-q", "--cached", "--", ...gone.slice(i, i + 200)]);
+  const gone = git(repo, ["--literal-pathspecs", "ls-files", "-z", "--", ...scope]).split("\0").filter((p) => p && !keep.has(p));
+  if (gone.length) git(repo, ["--literal-pathspecs", "rm", "-q", "--cached", "--pathspec-from-file=-", "--pathspec-file-nul"], { ...nulPaths(gone), stdio: ["pipe", "pipe", "pipe"] });
   if (gitOk(repo, ["diff", "--cached", "--quiet"])) return { committed: false, reason: "바뀐 파일 없음" };
   git(repo, ["commit", "-q", "-m", message]);
   return { committed: true, commit: git(repo, ["rev-parse", "--short", "HEAD"]).trim(), files: paths.length };
