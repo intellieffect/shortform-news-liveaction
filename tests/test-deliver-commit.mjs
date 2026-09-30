@@ -85,3 +85,25 @@ test('같은 기사 URL은 같은 편을 가리키고 한겨레 기사는 hani_<
   assert.equal(defaultEpisodeId(URL_, 'fallback'), ID);
   assert.equal(defaultEpisodeId('https://example.invalid/a', 'fallback'), 'fallback');
 });
+
+test('한글·공백 경로가 든 편도 확정 커밋된다 — git 인용 표기(core.quotepath)를 삭제로 오인하지 않는다', (t) => {
+  const repo = fixture(t);
+  git(repo, 'config', 'core.quotepath', 'true'); // git 기본값. 사용자 전역 설정과 무관하게 인용 표기를 재현한다
+  const names = ['01_input/01_원문_기사.md', '01_input/자료 목록 [1].txt', '02_production/대본 초안.md'];
+  for (const name of names) put(join(repo, 'news', ID, name), name + '\n');
+  render(repo, 1);
+  const first = deliverEpisode(ID, { repo });
+  assert.equal(first.commit.committed, true);
+  const tracked = git(repo, 'ls-files', '-z').split('\0');
+  for (const name of names) assert.ok(tracked.includes('news/' + ID + '/' + name), name + ' 이 커밋돼야 한다');
+
+  // 두 번째 확정: 이미 추적 중인 한글 경로를 삭제 대상으로 오인하지 않고, 실제로 지운 파일만 기록에서 뺀다
+  rmSync(join(repo, 'news', ID, names[2]));
+  render(repo, 2);
+  assert.equal(deliverEpisode(ID, { repo, basis: 'user' }).version, 'v2');
+  assert.equal(git(repo, 'status', '--porcelain'), '');
+  const after = git(repo, 'ls-files', '-z').split('\0');
+  assert.ok(after.includes('news/' + ID + '/' + names[0]));
+  assert.ok(after.includes('news/' + ID + '/' + names[1]));
+  assert.ok(!after.includes('news/' + ID + '/' + names[2]), '지운 파일은 추적에서 빠진다');
+});
