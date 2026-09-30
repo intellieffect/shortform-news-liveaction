@@ -144,6 +144,22 @@ footer.doc{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}
  .toc2 td:last-child{white-space:nowrap}
  .gloss td:last-child{width:auto}
 }
+
+/* v1.0 전달본 */
+.step-note,.step-caution{display:block}
+.step-note .chip,.step-caution .chip{margin-right:8px}
+.step-note .step-text,.step-caution .step-text{display:inline}
+.cover2{border-top:6px solid var(--blue)}
+@page{size:A4;margin:13mm 13mm 16mm;
+ @bottom-left{content:"한겨레 숏폼 제작 · 활용 매뉴얼 v1.0";font-family:"Pretendard","Apple SD Gothic Neo",sans-serif;font-size:8pt;color:#8b95a1;vertical-align:top;padding-top:4mm}
+ @bottom-right{content:counter(page) " / " counter(pages);font-family:"Pretendard","Apple SD Gothic Neo",sans-serif;font-size:8pt;color:#8b95a1;vertical-align:top;padding-top:4mm}}
+@page:first{@bottom-left{content:none}@bottom-right{content:none}}
+@media print{
+ .cover2{border-top:0;padding-top:4mm}
+ .cover2 .kicker{font-size:11pt}
+ .card{break-inside:avoid;page-break-inside:avoid}
+ .chapter.summary{break-inside:auto}
+}
 </style></head>
 <body><div class="wrap">
 <section class="cover2"><p class="kicker">한겨레 숏폼 제작</p><h1>활용 매뉴얼</h1><div class="meta"><span>문서 버전 v1.0</span><span>발행일 2026-09-30</span><span>숏폼 뉴스 제작 플러그인 1.6.0 기준</span></div></section>
@@ -195,7 +211,7 @@ footer.doc{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}
 <div class="prompt"><pre>&lt;기사 URL&gt; 편 행성 장면에 천천히 다가가는 카메라 움직임(줌인)을 넣어줘</pre><button class="copy" type="button">복사</button></div>
 <div class="prompt"><pre>&lt;기사 URL&gt; 편에서 두 수치를 막대 비교 도식으로 보여줘</pre><button class="copy" type="button">복사</button></div>
 <div class="step step-result"><span class="chip">이렇게 됩니다</span><span class="step-text">그 장면만 고치고 다시 검수합니다. 원고를 바꾸지 않으면 음성은 그대로입니다. 장면은 "0:40쯤 보름달 장면"처럼 대상이나 시간으로 가리키세요.</span></div>
-<div class="step step-note"><span class="chip">참고</span><span class="step-text caution-text">장면 4초 이하·2컷·카메라 움직임·수치 카운트업·효과음·인포그래픽·상단 제목 바를 <strong>모든 영상에 자동</strong>으로 넣는 기능은 아직 없습니다(별도 논의 항목). 그 전까지 장면·컷·카메라·도식은 편마다 요청하세요.</span></div>
+<div class="step step-note"><span class="chip">참고</span><span class="step-text caution-text">장면 4초 이하·2컷·카메라 움직임·수치 카운트업·효과음·인포그래픽·상단 제목 바를 <strong>모든 영상에 자동</strong>으로 넣는 기능은 아직 없습니다. 편마다 요청하세요.</span></div>
 </section>
 <section class="card chapter" id="s5"><header><span class="badge">5</span><h2>배경음악 — 공용 음원 폴더</h2></header>
 <div class="step step-when"><span class="chip">이럴 때</span><span class="step-text">한겨레 음원을 여러 영상에서 다시 쓰고 싶을 때.</span></div>
@@ -206,7 +222,7 @@ footer.doc{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}
 <div class="prompt"><pre>공용 음원 목록 보여줘</pre><button class="copy" type="button">복사</button></div>
 <div class="prompt"><pre>&lt;기사 URL&gt; 편 배경음악으로 공용 음원 폴더의 &#x27;&lt;파일 이름&gt;&#x27; 써줘</pre><button class="copy" type="button">복사</button></div>
 <div class="prompt"><pre>&lt;기사 URL&gt; 편 배경음악을 조금 더 작게 해줘</pre><button class="copy" type="button">복사</button></div>
-<div class="step step-result"><span class="chip">이렇게 됩니다</span><span class="step-text">되묻지 않고 바로 넣고, 그 편에 쓰면 끝 크레딧 음악 줄이 파일 이름으로 채워집니다. 새 영상을 만들 때도 공용 폴더의 곡을 먼저 후보로 씁니다.</span></div>
+<div class="step step-result"><span class="chip">이렇게 됩니다</span><span class="step-text">바로 넣습니다. 그 편에 쓰면 끝 크레딧 음악 줄이 파일 이름으로 채워집니다. 새 영상을 만들 때도 공용 폴더의 곡을 먼저 후보로 씁니다.</span></div>
 <div class="step step-note"><span class="chip">참고</span><span class="step-text caution-text">음원의 라이선스·사용 범위 확인은 한겨레가 맡습니다. 공용 폴더에 넣은 음원은 써도 되는 것으로 보고 씁니다.</span></div>
 </section>
 <section class="card chapter brk" id="s6"><header><span class="badge">6</span><h2>발음·자막 끊김 고치기</h2></header>
@@ -222,7 +238,7 @@ footer.doc{color:var(--mute);font-size:13px;text-align:center;margin-top:24px}
 <div class="step step-when"><span class="chip">이럴 때</span><span class="step-text">자료 출처를 더할 때.</span></div>
 <div class="step step-input"><span class="chip">이렇게 입력하세요</span></div>
 <div class="prompt"><pre>&lt;기사 URL&gt; 편 끝 크레딧에 &#x27;&lt;출처 문구&gt;&#x27; 사진 출처를 추가해줘</pre><button class="copy" type="button">복사</button></div>
-<div class="step step-result"><span class="chip">이렇게 됩니다</span><span class="step-text">끝 크레딧은 좌측 정렬, 사진·영상·음악 카테고리별로 줄을 바꾸고 한 장에 3초씩 보입니다. 공용 음원의 음악 줄은 파일 이름 그대로입니다(5장).</span></div>
+<div class="step step-result"><span class="chip">이렇게 됩니다</span><span class="step-text">끝 크레딧은 좌측 정렬, 사진·영상·음악 카테고리별로 줄을 바꾸고 한 장에 3초씩 보입니다.</span></div>
 <div class="step step-note"><span class="chip">참고</span><span class="step-text caution-text">끝 크레딧은 빼거나 줄일 수 없습니다. 내용이 많으면 장이 늘어납니다.</span></div>
 </section>
 <section class="card chapter brk" id="s8"><header><span class="badge">8</span><h2>확정·되돌리기·완성 영상 보기</h2></header>
