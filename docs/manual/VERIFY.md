@@ -2,8 +2,8 @@
 
 | 항목 | 값 |
 |---|---|
-| 대상 문서 | `docs/manual/HANI-MANUAL.md` v0.11 (html·pdf는 이 md에서 생성). v0.11 압축 내역은 §8 |
-| 기준 코드 | 브랜치 `yubeeeen/shortform-news-liveaction-int5833`, v0.9 기준 3e7d18f9 → v0.10은 공용 음원 단순화 커밋 포함, plugin 1.5.1 |
+| 대상 문서 | `docs/manual/HANI-MANUAL.md` v0.12 (html·pdf는 이 md에서 생성). v0.11 압축 내역은 §8, v0.12 9장 통일은 §9 |
+| 기준 코드 | 브랜치 `yubeeeen/shortform-news-liveaction-int5833`, v0.9 기준 3e7d18f9 → v0.10은 공용 음원 단순화 커밋 포함, plugin 1.5.1 → v0.12는 후킹·크레딧 디자인 버전 보관·`defaults adopt` 커밋 포함, plugin 1.6.0 |
 | 작성일 | 2026-09-30 |
 | 근거 | 각 프롬프트가 실제로 처리되는 스킬·문서 위치(파일:줄). 경로 약어 `P/` = `plugin/skills/shortform-news-pipeline/`, `I/` = `plugin/skills/shortform-news-input/` |
 | 상태 | **문서 대조만 완료. Windows·Claude 데스크톱 Code 탭 실측 없음** — 아래 "실제 결과·통과" 칸은 비어 있음 |
@@ -47,9 +47,11 @@ INT-5833 완료 조건의 "절차별 입력·실행·결과 대조표" 양식이
 | P20 | 8 | `<URL> 편 이대로 확정해줘` | P/reference/review-loop.md:150-156; docs/HANI-GUIDE.md:15-19 | closeout 기록 → `deliver --basis user` → vN·LATEST·videos.html·자동 커밋 `편 <id> vN 확정` | | ☐ |
 | P21 | 8 | `<URL> 편을 v1로 돌려줘` | P/reference/review-loop.md:156 (`--from vK`); docs/HANI-GUIDE.md:11 | v1 영상을 새 버전으로 재확정, 이력 보존 | | ☐ |
 | P22 | 8 | `완성 영상 목록 열어줘` / Claude 없이: 파일 탐색기 → shortform-news-liveaction → out → videos.html 더블클릭 | docs/HANI-GUIDE.md:21-27; docs/VIDEO-LIBRARY.md:7-9,15 | videos.html 열림, 확정본·이전 판·제작 중 표시 | | ☐ |
-| P23 | 9 | `지금 기본값 보여줘` | P/SKILL.md:19, P/reference/global-defaults.md:5-11 | `npm run defaults` 표 그대로 표시 | | ☐ |
-| P24 | 9 | `앞으로 모든 새 영상의 기본 보이스를 '<보이스 이름>'으로 바꿔줘` | P/reference/global-defaults.md:18,35,39,41-47; config/production-defaults.md:11 | voice_id 확인 → `defaults voice` → 자동 커밋 `기본값: …`, .env 우선 경고 시 그대로 전달, 소급 없음 안내 | | ☐ |
-| P25 | 9 | `앞으로 모든 새 영상의 기본 제작 지시에 '<문장>'을 추가해줘` | P/reference/global-defaults.md:17,33-34,39,41-47 | 원문 그대로 가장 가까운 문단에 추가 → `prompt-bump --note` → `v2-original@N+1`·보관본·자동 커밋, 소급 없음 안내 | | ☐ |
+| P23 | 9 | `지금 기본값 보여줘` | P/SKILL.md:19, P/reference/global-defaults.md:12-18 | `npm run defaults` 표 그대로 표시(후킹 디자인·크레딧 디자인 행 포함) | | ☐ |
+| P24 | 9 | `앞으로 모든 새 영상의 기본 보이스를 '<보이스 이름>'으로 바꿔줘` | P/reference/global-defaults.md:8,60,67,74-80; config/production-defaults.md:11 | voice_id 확인 → `defaults voice` → 자동 커밋 `기본값: …`, .env 우선 경고 시 그대로 전달, 소급 없음 안내 | | ☐ |
+| P25 | 9 | `앞으로 모든 새 영상의 기본 제작 지시에 '<문장>'을 추가해줘` | P/reference/global-defaults.md:52,59,65-66,74-80 | 원문 그대로 가장 가까운 문단에 추가 → `prompt-bump --note` → `v2-original@N+1`·보관본·자동 커밋, 소급 없음 안내 | | ☐ |
+| P29 | 9 | 편에서 고쳐 보기: `<URL> 편 후킹 밑줄 색을 '<색>'으로 고쳐줘` (같은 방식: `편 보이스를 '<이름>'으로 바꿔줘`★·`편 말자막을 조금 크게 해줘`·`편 끝 크레딧 글자를 조금 크게 해줘`) | P/reference/global-defaults.md:22-31,37-39; scripts/lib/design-styles.mjs `resolveDesignStyle`; scripts/lib/production-profile.mjs `profileOverrideIssues` | 그 편 `visual-system.json`의 `hook_style.override`(자막은 `production_profile.override.caption`, 크레딧은 `attribution_style.override`, 보이스는 편 `voice.json`) → 재컴파일 → still/slides. 다른 편·기본값 불변 | | ☐ |
+| P30 | 9 | `<URL> 편에서 고친 것 앞으로 계속 쓰게 반영해줘` | P/SKILL.md:19; P/reference/global-defaults.md:41-53,74-80; scripts/lib/production/global-defaults.mjs `adoptEpisode` | `defaults adopt <id> --dry-run`로 "설정: 항목: 이전 → 새 값" 표시 → `adopt <id>` → 해당 설정 새 버전(후킹 `hook-style@N+1`, 크레딧 minor, 자막 minor, 보이스)·보관본·자동 커밋 `기본값: <id> 편 설정을 …`, 소급 없음 안내 | | ☐ |
 | P26 | 10 | `<URL> 편 자막·출처·끝 크레딧·후킹이 기본 기준대로 들어갔는지 정지 화면으로 보여줘` | CLAUDE.md:11 (still/slides로 검토), P/reference/commands.md:15,57-59; config/layout-rules.md:19 | still/slides 정지 화면 제시, 렌더 없음 | | ☐ |
 | ~~P27~~ | 부록 | **v0.11 삭제**(부록 A를 4행으로 줄이며 '자동 저장 멈춤' 행과 함께 뺌) — `자동 저장에 쓸 이름을 '<이름>', 메일을 '<메일>'로 설정해줘` | docs/HANI-GUIDE.md:29-36 | 저장소 git user.name/email 설정 → 이후 자동 커밋 동작 | | ☐ |
 | P28 | 부록 | `제작 환경 점검해줘` | README.md:70-76; P/reference/production-entry.md:15-31 | `doctor --installed` 결과(프로그램·키 이름·플러그인 버전) 보고 | | ☐ |
@@ -70,18 +72,18 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 
 | 매뉴얼 표기 | 근거 |
 |---|---|
-| (v0.11 10장 주의) 글꼴·색·크기·배치 디자인은 요청·기본 제작 지시로 안 바뀜 — 후킹 장식·출처 스타일·로고·검사 계약은 개발 요청 | P/reference/global-defaults.md:21-23,27 |
-| 4초·2컷·카메라·카운트업 등 자동 기본 기능 없음, 편마다 요청 | P/reference/global-defaults.md:29; INT-5814 승인 회신 (2026-09-29 발신본) "워크플로우 기능 추가 요청 — 별도 논의" |
+| ~~(v0.11 10장 주의) 글꼴·색·크기·배치 디자인은 요청·기본 제작 지시로 안 바뀜 — 후킹 장식·출처 스타일·로고·검사 계약은 개발 요청~~ → **v0.12**: "자막·후킹·크레딧의 크기·색·위치는 기본 제작 지시로 바뀌지 않습니다. 9장처럼 편에서 고쳐 보고 반영하세요." 로고·자막 분절 규칙·검사 계약만 개발 요청 | P/reference/global-defaults.md:33,35 |
+| 4초·2컷·카메라·카운트업 등 자동 기본 기능 없음, 편마다 요청 | P/reference/global-defaults.md:35; INT-5814 승인 회신 (2026-09-29 발신본) "워크플로우 기능 추가 요청 — 별도 논의" |
 | 상단 제목 바 편 요청도 맞지 않음 — **v0.11 매뉴얼에서 삭제**(규칙은 그대로, 요청 시 제작자가 안내) | V2 prompt:18 "영상 상단 고정 제목·장면명·설명 … 넣지 마" |
 | 끝 크레딧 제거 불가 | config/layout-rules.md:58; config/production-defaults.md:13 |
 | 기사→구성안 자동 생성 약속 안 함 | INT-5833 본문 "기사→구성안 자동 생성 기능을 새로 만드는 요청으로 확대하지 않고"; v0.11 매뉴얼 2장 결과 "평소 제작을 음성 직전에 멈추고" |
-| "자막 크게"는 제작 지시로 안 바뀜 (v0.11 10장 주의 "기본 제작 지시로 바뀌지 않습니다") | P/reference/global-defaults.md:25 |
+| "자막 크게"는 제작 지시로 안 바뀜 (v0.12 10장 주의 "기본 제작 지시로 바뀌지 않습니다") | P/reference/global-defaults.md:33 |
 
 ## 4. 불일치·확인 필요 (스킬 수정하지 않음 — 보고만)
 
 | # | 구분 | 내용 | 근거 | 매뉴얼 처리 |
 |---|---|---|---|---|
-| D1 | 불일치 | 기본 보이스: `narration.md`는 "기본값으로 특정 보이스를 가정하지 않는다"인데 config·전역 기본값 절차는 `narration.voice`(Sanghyun)를 새 편 기본 보이스로 둔다 | I/reference/narration.md:27 vs config/production-defaults.md:11, P/reference/global-defaults.md:18 | 9장은 global-defaults 기준으로 씀. narration.md 문구 정리 필요 |
+| D1 | 불일치 | 기본 보이스: `narration.md`는 "기본값으로 특정 보이스를 가정하지 않는다"인데 config·전역 기본값 절차는 `narration.voice`(Sanghyun)를 새 편 기본 보이스로 둔다 | I/reference/narration.md:27 vs config/production-defaults.md:11, P/reference/global-defaults.md:24 | 9장은 global-defaults 기준으로 씀. narration.md 문구 정리 필요 |
 | D2 | 불일치(약속 대비) | #5 숫자 낭독은 승인 회신에서 "기본값 반영" 항목인데, 스킬에는 편별 치환표(substitutions)만 있고 공통 숫자 읽기 규칙·전역 발음 사전이 없다 — 제작자 판단에 의존 | 승인 회신 #5; I/reference/narration.md:17-23 | v0.11: 6장 주의 "다시 만든 음성은 직접 들어 확인 / 그 편에만 적용", 10장 표 숫자 읽기 → 6장. "공통 발음 사전 없음" 문장은 압축으로 삭제 |
 | D3 | 확인 필요 | 매뉴얼은 Claude 데스크톱 **Code 탭** 전제인데 설치 절차는 Claude Code **CLI** 기준(`claude plugin install`). Code 탭이 같은 플러그인·스킬·검수 에이전트를 로드하는지 미확인 | README.md:23,41-51; P/reference/production-entry.md:13,25 | 0장 전제로 둠. Windows 실측 1순위 |
 | D4 | 확인 필요 | 자막 가로 폭 780/756은 모바일 실측 전 잠정값, 안전영역 최종 좌표 미확정 — INT-5833 완료 조건 "최종 공용 좌표/검증 기기 안내"를 아직 충족 못 함 | config/layout-rules.md:11,19,26 | v0.11: 잠정값 문장 삭제, 10장 안전영역 행 "가림이 보이면 알려 주세요"만 남김 |
@@ -93,7 +95,7 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 ## 5. 산출물 생성 방법
 
 - HTML: `docs/manual/HANI-MANUAL.md`에서 단일 HTML로 변환(v0.9와 같은 인라인 CSS·복사 버튼·A4 인쇄 스타일, 장 번호 배지·단계 칩). 변환 스크립트는 작업 세션 임시 폴더에 있었고 저장소에 넣지 않았다 — md를 고치면 HTML도 같이 고친다.
-- PDF: HTML을 로컬 headless Chrome `--print-to-pdf --no-pdf-header-footer`로 인쇄(v0.10: A4 15쪽 → v0.11: A4 8쪽, 인쇄 CSS의 강제 쪽나눔으로 장이 쪽 중간에서 잘리지 않음). 영상 렌더 아님. 저장소 관례(추적 PDF 없음·LFS 규칙 없음)에 따라 **커밋하지 않고** 전달용으로만 둔다.
+- PDF: HTML을 로컬 headless Chrome `--print-to-pdf --no-pdf-header-footer`로 인쇄(v0.10: A4 15쪽 → v0.11: A4 8쪽 → v0.12: A4 8쪽, 인쇄 CSS의 강제 쪽나눔으로 장이 쪽 중간에서 잘리지 않음). 영상 렌더 아님. 저장소 관례(추적 PDF 없음·LFS 규칙 없음)에 따라 **커밋하지 않고** 전달용으로만 둔다.
 
 ## 6. v0.10 변경 내역 (2026-09-30)
 
@@ -220,3 +222,33 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 - 기본값 비소급: 9장 주의 + 부록 B 기본값 묶음 머리.
 - 음원 라이선스 확인 주체: 5장 주의.
 - 끝 크레딧 제거 불가: 7장 주의.
+
+## 9. v0.12 — 9장 "앞으로 계속 쓰게 반영해줘" 한 흐름 (2026-09-30)
+
+사용자 지시 원문(2026-09-30, 그대로 보존):
+
+> 후킹·크레딧 디자인에도 버전 보관 장치를 추가해서, 모든 설정을 "앞으로 계속 쓰게 반영해줘" 한 가지 방식으로 통일해줘. 그후 매뉴얼 다시 반영하고.
+
+### 9-1. 장치 변경(근거)
+
+| 항목 | v0.11 기준 | v0.12 기준 | 근거 |
+|---|---|---|---|
+| 후킹 디자인 | `config/hook-style.json`을 모든 편이 컴파일 때 읽음(소급) → 개발 요청 | 버전 `hook-style@N` + 보관본 `config/hook-styles/`, 편이 start 때 `visual-system.json hook_style.version` 기록, 기록 없는 기존 편 = `hook-style@3` | scripts/lib/design-styles.mjs; scripts/lib/production/start.mjs; scripts/lib/hook-overlay.mjs |
+| 크레딧 디자인 | `config/attribution-style.json` 소급 → 개발 요청 | 버전 x.y.z + 보관본 `config/attribution-styles/`, 기록 없는 기존 편 = `1.0.0` | scripts/lib/attribution.mjs; scripts/lib/editorial.mjs |
+| 편에서 고쳐 보기 | 보이스(voice.json)만 | + `production_profile.override.caption`·`hook_style.override`·`attribution_style.override` | P/reference/global-defaults.md:22-39 |
+| 반영 | 보이스·프롬프트·자막 각각 명령 | `npm run defaults -- adopt <id>` 한 명령(보이스·자막·후킹·크레딧), 직접 bump도 가능(`hook-style-bump`·`attribution-style-bump`) | scripts/defaults.mjs |
+| 로고 | 개발 요청 | 그대로(편 start 때 이미지·위치가 편에 복사돼 이미 소급 없음. 새 로고는 수령 패키지 교체) | scripts/lib/production/defaults.mjs:12-21 |
+
+기존 편 불변 증명: 제작 체크아웃(main)의 편 25개 텍스트 사본을 변경 전(HEAD 3ba0ddf3)·후 코드로 각각 컴파일해 `validateEditorialData` 결과 JSON을 바이트 비교 — 25/25 동일(후킹 스냅숏 2편·크레딧 스냅숏 3편 포함). 회귀 테스트: tests/test-hook-composition.mjs "디자인 버전", tests/test-global-defaults.mjs 5건, tests/test-production-entry.mjs.
+
+### 9-2. 매뉴얼 변경
+
+| 위치 | v0.11 | v0.12 |
+|---|---|---|
+| 9장 제목 | 앞으로 모든 새 영상의 기본값 바꾸기 | 앞으로 계속 쓰게 반영하기 — 기본값 |
+| 9장 흐름 | 보이스·제작 지시를 "앞으로 모든 새 영상의 …" 로 바로 바꿈 (프롬프트 3) | ① 그 편에서 고쳐 보기(표: 보이스·자막·후킹 디자인·크레딧 디자인·제작 지시) → ② `<URL> 편에서 고친 것 앞으로 계속 쓰게 반영해줘` (프롬프트 1 + 표 안 예시 5). 기본값 보기·바로 바꾸기는 결과 문장 안으로 |
+| 9장 주의 | 기존 영상 미적용 | 같은 뜻 유지("반영한 뒤 새로 시작하는 영상부터") |
+| 10장 주의 | 디자인은 요청·제작 지시로 안 바뀜 | 제작 지시로는 안 바뀜 → 9장처럼 편에서 고쳐 보고 반영 (변경 불가 문구 제거) |
+| 부록 B 기본값 묶음 | 보기·보이스·제작 지시 | 보기·편에서 고쳐 보기·반영·바로 바꾸기·제작 지시 |
+| 표지·꼬리말 | v0.11 | v0.12 |
+| 분량 | 8쪽, 공백 제외 4,742자(9장 273자) | 8쪽, 5,094자(9장 535자) |
