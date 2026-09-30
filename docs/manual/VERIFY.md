@@ -149,7 +149,7 @@ P01로 만든 새 편에서 확인한다. 요청 없이 적용되어야 한다.
 - `--credit` 옵션 제거. `--license`·`--usage`는 사용자가 스스로 적었을 때만 쓰는 선택값.
 - `checkLibrary`·`trackErrors`는 license를 필수로 보지 않는다.
 - 수정 파일: scripts/music.mjs, scripts/lib/music-library.mjs, tests/test-music-library.mjs, library/music/README.md, I/reference/music-library.md, P/reference/commands.md:98, plugin/agents/sourcing.md:52, plugin/.claude-plugin/plugin.json(1.5.1).
-- 남은 차이(범위 밖, 수정 안 함): `scripts/endcard-credits.mjs:42`(`npm run credits`)는 `audio.bgm.credit` 앞에 `Music: `을 붙인다. 이 경로로 크레딧을 재생성하면 "Music: <파일 이름>"이 된다 — 파일 이름 그대로 원칙과 다르다. 판단 필요.
+- 해소(2026-09-30 사용자 결정 "5 진행"): `scripts/endcard-credits.mjs`(`npm run credits`)는 공용 음원(`bgm.asset = "library:…"`)이면 `audio.bgm.credit`(파일 이름)을 접두어 없이 그대로 쓴다. 공용 음원이 아닌 기존 편은 예전대로 `Music: ` 접두 — 확정본 소급 변경 없음. 증거: `tests/test-music-library.mjs` "npm run credits" 테스트.
 
 ## 7. Windows 실측 시 확인 — 앱 메뉴 명칭
 

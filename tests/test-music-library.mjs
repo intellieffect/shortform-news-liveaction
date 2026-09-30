@@ -166,3 +166,24 @@ test('CLI add는 catalog.json만 자동 커밋하고 음원 파일은 올리지 
   assert.match(git('log', '-1', '--format=%s').stdout, /^공용 음원: 아침-뉴스 추가$/m);
   assert.equal(git('ls-files', 'library/music/files').stdout, '');
 });
+
+test('npm run credits: 공용 음원은 파일 이름 그대로, 기존 편 음원은 "Music: " 접두 유지', (t) => {
+  const repo = fixture(t);
+  const credits = (bgm) => {
+    const root = join(repo, 'news', 'hani_c');
+    put(join(root, '02_production', 'shots.json'), { shots: [] });
+    put(join(root, '01_input', 'assets.json'), {});
+    put(join(root, '02_production', 'audio.json'), { bgm });
+    put(join(root, '02_production', 'overlays.overrides.json'), {});
+    put(join(root, '02_production', 'beats.json'), { beats: [{ id: 'b9', role: 'endcard' }] });
+    const r = spawnSync(process.execPath, [join(REPO, 'scripts', 'endcard-credits.mjs'), root], { encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr);
+    return JSON.parse(readFileSync(join(root, '02_production', 'overlays.overrides.json'), 'utf8')).b9.card.text.split('\n');
+  };
+  assert.ok(credits({ asset: 'library:music-새벽-공기-by-홍길동', credit: 'Music - 새벽 공기 by 홍길동' }).includes('Music - 새벽 공기 by 홍길동'));
+  assert.ok(credits({ asset: 'library:밤-산책', credit: '밤 산책' }).includes('밤 산책'));
+  // 확정본 소급 금지: 공용 음원이 아닌 기존 편은 예전 표기 그대로 재생성된다.
+  const legacy = credits({ credit: 'Moon Walk by Eugenio Mininni — Mixkit' });
+  assert.ok(legacy.includes('Music: Moon Walk by Eugenio Mininni — Mixkit'));
+  assert.ok(credits({ credit: 'Music: Tapis by Eugenio Mininni — Mixkit' }).includes('Music: Tapis by Eugenio Mininni — Mixkit'));
+});
