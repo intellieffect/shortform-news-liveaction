@@ -95,6 +95,12 @@ npm run fetch:assets -- news/<id>     # 수집 자산 복구·병렬 다운로�
 #   URL 해소 5갈래: _search/nasaimg_assets(NASA) · _search/svs_item_*(SVS) · *.article.json(한겨레 게재) ·
 #   파일명 mixkit-<곡>-<id>.mp3 → assets.mixkit.co/music/<id>/<id>.mp3 · asset.derive(ffmpeg 파생)
 #   원장이 없어도 파일명만으로 되찾는 갈래가 있다 — 7편 BGM 4곡이 그렇게 복구됐다(사용 곡 570 md5 동일)
+npm run music -- add "<URL|파일>" --license "…" [--credit "…"] [--usage "…"] [--title …] [--artist …] [--source-url …]   # 공용 음원 추가 — 라이선스 없으면 거절 (music-library.md)
+npm run music -- list [--json] [--verify]     # 공용 음원 목록 · use "<곡>" <id> 편 배경음악 연결 · check 파일·해시 대조
+npm run defaults [-- --json]          # 새 편 전역 기본값 표 (global-defaults.md)
+npm run defaults -- voice --voice-id tc_… [--voice-name …] [--tempo …]   # 기본 보이스 — .env TYPECAST_VOICE_ID가 있으면 경고
+npm run defaults -- prompt-bump [--note "…"]   # 기본 프롬프트 본문 수정 후 새 버전 등록 · check 라벨·해시·보관본 대조
+npm run defaults -- profile-archive / profile-bump <x.y.z>   # 자막 프로필: 수정 전 보관 → 수정 후 새 버전
 npm run worktree:remove -- <경로>     # 워크트리 제거 가드 — deliver/ 가 있으면 막는다
 npm run render -- <id> <out> --frames=<a-b>   # **구간 렌더** — 한두 비트 고치고 85초를 다시 돌리지 않는다
 #   2026-09-04 부터 **가드가 계산해서 강제한다** — 비트 단위 수정만 있으면 풀 렌더가 exit 2 로 막히고

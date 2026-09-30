@@ -87,28 +87,49 @@ def _pick_draft():
         sys.exit(f"narration_drafts/ 의 md 가 {len(cand)}개다 — --draft <파일> 로 고른다: {', '.join(cand) or '(없음)'}")
     return os.path.join(ROOT, "narration_drafts", cand[0])
 
-SCRIPT_MD = _pick_draft()
-OUT_WAV = os.path.join(ROOT, "audio", "narration.wav")
-OUT_RAW = os.path.join(ROOT, "audio", "narration.typecast.timestamps.json")
-OUT_JSON = os.path.join(ROOT, "narration.json")
-# 음성은 계정마다 다르다 — 환경변수 → config/production-defaults.json 의 narration → 이 저장소 수록 편의 값 순.
+# 음성 결정 순서 (2026-09-30, INT-5833):
+#   1. 편 02_production/voice.json 의 voice_id — 이미 음성을 만든 편은 그 편의 기록을 따른다. 전역 기본값을 바꿔도 소급되지 않는다.
+#   2. 환경변수·.env 의 TYPECAST_VOICE_ID(·TYPECAST_VOICE_NAME) — voice_id 는 Typecast 계정마다 다르고 고객은 .env 로 넣는다(README).
+#   3. config/production-defaults.json 의 narration.voice — 새 편의 전역 기본값. `npm run defaults -- voice` 로 바꾼다.
+#   4. 아래 코드 기본값 — 설정이 없는 구형 체크아웃용. 3번에 같은 값을 명시해 두었다.
+# 속도(audio_tempo)·높낮이(audio_pitch)·감정(emotion_preset)도 같은 순서로 합친다(환경변수는 voice_id·이름만).
 _VOICE_DEFAULT = {"provider": "typecast", "voice_id": "tc_69fc0cff784968297fb45daa", "voice_name": "Sanghyun",
                   "model": "ssfm-v30", "language": "kor", "audio_tempo": 1.0, "audio_pitch": 0, "emotion_preset": "normal", "seed": None}
 _voice_config = _default("config/production-defaults.json", "narration", "voice", fallback=None)
 if _voice_config is not None and not isinstance(_voice_config, dict):
     sys.exit("config/production-defaults.json 의 narration.voice 는 객체여야 한다.")
+_episode_voice = None
+_episode_voice_path = os.path.join(ROOT, "voice.json")
+if os.path.isfile(_episode_voice_path):
+    try: _episode_voice = json.load(open(_episode_voice_path, encoding="utf-8-sig"))
+    except Exception as error: sys.exit(f"{_episode_voice_path} 를 읽을 수 없다: {error}")
+    if not isinstance(_episode_voice, dict) or not _episode_voice.get("voice_id"): _episode_voice = None   # 제공자 기록만 있는 voice.json 은 고정값이 아니다
 VOICE = dict(_VOICE_DEFAULT, **(_voice_config or {}))
-VOICE["voice_id"] = _env("TYPECAST_VOICE_ID", default=VOICE["voice_id"])
-if os.environ.get("TYPECAST_VOICE_NAME"): VOICE["voice_name"] = os.environ["TYPECAST_VOICE_NAME"]
+VOICE_SOURCE = "config/production-defaults.json narration.voice" if _voice_config else "make_narration.py 코드 기본값"
+_env_voice = (os.environ.get("TYPECAST_VOICE_ID") or "").strip() or _env("TYPECAST_VOICE_ID", default="")
+if _episode_voice:
+    VOICE.update({k: v for k, v in _episode_voice.items() if k in _VOICE_DEFAULT})
+    VOICE_SOURCE = "편 02_production/voice.json"
+elif _env_voice:
+    VOICE["voice_id"] = _env_voice
+    VOICE["voice_name"] = os.environ.get("TYPECAST_VOICE_NAME") or _env("TYPECAST_VOICE_NAME", default="") or None
+    VOICE_SOURCE = "환경변수/.env TYPECAST_VOICE_ID"
+if "--print-voice" in sys.argv:
+    print(json.dumps({"source": VOICE_SOURCE, "voice": VOICE}, ensure_ascii=False)); sys.exit(0)
 
+SCRIPT_MD = _pick_draft()
+OUT_WAV = os.path.join(ROOT, "audio", "narration.wav")
+OUT_RAW = os.path.join(ROOT, "audio", "narration.typecast.timestamps.json")
+OUT_JSON = os.path.join(ROOT, "narration.json")
 spoken_lines = [l.rstrip("\n") for l in open(NARR, encoding="utf-8") if l.strip()]
 text_lines = [l.rstrip("\n") for l in open(SCRIPT_MD, encoding="utf-8").read().split("\n")[2:] if l.strip()]
 assert len(spoken_lines) == len(text_lines), f"줄 수 불일치 spoken={len(spoken_lines)} text={len(text_lines)}"
 
+print("voice:", VOICE["voice_id"], VOICE.get("voice_name") or "", "←", VOICE_SOURCE)
 key = _env("TYPECAST_API_KEY", "typecast-api-key")
-payload = {"text": "\n".join(spoken_lines), "model": VOICE["model"], "voice_id": VOICE["voice_id"], "language": "kor",
-           "prompt": {"emotion_type": "preset", "emotion_preset": "normal", "emotion_intensity": 1.0},
-           "output": {"audio_format": "wav", "audio_tempo": VOICE["audio_tempo"], "audio_pitch": 0, "volume": 100}}
+payload = {"text": "\n".join(spoken_lines), "model": VOICE["model"], "voice_id": VOICE["voice_id"], "language": VOICE["language"],
+           "prompt": {"emotion_type": "preset", "emotion_preset": VOICE["emotion_preset"], "emotion_intensity": 1.0},
+           "output": {"audio_format": "wav", "audio_tempo": VOICE["audio_tempo"], "audio_pitch": VOICE["audio_pitch"], "volume": 100}}
 REUSE = "--reuse" in sys.argv and os.path.exists(OUT_RAW) and os.path.exists(OUT_WAV)
 if REUSE:
     resp = json.load(open(OUT_RAW, encoding="utf-8")); print("reuse:", OUT_RAW)

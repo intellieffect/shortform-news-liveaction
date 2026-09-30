@@ -37,3 +37,7 @@ docs/research/
 /dist/
 
 /public/references/
+
+# 공용 음원: 목록(catalog.json)·안내만 추적하고 음원 파일은 올리지 않는다
+/library/music/files/
+/library/music/*.tmp

@@ -71,6 +71,8 @@
     "worktree:remove": "node scripts/worktree-safe-remove.mjs",
     "fetch:article": "node scripts/fetch-article.mjs",
     "fetch:assets": "node scripts/fetch-assets.mjs",
+    "music": "node scripts/music.mjs",
+    "defaults": "node scripts/defaults.mjs",
     "narration:assemble": "node scripts/assemble-narration.mjs",
     "motion:rebase": "node scripts/motion-rebase.mjs",
     "review:packet": "node scripts/review-packet.mjs",
@@ -114,7 +116,8 @@
     "visual-production:test": "node --test tests/test-render-duration-basis.mjs tests/test-visual-production.mjs tests/test-screen-text-policy.mjs tests/test-hani-layout-policy.mjs",
     "scene:proof": "node scripts/scene-proof.mjs",
     "production:editorial-rules:test": "node --test tests/test-attribution-policy.mjs tests/test-hook-overlay.mjs tests/test-hook-composition.mjs",
-    "production:captions:unit": "node tests/test-caption-segmentation.mjs && node tests/test-caption-semantics.mjs && node --test tests/test-caption-policy.mjs tests/test-narration-assembly.mjs"
+    "production:captions:unit": "node tests/test-caption-segmentation.mjs && node tests/test-caption-semantics.mjs && node --test tests/test-caption-policy.mjs tests/test-narration-assembly.mjs",
+    "defaults:test": "node --test tests/test-music-library.mjs tests/test-global-defaults.mjs"
   },
   "sideEffects": [
     "*.css"

@@ -20,6 +20,7 @@ description: 숏폼 뉴스 제작에 필요한 원문·사실 근거·자료 출
 | 주장·조건·불확실성 | [facts.md](reference/facts.md) |
 | 낭독·표기·음성·정렬 | [narration.md](reference/narration.md) |
 | 자료 후보·사용 근거 | [sourcing.md](reference/sourcing.md) |
+| 공용 음원 추가·목록·편 배경음악 연결 | [music-library.md](reference/music-library.md) |
 | 제공 완성 대본·기존 분업 | [script-faithful-input.md](reference/script-faithful-input.md), 필요한 경우 [handoff.md](reference/handoff.md) |
 | 입력 뼈대·도구 | [templates](templates/), [scripts](scripts/) |
 
