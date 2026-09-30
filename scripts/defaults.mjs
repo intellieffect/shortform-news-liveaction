@@ -6,14 +6,16 @@
 //   npm run defaults -- profile-archive            자막 프로필 값을 고치기 전 현재 버전 보관
 //   npm run defaults -- profile-bump <x.y.z>       고친 프로필에 새 버전
 //   npm run defaults -- check                      라벨·해시·보관본 일치 검사
+// 바꾸는 명령은 바뀐 설정 파일만 명시해 자동 커밋한다(--no-commit 으로 생략). 편 확정 커밋과 같은 방식이다.
 import { resolve } from "node:path";
 import { REPO } from "./lib/pilot.mjs";
 import { archiveProfile, bumpProfile, bumpPrompt, defaultsIntegrity, setVoice, showDefaults } from "./lib/production/global-defaults.mjs";
+import { commitSettings } from "./lib/production/settings-commit.mjs";
 
 const argv = process.argv.slice(2);
 const flags = {}, positional = [];
 for (let i = 0; i < argv.length; i++) {
-  if (argv[i] === "--json") flags.json = true;
+  if (argv[i] === "--json" || argv[i] === "--no-commit") flags[argv[i].slice(2)] = true;
   else if (argv[i].startsWith("--")) flags[argv[i].slice(2)] = argv[++i];
   else positional.push(argv[i]);
 }
@@ -21,11 +23,13 @@ const [command = "show", ...rest] = positional;
 const repo = flags.repo ? resolve(flags.repo) : REPO;
 const num = (v) => (v === undefined ? undefined : Number(v));
 const NOT_RETROACTIVE = "이미 만든 편에는 소급되지 않는다 — 새로 start하는 편부터 적용된다. 기존 편을 바꾸려면 그 편을 따로 수정 요청한다.";
-const report = (r) => {
+const report = (r, message) => {
+  if (r.changed?.length) r.commit = flags["no-commit"] ? { committed: false, reason: "--no-commit" } : commitSettings(repo, r.changed, message);
   if (flags.json) return console.log(JSON.stringify(r, null, 2));
   if (r.reason) console.log(r.reason);
   if (r.from && r.version) console.log(`${r.from} → ${r.version}`);
-  if (r.changed?.length) console.log("바뀐 파일: " + r.changed.join(", ") + "\n커밋 방식은 확정 전이다 — 바뀐 파일 목록을 사용자에게 알린다.");
+  if (r.changed?.length) console.log("바뀐 파일: " + r.changed.join(", "));
+  if (r.commit) console.log(r.commit.committed ? `커밋: ${r.commit.commit} "${message}"` : "커밋하지 않음: " + r.commit.reason);
   for (const w of r.warnings ?? []) console.log("주의: " + w);
   if (r.changed?.length) console.log(NOT_RETROACTIVE);
 };
@@ -49,13 +53,17 @@ try {
       console.log(d.narration.note);
     }
   } else if (command === "voice") {
-    report(setVoice(repo, { voice_id: flags["voice-id"], voice_name: flags["voice-name"], audio_tempo: num(flags.tempo), audio_pitch: num(flags.pitch), emotion_preset: flags.emotion }));
+    const r = setVoice(repo, { voice_id: flags["voice-id"], voice_name: flags["voice-name"], audio_tempo: num(flags.tempo), audio_pitch: num(flags.pitch), emotion_preset: flags.emotion });
+    report(r, `기본값: 새 편 보이스 ${r.after.voice_name ?? r.after.voice_id ?? ""} · 속도 ${r.after.audio_tempo ?? 1}`.trim());
   } else if (command === "prompt-bump") {
-    report(bumpPrompt(repo, { note: flags.note ?? null }));
+    const r = bumpPrompt(repo, { note: flags.note ?? null });
+    report(r, `기본값: 기본 프롬프트 ${r.version}`);
   } else if (command === "profile-archive") {
-    report(archiveProfile(repo));
+    const r = archiveProfile(repo);
+    report(r, `기본값: 자막 프로필 보관 ${r.archive.split("/").pop()}`);
   } else if (command === "profile-bump") {
-    report(bumpProfile(repo, rest[0]));
+    const r = bumpProfile(repo, rest[0]);
+    report(r, `기본값: 자막 프로필 ${r.version}`);
   } else if (command === "check") {
     const errors = defaultsIntegrity(repo);
     if (errors.length) { console.error(errors.join("\n")); process.exit(1); }

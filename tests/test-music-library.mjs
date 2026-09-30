@@ -137,3 +137,19 @@ test('CLI: add → list → use (한글·공백 경로)', (t) => {
   assert.equal(used.status, 0, used.stderr);
   assert.match(used.stdout, /npm run sync -- news\/hani_2/);
 });
+
+test('CLI add는 catalog.json만 자동 커밋하고 음원 파일은 올리지 않는다', (t) => {
+  const repo = fixture(t);
+  const git = (...args) => spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8' });
+  writeFileSync(join(repo, '.gitignore'), readFileSync(join(REPO, '.gitignore')));
+  put(join(repo, 'library', 'music', 'catalog.json'), { schema_version: 'music-library@1', tracks: [] });
+  git('init', '-q', '-b', 'main'); git('config', 'user.name', '테스트'); git('config', 'user.email', 't@example.invalid');
+  git('add', '-A'); git('commit', '-q', '-m', 'init');
+  put(join(repo, '내 음원', '아침 뉴스.mp3'), audio(9));
+  const r = spawnSync(process.execPath, [join(REPO, 'scripts', 'music.mjs'), 'add', join(repo, '내 음원', '아침 뉴스.mp3'), '--license', '한겨레 보유', '--repo', repo], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /커밋: [0-9a-f]+ \(library\/music\/catalog\.json만\)/);
+  assert.equal(git('show', '--name-only', '--format=', 'HEAD').stdout.trim(), 'library/music/catalog.json');
+  assert.match(git('log', '-1', '--format=%s').stdout, /공용 음원: 아침-뉴스 추가 \(한겨레 보유\)/);
+  assert.equal(git('ls-files', 'library/music/files').stdout, '');
+});

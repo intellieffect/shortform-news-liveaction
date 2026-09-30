@@ -148,3 +148,54 @@ test('CLI: npm run defaults 표와 check', (t) => {
   assert.equal(voice.status, 0, voice.stderr);
   assert.match(voice.stdout, /소급되지 않는다/);
 });
+
+const git = (repo, ...args) => spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8' });
+const gitFixture = (t) => {
+  const repo = fixture(t);
+  cpSync(join(REPO, '.gitignore'), join(repo, '.gitignore'));
+  git(repo, 'init', '-q', '-b', 'main');
+  git(repo, 'config', 'user.name', '테스트');
+  git(repo, 'config', 'user.email', 'test@example.invalid');
+  git(repo, 'add', '-A');
+  git(repo, 'commit', '-q', '-m', 'init');
+  return repo;
+};
+const cliIn = (repo, ...args) => spawnSync(process.execPath, [join(REPO, 'scripts', 'defaults.mjs'), ...args, '--repo', repo], { encoding: 'utf8', env: noEnv });
+
+test('설정 변경은 그 파일만 main에 자동 커밋한다 (보이스·프롬프트·프로필)', (t) => {
+  const repo = gitFixture(t);
+  writeFileSync(join(repo, '작업 중 메모.txt'), '다른 변경');
+  const voice = cliIn(repo, 'voice', '--voice-id', 'tc_commit1', '--voice-name', '민수');
+  assert.equal(voice.status, 0, voice.stderr);
+  assert.match(voice.stdout, /커밋: [0-9a-f]+ "기본값: 새 편 보이스 민수/);
+  assert.equal(git(repo, 'show', '--name-only', '--format=', 'HEAD').stdout.trim(), 'config/production-defaults.json');
+  assert.ok(git(repo, 'ls-files', '--others', '-z').stdout.split('\0').includes('작업 중 메모.txt'));
+
+  appendFileSync(join(repo, PROMPT), '\n추가 원칙.\n');
+  const bump = cliIn(repo, 'prompt-bump', '--note', '추가 원칙');
+  assert.equal(bump.status, 0, bump.stderr);
+  const files = git(repo, 'show', '--name-only', '--format=', 'HEAD').stdout.trim().split('\n').sort();
+  assert.equal(files.length, 4);
+  assert.ok(files.includes('config/production-prompts/registry.json') && files.includes(PROMPT));
+
+  assert.equal(cliIn(repo, 'profile-archive').status, 0);
+  const profile = read(repo, 'config/production-profile.json');
+  writeFileSync(join(repo, 'config/production-profile.json'), JSON.stringify({ ...profile, caption: { ...profile.caption, top: profile.caption.top - 20 } }, null, 2) + '\n');
+  const pb = cliIn(repo, 'profile-bump', '9.1.0');
+  assert.equal(pb.status, 0, pb.stderr);
+  assert.match(git(repo, 'log', '-1', '--format=%s').stdout, /기본값: 자막 프로필 9\.1\.0/);
+  assert.equal(git(repo, 'status', '--short', '--', 'config').stdout, '');
+});
+
+test('다른 staged 변경이 있으면 자동 커밋을 멈추고 파일 변경은 남긴다', (t) => {
+  const repo = gitFixture(t);
+  writeFileSync(join(repo, 'a.txt'), 'x');
+  git(repo, 'add', 'a.txt');
+  const r = cliIn(repo, 'voice', '--tempo', '1.1');
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stdout, /커밋하지 않음: 자동 커밋 중단: 이미 커밋 대기/);
+  assert.equal(read(repo, 'config/production-defaults.json').narration.voice.audio_tempo, 1.1);
+  assert.equal(git(repo, 'log', '--format=%s').stdout.trim(), 'init');
+  const skip = cliIn(repo, 'voice', '--tempo', '1.2', '--no-commit');
+  assert.match(skip.stdout, /커밋하지 않음: --no-commit/);
+});

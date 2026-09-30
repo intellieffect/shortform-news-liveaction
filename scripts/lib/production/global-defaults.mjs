@@ -6,7 +6,7 @@ import { productionProfileErrors } from "../production-profile.mjs";
 import { listTracks } from "../music-library.mjs";
 
 // "앞으로 모든 새 영상에 ○○" 요청이 바꾸는 전역 장치. 편은 start 때 버전·사본을 고정하므로 기존 편에는 소급되지 않는다.
-// 각 함수는 바꾼 파일 목록(changed)을 돌려준다. 커밋 방식은 아직 정하지 않았다 — 호출자가 목록을 사용자에게 보여 준다.
+// 각 함수는 바꾼 파일 목록(changed)을 돌려준다. scripts/defaults.mjs가 그 파일만 명시해 자동 커밋한다(settings-commit.mjs).
 export const DEFAULTS_FILE = "config/production-defaults.json";
 export const PROFILE_FILE = "config/production-profile.json";
 const PROFILE_ARCHIVE = (id, version) => `config/production-profiles/${id}-${version}.json`;

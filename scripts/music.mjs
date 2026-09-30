@@ -4,9 +4,11 @@
 //   npm run music -- list [--json] [--verify]
 //   npm run music -- use <곡 id|제목> <편 id>
 //   npm run music -- check
+// add는 목록(catalog.json)만 명시해 자동 커밋한다(--no-commit 으로 생략). 음원 파일은 git에 올리지 않는다.
 import { resolve } from "node:path";
 import { REPO } from "./lib/pilot.mjs";
 import { addTrack, checkLibrary, CATALOG, listTracks, useTrack } from "./lib/music-library.mjs";
+import { commitSettings } from "./lib/production/settings-commit.mjs";
 
 const argv = process.argv.slice(2);
 const flags = {}, positional = [];
@@ -14,7 +16,7 @@ for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a.startsWith("--")) {
     const key = a.slice(2);
-    if (["json", "verify"].includes(key)) flags[key] = true;
+    if (["json", "verify", "no-commit"].includes(key)) flags[key] = true;
     else flags[key] = argv[++i];
   } else positional.push(a);
 }
@@ -25,12 +27,14 @@ const out = (value) => console.log(flags.json ? JSON.stringify(value, null, 2) :
 try {
   if (command === "add") {
     const r = await addTrack({ repo, input: rest[0], license: flags.license, title: flags.title, artist: flags.artist, credit: flags.credit, usage: flags.usage, sourceUrl: flags["source-url"], id: flags.id });
+    if (r.added) r.commit = flags["no-commit"] ? { committed: false, reason: "--no-commit" } : commitSettings(repo, r.changed, `공용 음원: ${r.track.id} 추가 (${r.track.license})`);
     if (flags.json) out(r);
     else {
       console.log(r.added ? `추가: ${r.track.id} — ${r.track.title} (${r.track.license})` : `추가하지 않음: ${r.reason} → ${r.track.id}`);
       if (r.added) console.log(`파일: library/music/files/${r.track.file}\n목록: ${CATALOG}`);
       for (const w of r.warnings ?? []) console.log("주의: " + w);
-      if (r.added) console.log("음원 파일은 git에 올라가지 않는다 — library/music/files/ 를 백업한다. 목록 변경(" + CATALOG + ")의 커밋 방식은 확정 전이다.");
+      if (r.commit) console.log(r.commit.committed ? `커밋: ${r.commit.commit} (${CATALOG}만)` : "커밋하지 않음: " + r.commit.reason);
+      if (r.added) console.log("음원 파일은 git에 올라가지 않는다 — library/music/files/ 를 백업한다.");
     }
   } else if (command === "list") {
     const tracks = listTracks(repo, { verify: flags.verify });
