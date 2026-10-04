@@ -15,7 +15,7 @@ import { resolve, join, extname, relative, dirname } from "node:path";
 import { REPO, dirs, pilotIdFromRoot, relFile, addActive } from "./lib/pilot.mjs";
 import { editorialSources, jsonSources, normalizeJson, audioSourceCandidates } from "./lib/sync.mjs";
 import { engineMismatch, sourceEngine, EDITORIAL_ENGINE } from "./lib/engine.mjs";
-import { buildNormalization, loadContract } from "./lib/audio-loudness.mjs";
+import { buildNormalization, defaultAudio, loadContract } from "./lib/audio-loudness.mjs";
 
 const root = process.argv[2] && resolve(process.argv[2]);
 if (!root) {
@@ -110,17 +110,7 @@ if (!existsSync(audioCfg)) {
   writeFileSync(
     audioCfg,
     JSON.stringify(
-      {
-        schema_version: "1.0",
-        loudness_contract: "audio-loudness@1",
-        master_mix: false,
-        _comment: "소리층. bgm.file/sfx[].file 이 null 이면 그 트랙은 건너뛴다. 경로는 편 상대(audio/<name>). dB 값은 렌더에서 선형으로 변환.",
-        narration: { file: "audio/narration.wav", normalized: { target_lufs: -16, true_peak: -1.5 }, gain_db: 0 },
-        bgm: { asset: null, file: null, gain_db: -1, duck_db: -6, duck_attack_sec: 0.25, duck_release_sec: 0.6, fade_in_sec: 1.0, fade_out_sec: 2.0, start_offset_sec: 0, loop: true, credit: null },
-        sfx: [],
-        master_gain_db: 0,
-        measured: { integrated_lufs: null, true_peak_dbtp: null, measured_at: null },
-      },
+      defaultAudio(),
       null,
       2,
     ) + "\n",
@@ -251,7 +241,7 @@ if (!existsSync(manifest)) {
     copied.push(`audio_normalization (${contractName}: BGM ${normalization.bgm_offset_db >= 0 ? "+" : ""}${normalization.bgm_offset_db} dB)`);
   } else {
     if (meta.audio_normalization) delete meta.audio_normalization;
-    if (!(meta.versions ?? []).length) console.warn("경고: audio.json 에 loudness_contract 가 없다 — gain_db 가 원본 기준 상대값(옛 해석)이고 렌더 후 라우드니스 측정 가드도 걸리지 않는다. 새 편이면 \"loudness_contract\": \"audio-loudness@1\" 을 넣는다(reference/rules-finish.md §10 D)");
+    if (!(meta.versions ?? []).length) console.warn("경고: audio.json 에 loudness_contract 가 없다 — gain_db 가 원본 기준 상대값(옛 해석)이고 측정 가드도 없다. 미확정 신규 편은 produce complete/deliver 가 차단한다. 새 편이면 \"loudness_contract\": \"audio-loudness@1\" 을 넣는다(reference/rules-finish.md §10 D)");
   }
   const next = JSON.stringify(meta, null, 2) + "\n";
   if (next !== readFileSync(manifest, "utf8")) writeFileSync(manifest, next);   // 옛 편은 바이트 그대로 둔다

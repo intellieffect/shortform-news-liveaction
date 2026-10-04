@@ -11,6 +11,21 @@ export const LOUDNESS_CONFIG = "config/audio-loudness.json";
 export const REPORT_REL = (id) => `news/${id}/02_production/reviews/audio-loudness.json`;
 export const REPORT_SCHEMA = "audio-loudness-report@1";
 
+export const CURRENT_CONTRACT = "audio-loudness@1";
+
+/** 새 편의 기본 audio.json — start 와 sync 가 같은 값을 쓴다. 계약 기준 상대 gain 이고 BGM/SFX 파일은 소싱 뒤 채운다. */
+export const defaultAudio = () => ({
+  schema_version: "1.0",
+  loudness_contract: CURRENT_CONTRACT,
+  master_mix: false,
+  _comment: "소리층. bgm.file/sfx[].file 이 null 이면 그 트랙은 건너뛴다. 경로는 편 상대(audio/<name>). dB 값은 렌더에서 선형으로 변환. loudness_contract 가 있어 gain_db 는 정규화 기준 상대값(rules-finish.md §10 D)",
+  narration: { file: "audio/narration.wav", normalized: { target_lufs: -16, true_peak: -1.5 }, gain_db: 0 },
+  bgm: { asset: null, file: null, gain_db: -1, duck_db: -6, duck_attack_sec: 0.25, duck_release_sec: 0.6, fade_in_sec: 1.0, fade_out_sec: 2.0, start_offset_sec: 0, loop: true, credit: null },
+  sfx: [],
+  master_gain_db: 0,
+  measured: { integrated_lufs: null, true_peak_dbtp: null, measured_at: null },
+});
+
 export const loadContract = (name, repo = REPO) => {
   const all = JSON.parse(readFileSync(join(repo, LOUDNESS_CONFIG), "utf8")).contracts ?? {};
   if (!all[name]) throw new Error(`알 수 없는 loudness_contract: ${name} (${Object.keys(all).join(", ")})`);
@@ -191,6 +206,10 @@ export const loudnessGate = ({ repo, id, renderSha256 }) => {
   const audioFile = join(repo, "news", id, "02_production", "audio.json");
   const audio = existsSync(audioFile) ? JSON.parse(readFileSync(audioFile, "utf8")) : null;
   const contractName = audio?.loudness_contract ?? null;
+  // 아직 한 번도 확정되지 않은 편(신규)은 계약이 필수다. 이미 확정된 편의 다음 판은 옛 해석을 그대로 둔다.
+  const manifest = join(repo, "pilots", id, "pilot.json");
+  const delivered = existsSync(manifest) && (JSON.parse(readFileSync(manifest, "utf8")).versions ?? []).length > 0;
+  if (!contractName && !delivered) return { status: "blocked", blocking: true, contract: null, blockers: [{ code: "audio-loudness-contract-missing", detail: `미확정 신규 편의 audio.json 에 loudness_contract 가 없다 — "loudness_contract": "${CURRENT_CONTRACT}" 를 넣고 sync·재렌더·measure 한다` }], listening: "청취 미확인", note: "신규 편은 라우드니스 계약이 필수" };
   if (!contractName) return { status: "legacy", blocking: false, contract: null, blockers: [], listening: "청취 미확인", note: "loudness_contract 없음 — 옛 해석(원본 기준 gain)·측정 가드 미적용" };
   const blockers = [], add = (code, detail) => blockers.push({ code, detail });
   try { loadContract(contractName, repo); } catch (e) { add("audio-loudness-contract", e.message); }

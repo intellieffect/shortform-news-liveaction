@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { REPO } from "../scripts/lib/pilot.mjs";
-import { measureStems, buildNormalization, evaluateMix, loadContract, loudnessGate, measureAudio, measurementWindows, parseEbur128, predictStatic, REPORT_REL, subtract } from "../scripts/lib/audio-loudness.mjs";
+import { defaultAudio, measureStems, buildNormalization, evaluateMix, loadContract, loudnessGate, measureAudio, measurementWindows, parseEbur128, predictStatic, REPORT_REL, subtract } from "../scripts/lib/audio-loudness.mjs";
 import { deliverEpisode } from "../scripts/lib/production/finalize.mjs";
 
 const contract = loadContract("audio-loudness@1");
@@ -119,7 +119,7 @@ test("stem 실측: 합성 stem 에서 발화 구간 BGM−내레이션 격차와
 const ID = "hani_1299998";
 const sha = (file) => createHash("sha256").update(readFileSync(file)).digest("hex");
 const git = (repo, ...args) => execFileSync("git", ["-C", repo, ...args], { encoding: "utf8" });
-const fixture = (t, audio) => {
+const fixture = (t, audio, { delivered = false } = {}) => {
   const repo = tmp(t);
   copyFileSync(join(REPO, ".gitignore"), join(repo, ".gitignore"));
   mkdirSync(join(repo, "config"), { recursive: true });
@@ -129,7 +129,7 @@ const fixture = (t, audio) => {
   put(join(repo, "news", ID, "00_brief/request.json"), { schema_version: "1.0", pilot: ID, mode: "editorial-concept", source_url: "https://example.invalid/a" });
   put(join(repo, "news", ID, "02_production/story.json"), { mode: "editorial-concept" });
   put(join(repo, "news", ID, "02_production/audio.json"), audio);
-  put(join(repo, "pilots", ID, "pilot.json"), { id: ID, status: "drafting", article: { url: null }, versions: [] });
+  put(join(repo, "pilots", ID, "pilot.json"), { id: ID, status: "drafting", article: { url: null }, versions: delivered ? [{ version: "v1", file: null, sha256: "x" }] : [] });
   const path = `out/pilots/${ID}/qa/production.mp4`;
   put(join(repo, path), Buffer.alloc(128, 7));
   const renderSha = sha(join(repo, path));
@@ -138,11 +138,26 @@ const fixture = (t, audio) => {
 };
 const report = (repo, over) => put(join(repo, REPORT_REL(ID)), { schema_version: "audio-loudness-report@1", contract: "audio-loudness@1", verdict: { status: "pass", checks: [] }, ...over });
 
-test("가드: loudness_contract 없는 옛 편은 막지 않는다(소리·확정 흐름 불변)", (t) => {
+test("가드: 미확정 신규 편에 loudness_contract 가 없으면 막는다(경고가 아니라 차단)", (t) => {
   const { repo, renderSha } = fixture(t, { schema_version: "1.0", bgm: {}, sfx: [] });
   const gate = loudnessGate({ repo, id: ID, renderSha256: renderSha });
+  assert.equal(gate.blocking, true);
+  assert.equal(gate.blockers[0].code, "audio-loudness-contract-missing");
+  assert.throws(() => deliverEpisode(ID, { repo }), /audio-loudness-contract-missing/);
+  assert.throws(() => deliverEpisode(ID, { repo, basis: "user" }), /audio-loudness-contract-missing/);
+});
+
+test("start 가 새 편 audio.json 에 loudness_contract 를 넣는다", () => {
+  const a = defaultAudio();
+  assert.equal(a.loudness_contract, "audio-loudness@1");
+  assert.ok(Object.keys(loadContract(a.loudness_contract).targets).length);
+});
+
+test("가드: 이미 확정된 편의 다음 판과 --from 복원은 계약 없이도 통과한다", (t) => {
+  const { repo, renderSha } = fixture(t, { schema_version: "1.0", bgm: {}, sfx: [] }, { delivered: true });
+  const gate = loudnessGate({ repo, id: ID, renderSha256: renderSha });
   assert.equal(gate.status, "legacy"); assert.equal(gate.blocking, false);
-  assert.equal(deliverEpisode(ID, { repo }).version, "v1");
+  assert.equal(deliverEpisode(ID, { repo }).version, "v2");
 });
 
 test("가드: 계약 편은 측정 기록이 없으면 complete·deliver 가 막힌다", (t) => {

@@ -66,6 +66,7 @@ try {
     assert.deepEqual(s.context.request.duration_sec, { min: 60, max: 90, basis: "total" });
     assert.equal(s.context.creative_scope.diagrams, "delegated");
     assert.equal(s.context.question, null);
+    assert.equal(json(join(repo, "news", id, "02_production/audio.json")).loudness_contract, "audio-loudness@1");   // start 가 새 편에 소리 라우드니스 계약을 넣는다
     assert.equal(s.context.production_defaults.snapshot.baseline_commit, "59a2af79");
     const newVisual = json(join(repo, "news", id, "02_production/visual-system.json"));
     assert.equal(newVisual.production_profile.version, "1.5.0");
