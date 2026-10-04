@@ -92,7 +92,7 @@ npm run produce -- finish <id> <token>
 
 `playback_ranges`는 실제 연속 시청, `listened_ranges`는 실제 최종 음향 청취, `fact_ranges`는 최종 영상의 주장·사실 대조 범위다. 각각 빈 배열로 시작한다. 완성 판단에는 분야별로 전체 영상 범위가 확인돼야 한다. 여러 번 나누어 볼 수 있고 **같은 MP4·같은 입력**의 독립 검수 범위는 합쳐 쓴다. 입력이나 실물이 바뀌면 과거 범위를 자동 재사용하지 않는다.
 
-`audio_measurement`는 evidence에 연결된 최종 MP4 측정 로그 경로다. 측정 전이면 null. 기존 `npm run audio:measure -- <mp4> --win <이름:시작초:길이초>` 등 실제 도구 출력을 보존한다. LUFS·peak 수치나 파형만 보고 청취했다고 쓰지 않는다. 사실 보고서는 현재 `facts.md`를 evidence에 포함한다.
+`audio_measurement`는 evidence에 연결된 최종 MP4 측정 로그 경로다. 측정 전이면 null. 기존 `npm run audio:measure -- <mp4> --win <이름:시작초:길이초>` 등 실제 도구 출력을 보존한다. LUFS·peak 수치나 파형만 보고 청취했다고 쓰지 않는다. `loudness_contract` 편은 `npm run audio:loudness -- measure <id>` 의 stem 실측(`reviews/audio-loudness.json`)이 완료의 별도 전제이며, 이를 `audio_measurement` 증거로 연결할 수는 있어도 `listened_ranges` 를 대신하지 못한다([rules-finish.md](rules-finish.md) §10 D). 사실 보고서는 현재 `facts.md`를 evidence에 포함한다.
 
 `blocking`은 사실 오류, 설명을 오해하게 하는 표현, 모바일에서 읽지 못하는 정보, 깨진 미디어·타이밍·음향처럼 완성본 제출 전 수정해야 할 결함이다. 중심 질문과 설명·결말이 연결되지 않아 한 편의 목적을 달성하지 못하는 문제도 전체 범위의 결함으로 남긴다. `minor`는 제출을 막지 않는 작은 관찰이며 완료 기록과 사용자 설명에 남긴다. 통과시키기 위해 심각도를 낮추지 않는다.
 

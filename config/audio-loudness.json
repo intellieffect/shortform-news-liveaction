@@ -1,0 +1,23 @@
+{
+  "schema_version": "audio-loudness-targets@1",
+  "_comment": "소리 라우드니스 계약. 편 audio.json 의 loudness_contract 값이 여기 contracts 의 키를 가리킨다. 이 파일은 고객 설정값이 아니라 검사 계약이다 — npm run defaults 장치 밖이고, 값 변경은 워크트리·브랜치의 개발 변경으로 한다. 기존 키의 값은 고치지 않고 새 키(audio-loudness@2)를 추가한다.",
+  "contracts": {
+    "audio-loudness@1": {
+      "narration": { "target_lufs": -16, "true_peak_dbtp": -1.5 },
+      "reference": {
+        "bgm_lufs": -23,
+        "sfx_peak_dbfs": -6,
+        "_comment": "정규화 기준점. 원본마다 보정값을 sync 가 재서 audio.json 의 gain_db 가 이 기준 대비 상대값이 되게 한다. BGM gain_db 0 = 원본 구간이 -23 LUFS 가 되는 지점(내레이션 -16 보다 7 LU 아래), SFX gain_db 0 = 원본 sample peak 가 -6 dBFS 가 되는 지점"
+      },
+      "targets": {
+        "bgm_vs_narration_during_speech_lu": { "min": -15, "max": -12, "_comment": "말하는 동안 BGM 의 통합 LUFS - 같은 구간 내레이션 통합 LUFS" },
+        "bgm_vs_narration_in_gaps_lu": { "min": -10, "max": -4, "_comment": "말 없는 구간의 BGM - 내레이션 기준 레벨" },
+        "gap_over_speech_min_lu": 3,
+        "sfx_peak_vs_narration_peak_db": { "min": -14, "max": -4, "_comment": "컷마다 SFX sample peak - 내레이션 sample peak" }
+      },
+      "tolerance_lu": 1.0,
+      "min_gap_seconds": 1.0,
+      "min_speech_seconds": 3.0
+    }
+  }
+}

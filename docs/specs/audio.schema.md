@@ -50,6 +50,7 @@
 | 4d | **BGM 선정은 제목이 아니라 mood 태그 × 오디오 특징**(타격감·밝기·LRA) — input 재채점 절차. **LRA 가 큰 곡(>10)은 덕킹에서 튄다** |
 | 4e | 대본·클라이언트의 구간 지시("인용구 BGM 낮춤")는 `bgm.duck_ranges[{from,to,gain_db,attack_sec,release_sec,why}]`(2편 74.07–83.31 −18). 검증은 내레이션 `silencedetect` 창으로 발화/틈/덕 구간 RMS 를 따로 재 `measured.segments` 에 |
 | 4f | 파생물(트림·페이드)은 `external_assets/audio/derived/` 가 **심링크면 쓰지 말고** `external_assets/<pilot_tag>/audio/` 에 — 심링크 경유 쓰기는 이전 편 원본을 바꾼다 |
+| 4g | **라우드니스 계약(2026-10-04).** `loudness_contract:"audio-loudness@1"` 편은 4c 의 「원본 기준 상대값」 해석을 쓰지 않는다 — `gain_db` 는 정규화 기준 상대값이고 목표·측정·차단은 [rules-finish.md §10 D](../../plugin/skills/shortform-news-pipeline/reference/rules-finish.md)와 `config/audio-loudness.json`. 계약 필드가 없는 편은 4c 그대로 |
 | 5 | 측정: `ffmpeg -i out.mp4 -af ebur128=peak=true -f null -` → Summary의 **I · LRA · Peak 세 값 모두** `measured`에 기록(`integrated_lufs`·`lra_lu`·`true_peak_dbtp`). 목표 통합 −14 LUFS, TP ≤ −1 dBTP. LRA는 목표값이 아니라 추이 기록 — 덕킹이 얕아지거나 BGM이 튀면 커진다(이번 편 v1~v3 2.8→2.9) |
 
 ## 검토 질문 (4-5)

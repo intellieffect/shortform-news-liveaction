@@ -86,6 +86,14 @@ if (!wantJson) {
   if (deliverCommitErr) for (const line of deliverCommitRun.out.split("\n")) if (line.startsWith("✖")) console.log(`  ${line}`);
 }
 
+// ⓪-6 소리 라우드니스 가드 — 계약 판정·정규화 보정·완료/확정 차단. 옛 편(loudness_contract 없음)이 막히지 않는지도 같이 본다.
+const loudnessRun = run("test-audio-loudness.mjs", [], "tests");
+const loudnessErr = loudnessRun.code ? 1 : 0;
+if (!wantJson) {
+  console.log(loudnessRun.out.trim().split("\n").find((l) => /^ℹ fail/.test(l))?.replace("ℹ fail", "소리 라우드니스 가드 테스트 실패") ?? loudnessRun.out.trim().split("\n").at(-1));
+  if (loudnessErr) for (const line of loudnessRun.out.split("\n")) if (line.startsWith("✖")) console.log(`  ${line}`);
+}
+
 const linksRun = run("check-links.mjs", []);
 const linksErr = linksRun.code ? (linksRun.out.match(/^(ESCAPE|MISSING|SPACE) /gm) ?? []).length || 1 : 0;
 const ledgerRun = run("pilots-ledger.mjs", ["--check"]);
@@ -174,7 +182,7 @@ for (const id of pilots) {
   rows.push(row);
 }
 
-if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || symErr || delErr || dfErr || editorialErr || deliverCommitErr || rows.some((r) => r.err) ? 1 : 0); }
+if (wantJson) { console.log(JSON.stringify({ registry: { err: regErr, warn: regWarn, out: regRun.out }, links: { err: linksErr, out: linksRun.out }, ledger: { err: ledgerErr, out: ledgerRun.out }, defects: { err: dfErr, out: dfRun.out }, editorial: { err: editorialErr, out: editorialRun.out }, pilots: rows }, null, 2)); process.exit(regErr || linksErr || ledgerErr || symErr || delErr || dfErr || editorialErr || deliverCommitErr || loudnessErr || rows.some((r) => r.err) ? 1 : 0); }
 
 const w = Math.max(...rows.map((r) => r.id.length), 4);
 console.log(`${"편".padEnd(w)}  shots         layout43     mc     자막      sync    가드세대`);
@@ -183,7 +191,7 @@ for (const r of rows) {
   console.log(`${r.id.padEnd(w)}  w${String(r.warn).padEnd(3)} e${String(r.err).padEnd(3)} ${String(r.skip ? `s${r.skip}` : "").padEnd(4)} ${r.layout.padEnd(12)} ${r.mc.padEnd(6)} ${(r.captions ?? "—").padEnd(9)} ${r.sync.padEnd(7)} ${g}`);
   for (const n of r.notes) console.log(`${" ".repeat(w)}  · ${n}`);
 }
-const err = rows.reduce((a, r) => a + r.err, 0) + regErr + linksErr + ledgerErr + symErr + delErr + dfErr + editorialErr + deliverCommitErr;
+const err = rows.reduce((a, r) => a + r.err, 0) + regErr + linksErr + ledgerErr + symErr + delErr + dfErr + editorialErr + deliverCommitErr + loudnessErr;
 const skip = rows.reduce((a, r) => a + r.skip, 0);
 console.log(`\nERROR ${err} / ${rows.length}편 + registry·links·ledger·editorial${skip ? ` · SKIP ${skip}(미디어 없음)` : ""}`);
 process.exit(err ? 1 : 0);

@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import { staticFile } from "remotion";
-import type { AudioCfg } from "../pilot/pilot";
+import type { AudioCfg, AudioNormalization } from "../pilot/pilot";
 import type { EditorialCaptionLine } from "../lib/editorial/visual";
 import type { EditorialTimeline } from "../lib/editorial/types";
 import { LEGACY_PRODUCTION_PROFILE, type ProductionProfile } from "../lib/editorial/profile";
@@ -45,6 +45,13 @@ export type EditorialPilotRaw = {
   component: ComponentType<EditorialEpisodeProps>;
 };
 
+// 정규화 보정은 loudness_contract 가 있는 신규 편에만 붙는다. 옛 편은 audio 객체가 그대로라 소리가 바뀌지 않는다.
+const withNormalization = (audio: AudioCfg, manifest: { audio_normalization?: AudioNormalization }): AudioCfg => {
+  if (!audio.loudness_contract) return audio;
+  if (manifest.audio_normalization?.contract !== audio.loudness_contract) throw new Error(`audio.json loudness_contract=${audio.loudness_contract}인데 pilot.json audio_normalization 이 없거나 다르다 — npm run sync 로 정규화 보정을 다시 기록한다`);
+  return { ...audio, normalization: manifest.audio_normalization };
+};
+
 export const buildEditorialPilot = (raw: EditorialPilotRaw): EditorialPilotData => {
   const manifest = raw.manifest as { engine?: string };
   if (manifest.engine !== "editorial-concept@1") throw new Error(`${raw.id}: editorial-concept@1 manifest가 아니다`);
@@ -69,7 +76,7 @@ export const buildEditorialPilot = (raw: EditorialPilotRaw): EditorialPilotData 
     story: raw.story as Record<string, unknown>,
     concepts: raw.concepts as Record<string, unknown>,
     visualSystem: raw.visualSystem as Record<string, unknown>,
-    audio: raw.audio as AudioCfg,
+    audio: withNormalization(raw.audio as AudioCfg, manifest as { audio_normalization?: AudioNormalization }),
     fps: timeline.fps,
     totalFrames: timeline.total_frames,
     speech: narration.lines.map((line) => [Math.round(line.start * timeline.fps), Math.round(line.end * timeline.fps)] as const),

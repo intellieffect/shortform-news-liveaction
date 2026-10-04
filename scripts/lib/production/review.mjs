@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { executionIdentity } from "./environment.mjs";
 import { fileSnapshot, hash, json } from "./contracts.mjs";
+import { loudnessGate } from "../audio-loudness.mjs";
 
 const CONTRACT = "production-review@1";
 const ROLES = { review_visual: "shot-judge", review_audio: "audio-reviewer", review_facts: "fact-check" };
@@ -226,6 +227,10 @@ export const productionCompletion = (w, state, actions) => {
     reviewSummary[action] = { reports: eligible.map((a) => a.validation.report_path), ...(carried.length ? { carried_from: carried.map((a) => a.validation.report_path) } : {}), coverage, reviewer: v.report.reviewer };
     for (const gap of coverageGaps({ ...v.report, coverage }, timeline(w))) add("coverage-gap", gap, action);
   }
+  // 소리 라우드니스 측정 가드 — loudness_contract 가 있는 신규 편만. 현재 렌더와 같은 영상의 통과 측정이 없으면 완료하지 않는다.
+  // 측정 통과는 청취 통과가 아니다: listening 은 review_audio 의 청취 범위(coverage-gap)가 따로 막는다.
+  const audioLoudness = artifact ? loudnessGate({ repo: w.repo, id: w.id, renderSha256: artifact.sha256 }) : null;
+  for (const b of audioLoudness?.blockers ?? []) add(b.code, b.detail, "render");
   const issues = productionIssues(state).map((issue) => {
     const resolution = (state.resolutions ?? []).findLast((r) => r.issue === issue.key);
     const recheck = history.flatMap((a) => a.validation.report.rechecks.map((r) => ({ ...r, review: a }))).findLast((r) => r.issue === issue.key);
@@ -242,6 +247,6 @@ export const productionCompletion = (w, state, actions) => {
   }
   const basis = hash(JSON.stringify({ receipts: ["render", ...Object.keys(ROLES)].map((a) => state.receipts[a]?.id), resolutions: state.resolutions ?? [], issues: issues.map((i) => [i.key, i.status]) }));
   const confirmation = (state.completions ?? []).findLast((c) => c.basis === basis) ?? null;
-  return { status: blockers.length ? "incomplete" : confirmation ? "complete" : "ready", artifact, blockers, reviews: reviewSummary, issues, basis, confirmation,
+  return { status: blockers.length ? "incomplete" : confirmation ? "complete" : "ready", artifact, blockers, audio_loudness: audioLoudness, reviews: reviewSummary, issues, basis, confirmation,
     limitation: "완료는 현재 파일과 기록된 독립 검수 범위의 일치를 뜻한다. 선언된 시청·청취·독립성의 진실이나 표현 품질을 코드가 증명하지 않는다" };
 };

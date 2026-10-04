@@ -11,8 +11,14 @@ export type Layers = { motion: boolean; text_anim: boolean; graphics: boolean; t
 export type Transitions = { crossfade_frames: number; scene_only: boolean; overrides: Record<string, number>; keep_text: string[]; end_fade_frames: number };
 export type RenderConfig = { layers: Layers; transitions?: Transitions; debug?: { show_beat_id?: boolean } };
 // 4-5 소리층 (docs/specs/audio.schema.md)
+export type AudioNormalization = { contract: string; bgm_offset_db: number; sfx_offset_db_by_file: Record<string, number> };
+
 export type AudioCfg = {
   master_mix?: boolean;
+  /** 있으면 gain_db 는 원본 기준이 아니라 config/audio-loudness.json 정규화 기준의 상대값이다(신규 편). 없으면 옛 해석 = 보정 0. */
+  loudness_contract?: string;
+  /** sync 가 pilot.json audio_normalization 에서 채운다. loudness_contract 가 있을 때만 쓴다. */
+  normalization?: AudioNormalization;
   narration: { file: string; gain_db: number };
   bgm: { file: string | null; gain_db: number; duck_db: number; duck_attack_sec: number; duck_release_sec: number; fade_in_sec: number; fade_out_sec: number; start_offset_sec: number; loop: boolean; duck_ranges?: { from: number; to: number; gain_db: number; attack_sec?: number; release_sec?: number; why?: string }[] };
   sfx: { id: string; file: string | null; gain_db: number; at: string }[];

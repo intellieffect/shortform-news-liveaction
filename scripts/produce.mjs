@@ -27,7 +27,7 @@ const usage = [
   "produce review-template <id> review_visual|review_audio|review_facts",
   "produce resolve <id> <issue-key> --reason <수정 설명> --from <시작 프레임> --end <끝 프레임>",
   "produce complete <id>  # 자동 검수 완료 → 새 버전 확정·자동 커밋",
-  "produce deliver <id> [--basis user] [--from vK] [--note <메모>]  # 사용자 확정 또는 이전 판 복원을 새 버전으로 확정·자동 커밋",
+  "produce deliver <id> [--basis user] [--from vK] [--note <메모>] [--audio-waiver <사유>]  # 사용자 확정 또는 이전 판 복원을 새 버전으로 확정·자동 커밋",
 ].join("\n");
 
 try {
@@ -75,7 +75,7 @@ try {
   } else if (command === "deliver") {
     const basis = value("--basis") ?? "user";
     if (!["user", "completion"].includes(basis)) throw new Error("--basis는 user 또는 completion");
-    result = deliverEpisode(id, { basis, from: value("--from"), note: value("--note") ?? null });
+    result = deliverEpisode(id, { basis, from: value("--from"), note: value("--note") ?? null, audioWaiver: value("--audio-waiver") ?? null });
   }
   else if (command === "run") result = await runProductionAction(id, args[0], { output: value("--output"), frame: value("--frame") === undefined ? 30 : Number(value("--frame")), ...(value("--timeout-ms") === undefined ? {} : { timeoutMs: Number(value("--timeout-ms")) }) });
   else throw new Error(usage);
