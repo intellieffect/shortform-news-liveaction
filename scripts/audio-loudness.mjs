@@ -14,7 +14,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { REPO, compId } from "./lib/pilot.mjs";
 import { audioSourceCandidates, syncStatus } from "./lib/sync.mjs";
 import { REPORT_REL, REPORT_SCHEMA, duration, evaluateMix, loadContract, loudnessGate, measureAudio, measureStems, predictStatic, round } from "./lib/audio-loudness.mjs";
@@ -42,7 +42,9 @@ const staticCheck = (id, repo) => {
   const seen = new Set(), unique = sfxList.filter((s) => { const k = s.id + "|" + s.file; if (seen.has(k)) return false; seen.add(k); return true; });
   const sfxSources = {};
   for (const s of unique) { const p = find(s.file); if (p) sfxSources[s.file] = measureAudio(p); }
-  const verdict = predictStatic({ audio: { ...audio, sfx: unique }, contract, bgmSource, sfxSources, normalized });
+  const narrPath = find(audio.narration?.file ?? "audio/narration.wav");
+  const narrationChannels = narrPath ? Number(execFileSync(process.env.FFPROBE_PATH ?? "ffprobe", ["-v", "error", "-select_streams", "a:0", "-show_entries", "stream=channels", "-of", "csv=p=0", narrPath], { encoding: "utf8" }).trim()) : 2;
+  const verdict = predictStatic({ audio: { ...audio, sfx: unique }, contract, bgmSource, sfxSources, normalized, narrationChannels });
   return { id, contract: contractName, interpretation: normalized ? "normalized(신규)" : "원본 기준 상대값(옛 해석, 계약 없음)", bgm_source: { integrated_lufs: round(bgmSource.integrated_lufs), from_sec: audio.bgm.start_offset_sec ?? 0 }, verdict, note: "렌더 전 예측이다. 렌더 후 stem 실측(measure)과 청취를 대체하지 않는다." };
 };
 

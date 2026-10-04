@@ -169,7 +169,7 @@ export const measureStems = ({ stems, speech, bgm, totalSec, cues, contract, mea
   const bgmSpeech = narr ? measure(stems.bgm, { windows: w.speech }) : null;
   const bgmGap = gapSec >= contract.min_gap_seconds ? measure(stems.bgm, { windows: w.gaps }) : null;
   const sfx = cues.map((cue) => {
-    const m = measure(stems.sfx, { windows: [[cue.at_sec, cue.at_sec + (cue.window_sec ?? 3)]] });
+    const m = measure(stems.sfx, { windows: [[Math.max(0, cue.at_sec - 0.15), cue.at_sec + (cue.window_sec ?? 3)]] });   // aselect 는 프레임(~23ms) 단위라 컷 시작 샘플이 앞 프레임에 걸리면 피크를 놓친다 — 앞에 여유를 둔다
     return { id: cue.id, at_sec: round(cue.at_sec), peak_dbfs: round(m.sample_peak_dbfs) };
   });
   return {
@@ -185,9 +185,10 @@ export const measureStems = ({ stems, speech, bgm, totalSec, cues, contract, mea
  * 정적(렌더 전) 예측. audio.json·원본 측정만으로 말하는 동안/틈의 BGM - 내레이션 격차를 계산한다. 렌더·청취를 대체하지 않는다.
  * normalized=false 면 gain_db 를 원본 기준 상대값(옛 해석)으로 읽는다 — 옛 편에 새 가드를 읽기 전용으로 대 보는 용도.
  */
-export const predictStatic = ({ audio, contract, bgmSource, sfxSources, normalized }) => {
+export const predictStatic = ({ audio, contract, bgmSource, sfxSources, normalized, narrationChannels = 2 }) => {
   const master = audio.master_gain_db ?? 0;
-  const narrLufs = contract.narration.target_lufs + (audio.narration?.gain_db ?? 0) + master;
+  // 모노 내레이션은 스테레오로 재생되며 ebur128 상 +3.01 LU 가 된다(hani_1275504 실측: 파일 -16.2 → 렌더 -13.7). BGM 은 원본이 이미 스테레오다.
+  const narrLufs = contract.narration.target_lufs + (narrationChannels === 1 ? 3.01 : 0) + (audio.narration?.gain_db ?? 0) + master;
   const gap = (normalized ? contract.reference.bgm_lufs : bgmSource.integrated_lufs) + audio.bgm.gain_db + master;
   const sfx = [...(audio.sfx ?? [])].filter((s) => s.file).map((s) => {
     const base = normalized ? contract.reference.sfx_peak_dbfs : sfxSources[s.file]?.sample_peak_dbfs ?? null;
