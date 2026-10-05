@@ -60,7 +60,7 @@
 
 `eventInConcept(timeline, conceptId, eventId)`는 사건의 네 시점을 개념 지역 프레임으로 변환한다. `eventProgress(frame, event, phase)`는 enter/move의 from→settled 또는 exit의 to→end 구간과 해당 곡선을 읽는다. 동일 시작·종료 시각은 즉시 변화다. `eventOpacity`는 등장과 퇴장을 연결한다. 도해 좌표·거리·공간 궤적은 편별 코드에 남긴다.
 
-SFX는 `audio_cues[].bind.event_id + point`로 같은 사건에 묶고 `asset`은 `audio/`로 시작하는 편 상대경로를 쓴다. 장면과 별도로 초를 다시 적지 않는다. 품질 확인을 받은 완성 믹스를 이관한 경우 `audio.json.master_mix:true`로 두어 BGM·SFX를 중복 재생하지 않는다.
+SFX는 `audio_cues[].bind.event_id + point`로 같은 사건에 묶고 `asset`은 `audio/`로 시작하는 편 상대경로를 쓴다. 장면과 별도로 초를 다시 적지 않는다. **SFX 음량(`gain_db`)의 정본은 이 `audio_cues[]` 하나다** — `audio.json sfx[].gain_db` 는 렌더가 읽지 않으며, 같은 id 에 다른 값이 있으면 `audio-sfx-gain-conflict` 오류다(확정된 옛 편은 경고). 품질 확인을 받은 완성 믹스를 이관한 경우 `audio.json.master_mix:true`로 두어 BGM·SFX를 중복 재생하지 않는다.
 
 `visual-system.media.assets[]`는 편 renderer가 쓰는 미디어를 `id`, 편 루트 상대 `source`, `editorial/` 아래의 렌더 `file`로 등기한다. 영상 일부만 필요하면 `trim{from_sec,duration_sec}`를 적고 sync가 편별 파생 클립을 만든다. renderer는 실험 폴더나 공용 임시 캐시를 직접 읽지 않는다.
 

@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import { buildVideoLibrary } from "../video-library.mjs";
 import { episodeCommitPaths } from "./commit-scope.mjs";
 import { hash, json, workspace } from "./contracts.mjs";
+import { loudnessGate } from "../audio-loudness.mjs";
 
 // 확정 = 새 버전 + 자동 커밋 + 완성 영상 목록 갱신.
 // 한겨레 체크아웃은 main 하나에서 편을 쌓는다. 가장 마지막 버전이 그 편의 확정본이고,
@@ -53,7 +54,7 @@ const commitEpisode = (repo, id, message) => {
  * @param {{ repo?: string, basis?: "completion"|"user"|"restore", from?: string, note?: string, commit?: boolean }} options
  *   from: 이전 판(vK)을 새 버전으로 다시 확정한다 — "이전 버전으로 돌려줘".
  */
-export const deliverEpisode = (id, { repo, basis = "completion", from, note = null, commit = true } = {}) => {
+export const deliverEpisode = (id, { repo, basis = "completion", from, note = null, commit = true, audioWaiver = null } = {}) => {
   const w = workspace(id, repo);
   const manifestPath = w.path("pilots/" + id + "/pilot.json");
   if (!existsSync(manifestPath)) throw new Error("pilots/" + id + "/pilot.json이 없다 — npm run sync -- news/" + id + " 부터 실행한다");
@@ -67,6 +68,18 @@ export const deliverEpisode = (id, { repo, basis = "completion", from, note = nu
     source = { path: prior.file, sha256: prior.file_sha256 ?? sha(w.path(prior.file)), duration_sec: prior.duration_sec ?? null, restored_from: from };
     basis = "restore";
   } else source = currentRender(w);
+
+  // 소리 라우드니스 측정 가드(loudness_contract 편만). 이전 판 복원은 이미 확정됐던 영상이라 다시 막지 않는다.
+  // 사용자 확정(--basis user)도 측정이 없거나 범위 밖이면 막는다 — 사용자가 알고도 내보내려면 --audio-waiver "<사유>" 를 명시하고, 기록에 남는다.
+  let audioLoudness = null;
+  if (!from) {
+    const gate = loudnessGate({ repo: w.repo, id, renderSha256: source.sha256 });
+    audioLoudness = { contract: gate.contract, status: gate.status, verdict: gate.verdict ?? null, listening: gate.listening, report: gate.report ?? null };
+    if (gate.blocking) {
+      if (basis === "user" && audioWaiver) audioLoudness = { ...audioLoudness, waived: true, waiver: audioWaiver, blockers: gate.blockers };
+      else throw new Error("소리 라우드니스 가드로 확정을 막았다: " + JSON.stringify(gate.blockers) + (basis === "user" ? " — 알고도 확정하려면 --audio-waiver \"사유\"" : ""));
+    }
+  }
 
   const last = pilot.versions.at(-1);
   if (last && (last.file_sha256 === source.sha256 || last.sha256 === source.sha256)) {
@@ -92,7 +105,8 @@ export const deliverEpisode = (id, { repo, basis = "completion", from, note = nu
     version, label: "final_" + version, master: from ? null : source.path, sha256: source.sha256,
     file, file_sha256: fileSha, duration_sec: source.duration_sec,
     confirmed_by: basis === "completion" ? "production-completion" : "user", confirmed_at: at, basis,
-    ...(source.restored_from ? { restored_from: source.restored_from } : {}), note,
+    ...(source.restored_from ? { restored_from: source.restored_from } : {}),
+    ...(audioLoudness && audioLoudness.status !== "legacy" ? { audio_loudness: audioLoudness } : {}), note,
   });
   pilot.status = "delivered";
   pilot.delivered = at.slice(0, 10);

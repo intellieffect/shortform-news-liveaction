@@ -50,6 +50,8 @@
 | 4d | **BGM 선정은 제목이 아니라 mood 태그 × 오디오 특징**(타격감·밝기·LRA) — input 재채점 절차. **LRA 가 큰 곡(>10)은 덕킹에서 튄다** |
 | 4e | 대본·클라이언트의 구간 지시("인용구 BGM 낮춤")는 `bgm.duck_ranges[{from,to,gain_db,attack_sec,release_sec,why}]`(2편 74.07–83.31 −18). 검증은 내레이션 `silencedetect` 창으로 발화/틈/덕 구간 RMS 를 따로 재 `measured.segments` 에 |
 | 4f | 파생물(트림·페이드)은 `external_assets/audio/derived/` 가 **심링크면 쓰지 말고** `external_assets/<pilot_tag>/audio/` 에 — 심링크 경유 쓰기는 이전 편 원본을 바꾼다 |
+| 4g | **라우드니스 계약(2026-10-04).** `loudness_contract:"audio-loudness@1"` 편은 4c 의 「원본 기준 상대값」 해석을 쓰지 않는다 — `gain_db` 는 정규화 기준 상대값이고 목표·측정·차단은 [rules-finish.md §10 D](../../plugin/skills/shortform-news-pipeline/reference/rules-finish.md)와 `config/audio-loudness.json`. 계약 필드가 없는 편은 4c 그대로 |
+| 4h | **SFX 음량 정본(2026-10-05).** editorial 편(`motion.json` 이 있는 편)의 SFX 음량·시점 정본은 `motion.json audio_cues[].gain_db` 하나다 — 렌더(`EditorialPlayback`)는 `timeline.audio_cues`(= motion 에서 컴파일)만 읽는다. 이 편의 `audio.json sfx[]` 는 렌더에서 무시되므로 `gain_db` 를 쓰지 않는 것이 원칙이고(`file`·`id` 는 기록용), 쓴다면 같은 `id` 의 cue 값과 같아야 한다. 다르면 `editorial:check`/compile 이 `audio-sfx-gain-conflict` 오류를 낸다(이미 확정되고 `loudness_contract` 가 없는 옛 편은 렌더가 안 바뀌어 경고). cue 에 없는 `sfx[]` 는 `audio-sfx-unplayed` 경고. `audio:loudness static` 도 같은 정본(motion cue)으로 예측한다. `motion.json` 이 없는 beat 편은 이 문서의 `sfx[].gain_db` 가 정본이다 |
 | 5 | 측정: `ffmpeg -i out.mp4 -af ebur128=peak=true -f null -` → Summary의 **I · LRA · Peak 세 값 모두** `measured`에 기록(`integrated_lufs`·`lra_lu`·`true_peak_dbtp`). 목표 통합 −14 LUFS, TP ≤ −1 dBTP. LRA는 목표값이 아니라 추이 기록 — 덕킹이 얕아지거나 BGM이 튀면 커진다(이번 편 v1~v3 2.8→2.9) |
 
 ## 검토 질문 (4-5)

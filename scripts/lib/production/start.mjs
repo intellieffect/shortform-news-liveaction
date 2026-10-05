@@ -1,3 +1,4 @@
+import { defaultAudio } from "../audio-loudness.mjs";
 import {OPTIONAL_SCENE_GATE} from '../scene-proof-contract.mjs';
 import {SCREEN_TEXT_POLICY} from '../screen-text-policy.mjs';
 import {ATTRIBUTION_POLICY} from '../attribution.mjs';
@@ -60,6 +61,8 @@ export const startProduction = ({ id, url, duration, durationBasis = "total", re
   const put = (path, body) => writeFileSync(join(root, path), typeof body === "string" ? body : JSON.stringify(body, null, 2) + "\n", { flag: "wx" });
   put("00_brief/user-request.txt", request);
   // Empty registry means nothing collected yet; it is not a rights/collection receipt.
+  // 새 편은 소리 라우드니스 계약을 처음부터 가진다(없으면 complete/deliver 가 막는다). BGM·SFX 파일은 소싱 뒤 채운다.
+  put("02_production/audio.json", defaultAudio());
   put("01_input/assets.json", { schema_version: "1.0", pilot: id, assets: [] });
   put("00_brief/request.json", {
     schema_version: "1.0", pilot: id, mode: "editorial-concept", created_at: new Date().toISOString(),

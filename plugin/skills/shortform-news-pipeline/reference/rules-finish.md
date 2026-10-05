@@ -31,6 +31,8 @@
 
 **R10-01 읽기 속도 기준** — 평균 **6~7자/초**. 인용 카드는 앞 문장 유지로 노출 시간을 확보한다(**13자/초는 읽을 수 없다**). 4-2 객관 확인은 무텍스트 구간(비트 시작~첫 줄 >0.35s)·8자/s 초과 줄·0.6s 미만 줄·팝이 줄 교체에 잘리는 강조어를 `beats`·`overlays` 로 계산한다. ✗
 
+**D 오디오 — 라우드니스 계약(`audio-loudness@1`, 신규 편)** — `audio.json` 에 `"loudness_contract": "audio-loudness@1"`. 목표(`config/audio-loudness.json`): **말하는 동안 BGM 은 내레이션보다 12~15 LU 아래, 말 없는 구간은 4~10 LU 아래(발화 때보다 ≥3 LU 크게), SFX 피크는 내레이션 피크보다 4~14 dB 아래**(측정 오차 ±1). 이 계약에서 `gain_db` 는 원본이 아니라 정규화 기준(BGM 원본 구간 −23 LUFS, SFX 원본 sample peak −6 dBFS = gain 0)의 상대값이다 — sync 가 원본을 재서 `pilot.json audio_normalization` 에 보정을 적고 렌더가 적용한다(없으면 렌더가 실패). 출발점: `bgm.gain_db −1 · duck_db −6`, SFX `−3~−6`. **SFX 음량 정본은 editorial 편에서 `motion.json audio_cues[].gain_db` 하나다**(렌더는 이것만 읽는다) — `audio.json sfx[].gain_db` 를 바꿔도 소리는 변하지 않으며, 값이 다르면 `editorial:check` 가 `audio-sfx-gain-conflict` 로 막는다. `audio:loudness static` 도 이 값으로 예측한다(hani_1275504: audio.json 만 −5 로 고치고 재렌더했더니 SFX 가 −22~−31 dB 그대로, 2026-10-05). 렌더 뒤 `npm run audio:loudness -- measure <id>` 로 stem 실측 → 범위 밖·미측정·다른 렌더를 잰 기록이면 `produce complete`/`deliver` 가 막힌다. **측정 통과는 청취 통과가 아니다** — 보고서는 항상 `listening: "청취 미확인"`이고 청취는 `review_audio` 의 `listened_ranges` 만 증명한다. 계약이 없는 옛 편은 소리·흐름이 그대로다(왜: hani_1275504 에서 BGM 이 내레이션보다 27 dB 낮게 나갔는데 `measured` 가 전부 null 이었다, 2026-10-04).
+
 수정은 한 번에 묶어 재렌더 → 프레임 재확인 → `audio.json.measured`·INDEX 기록. 검토 스크립트·이슈 스윕은 [commands.md](commands.md).
 
 

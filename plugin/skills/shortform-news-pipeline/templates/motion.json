@@ -26,6 +26,7 @@
       "why": "대상을 말할 때 이름을 보여주고 다음 개념 전에 정리한다"
     }
   ],
+  "_audio_cues_comment": "SFX 음량 정본 — 렌더는 audio_cues[].gain_db 만 읽는다. audio.json sfx[].gain_db 는 무시되며 값이 다르면 editorial:check 오류. gain_db 는 loudness_contract 편에서 정규화 기준(SFX 원본 sample peak -6 dBFS = 0) 상대값",
   "audio_cues": [
     {
       "id": "subject_soft_hit",

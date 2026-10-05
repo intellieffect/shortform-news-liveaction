@@ -19,15 +19,17 @@ const fixture = (t) => {
   const repo = mkdtempSync(join(tmpdir(), 'shortform-deliver-'));
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   copyFileSync(join(REPO, '.gitignore'), join(repo, '.gitignore'));
+  mkdirSync(join(repo, 'config'), { recursive: true }); copyFileSync(join(REPO, 'config/audio-loudness.json'), join(repo, 'config/audio-loudness.json'));
   git(repo, 'init', '-q', '-b', 'main');
   git(repo, 'config', 'user.name', '테스트');
   git(repo, 'config', 'user.email', 'test@example.invalid');
-  git(repo, 'add', '.gitignore'); git(repo, 'commit', '-q', '-m', 'init');
+  git(repo, 'add', '.gitignore', 'config'); git(repo, 'commit', '-q', '-m', 'init');
   put(join(repo, 'news', ID, '00_brief/request.json'), { schema_version: '1.0', pilot: ID, mode: 'editorial-concept', source_url: URL_ });
   put(join(repo, 'news', ID, '00_brief/user-request.txt'), '이 기사로 숏폼 만들어줘 ' + URL_);
   put(join(repo, 'news', ID, '02_production/story.json'), { mode: 'editorial-concept' });
   put(join(repo, 'news', ID, '02_production/audio/narration.wav'), Buffer.alloc(64, 1));
   put(join(repo, 'src/editorial/episodes', ID + '.tsx'), 'export const EditorialEpisode = () => null;\n');
+  put(join(repo, 'news', ID, '02_production/audio.json'), { loudness_contract: 'audio-loudness@1' });
   put(join(repo, 'pilots', ID, 'pilot.json'), { id: ID, title: null, status: 'drafting', delivered: null, article: { url: null }, versions: [] });
   put(join(repo, 'pilots', ID, 'timeline.json'), { fps: 30 });
   return repo;
@@ -36,6 +38,7 @@ const render = (repo, bytes) => {
   const path = 'out/pilots/' + ID + '/qa/production-' + bytes + '.mp4';
   put(join(repo, path), Buffer.alloc(128, bytes));
   put(join(repo, 'news', ID, '02_production/run.json'), { receipts: { render: { validation: { artifact: { path, sha256: sha(join(repo, path)) }, media: { duration: 60 } } } } });
+  put(join(repo, 'news', ID, '02_production/reviews/audio-loudness.json'), { contract: 'audio-loudness@1', render_sha256: sha(join(repo, path)), verdict: { status: 'pass', checks: [] } });
 };
 
 test('확정하면 새 버전·LATEST·자동 커밋, 작업트리는 깨끗하고 미디어는 커밋되지 않는다', (t) => {

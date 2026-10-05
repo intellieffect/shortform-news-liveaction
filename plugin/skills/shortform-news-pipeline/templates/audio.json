@@ -1,6 +1,7 @@
 {
   "schema_version": "1.0",
-  "_comment": "소리층. bgm.file/sfx[].file 이 null 이면 그 트랙은 건너뛴다. dB 는 렌더에서 선형 변환. start_offset_sec = assets.json intro_silence_sec + 0.5 | BGM 레벨 기준: 발화 중 내레이션 −12~−15 dB 아래(1편 −24 base 폐기), 확정은 사용자 청취. duck_ranges = 대본·클라이언트 구간 지시(인용구 낮춤 등)",
+  "loudness_contract": "audio-loudness@1",
+  "_comment": "소리층. [SFX 음량 정본] editorial 편(motion.json 있음)은 sfx[].gain_db 를 렌더가 읽지 않는다 — 음량은 motion.json audio_cues[].gain_db 에서만 정하고 여기에는 쓰지 않거나 같은 값으로 맞춘다(다르면 editorial:check 오류). 아래 sfx[] 예시의 gain_db 는 motion.json 이 없는 beat 편 전용.  bgm.file/sfx[].file 이 null 이면 그 트랙은 건너뛴다. dB 는 렌더에서 선형 변환. start_offset_sec = assets.json intro_silence_sec + 0.5 | loudness_contract 가 있으면 gain_db 는 원본이 아니라 정규화 기준(BGM 원본 구간 −23 LUFS = gain 0, SFX 원본 sample peak −6 dBFS = gain 0) 상대값이다 — 보정은 sync 가 원본을 재서 pilot.json audio_normalization 에 기록한다. 목표: 말하는 동안 BGM 은 내레이션보다 12~15 LU 아래(gain+duck ≈ −7), 말 없는 구간은 4~10 LU 아래, SFX 피크는 내레이션 피크보다 4~14 dB 아래. 렌더 후 npm run audio:loudness -- measure <id> 가 stem 으로 재고 범위 밖이면 produce complete/deliver 가 막힌다. 측정 통과는 청취 통과가 아니다 — 확정은 사용자 청취. duck_ranges = 대본·클라이언트 구간 지시(인용구 낮춤 등)",
   "narration": {
     "file": "pilot/audio/narration.wav",
     "normalized": {
@@ -12,8 +13,8 @@
   "bgm": {
     "asset": "<audio_assets id>",
     "file": "pilot/audio/<bgm>.mp3",
-    "gain_db": -8,
-    "duck_db": -10,
+    "gain_db": -1,
+    "duck_db": -6,
     "duck_attack_sec": 0.25,
     "duck_release_sec": 0.6,
     "duck_ranges": [
@@ -39,21 +40,21 @@
       "id": "whoosh",
       "asset": "<id>",
       "file": "pilot/audio/sfx_whoosh.wav",
-      "gain_db": -14,
+      "gain_db": -4,
       "at": "scene_dissolve"
     },
     {
       "id": "counter",
       "asset": "<id>",
       "file": "pilot/audio/sfx_counter.wav",
-      "gain_db": -8,
+      "gain_db": -3,
       "at": "graphic:counter@1"
     },
     {
       "id": "drone",
       "asset": "<id>",
       "file": "pilot/audio/sfx_drone.wav",
-      "gain_db": -12,
+      "gain_db": -6,
       "at": "endcard"
     }
   ],
