@@ -32,6 +32,22 @@ export const loadContract = (name, repo = REPO) => {
   return all[name];
 };
 
+/**
+ * SFX 음량 정본 = motion.json audio_cues[].gain_db (editorial 렌더 EditorialPlayback 이 timeline.audio_cues 에서만 읽는다).
+ * audio.json sfx[].gain_db 는 렌더에서 무시된다 — 같은 id 에 다른 값이 있으면 조용히 어긋나므로 충돌로 돌려준다.
+ * cues 에 없는 audio.json sfx(file 있음)는 재생되지 않는 항목(unplayed)으로 따로 돌려준다.
+ */
+export const sfxGainConflicts = (audioSfx, cues) => {
+  const byId = new Map((cues ?? []).map((c) => [c?.id, c]));
+  const conflicts = [], unplayed = [];
+  for (const s of audioSfx ?? []) {
+    const cue = byId.get(s?.id);
+    if (!cue) { if (s?.file) unplayed.push(s.id); continue; }
+    if (Number.isFinite(s.gain_db) && s.gain_db !== cue.gain_db) conflicts.push({ id: s.id, audio_json_gain_db: s.gain_db, motion_gain_db: cue.gain_db });
+  }
+  return { conflicts, unplayed };
+};
+
 const num = (s) => (s === undefined || /inf/i.test(s) ? null : Number(s));
 export const round = (v, d = 2) => (v === null || v === undefined || !Number.isFinite(v) ? null : Math.round(v * 10 ** d) / 10 ** d);
 

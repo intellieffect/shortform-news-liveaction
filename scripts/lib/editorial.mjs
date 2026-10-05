@@ -6,8 +6,10 @@ import {HOOK_POLICY, HOOK_ROLE, validateHookOverlay} from './hook-overlay.mjs';
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { REPO } from "./pilot.mjs";
 import { readProductionProfile, productionProfileErrors, profileOverrideIssues } from "./production-profile.mjs";
 import { resolveDesignStyle } from "./design-styles.mjs";
+import { sfxGainConflicts } from "./audio-loudness.mjs";
 
 const ID = /^[a-z][a-z0-9_-]*$/;
 const SCRIPT_POLICIES = new Set(["editorial-owned", "script-faithful"]);
@@ -90,7 +92,7 @@ const noAbsoluteFrames = (value, errors, path = "motion") => {
   }
 };
 
-export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null, hookPolicy = null, attributionPolicy = null }) => {
+export const validateEditorialData = ({ story, concepts, motion, visualSystem, narration, productionProfile, visualContractRequired = false, screenTextPolicy = null, hookPolicy = null, attributionPolicy = null, audio = null, audioLegacyTolerant = false }) => {
   const visualCheck = validateVisualPlan({concepts, visualSystem, required: visualContractRequired});
   const errors = [...visualCheck.errors], warnings = [...visualCheck.warnings];
   let lines = [];
@@ -315,6 +317,17 @@ export const validateEditorialData = ({ story, concepts, motion, visualSystem, n
     else if (!Number.isInteger(offset) || event[point] + offset < 0 || event[point] + offset >= motion.total_frames) issue(errors, "audio-event-range", `motion.audio_cues.${cue?.id}`, "SFX 시점은 영상 안의 정수 프레임이어야 한다");
     else audioCues.push({ ...cue, frame: event[point] + offset });
   }
+  // SFX 음량 정본은 motion.audio_cues[].gain_db 하나다. audio.json sfx[].gain_db 는 렌더가 읽지 않으므로 값이 다르면 조용히 무시되지 않게 막는다.
+  // 이미 확정된 옛 편(loudness_contract 없음 + 확정 버전 있음)은 렌더가 안 바뀌므로 오류 대신 경고로 둔다.
+  if (audio) {
+    const { conflicts, unplayed } = sfxGainConflicts(audio.sfx, motion?.audio_cues);
+    for (const c of conflicts) {
+      const detail = `audio.json sfx[${c.id}].gain_db ${c.audio_json_gain_db} ≠ motion.json audio_cues ${c.motion_gain_db} — 렌더는 motion 값만 쓴다. motion.json 을 고치고 audio.json 의 gain_db 는 지우거나 같은 값으로 맞춘다`;
+      if (audioLegacyTolerant) warnings.push(`[audio-sfx-gain-conflict] audio.json sfx.${c.id}: ${detail}`);
+      else issue(errors, "audio-sfx-gain-conflict", `audio.json sfx.${c.id}`, detail);
+    }
+    for (const id of unplayed) warnings.push(`[audio-sfx-unplayed] audio.json sfx.${id}: motion.json audio_cues 에 같은 id 가 없어 재생되지 않는다`);
+  }
   // 후킹 구조가 전부 유효할 때만 연결된 요소를 설명문구 제한에서 뺀다. 출처 표기 금지는 그대로다.
   // 후킹·크레딧 디자인은 편이 start 때 기록한 버전의 보관본을 읽는다. 기록이 없는 기존 편은 기록 이전 값(legacy)이다.
   const hookStyle = resolveDesignStyle("hook-style", visualSystem?.hook_style);
@@ -381,7 +394,13 @@ export const loadEditorialBundle = (root) => {
   const production = existsSync(join(root, "02_production")) ? join(root, "02_production") : root;
   const narrationPath = existsSync(join(production, "narration.json")) ? join(production, "narration.json") : join(root, "narration.json");
   const request = existsSync(join(root, "00_brief/request.json")) ? readJson(join(root, "00_brief/request.json")) : null;
+  const audio = existsSync(join(production, "audio.json")) ? readJson(join(production, "audio.json")) : null;
+  const pilotId = (existsSync(join(production, "story.json")) ? readJson(join(production, "story.json")) : null)?.pilot;
+  const manifestFile = pilotId ? join(REPO, "pilots", pilotId, "pilot.json") : null;
+  const delivered = Boolean(manifestFile && existsSync(manifestFile) && (readJson(manifestFile).versions ?? []).length > 0);
   return {
+    audio,
+    audioLegacyTolerant: delivered && !audio?.loudness_contract,
     screenTextPolicy: request?.screen_text ?? null,
     hookPolicy: request?.hook_overlay ?? null,
     attributionPolicy: request?.attribution_policy ?? null,

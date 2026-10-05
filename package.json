@@ -68,7 +68,7 @@
     "new": "node scripts/new-pilot.mjs",
     "audio:measure": "bash scripts/audio-measure.sh",
     "audio:loudness": "node scripts/audio-loudness.mjs",
-    "audio:loudness:test": "node --test tests/test-audio-loudness.mjs",
+    "audio:loudness:test": "node --test tests/test-audio-loudness.mjs tests/test-sfx-gain-source.mjs",
     "check:captions": "node scripts/check-captions.mjs",
     "worktree:remove": "node scripts/worktree-safe-remove.mjs",
     "fetch:article": "node scripts/fetch-article.mjs",

@@ -29,7 +29,7 @@
 | `<root>/02_production/overlays.json` + `overlays.overrides.json` | 텍스트층 + 편집 덮어쓰기(card/headline/credit만) | `docs/specs/overlays.schema.md` |
 | `<root>/02_production/shots.json` | 화면층 (+insets, graphics, clip) | `docs/specs/shots.schema.md` (4-3 계획표 포함) |
 | `pilots/<id>/render.config.json` (조립층 소유 — `02_production` 에 두지 않는다, sync 가 덮어쓴다) | `layers{motion,text_anim,graphics,transitions,sound}`, `transitions{crossfade_frames,scene_only,overrides,keep_text,end_fade_frames}`, `debug.show_beat_id` | layers.md §B |
-| `<root>/02_production/audio.json` | `narration{file,gain_db}`, `bgm{asset,file,gain_db,duck_db,duck_attack_sec,duck_release_sec,fade_in_sec,fade_out_sec,start_offset_sec,loop,credit}`, `sfx[{id,asset,file,gain_db,at}]`, `master_gain_db`, `measured` | `docs/specs/audio.schema.md` |
+| `<root>/02_production/audio.json` | `narration{file,gain_db}`, `bgm{asset,file,gain_db,duck_db,duck_attack_sec,duck_release_sec,fade_in_sec,fade_out_sec,start_offset_sec,loop,credit}`, `sfx[{id,asset,file,gain_db,at}]`(editorial 편은 `gain_db` 정본이 motion.json `audio_cues[]` — 여기 값은 무시되고 다르면 compile 오류), `master_gain_db`, `measured` | `docs/specs/audio.schema.md` |
 | `<root>/02_production/asset_gaps.json` | 자료 공백 플래그 | beats.schema.md §자료 공백 |
 | `pilots/<id>/*.json` | 위 JSON의 동기화 복사본(커밋 대상, 빌드에 필요). 미디어 경로는 편 상대(`ext/…`, `pilot/` 접두 없음 — sync 가 벗긴다) | `scripts/sync-pilot.mjs` |
 | `pilots/<id>/pilot.json` | 편 매니페스트 — id·제목·기사·상태·input 경로/커밋·`engine`(`script-faithful@1` 또는 `editorial-concept@1`)·`engine_commit`·**`guards[]`**(이 편이 받는 가드 세대 — `check-all` 이 해당 경고를 오류로 승격. 실측 통과분만 선언, 옛 편은 비운다)·`versions[]`(납품본 `file`·md5·LUFS·master)·`gates_open`·docs·linear | sync 가 뼈대, 사람이 채움 → `npm run pilots` 가 대장 생성 |

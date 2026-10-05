@@ -232,7 +232,7 @@ ffmpeg -ss 0 -t 2.94 -i gen.mp4 -an -vf "delogo=x=490:y=755:w=215:h=55" -c:v lib
 ## 4-5 사운드
 ```bash
 npm run audio:measure -- out/pilots/<id>/stage/X.mp4 --narr public/pilots/<id>/audio/narration.wav --beats pilots/<id>/beats.json [--win 이름:시작:길이]   # 통합·TP·LRA + 첫 0.4/1초·발화 틈·엔드카드·마지막 1초 (6편)
-npm run audio:loudness -- static <id>      # 렌더 전 예측(읽기 전용): audio.json + 원본 측정으로 BGM/SFX 가 내레이션 아래 목표 범위인지. 범위 밖이면 exit 1 (옛 편은 gain 을 원본 기준으로 읽는다)
+npm run audio:loudness -- static <id>      # 렌더 전 예측(읽기 전용): audio.json + 원본 측정으로 BGM/SFX 가 내레이션 아래 목표 범위인지. 범위 밖이면 exit 1 (옛 편은 gain 을 원본 기준으로 읽는다). SFX 는 editorial 편이면 motion.json audio_cues 가 정본이고, audio.json sfx[] 와 값이 다르면 `sfx_gain_conflicts` 로 보고하며 exit 1
 npm run audio:loudness -- measure <id>     # 렌더 후 필수(loudness_contract 편): narration/bgm/sfx stem 을 따로 렌더해 실측 → news/<id>/02_production/reviews/audio-loudness.json. 범위 밖·미측정이면 exit 1
 npm run audio:loudness -- gate <id>        # produce complete / deliver 가 보는 판정만 출력 (legacy | pass | blocked)
 # produce complete 는 계약 편의 통과 측정(현재 렌더 sha256 일치)이 없으면 막는다. produce deliver --basis user 도 같다 — 알고도 확정하면 --audio-waiver "<사유>" (기록에 남음). 측정 통과 ≠ 청취 통과

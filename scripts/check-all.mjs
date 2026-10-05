@@ -88,10 +88,14 @@ if (!wantJson) {
 
 // ⓪-6 소리 라우드니스 가드 — 계약 판정·정규화 보정·완료/확정 차단. 옛 편(loudness_contract 없음)이 막히지 않는지도 같이 본다.
 const loudnessRun = run("test-audio-loudness.mjs", [], "tests");
-const loudnessErr = loudnessRun.code ? 1 : 0;
+// SFX 음량 정본(motion.json audio_cues) 일치 검사 — audio.json 불일치 탐지·확정 편 무변화
+const sfxGainRun = run("test-sfx-gain-source.mjs", [], "tests");
+const loudnessErr = loudnessRun.code || sfxGainRun.code ? 1 : 0;
 if (!wantJson) {
-  console.log(loudnessRun.out.trim().split("\n").find((l) => /^ℹ fail/.test(l))?.replace("ℹ fail", "소리 라우드니스 가드 테스트 실패") ?? loudnessRun.out.trim().split("\n").at(-1));
-  if (loudnessErr) for (const line of loudnessRun.out.split("\n")) if (line.startsWith("✖")) console.log(`  ${line}`);
+  for (const r of [loudnessRun, sfxGainRun]) {
+    console.log(r.out.trim().split("\n").find((l) => /^ℹ fail/.test(l))?.replace("ℹ fail", "소리 라우드니스·SFX 정본 테스트 실패") ?? r.out.trim().split("\n").at(-1));
+    if (r.code) for (const line of r.out.split("\n")) if (line.startsWith("✖")) console.log(`  ${line}`);
+  }
 }
 
 const linksRun = run("check-links.mjs", []);

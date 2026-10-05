@@ -17,7 +17,7 @@ import { dirname, join, relative, sep } from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
 import { REPO, compId } from "./lib/pilot.mjs";
 import { audioSourceCandidates, syncStatus } from "./lib/sync.mjs";
-import { REPORT_REL, REPORT_SCHEMA, duration, evaluateMix, loadContract, loudnessGate, measureAudio, measureStems, predictStatic, round } from "./lib/audio-loudness.mjs";
+import { sfxGainConflicts, REPORT_REL, REPORT_SCHEMA, duration, evaluateMix, loadContract, loudnessGate, measureAudio, measureStems, predictStatic, round } from "./lib/audio-loudness.mjs";
 
 const json = (file) => JSON.parse(readFileSync(file, "utf8"));
 const sha = (file) => createHash("sha256").update(readFileSync(file)).digest("hex");
@@ -36,16 +36,21 @@ const staticCheck = (id, repo) => {
   const bgmPath = audio.bgm?.file ? find(audio.bgm.file) : null;
   if (!bgmPath) throw new Error("BGM 원본을 찾지 못했다: " + audio.bgm?.file);
   const bgmSource = measureAudio(bgmPath, { from: audio.bgm.start_offset_sec ?? 0 });
-  const cueFiles = existsSync(join(root, "02_production", "motion.json")) ? (json(join(root, "02_production", "motion.json")).audio_cues ?? []) : [];
-  // audio.json sfx[] 와 motion audio_cues 중 실제 렌더에 쓰이는 것(editorial 은 cues)을 합쳐 본다.
-  const sfxList = [...(audio.sfx ?? []).filter((s) => s.file), ...cueFiles.map((c) => ({ id: c.id, file: c.asset, gain_db: c.gain_db }))];
+  const motionFile = join(root, "02_production", "motion.json");
+  const editorial = existsSync(motionFile);
+  const cues = editorial ? (json(motionFile).audio_cues ?? []) : [];
+  // 실제 렌더 정본: editorial 편은 motion.json audio_cues[].gain_db 만 렌더에 쓰인다(Composition EditorialPlayback → timeline.audio_cues).
+  // audio.json sfx[] 는 motion.json 이 없는 beat 편에서만 정본이다. editorial 에서 audio.json 값이 다르면 conflicts 로 보고한다.
+  const { conflicts, unplayed } = editorial ? sfxGainConflicts(audio.sfx, cues) : { conflicts: [], unplayed: [] };
+  const sfxList = editorial ? cues.map((c) => ({ id: c.id, file: c.asset, gain_db: c.gain_db })) : (audio.sfx ?? []).filter((s) => s.file);
   const seen = new Set(), unique = sfxList.filter((s) => { const k = s.id + "|" + s.file; if (seen.has(k)) return false; seen.add(k); return true; });
   const sfxSources = {};
   for (const s of unique) { const p = find(s.file); if (p) sfxSources[s.file] = measureAudio(p); }
   const narrPath = find(audio.narration?.file ?? "audio/narration.wav");
   const narrationChannels = narrPath ? Number(execFileSync(process.env.FFPROBE_PATH ?? "ffprobe", ["-v", "error", "-select_streams", "a:0", "-show_entries", "stream=channels", "-of", "csv=p=0", narrPath], { encoding: "utf8" }).trim()) : 2;
   const verdict = predictStatic({ audio: { ...audio, sfx: unique }, contract, bgmSource, sfxSources, normalized, narrationChannels });
-  return { id, contract: contractName, interpretation: normalized ? "normalized(신규)" : "원본 기준 상대값(옛 해석, 계약 없음)", bgm_source: { integrated_lufs: round(bgmSource.integrated_lufs), from_sec: audio.bgm.start_offset_sec ?? 0 }, verdict, note: "렌더 전 예측이다. 렌더 후 stem 실측(measure)과 청취를 대체하지 않는다." };
+  if (conflicts.length) verdict.status = "out-of-range";   // 정본(motion)과 audio.json 이 다르면 예측이 어느 쪽 기준인지 알 수 없다 — 통과로 치지 않는다
+  return { id, contract: contractName, interpretation: normalized ? "normalized(신규)" : "원본 기준 상대값(옛 해석, 계약 없음)", sfx_source_of_truth: editorial ? "motion.json audio_cues[].gain_db" : "audio.json sfx[].gain_db", sfx_gain_conflicts: conflicts, sfx_unplayed_in_audio_json: unplayed, bgm_source: { integrated_lufs: round(bgmSource.integrated_lufs), from_sec: audio.bgm.start_offset_sec ?? 0 }, verdict, note: "렌더 전 예측이다. 렌더 후 stem 실측(measure)과 청취를 대체하지 않는다." };
 };
 
 const stemRender = (id, stem, outFile) => {
