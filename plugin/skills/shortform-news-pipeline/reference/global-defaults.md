@@ -57,7 +57,7 @@ npm run defaults -- adopt <편 id>             # 새 버전·보관본·자동 �
 | 설정 | 명령 |
 |---|---|
 | 기본 제작 지시 | 요청 문장을 본문의 가장 가까운 문단에 원문 그대로 추가 → `npm run defaults -- prompt-bump --note "<사용자 요청 원문>"` |
-| 보이스 | `npm run defaults -- voice --voice-id tc_… [--voice-name …] [--tempo 1.1] [--pitch 0] [--emotion normal]` |
+| 보이스 | `npm run defaults -- voice --voice-id tc_…|uc_… [--voice-name …] [--tempo 1.1] [--pitch 0] [--emotion normal]` |
 | 자막 | `profile-archive` → `config/production-profile.json` 값 수정 → `profile-bump <새 x.y.z>` |
 | 후킹 디자인 | `config/hook-style.json` 값 수정 → `npm run defaults -- hook-style-bump` |
 | 크레딧 디자인 | `config/attribution-style.json` 값 수정 → `npm run defaults -- attribution-style-bump` |

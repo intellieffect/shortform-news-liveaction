@@ -74,7 +74,7 @@ export const setVoice = (repo, patch, { env = process.env } = {}) => {
   const update = Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined));
   for (const key of Object.keys(update)) if (!VOICE_KEYS.includes(key)) throw new Error("바꿀 수 없는 음성 항목: " + key);
   if (!Object.keys(update).length) throw new Error("바꿀 값이 없다 — --voice-id · --voice-name · --tempo · --pitch · --emotion 중 하나 이상");
-  if (update.voice_id !== undefined && !/^tc_[0-9a-z]+$/i.test(update.voice_id)) throw new Error("Typecast voice_id 형식(tc_…)이 아니다: " + update.voice_id);
+  if (update.voice_id !== undefined && !/^(tc|uc)_[0-9a-z]+$/i.test(update.voice_id)) throw new Error("Typecast voice_id 형식(기본 tc_… 또는 커스텀 uc_…)이 아니다: " + update.voice_id);
   if (update.audio_tempo !== undefined && !(Number.isFinite(update.audio_tempo) && update.audio_tempo >= 0.5 && update.audio_tempo <= 2)) throw new Error("audio_tempo는 0.5~2.0 사이 수다");
   if (update.audio_pitch !== undefined && !(Number.isInteger(update.audio_pitch) && update.audio_pitch >= -12 && update.audio_pitch <= 12)) throw new Error("audio_pitch는 -12~12 정수다");
   const defaults = read(repo, DEFAULTS_FILE);

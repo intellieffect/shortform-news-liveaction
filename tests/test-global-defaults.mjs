@@ -105,6 +105,10 @@ test('보이스 변경: config에 기록, .env TYPECAST_VOICE_ID가 있으면 �
   assert.equal(showDefaults(repo, { env: noEnv }).narration.effective_for_new_episode.voice_id, 'tc_envvoice');
   assert.throws(() => setVoice(repo, { audio_tempo: 3 }, { env: noEnv }), /0\.5~2\.0/);
   assert.throws(() => setVoice(repo, { voice_id: 'Sanghyun' }, { env: noEnv }), /tc_/);
+  // 커스텀(보이스 클로닝) 보이스는 uc_ 접두사다.
+  setVoice(repo, { voice_id: 'uc_custom01' }, { env: noEnv });
+  assert.equal(read(repo, 'config/production-defaults.json').narration.voice.voice_id, 'uc_custom01');
+  assert.throws(() => setVoice(repo, { voice_id: 'xx_custom01' }, { env: noEnv }), /uc_/);
 });
 
 const python = ['python3', 'python'].find((cmd) => spawnSync(cmd, ['--version']).status === 0);
