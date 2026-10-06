@@ -36,7 +36,7 @@ try {
     assert.equal(existsSync(join(repo, "news/invalid")), false);
   });
   check("손상된 로고는 편 생성 전에 거절", () => {
-    const logoPath = join(repo, "presets/hani/brand-assets/v3/assets/logo.png");
+    const logoPath = join(repo, "presets/hani/brand-assets/v4/assets/logo.png");
     const original = readFileSync(logoPath);
     writeFileSync(logoPath, "broken");
     assert.throws(() => startProduction({ ...params, id: "broken_logo" }), /로고/);
@@ -77,17 +77,18 @@ try {
     assert.match(s.context.request.design_styles.attribution_style.sha256, /^[0-9a-f]{64}$/);
     assert.equal(newVisual.attribution.pages[0].duration, 3);
     assert.equal(newVisual.project_logo.width, 140);
-    assert.equal(newVisual.project_logo.y, 320);
+    assert.equal(newVisual.project_logo.y, 250);
     assert.equal(newVisual.attribution.pages[0].categories[0].lines[0], params.url);
     assert.equal(s.context.request.screen_text, "screen-text@2");
     assert.equal(s.context.request.hook_overlay, "hook-overlay@4");
-    assert.equal(s.context.request.attribution_policy, "attribution@2");
+    assert.equal(s.context.request.attribution_policy, "attribution@3");
     assert.equal(s.context.hook_reference.status, "available");
     assert.equal(s.context.hook_reference.font_identity, "unverified");
     assert.equal(s.context.hook_reference.frames.length, 3);
     assert.ok(s.context.hook_reference.frames.every(f => f.status === "verified" && existsSync(f.path)));
     assert.match(s.context.hook_reference.guide.text, /원본 서체명/);
-    assert.equal(s.context.request.production_prompt.version, "v2-original@5");
+    assert.equal(s.context.request.production_prompt.version, "v2-original@6");
+    assert.equal(s.context.request.closing_cta, "closing-cta@1");
     assert.match(s.context.production_prompt.text, /내레이션은 Typecast를 기본/);
     assert.equal(newVisual.media.assets.find(a => a.id === "project_logo").file, "editorial/brand-logo.png");
     assert.equal(createHash("sha256").update(readFileSync(join(repo, "news", id, "02_production/brand/logo.png"))).digest("hex"), newVisual.project_logo.sha256);

@@ -37,7 +37,7 @@
 | **4-6 마감** | `debug.show_beat_id: false`, `audio.master_gain_db` | `Composition.tsx` + ffmpeg | 비트 태그 off, `npm run credits -- $R --check`(엔드카드 = 실사용분), 엔드카드 4s·질문 CTA 중복 제거, TP 보정(−0.5dB), `final_candidate.mp4`(crf18) → `_h264.mp4`(crf22·aac192k·faststart) → 확정 시 `deliver/v<N>/` 로 묶음(불변), 비트×2 프레임 최종 검토, 썸네일, 게이트 표 | — |
 
 ### 4-4 전환 세부 (`render.config.transitions`)
-`{crossfade_frames: 8, scene_only: true, overrides: {"b20>b21": 15, "b21>b22": 12}, keep_text: ["b20>b21"], end_fade_frames: 12}` — 나가는 비트는 `duration + xf`만큼 살고 마지막 xf에서 1→0, 들어오는 비트는 첫 xf에서 0→1(둘 다 해야 비친다). 나가는 비트의 텍스트·그래픽은 경계에서 컷(`cutTextAfter`) — `keep_text` 경계만 같이 페이드. 훅은 시작 페이드 없음(프레임 0 원칙). **엔드카드 질문이 CTA 문장과 같은 말이면 질문을 뺀다**(CTA 가 엔드카드까지 유지되므로 중복) · 엔드카드 4s.
+`{crossfade_frames: 8, scene_only: true, overrides: {"b20>b21": 15, "b21>b22": 12}, keep_text: ["b20>b21"], end_fade_frames: 12}` — 나가는 비트는 `duration + xf`만큼 살고 마지막 xf에서 1→0, 들어오는 비트는 첫 xf에서 0→1(둘 다 해야 비친다). 나가는 비트의 텍스트·그래픽은 경계에서 컷(`cutTextAfter`) — `keep_text` 경계만 같이 페이드. 훅은 시작 페이드 없음(프레임 0 원칙). **엔드카드 질문이 CTA 문장과 같은 말이면 질문을 뺀다**(editorial 새 편은 `closing-cta@1` 공통 레이어가 CTA를 맡으므로 [closing-cta.md](closing-cta.md))(CTA 가 엔드카드까지 유지되므로 중복) · 엔드카드 4s.
 
 ### 4-5 사운드 세부 (`audio.json`)
 - 내레이션: sync에서 `loudnorm I=-16 TP=-1.5 linear` → `public/pilots/<id>/audio/narration.wav`(원본은 `_raw`).

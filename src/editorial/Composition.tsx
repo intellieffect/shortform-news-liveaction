@@ -1,4 +1,5 @@
 import {HookOverlayTrack} from "../lib/editorial/HookOverlayTrack";
+import {ClosingCtaTrack} from "../lib/editorial/ClosingCtaTrack";
 import {AttributionTrack} from "../lib/editorial/AttributionTrack";
 import { AbsoluteFill, Composition, Img, Sequence } from "remotion";
 import { Audio } from "@remotion/media";
@@ -67,6 +68,7 @@ export const EditorialFrame: React.FC<{ pilot: EditorialPilotData }> = ({ pilot 
       <HookOverlayTrack hook={pilot.timeline.hook_overlay} />
       {logo ? <Img src={pilot.file(logo.file)} style={{ position: "absolute", left: logo.x, top: logo.y, width: logo.width, height: logo.height, objectFit: "contain" }} /> : null}
       <EditorialCaptionTrack lines={pilot.narration.captions ?? pilot.narration.lines} fps={pilot.fps} profile={pilot.profile} />
+      <ClosingCtaTrack cta={pilot.timeline.closing_cta} />
       <AttributionTrack attribution={pilot.timeline.attribution} />
     </AbsoluteFill>
   );

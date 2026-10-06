@@ -117,6 +117,6 @@ node scripts/produce.mjs finish <id> <token>
 
 분량을 본문 기준으로 요청한 경우 `start --duration-basis content`를 사용한다. 전체 영상 분량이면 기본값 `total`을 유지한다. 본문 뒤 자료 크레딧은 본문 분량에 포함하지 않으며 실제 렌더 전체 길이는 별도로 검사한다.
 
-새 편은 `hook-overlay@4`(초반 한 번, 단일 문구)를 request에 기록한다. 원고 첫 문장과 화면용 후킹 연결·모션 작성은 [후킹 공통 경로](hook-overlay.md)를 따른다. start는 예시 후킹 문구나 타이밍을 복사하지 않는다.
+새 편은 `closing-cta@1`(마지막 나레이션 문장 + 노란 알약, [마지막 CTA](closing-cta.md))도 request에 기록한다. 새 편은 `hook-overlay@4`(초반 한 번, 단일 문구)를 request에 기록한다. 원고 첫 문장과 화면용 후킹 연결·모션 작성은 [후킹 공통 경로](hook-overlay.md)를 따른다. start는 예시 후킹 문구나 타이밍을 복사하지 않는다.
 
 start/resume의 `context.hook_reference`는 [실제 후킹 참고](hook-design-reference.md)와 해시 검증된 추출 프레임을 제공한다. 도입 조판 전에 이미지를 열어 확인한다. 불가하면 미확인으로 기록하고 누락을 복구한다. 새 편의 rows는 서체·굵기·크기·자간·간격·정렬을 직접 작성한다. 기존 편 후킹 수정은 request/보존 프롬프트를 덮어쓰지 않고 rows로 명시적으로 이행한다. 후킹만 수정하는 경우 승인된 음성·말자막을 유지한다. 원본 서체 미확인과 대체 서체 선택을 구분한다.

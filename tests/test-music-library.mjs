@@ -97,7 +97,7 @@ test('편에서 쓰면 bgm 폴더 복사·audio.json·RIGHTS.md·끝 크레딧 �
   const repo = fixture(t);
   const id = 'hani_1299999';
   const root = join(repo, 'news', id);
-  put(join(root, '00_brief', 'request.json'), { pilot: id });
+  put(join(root, '00_brief', 'request.json'), { pilot: id, attribution_policy: 'attribution@2' });
   put(join(root, '02_production', 'visual-system.json'), { attribution: { sources: [], pages: [{ duration: 3, categories: [{ title: '참조 기사', lines: ['https://example.invalid/a'] }] }] } });
   put(join(repo, '받은 파일', '밤 산책.mp3'), audio(6));
   await addTrack({ repo, input: join(repo, '받은 파일', '밤 산책.mp3') });
@@ -120,6 +120,21 @@ test('편에서 쓰면 bgm 폴더 복사·audio.json·RIGHTS.md·끝 크레딧 �
   const again = useTrack({ repo, track: '밤-산책', episode: id });
   assert.deepEqual(again.changed, ['02_production/audio.json']);
   assert.equal(readFileSync(join(root, '01_input', '05_참고자료', 'RIGHTS.md'), 'utf8').split('library-music:').length, 2);
+});
+
+test('attribution@3 편은 음악을 끝 크레딧에 자동으로 넣지 않는다', async (t) => {
+  const repo = fixture(t);
+  const id = 'hani_1299998';
+  const root = join(repo, 'news', id);
+  put(join(root, '00_brief', 'request.json'), { pilot: id, attribution_policy: 'attribution@3' });
+  const visual = { attribution: { sources: [], pages: [{ duration: 3, categories: [{ title: '참조 기사', lines: ['https://example.invalid/a'] }] }] } };
+  put(join(root, '02_production', 'visual-system.json'), visual);
+  put(join(repo, '받은 파일', '밤 산책.mp3'), audio(6));
+  await addTrack({ repo, input: join(repo, '받은 파일', '밤 산책.mp3') });
+  const r = useTrack({ repo, track: '밤 산책', episode: id });
+  assert.ok(!r.changed.includes('02_production/visual-system.json'));
+  assert.deepEqual(JSON.parse(readFileSync(join(root, '02_production', 'visual-system.json'), 'utf8')), visual);
+  assert.match(readFileSync(join(root, '01_input', '05_참고자료', 'RIGHTS.md'), 'utf8'), /library-music:밤-산책/);
 });
 
 test('없는 편·없는 곡·파일 없는 곡은 명확히 거절한다', async (t) => {

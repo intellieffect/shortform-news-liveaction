@@ -202,24 +202,31 @@ export const useTrack = ({ repo, track: query, episode }) => {
     changed.push("01_input/05_참고자료/RIGHTS.md");
   }
 
-  let credit = "visual-system.json이 아직 없어 끝 크레딧에 넣지 않았다 — 화면 설계 뒤 다시 실행한다";
+  // attribution@3(2026-10-06 고객 지시)부터 음악은 끝 크레딧에 넣지 않는다 — 게시 설명란(CREDITS.md)과 RIGHTS.md에만 남는다.
+  // 정책이 기록되지 않았거나 @2 이하인 편은 기록된 계약대로 마지막 장에 "음악" 줄을 넣는다.
+  let credit = "끝 크레딧에 넣지 않았다(attribution@3) — 음악 출처는 RIGHTS.md·게시 설명란에 둔다";
+  const requestPath = join(root, "00_brief", "request.json");
+  const policy = existsSync(requestPath) ? (JSON.parse(readFileSync(requestPath, "utf8")).attribution_policy ?? null) : null;
   const visualPath = join(root, "02_production", "visual-system.json");
-  if (existsSync(visualPath)) {
-    const visual = JSON.parse(readFileSync(visualPath, "utf8"));
-    const pages = visual.attribution?.pages;
-    if (Array.isArray(pages) && pages.length) {
-      const all = pages.flatMap((p) => p.categories ?? []);
-      if (all.some((c) => (c.lines ?? []).includes(line))) credit = "끝 크레딧에 이미 있다";
-      else {
-        const last = pages.at(-1);
-        last.categories ??= [];
-        const music = last.categories.find((c) => c.title === "음악");
-        if (music) music.lines.push(line); else last.categories.push({ title: "음악", lines: [line] });
-        writeFileSync(visualPath, JSON.stringify(visual, null, 2) + "\n");
-        changed.push("02_production/visual-system.json");
-        credit = `끝 크레딧 마지막 장 "음악"에 "${line}" 추가 — 장 구성은 editorial:check로 다시 확인한다`;
-      }
-    } else credit = "visual-system.json에 끝 크레딧 장이 없어 넣지 않았다";
+  if (policy !== "attribution@3") {
+    credit = "visual-system.json이 아직 없어 끝 크레딧에 넣지 않았다 — 화면 설계 뒤 다시 실행한다";
+    if (existsSync(visualPath)) {
+      const visual = JSON.parse(readFileSync(visualPath, "utf8"));
+      const pages = visual.attribution?.pages;
+      if (Array.isArray(pages) && pages.length) {
+        const all = pages.flatMap((p) => p.categories ?? []);
+        if (all.some((c) => (c.lines ?? []).includes(line))) credit = "끝 크레딧에 이미 있다";
+        else {
+          const last = pages.at(-1);
+          last.categories ??= [];
+          const music = last.categories.find((c) => c.title === "음악");
+          if (music) music.lines.push(line); else last.categories.push({ title: "음악", lines: [line] });
+          writeFileSync(visualPath, JSON.stringify(visual, null, 2) + "\n");
+          changed.push("02_production/visual-system.json");
+          credit = `끝 크레딧 마지막 장 "음악"에 "${line}" 추가 — 장 구성은 editorial:check로 다시 확인한다`;
+        }
+      } else credit = "visual-system.json에 끝 크레딧 장이 없어 넣지 않았다";
+    }
   }
   return { episode: id, track, file: dest, previous_bgm: previous, credit, changed };
 };
