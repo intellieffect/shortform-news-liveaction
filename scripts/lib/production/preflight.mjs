@@ -29,7 +29,7 @@ export const productionSpecification = (id, { repo } = {}) => {
   }
   return {
     pilot: id, profile, vocabulary: editorialContract(), templates,
-    policies: {hook_overlay: w.request?.hook_overlay ?? null, attribution_policy: w.request?.attribution_policy ?? null},
+    policies: {hook_overlay: w.request?.hook_overlay ?? null, attribution_policy: w.request?.attribution_policy ?? null, closing_cta: w.request?.closing_cta ?? null},
     schema: "docs/specs/editorial-concept.schema.md", timing,
     note: "현재 규격·앵커 조회. 예시의 장면·원고를 복사하지 않는다. 해시 조회는 음성 정렬이나 검수 통과를 증명하지 않는다.",
   };

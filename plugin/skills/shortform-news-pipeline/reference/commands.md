@@ -98,7 +98,7 @@ npm run fetch:assets -- news/<id>     # 수집 자산 복구·병렬 다운로�
 npm run music -- add "<URL|파일>" [--license "…"] [--usage "…"] [--title …] [--artist …] [--source-url …]   # 공용 음원 추가 — 라이선스·사용 범위는 선택, 끝 크레딧 음악 줄 = 파일 이름 (music-library.md)
 npm run music -- list [--json] [--verify]     # 공용 음원 목록 · use "<곡>" <id> 편 배경음악 연결 · check 파일·해시 대조
 npm run defaults [-- --json]          # 새 편 전역 기본값 표 (global-defaults.md)
-npm run defaults -- voice --voice-id tc_… [--voice-name …] [--tempo …]   # 기본 보이스 — .env TYPECAST_VOICE_ID가 있으면 경고
+npm run defaults -- voice --voice-id tc_…|uc_… [--voice-name …] [--tempo …]   # 기본 보이스 — .env TYPECAST_VOICE_ID가 있으면 경고
 npm run defaults -- prompt-bump [--note "…"]   # 기본 프롬프트 본문 수정 후 새 버전 등록 · check 라벨·해시·보관본 대조
 npm run defaults -- profile-archive / profile-bump <x.y.z>   # 자막 프로필: 수정 전 보관 → 수정 후 새 버전
 npm run worktree:remove -- <경로>     # 워크트리 제거 가드 — deliver/ 가 있으면 막는다

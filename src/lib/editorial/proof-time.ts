@@ -14,6 +14,7 @@ export const shiftEditorialTimeline = (timeline: EditorialTimeline, delta: numbe
       sources:timeline.attribution.sources.map(value=>({...value,from:value.from+delta,end:value.end+delta})),
       pages:timeline.attribution.pages.map(value=>({...value,from:value.from+delta,end:value.end+delta})),
     } : undefined,
+    closing_cta: timeline.closing_cta ? {...timeline.closing_cta, from:timeline.closing_cta.from+delta, end:timeline.closing_cta.end+delta} : undefined,
     audio_cues:timeline.audio_cues.map(value=>({...value,frame:value.frame+delta})),
   };
 };

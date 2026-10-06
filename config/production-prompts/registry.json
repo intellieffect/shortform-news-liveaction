@@ -9,6 +9,13 @@
       "archive": "config/production-prompts/v2-original@5.txt",
       "recorded_at": "2026-09-30",
       "note": "등록부 도입 시점의 본문(b0605f3b 이후 동일)"
+    },
+    {
+      "version": "v2-original@6",
+      "sha256": "7c5791a0048b6677586e52cc34659c3952426cfb68c7cebef982ea28b8bc5e2e",
+      "archive": "config/production-prompts/v2-original@6.txt",
+      "recorded_at": "2026-10-06",
+      "note": "4. ‘위성공해’편 마지막 CTA가 다른 영상도 유지되게 필수 반영 부탁드립니다.\n“여러분은 어떻게 생각하시나요? 댓글로 의견 남겨주세요”"
     }
   ]
 }

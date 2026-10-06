@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // 새 편 전역 기본값 보기·바꾸기. 절차 정본: plugin/skills/shortform-news-pipeline/reference/global-defaults.md
 //   npm run defaults                       지금 기본값 (show)
-//   npm run defaults -- voice --voice-id tc_… [--voice-name …] [--tempo 1.1] [--pitch 0] [--emotion normal]
+//   npm run defaults -- voice --voice-id tc_…|uc_… [--voice-name …] [--tempo 1.1] [--pitch 0] [--emotion normal]
 //   npm run defaults -- prompt-bump [--note "…"]   기본 프롬프트 본문을 고친 뒤 새 버전 등록
 //   npm run defaults -- profile-archive            자막 프로필 값을 고치기 전 현재 버전 보관
 //   npm run defaults -- profile-bump <x.y.z>       고친 프로필에 새 버전

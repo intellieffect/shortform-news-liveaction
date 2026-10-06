@@ -67,6 +67,10 @@ export type EditorialTimeline = {
     style: LegacyHookStyle | AuthoredHookStyle;
     phrases: {id: string; text: string; text_event: CompiledEvent; underline_event: CompiledEvent; rows?: HookRow[]; runs?: {text: string; role: "support" | "emphasis"; underline?: boolean; font_size: number; text_color: string}[]; layout?: {center_y?: number; width?: number; font_size?: number; text_color?: string; shadow?: string}}[];
   };
+  closing_cta?: {
+    policy: string; text: string; from: number; end: number;
+    style: {center_x: number; center_y: number; font_size: number; font_weight: number; color: string; outline_px: number; background: string; padding_x: number; padding_y: number; radius: number; max_width: number; enter_frames: number; exit_frames: number; hold_after_frames: number};
+  };
   attribution?: {
     style: typeof import("../../../config/attribution-style.json");
     sources: {asset_id?:string; asset_ids?:string[]; text:string; from:number; end:number}[];
