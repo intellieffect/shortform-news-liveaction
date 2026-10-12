@@ -6,7 +6,7 @@
 
 Windows·macOS·Linux가 같은 절차를 쓴다. 아래를 차례로 실행한다.
 
-**시작 전**: 저장소는 비공개다. 접근 권한이 있는 GitHub 계정으로 로그인해야 clone된다 — Windows에서는 첫 `git clone` 때 Git Credential Manager 로그인 창이 뜬다(권한 없으면 `could not read Username`). clone은 Git LFS로 약 280MB를 받아 몇 분 걸린다; 멈춘 것처럼 보여도 기다린다.
+**시작 전**: 저장소는 공개라 GitHub 로그인 없이 clone된다. clone은 Git LFS로 약 280MB를 받아 몇 분 걸린다; 멈춘 것처럼 보여도 기다린다.
 
 **Windows 빠른 설치**: 저장소 폴더에서 `설치 시작.cmd` 를 더블클릭하면 1·2·3·4·6단계를 한 번에 한다 — 빠진 프로그램은 물어본 뒤 winget으로 설치하고, API 키는 가려진 입력으로 받아 `.env` 에 적는다. 키만 다시 넣을 때는 `API 키 등록.cmd`, 상태만 볼 때는 `환경 점검.cmd`. 5단계(Higgsfield 연결)는 직접 한다. 스크립트는 `installer/windows/setup.ps1` 이고, 이전 한겨레 설치본(hani-shortform-desktop)의 Windows 설치 스크립트를 이 저장소 구조에 맞게 옮긴 것이다.
 
