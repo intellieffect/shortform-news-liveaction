@@ -220,6 +220,9 @@ try { & $node 'scripts/produce.mjs' 'doctor' '--installed'; $code = $LASTEXITCOD
 finally { Pop-Location }
 if ($code -ne 0) { $remaining.Add("doctor reported problems (exit $code)") }
 
+# Desktop icon for the video list, for the Windows account running Setup.
+try { & (Join-Path $Project 'installer\windows\make-desktop-shortcut.ps1') } catch { $remaining.Add("Desktop shortcut failed: run the desktop shortcut .cmd in the repository folder ($($_.Exception.Message))") }
+
 $remaining.Add('Connect Higgsfield in claude.ai (README step 5); this script cannot do or verify it')
 Write-Output ''
 Write-Output 'Remaining:'

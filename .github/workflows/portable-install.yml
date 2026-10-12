@@ -43,9 +43,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile("$PWD\installer\windows\setup.ps1", [ref]$null, [ref]$errors) | Out-Null
-          if ($errors) { $errors; exit 1 }
+          foreach ($file in Get-ChildItem installer\windows\*.ps1) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) { $file.Name; $errors; exit 1 }
+          }
       - run: npm ci
       - name: 스크립트 문법 확인
         run: python -m compileall -q plugin/skills/shortform-news-input/scripts
